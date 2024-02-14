@@ -1,17 +1,16 @@
 <script setup lang="ts">
-import { QTableProps } from 'quasar';
-import SearchInput from 'src/components/forms/SearchInput.vue';
-import { AdditionalParams } from 'src/type';
-import { computed, onMounted, reactive, ref } from 'vue';
-import modalStore from 'src/stores/modalStore';
-import { useRouter } from 'vue-router';
-import { KnowledgebaseCategoryApi, LanguageApi } from 'src/utils/BaseApiService';
-import ImportExcel from 'src/components/ImportExcel.vue';
-import ExportExcel from 'src/components/ExportExcel.vue';
-import { onTableRequest } from 'src/utils/onTableRequest';
+import type { QTableProps } from 'quasar';
+import type { AdditionalParams } from '@/types/QueryParamsTypes';
+import { onMounted, reactive, ref } from 'vue';
+import modalStore from '@/stores/modalStore';
+import { LanguageApi } from '@/utils/BaseApiService';
+import { onTableRequest } from '@/utils/onTableRequest';
 
-const modal = modalStore();
-const router = useRouter();
+definePageMeta({
+  layout:'admin-layout'
+})
+
+const modal = modalStore()
 
 const filter = reactive<AdditionalParams>({
   search: {
@@ -34,7 +33,7 @@ const pagination = ref({
   rowsNumber: 10,
 });
 
-const { onRequest, loading, rows } = onTableRequest(KnowledgebaseCategoryApi, pagination, {
+const { onRequest, loading, rows } = onTableRequest(baseApiUrl+'/help-center/categories', pagination, {
   populate: {
     language: {
       fields: ['name', 'id'],
@@ -43,12 +42,9 @@ const { onRequest, loading, rows } = onTableRequest(KnowledgebaseCategoryApi, pa
 })
 
 
-const languages = ref<null | any[]>(null);
-LanguageApi.index({
+const {data:languages}=LanguageApi.index({
   fields: ['name', 'id'],
-}).then(({ data }) => {
-  languages.value = data.value;
-});
+})
 
 const colomns: QTableProps['columns'] = [
   { name: 'id', field: 'id', label: 'ID', align: 'left' },
@@ -89,7 +85,7 @@ onMounted(() => {
   <q-page class="row q-pa-lg">
     <div class="colomn q-gutter-y-lg" style="width: 100%">
       <div class="row justify-between q-gutter-y-sm">
-        <SearchInput @search="(val) => {
+        <FormsSearchInput @search="(val) => {
           //@ts-ignore
           filter.search.name = val;
         }
@@ -109,7 +105,7 @@ onMounted(() => {
           <ImportExcel type="helpcenter-category" />
           <ExportExcel type="helpcenter-category" />
           <q-btn color="primary" @click="() => {
-            router.push({ name: 'admin.knowlegebase.category.create' });
+            navigateTo(routes.admin.knowlegdebase.category_create)
           }
             ">+ Add Category</q-btn>
         </div>
@@ -130,10 +126,8 @@ onMounted(() => {
               <q-btn-dropdown size="sm" color="primary" label="Options">
                 <q-list dense>
                   <q-item clickable v-close-popup @click="() => {
-                    router.push({
-                      name: 'admin.knowlegebase.category.show',
-                      params: { id: props.row.id },
-                    });
+                                navigateTo(routes.admin.knowlegdebase.category_show(props.row.id))
+
                   }
                     ">
                     <q-item-section>
@@ -143,10 +137,8 @@ onMounted(() => {
                     </q-item-section>
                   </q-item>
                   <q-item clickable v-close-popup @click="() => {
-                    router.push({
-                      name: 'admin.knowlegebase.category.edit',
-                      params: { id: props.row.id },
-                    });
+                                                    navigateTo(routes.admin.knowlegdebase.category_edit(props.row.id))
+
                   }
                     ">
                     <q-item-section>
@@ -155,7 +147,7 @@ onMounted(() => {
                   </q-item>
                   <q-item clickable v-close-popup @click="
                     modal.togel('deleteRecord', {
-                      url: '/help-center/categories/' + props.row.id,
+                      url: baseApiUrl+'/help-center/categories/' + props.row.id,
                       tableRef,
                       title: 'Delete Category?',
                     })

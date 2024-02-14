@@ -12,6 +12,15 @@
 // to match your app's branding.
 // Tip: Use the "Theme Builder" on Quasar's documentation website.
 
+ .ck-editor__editable {
+min-height: 500px;
+min-width: 100%;
+}
+
+.ck .ck-toolbar {
+    flex-wrap: wrap;
+}
+
 $primary   : #050101;
 $secondary : #c58422;
 $accent    : #3d39ed;

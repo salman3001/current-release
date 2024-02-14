@@ -1,14 +1,15 @@
 <script setup lang="ts">
-import { useRoute, useRouter } from 'vue-router';
-import { rules } from '../../../../utils/validationRules';
 import {
   KnowledgebaseCategoryApi,
   LanguageApi,
-} from '../../../../utils/BaseApiService';
+} from '@/utils/BaseApiService';
 import { ref } from 'vue';
 
-const router = useRouter();
-const route = useRoute();
+const id = useRoute().params.id;
+
+definePageMeta({
+  layout:'admin-layout'
+})
 
 const form = ref({
   name: '',
@@ -30,7 +31,7 @@ LanguageApi.index({
 });
 
 const category = ref<null | Record<string, any>>(null);
-KnowledgebaseCategoryApi.show(route.params.id as string).then(({ data }) => {
+KnowledgebaseCategoryApi.show(id as string).then(({ data }) => {
   category.value = data.value;
   form.value.name = (data.value as any)?.name;
   form.value.slug = (data.value as any)?.slug;
@@ -47,8 +48,8 @@ const { execute: updateCategory, loading: IsPostingCategory } =
   KnowledgebaseCategoryApi.put();
 
 const submit = async () => {
-  updateCategory(route.params.id as string, form.value).then(() => {
-    router.push({ name: 'admin.knowlegebase.category.index' });
+  updateCategory(id as string, form.value).then(() => {
+    navigateTo(routes.admin.knowlegdebase.category)
   });
 };
 </script>
@@ -57,7 +58,8 @@ const submit = async () => {
   <div class="q-pa-lg">
     <div class="row items-center q-gutter-sm q-mb-xl">
       <q-icon name="keyboard_backspace" size="30px" style="cursor: pointer" @click="() => {
-          router.push({ name: 'admin.knowlegebase.category.index' });
+                    navigateTo(routes.admin.knowlegdebase.category)
+
         }
         " />
       <span class="text-h6"> Add Categroy </span>
@@ -66,10 +68,10 @@ const submit = async () => {
       <div class="q-gutter-y-md">
         <div class="row q-col-gutter-md">
           <q-input :debounce="500" outlined v-model="form.name" label="Title" class="col-12 col-sm-6 col-md-3" :rules="[
-            $rules.required('required'),
+           rules.required('required'),
             async (v) =>
               (await rules.unique(
-                '/help-center/categories/unique-field',
+                baseApiUrl+'/help-center/categories/unique-field',
                 'name',
                 v,
                 category?.name
@@ -79,7 +81,7 @@ const submit = async () => {
             (v) => rules.slug(v) || 'Slug is not valid',
             async (v) =>
               (await rules.unique(
-                '/help-center/categories/unique-field',
+               baseApiUrl+ '/help-center/categories/unique-field',
                 'slug',
                 v,
                 category?.slug
@@ -92,7 +94,7 @@ const submit = async () => {
             class="col-12 col-sm-6 col-md-3" :rules="[
               async (v) =>
                 (await rules.unique(
-                  '/help-center/categories/unique-field',
+                baseApiUrl+  '/help-center/categories/unique-field',
                   'order',
                   v,
                   category?.order
@@ -112,7 +114,8 @@ const submit = async () => {
       </div>
       <div class="row justify-end q-gutter-md">
         <q-btn style="background-color: #e6e4d9; color: #aeaca1; min-width: 8rem" @click="() => {
-            router.push({ name: 'admin.knowlegebase.category.index' });
+                      navigateTo(routes.admin.knowlegdebase.category)
+
           }
           ">Cancle</q-btn>
         <q-btn color="primary" v-if="IsPostingCategory">

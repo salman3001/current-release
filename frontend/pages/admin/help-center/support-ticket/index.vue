@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { QTableProps, date } from 'quasar';
-import { AdditionalParams } from 'src/type';
+import { date, type QTableProps } from 'quasar';
+import type { AdditionalParams } from '@/types/QueryParamsTypes';
 import { onMounted, reactive, ref } from 'vue';
-import modalStore from 'src/stores/modalStore';
 import { useRouter } from 'vue-router';
-import { onTableRequest } from 'src/utils/onTableRequest';
-import { SupportTickeApi } from 'src/utils/BaseApiService';
+import { onTableRequest } from '@/utils/onTableRequest';
+
+definePageMeta({
+  layout: 'admin-layout'
+})
 
 const modal = modalStore();
 const { formatDate } = date
@@ -28,7 +30,7 @@ const pagination = ref({
 });
 
 
-const { onRequest, loading, rows } = onTableRequest(SupportTickeApi, pagination, {
+const { onRequest, loading, rows } = onTableRequest(baseApiUrl+'/help-center/support-ticket', pagination, {
   populate: {
     user: {
       fields: ['first_name', 'last_name'],
@@ -111,7 +113,7 @@ onMounted(() => {
           ]" label="Status" class="col-auto" style="min-width: 8rem" />
           <!-- exports -->
           <q-btn color="primary" @click="() => {
-            router.push({ name: 'admin.supportTicket.create' });
+            navigateTo(routes.admin.help_center.support_ticket_create)
           }
             ">+ Add Ticket</q-btn>
         </div>
@@ -147,11 +149,7 @@ onMounted(() => {
                     </q-item-section>
                   </q-item>
                   <q-item clickable v-close-popup @click="() => {
-                    router.push({
-                      name: 'admin.supportTicket.chat', params: {
-                        id: props.row.id
-                      }
-                    })
+                navigateTo(routes.admin.help_center.support_ticket_chat(props.row.id))
                   }
                     ">
                     <q-item-section>
@@ -161,7 +159,7 @@ onMounted(() => {
                   </q-item>
                   <q-item clickable v-close-popup @click="
                     modal.togel('deleteRecord', {
-                      url: '/help-center/support-ticket/' + props.row.id,
+                      url: baseApiUrl+'/help-center/support-ticket/' + props.row.id,
                       tableRef,
                       title: 'Delete Support ticket?',
                     })

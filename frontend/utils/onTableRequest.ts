@@ -22,8 +22,6 @@ export const onTableRequest = (
   const rows = ref<any[]>([]);
 
   const onRequest = async (props: TableRequestProps) => {
-    console.log("ran");
-
     const { page, rowsPerPage, sortBy, descending } = props.pagination;
     const filter = props.filter;
     loading.value = true;

@@ -1,3 +1,5 @@
+import type { permissions } from "@/utils/enums";
+
 export default function useAuth() {
   const user = useCookie("user");
   const token = useCookie("token");
@@ -5,25 +7,25 @@ export default function useAuth() {
 
   const hasRole = (name: string) => {
     if (user) {
-      return user?.value.role?.name === name;
+      return user.value?.role?.name === name;
     } else {
       return false;
     }
   };
 
   const hasPermission = (name: permissions) => {
-    if (user && user?.value.role?.name === "Super Admin") {
+    if (user && user.value?.role?.name === "Super Admin") {
       return true;
     }
 
-    if (user && user?.value.role?.is_active == 0) {
+    if (user && user.value?.role?.is_active == 0) {
       return false;
     }
 
     if (user) {
-      const permissionValid = user?.value.role?.permissions?.filter(
+      const permissionValid = user.value?.role?.permissions?.filter(
         (perm: any) => perm.name == name
-      );
+      ) || [];
 
       if (permissionValid.length > 0) {
         return true;

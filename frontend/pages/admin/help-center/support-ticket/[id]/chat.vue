@@ -1,18 +1,20 @@
 <script setup lang="ts">
-import { useRoute, useRouter } from 'vue-router';
+import { useRoute } from 'vue-router';
 import {
   SupportTickeApi
-} from 'src/utils/BaseApiService';
+} from '@/utils/BaseApiService';
 import { onUnmounted, onUpdated, ref } from 'vue';
-import chatMessageStore from 'src/stores/chatMessageStore';
 import { useScroll } from '@vueuse/core'
 import { formatDistance, parseISO } from 'date-fns';
+
+definePageMeta({
+  layout: 'admin-layout'
+})
 
 const scrollRef = ref<HTMLElement | null>(null)
 const { y } = useScroll(scrollRef)
 const page = ref(1)
 
-const router = useRouter();
 const route = useRoute();
 const chatStore = chatMessageStore()
 const message = ref('')
@@ -52,7 +54,7 @@ onUpdated(() => {
       <div style="width: 100%;max-width: 400px;font-size: larger;">
         <div class="row items-center q-gutter-sm q-mb-md">
           <q-icon name="keyboard_backspace" size="30px" style="cursor: pointer" @click="() => {
-            router.push({ name: 'admin.supportTicket.index' });
+            navigateTo(routes.admin.help_center.support_ticket)
           }
             " />
           <span class="text-h6 "> Chat Support </span>

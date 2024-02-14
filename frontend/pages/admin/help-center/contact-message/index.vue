@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import { QTableProps, date } from 'quasar';
-import modalStore from 'src/stores/modalStore';
-import ExportExcel from 'src/components/ExportExcel.vue';
-import { ContactMessageApi } from 'src/utils/BaseApiService';
-import { onTableRequest } from 'src/utils/onTableRequest';
+import {type QTableProps, date } from 'quasar';
+import { ContactMessageApi } from '@/utils/BaseApiService';
+import { onTableRequest } from '@/utils/onTableRequest';
 import { onMounted, ref } from 'vue';
 
 const modal = modalStore();
@@ -20,7 +18,7 @@ const pagination = ref({
 });
 
 
-const { onRequest, loading, rows } = onTableRequest(ContactMessageApi, pagination,)
+const { onRequest, loading, rows } = onTableRequest(baseApiUrl+'/contact-message', pagination,)
 
 
 const colomns: QTableProps['columns'] = [

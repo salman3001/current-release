@@ -10,7 +10,7 @@ definePageMeta({
   layout: 'admin-layout'
 })
 
-const id = useRoute().params.id;
+const id = useRoute().params.id
 
 const form = ref({
   title: '',
@@ -36,17 +36,17 @@ const { data: languages } = LanguageApi.index({
 
 const content = ref<null | Record<string, any>>(null);
 KnowledgebaseContentApi.show(id as string).then(({ data }) => {
-  content.value = data;
-  form.value.title = (data as any).title;
-  form.value.slug = (data as any).slug
-  form.value.languageId = (data as any).language_id
+  content.value = data.value;
+  form.value.title = (data.value as any).title;
+  form.value.slug = (data.value as any).slug
+  form.value.languageId = (data.value as any).language_id
   form.value.knowledgeBaseCategoryId = (data as any).knowledge_base_category_id
-  form.value.order = (data as any).order
-  form.value.content = (data as any).content
-  form.value.metaTitle = (data as any).meta_title
-  form.value.metaKeywords = (data as any).meta_keywords
-  form.value.metaDesc = (data as any).meta_desc;
-  form.value.isActive = (data as any).is_active == 1 ? true : false;
+  form.value.order = (data.value as any).order
+  form.value.content = (data.value as any).content
+  form.value.metaTitle = (data .value as any).meta_title
+  form.value.metaKeywords = (data.value as any).meta_keywords
+  form.value.metaDesc = (data.value as any).meta_desc;
+  form.value.isActive = (data.value as any).is_active == 1 ? true : false;
 });
 
 const { execute: updateContent, loading: IsPostingContnet } =
@@ -110,10 +110,10 @@ const submit = async () => {
                   content?.order
                 )) || 'Order number not avaialabe. Choose another one',
             ]" />
-          <div class="full-width" style="display: flex; min-height: 25rem; flex-direction: column">
+          <div class="col-12"  style="min-height: 25rem; width: 100%;">
             <ck-editor @input="(v) => {
               form.content = v
-            }" :value="form.content"/>
+            }" :value="form.content" />
           </div>
         </div>
 

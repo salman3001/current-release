@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { useRouter } from 'vue-router';
 import {
   SupportTickeApi, userApi,
-} from 'src/utils/BaseApiService';
+} from '@/utils/BaseApiService';
 import { ref } from 'vue';
 
-const router = useRouter();
+definePageMeta({
+  layout: 'admin-layout'
+})
 
 const form = ref({
   subject: '',
@@ -14,16 +15,13 @@ const form = ref({
   message: '',
 });
 
-const users = ref<any[]>([])
-userApi.index().then(({ data }) => {
-  users.value = data.value as any
-})
+const {data:users} =userApi.index()
 
 
 const { execute: createTicket, loading } =
   SupportTickeApi.post({}, {
     onSuccess: () => {
-      router.push({ name: 'admin.supportTicket.index' });
+      navigateTo(routes.admin.help_center.support_ticket)
     }
   });
 
@@ -36,7 +34,8 @@ const submit = async () => {
   <div class="q-pa-lg">
     <div class="row items-center q-gutter-sm q-mb-xl">
       <q-icon name="keyboard_backspace" size="30px" style="cursor: pointer" @click="() => {
-        router.push({ name: 'admin.supportTicket.index' });
+              navigateTo(routes.admin.help_center.support_ticket)
+
       }
         " />
       <span class="text-h6"> Add Support Ticket </span>
@@ -45,17 +44,17 @@ const submit = async () => {
       <div class="q-gutter-y-md">
         <q-select outlined debounce="500" v-model="form.userId" emit-value map-options option-label="first_name"
           option-value="id" label="User" class="col-12 col-sm-6 col-md-3" :options="users"
-          :rules="[$rules.required('Required')]" />
+          :rules="[rules.required('Required')]" />
         <q-input outlined v-model="form.subject" label="Subject" class="col-12 col-sm-6 col-md-3" :rules="[
-          $rules.required('Required')
+          rules.required('Required')
         ]" />
         <q-input type="textarea" outlined v-model="form.message" label="Message" class="col-12 col-sm-6 col-md-3"
-          :rules="[$rules.required('Required')]" />
+          :rules="[rules.required('Required')]" />
 
       </div>
       <div class="row justify-end q-gutter-md">
         <q-btn style="background-color: #e6e4d9; color: #aeaca1; min-width: 8rem" @click="() => {
-          router.push({ name: 'admin.supportTicket.index' });
+               navigateTo(routes.admin.help_center.support_ticket)
         }
           ">Cancle</q-btn>
         <q-btn color="primary" v-if="loading">

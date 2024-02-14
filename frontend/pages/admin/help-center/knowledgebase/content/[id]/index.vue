@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import { useRoute, useRouter } from 'vue-router';
 import { KnowledgebaseContentApi } from '@/utils/BaseApiService';
 import { ref } from 'vue';
 
-const router = useRouter();
 const route = useRoute();
 
 const content = ref<null | Record<string, any>>(null);
@@ -29,7 +27,7 @@ KnowledgebaseContentApi.show(route.params.id as string, {
         size="30px"
         style="cursor: pointer"
         @click="() => {
-            router.push({ name: 'admin.knowlegebase.content.index' });
+            navigateTo(routes.admin.knowlegdebase.content)
           }
           "
       />
