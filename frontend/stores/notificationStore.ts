@@ -69,7 +69,7 @@ const notificationStore = defineStore("notification", () => {
       const user = $q.cookies.get("user") as any;
       const token = $q.cookies.get("socketToken") as any;
 
-      socket.value = io(process.env.UPLOAD + "/notifications/", {
+      socket.value = io("/notifications/", {
         transports: ["websocket"],
         auth: {
           userId: user?.id || "",

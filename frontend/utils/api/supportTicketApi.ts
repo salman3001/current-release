@@ -12,13 +12,11 @@ class SupportTicketApiService extends BaseApiClass {
     const execute = async (id: string, data: any) => {
       try {
         loading.value = true;
-        const res = await $fetch(
-         baseApiUrl+ this.url + "/change-status/" + id,{
-            method:'post',
-            body:data,
-            ...opt as any
-          }
-        );
+        const res = await $fetch(this.url + "/change-status/" + id, {
+          method: "post",
+          body: data,
+          ...(opt as any),
+        });
         loading.value = false;
         cb?.onSuccess && cb?.onSuccess();
         Notify.create({
@@ -55,13 +53,13 @@ class SupportTicketApiService extends BaseApiClass {
     try {
       loading.value = true;
       const res = await $fetch(
-       baseApiUrl+ this.url +
+        this.url +
           "/messages/" +
           id +
           `?page=${page ?? 1}&limit=${limit ?? 20}`,
         {
           headers: { "content-type": "application/x-www-form-urlencoded" },
-          ...opt as any,
+          ...(opt as any),
         }
       );
       if (res) {
@@ -86,26 +84,21 @@ class SupportTicketApiService extends BaseApiClass {
   ) {
     const loading = ref(false);
     const execute = async (id: string, data: any) => {
-      
       try {
         loading.value = true;
-        const res = await $fetch(
-          baseApiUrl + this.url + "/create-message/" + id,
-          {
-          method:'post',
-          body:data,
-          ...opt as any
-        }
-        );
-        console.log('ran');
+        const res = await $fetch(this.url + "/create-message/" + id, {
+          method: "post",
+          body: data,
+          ...(opt as any),
+        });
+        console.log("ran");
         loading.value = false;
         cb?.onSuccess && cb?.onSuccess();
       } catch (error: any) {
         loading.value = false;
         cb?.onError && cb?.onError();
         Notify.create({
-          message:
-            error?.response?.data?.message || "Failed to send Messsage",
+          message: error?.response?.data?.message || "Failed to send Messsage",
           color: "negative",
         });
       }
@@ -118,6 +111,6 @@ class SupportTicketApiService extends BaseApiClass {
   }
 }
 export const SupportTickeApi = new SupportTicketApiService(
-  "/help-center/support-ticket",
+  "/api/help-center/support-ticket",
   "Ticket Messages"
 );

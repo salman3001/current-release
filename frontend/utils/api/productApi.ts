@@ -41,4 +41,4 @@ class ProductApiService extends BaseApiClass {
     return { loading, data };
   }
 }
-export const productApi = new ProductApiService("/product", "Product");
+export const productApi = new ProductApiService("/api/product", "Product");

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {type QTableProps, date } from 'quasar';
+import { type QTableProps, date } from 'quasar';
 import { ContactMessageApi } from '@/utils/BaseApiService';
 import { onTableRequest } from '@/utils/onTableRequest';
 import { onMounted, ref } from 'vue';
@@ -18,7 +18,7 @@ const pagination = ref({
 });
 
 
-const { onRequest, loading, rows } = onTableRequest(baseApiUrl+'/contact-message', pagination,)
+const { onRequest, loading, rows } = onTableRequest('/api/contact-message', pagination,)
 
 
 const colomns: QTableProps['columns'] = [

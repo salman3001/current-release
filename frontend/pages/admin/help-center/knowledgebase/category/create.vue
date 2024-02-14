@@ -6,7 +6,7 @@ import {
 import { ref } from 'vue';
 
 definePageMeta({
-  layout:'admin-layout'
+  layout: 'admin-layout'
 })
 
 const form = ref({
@@ -21,7 +21,7 @@ const form = ref({
   isActive: false,
 });
 
-const {data:languages}=LanguageApi.index({
+const { data: languages } = LanguageApi.index({
   fields: ['name', 'id'],
 })
 
@@ -39,8 +39,8 @@ const submit = async () => {
   <div class="q-pa-lg">
     <div class="row items-center q-gutter-sm q-mb-xl">
       <q-icon name="keyboard_backspace" size="30px" style="cursor: pointer" @click="() => {
-          navigateTo(routes.admin.knowlegdebase.category)
-        }
+        navigateTo(routes.admin.knowlegdebase.category)
+      }
         " />
       <span class="text-h6"> Add Categroy </span>
     </div>
@@ -51,7 +51,7 @@ const submit = async () => {
             rules.required('required'),
             async (v) =>
               (await rules.unique(
-               baseApiUrl+ '/help-center/categories/unique-field',
+                '/help-center/categories/unique-field',
                 'name',
                 v
               )) || 'name Already Taken',
@@ -60,7 +60,7 @@ const submit = async () => {
             (v) => rules.slug(v) || 'Slug is not valid',
             async (v) =>
               (await rules.unique(
-               baseApiUrl+ '/help-center/categories/unique-field',
+                '/help-center/categories/unique-field',
                 'slug',
                 v
               )) || 'Slug Already Taken',
@@ -72,7 +72,7 @@ const submit = async () => {
             class="col-12 col-sm-6 col-md-3" :rules="[
               async (v) =>
                 (await rules.unique(
-                 baseApiUrl+ '/help-center/categories/unique-field',
+                  '/help-center/categories/unique-field',
                   'order',
                   v
                 )) || 'Order number not avaialabe. Choose another one',
@@ -91,8 +91,8 @@ const submit = async () => {
       </div>
       <div class="row justify-end q-gutter-md">
         <q-btn style="background-color: #e6e4d9; color: #aeaca1; min-width: 8rem" @click="() => {
-            navigateTo(routes.admin.knowlegdebase.category)
-          }
+          navigateTo(routes.admin.knowlegdebase.category)
+        }
           ">Cancle</q-btn>
         <q-btn color="primary" v-if="IsPostingCategory">
           <q-circular-progress indeterminate size="20px" class="q-px-10" :thickness="1" color="grey-8"

@@ -10,7 +10,7 @@ const addressStore = defineStore("addressStore", () => {
   const streets = ref([]);
 
   const getCountinents = async () => {
-    const data = await $fetch(baseApiUrl + "/address/continents");
+    const data = await $fetch("/api/address/continents");
     continents.value = data as any;
     countries.value = [];
     states.value = [];
@@ -35,7 +35,7 @@ const addressStore = defineStore("addressStore", () => {
         },
       },
     });
-    const data = await $fetch(baseApiUrl + "/address/countries" + `?${q}`);
+    const data = await $fetch("/api/address/countries" + `?${q}`);
 
     countries.value = data as any;
     states.value = [];
@@ -59,7 +59,7 @@ const addressStore = defineStore("addressStore", () => {
         },
       },
     });
-    const data = await $fetch(baseApiUrl + "/address/states" + `?${q}`);
+    const data = await $fetch("/api/address/states" + `?${q}`);
 
     states.value = data as any;
     cities.value = [];
@@ -81,7 +81,7 @@ const addressStore = defineStore("addressStore", () => {
         },
       },
     });
-    const data = await $fetch(baseApiUrl + "/address/cities" + `?${q}`);
+    const data = await $fetch("/api/address/cities" + `?${q}`);
     cities.value = data as any;
     streets.value = [];
   };
@@ -100,7 +100,7 @@ const addressStore = defineStore("addressStore", () => {
         },
       },
     });
-    const data = await $fetch(baseApiUrl + "/address/streets" + `?${q}`);
+    const data = await $fetch("/api/address/streets" + `?${q}`);
     streets.value = data as any;
   };
 

@@ -105,7 +105,7 @@ onMounted(() => {
             <div class="q-col-gutter-md">
               <div class="q-py-md rounded">
                 <q-img :src="user?.avatar?.url
-                  ? BaseUploadsUrl + user?.avatar?.url
+                  ? $config.public.baseApi + user?.avatar?.url
                   : '/images/sample-dp.png'
                   " spinner-color="white"
                   style="height: 140px; max-width: 150px;border-radius: 10px;border: 1px solid gray;" />

@@ -20,15 +20,18 @@ const chatStore = chatMessageStore()
 const message = ref('')
 const updatedOnce = ref(false)
 
-const ticket = ref<Record<string, any> | null>(null)
-SupportTickeApi.show(route.params.id as string, {
+const { data: ticket } = await SupportTickeApi.show(route.params.id as string, {
   populate: {
     user: { fields: ['id', 'first_name', 'last_name'] }
   }
-}).then(({ data }) => {
-  ticket.value = (data.value as any)
-  chatStore.getMessages((ticket.value as any).id)
+})
+
+watch(ticket, async () => {
+  await chatStore.getMessages((ticket.value as any).id)
   chatStore.connectSocket((ticket.value as any).id)
+}, {
+  deep: true,
+  immediate: true
 })
 
 const { execute: createMessage, loading: sendingMessage } = SupportTickeApi.createMessage()

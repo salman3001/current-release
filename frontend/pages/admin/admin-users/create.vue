@@ -68,7 +68,7 @@ const submit = async (e: SubmitEvent | Event) => {
 
   try {
     loading.value = true;
-    const res = await $fetch(baseApiUrl + '/admin-users', { body: formData, method: 'post' });
+    const res = await $fetch('/admin-users', { body: formData, method: 'post' });
     loading.value = false;
     Notify.create({
       message: 'User added',
@@ -119,7 +119,7 @@ onMounted(async () => {
               rules.required('required'),
               rules.email('Email is not valid'),
               async (v) =>
-                (await rules.unique(baseApiUrl + '/admin-users/unique-field', 'email', v)) ||
+                (await rules.unique('/admin-users/unique-field', 'email', v)) ||
                 'Email Already Taken',
             ]" />
           <q-input outlined v-model="form.user.password" :type="isPwd ? 'password' : 'text'" label="Password"

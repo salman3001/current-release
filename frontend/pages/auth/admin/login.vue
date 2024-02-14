@@ -5,6 +5,7 @@ import { ofetch } from 'ofetch'
 const auth = authStore();
 const isPwd = ref(true);
 const loading = ref(false)
+const config = useRuntimeConfig()
 
 const form = ref({
   email: '',
@@ -36,6 +37,7 @@ const login = async () => {
     socketToken.value = res?.socketToken
     const authorization = `Bearer ${toRaw(token.value?.token)}`
     globalThis.$fetch = ofetch.create({
+      baseURL: config.public.baseApi,
       headers: {
         authorization,
       },

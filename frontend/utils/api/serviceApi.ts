@@ -42,4 +42,4 @@ class ServiceApiService extends BaseApiClass {
   }
 }
 
-export const serviceApi = new ServiceApiService("/service", "Service");
+export const serviceApi = new ServiceApiService("/api/service", "Service");

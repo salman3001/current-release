@@ -3,7 +3,6 @@ import type { QTableProps } from 'quasar';
 import type { AdditionalParams } from '@/types/QueryParamsTypes';
 import { permissions } from '@/utils/enums';
 import { onTableRequest } from '@/utils/onTableRequest'
-import BaseUploadsUrl from '~/utils/BaseUploadsUrl';
 
 definePageMeta({
   layout: 'admin-layout'
@@ -40,7 +39,7 @@ const pagination = ref({
   rowsNumber: 10,
 });
 
-const { onRequest, loading, rows } = onTableRequest(baseApiUrl + '/admin-users', pagination, {
+const { onRequest, loading, rows } = onTableRequest('/api/admin-users', pagination, {
 })
 
 const colomns: QTableProps['columns'] = [
@@ -126,7 +125,7 @@ onMounted(() => {
           <q-td :props="props" class="row q-gutter-x-xs items-center" style="flex-wrap: nowrap;">
             <q-avatar size=" 30px">
               <img :src="props.row?.avatar
-                ? BaseUploadsUrl + props.row?.avatar?.url
+                ? $config.public.baseApi + props.row?.avatar?.url
                 : '/images/sample-dp.png'
                 " :style="{
     border:
@@ -179,7 +178,7 @@ onMounted(() => {
 
                   <q-item v-if="props.row?.role?.name != 'Super Admin'" clickable v-close-popup @click="
                     modal.togel('changeAdminStatus', {
-                      url: baseApiUrl + `/admin-users/ban/${props.row.id}`,
+                      url: `/admin-users/ban/${props.row.id}`,
                       tableRef,
                     })
                     ">
@@ -201,7 +200,7 @@ onMounted(() => {
                   </q-item>
                   <q-item v-if="props.row?.role?.name != 'Super Admin'" clickable v-close-popup @click="
                     modal.togel('deleteRecord', {
-                      url: baseApiUrl + '/admin-users/' + props.row.id,
+                      url: '/admin-users/' + props.row.id,
                       tableRef,
                       title: 'Delete User?',
                     })

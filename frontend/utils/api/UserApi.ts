@@ -13,7 +13,7 @@ class UserApiService extends BaseApiClass {
   //   return useAsyncData(
   //     this.url,
   //     () =>
-  //       $fetch(baseApiUrl+this.url + "/update-password/" + id, {
+  //       $fetch(this.url + "/update-password/" + id, {
   //         method: "post",
   //         body,
   //         ...(opt as any),
@@ -35,7 +35,7 @@ class UserApiService extends BaseApiClass {
     const execute = async (data: any) => {
       try {
         loading.value = true;
-        const res = await $fetch(baseApiUrl + this.url + "/update-password/" + id, {
+        const res = await $fetch(this.url + "/update-password/" + id, {
           body: data,
           method: "post",
           ...(opt as any),
@@ -51,7 +51,7 @@ class UserApiService extends BaseApiClass {
         loading.value = false;
         cb?.onError && cb?.onError();
         Notify.create({
-          message: `Failed to create ${baseApiUrl + this.name}`,
+          message: `Failed to create ${this.name}`,
           color: "negative",
         });
       }
@@ -59,4 +59,4 @@ class UserApiService extends BaseApiClass {
   }
 }
 
-export const userApi = new UserApiService("/users", "User");
+export const userApi = new UserApiService("/api/users", "User");

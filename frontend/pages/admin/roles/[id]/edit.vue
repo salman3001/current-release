@@ -15,7 +15,7 @@ const permissions = ref<any>(null);
 const submit = async () => {
   try {
     loading.value = true;
-    const res = await $fetch(baseApiUrl + '/roles/' + id, {
+    const res = await $fetch('/roles/' + id, {
       body: {
         permissionId: permissionId.value,
         isActive: activate.value
@@ -50,7 +50,7 @@ onMounted(async () => {
   }, { encode: false })
 
   try {
-    const res = await $fetch(baseApiUrl + '/roles/' + id + `?${roleQuery}`,);
+    const res = await $fetch('/roles/' + id + `?${roleQuery}`,);
     if (res) {
       role.value = res;
       if (res.is_active == 1) {
@@ -69,7 +69,7 @@ onMounted(async () => {
   }
 
   try {
-    const res = await $fetch(baseApiUrl + '/permissions');
+    const res = await $fetch('/permissions');
     if (res) {
       permissions.value = res;
     }

@@ -5,7 +5,7 @@ import { ref } from "vue";
 const authStore = defineStore("Auth", () => {
   const adminLogin = async (email: string, password: string) => {
     try {
-      const res = await $fetch(baseApiUrl + "/auth/admin-login", {
+      const res = await $fetch("/api/auth/admin-login", {
         method: "post",
         body: { email, password },
       });
@@ -19,7 +19,7 @@ const authStore = defineStore("Auth", () => {
 
   const adminLogout = async (onSuccess?: () => void) => {
     try {
-      await $fetch(baseApiUrl + "/auth/admin-logout");
+      await $fetch("/api/auth/admin-logout");
       Notify.create({
         message: "Logout Successfull!",
         color: "positive",
@@ -39,7 +39,7 @@ const authStore = defineStore("Auth", () => {
     const execute = async (data: any) => {
       try {
         loading.value = true;
-        const res = await $fetch(baseApiUrl + "/auth/get-otp", {
+        const res = await $fetch("/api/auth/get-otp", {
           body: data,
         });
         loading.value = false;
@@ -66,10 +66,7 @@ const authStore = defineStore("Auth", () => {
     const execute = async (data: any) => {
       try {
         loading.value = true;
-        const res = await $fetch(
-          baseApiUrl + "/auth/verify-otp-update-password",
-          data
-        );
+        const res = await $fetch("/api/auth/verify-otp-update-password", data);
         loading.value = false;
         cb?.onSuccess && cb?.onSuccess();
         Notify.create({

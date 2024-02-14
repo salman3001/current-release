@@ -3,7 +3,9 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: ["nuxt-icon", "@pinia/nuxt", "nuxt-quasar-ui"],
   runtimeConfig: {
-    public: {},
+    public: {
+      baseApi: "http://localhost:3333",
+    },
   },
   quasar: {
     plugins: ["Notify"],

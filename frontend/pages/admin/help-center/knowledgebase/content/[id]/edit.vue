@@ -43,7 +43,7 @@ KnowledgebaseContentApi.show(id as string).then(({ data }) => {
   form.value.knowledgeBaseCategoryId = (data as any).knowledge_base_category_id
   form.value.order = (data.value as any).order
   form.value.content = (data.value as any).content
-  form.value.metaTitle = (data .value as any).meta_title
+  form.value.metaTitle = (data.value as any).meta_title
   form.value.metaKeywords = (data.value as any).meta_keywords
   form.value.metaDesc = (data.value as any).meta_desc;
   form.value.isActive = (data.value as any).is_active == 1 ? true : false;
@@ -77,7 +77,7 @@ const submit = async () => {
             rules.required('required'),
             async (v) =>
               (await rules.unique(
-                baseApiUrl + '/help-center/content/unique-field',
+                '/help-center/content/unique-field',
                 'title',
                 v,
                 content?.title
@@ -87,7 +87,7 @@ const submit = async () => {
             (v) => rules.slug(v) || 'Slug is not valid',
             async (v) =>
               (await rules.unique(
-                baseApiUrl + '/help-center/content/unique-field',
+                '/help-center/content/unique-field',
                 'slug',
                 v,
                 content?.slug
@@ -104,7 +104,7 @@ const submit = async () => {
             class="col-12 col-sm-6 col-md-3" :rules="[
               async (v) =>
                 (await rules.unique(
-                  baseApiUrl + '/help-center/content/unique-field',
+                  '/help-center/content/unique-field',
                   'order',
                   v,
                   content?.order

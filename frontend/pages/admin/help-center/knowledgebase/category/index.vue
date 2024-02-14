@@ -7,7 +7,7 @@ import { LanguageApi } from '@/utils/BaseApiService';
 import { onTableRequest } from '@/utils/onTableRequest';
 
 definePageMeta({
-  layout:'admin-layout'
+  layout: 'admin-layout'
 })
 
 const modal = modalStore()
@@ -33,7 +33,7 @@ const pagination = ref({
   rowsNumber: 10,
 });
 
-const { onRequest, loading, rows } = onTableRequest(baseApiUrl+'/help-center/categories', pagination, {
+const { onRequest, loading, rows } = onTableRequest('/api/help-center/categories', pagination, {
   populate: {
     language: {
       fields: ['name', 'id'],
@@ -42,7 +42,7 @@ const { onRequest, loading, rows } = onTableRequest(baseApiUrl+'/help-center/cat
 })
 
 
-const {data:languages}=LanguageApi.index({
+const { data: languages } = LanguageApi.index({
   fields: ['name', 'id'],
 })
 
@@ -126,7 +126,7 @@ onMounted(() => {
               <q-btn-dropdown size="sm" color="primary" label="Options">
                 <q-list dense>
                   <q-item clickable v-close-popup @click="() => {
-                                navigateTo(routes.admin.knowlegdebase.category_show(props.row.id))
+                    navigateTo(routes.admin.knowlegdebase.category_show(props.row.id))
 
                   }
                     ">
@@ -137,7 +137,7 @@ onMounted(() => {
                     </q-item-section>
                   </q-item>
                   <q-item clickable v-close-popup @click="() => {
-                                                    navigateTo(routes.admin.knowlegdebase.category_edit(props.row.id))
+                    navigateTo(routes.admin.knowlegdebase.category_edit(props.row.id))
 
                   }
                     ">
@@ -147,7 +147,7 @@ onMounted(() => {
                   </q-item>
                   <q-item clickable v-close-popup @click="
                     modal.togel('deleteRecord', {
-                      url: baseApiUrl+'/help-center/categories/' + props.row.id,
+                      url: '/help-center/categories/' + props.row.id,
                       tableRef,
                       title: 'Delete Category?',
                     })

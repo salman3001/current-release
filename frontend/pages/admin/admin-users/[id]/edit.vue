@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
-const id = useRoute().params?.id
+definePageMeta({
+  layout: 'admin-layout'
+})
 
 const tab = ref('personal')
 

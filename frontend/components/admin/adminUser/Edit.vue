@@ -38,54 +38,9 @@ const form = ref({
 });
 
 
+const { data: roles } = await RoleApi.index()
 
-
-const { execute: getCountinents, data: continentOptions } = ContinentsApi.index({}, {
-  immediate: false,
-  lazy: true
-})
-
-const { execute: getCountries, data: countiresOptions } = CountriesApi.index({
-  filter: {
-    continent_id: form.value.address.continentId
-  }
-}, {
-  immediate: false,
-  lazy: true
-})
-
-
-const { execute: getStates, data: stateOptions } = StateApi.index({
-  filter: {
-    country_id: form.value.address.countryId
-  }
-}, {
-  immediate: false,
-  lazy: true
-})
-
-const { execute: getCities, data: cityOptions } = CityApi.index({
-  filter: {
-    state_id: form.value.address.stateId
-  }
-}, {
-  immediate: false,
-  lazy: true
-})
-
-const { execute: getStreets, data: streetOptions } = StreetApi.index({
-  filter: {
-    city_id: form.value.address.cityId
-  }
-}, {
-  immediate: false,
-  lazy: true
-})
-
-
-const user = ref<Record<string, any> | null>(null)
-
-AdminUserApi.show(id as string, {
+const { data: user } = await AdminUserApi.show(id as string, {
   populate: {
     role: {
       fields: ['id', 'name'],
@@ -113,30 +68,80 @@ AdminUserApi.show(id as string, {
       fields: ['*'],
     },
   },
-}
-).then(({ data }) => {
-  user.value = data.value
-  form.value.user.firstName = (data?.value as any)?.first_name || '';
-  form.value.user.lastName = (data?.value as any)?.last_name || '';
-  form.value.user.email = (data?.value as any)?.email || '';
-  form.value.user.roleId = (data?.value as any)?.role_id || '';
-  form.value.user.isActive = (data?.value as any)?.is_active == 1 ? true : false;
-  form.value.address.address = (data?.value as any)?.address?.address || '';
-  form.value.address.continentId = (data?.value as any)?.address?.continent_id;
-  form.value.address.countryId = (data?.value as any)?.address?.country_id;
-  form.value.address.stateId = (data?.value as any)?.address?.state_id;
-  form.value.address.cityId = (data?.value as any)?.address?.city_id;
-  form.value.address.streetId = (data?.value as any)?.address?.street_id;
-  form.value.address.zip = (data?.value as any)?.address?.zip || '';
-  form.value.social.website = (data?.value as any)?.social?.website || '';
-  form.value.social.facebook = (data?.value as any)?.social?.facebook;
-  form.value.social.instagram = (data?.value as any)?.social?.instagram;
-  form.value.social.linkedin = (data?.value as any)?.social?.linkedin;
-  form.value.social.pintrest = (data?.value as any)?.social?.pintrest;
-  form.value.social.telegram = (data?.value as any)?.social?.telegram;
-  form.value.social.twitter = (data?.value as any)?.social?.twitter;
-  form.value.social.vk = (data?.value as any)?.social?.vk;
-  form.value.social.whatsapp = (data?.value as any)?.social?.whatsapp;
+},
+)
+
+const { execute: getCountinents, data: continentOptions } = ContinentsApi.index({}, {
+  immediate: false,
+  lazy: true,
+  server: false
+})
+
+const { execute: getCountries, data: countiresOptions } = CountriesApi.index({
+  filter: {
+    continent_id: form.value.address.continentId
+  }
+}, {
+  immediate: false,
+  lazy: true,
+  server: false
+
+})
+
+
+const { execute: getStates, data: stateOptions } = StateApi.index({
+  filter: {
+    country_id: form.value.address.countryId
+  }
+}, {
+  immediate: false,
+  lazy: true,
+  server: false
+
+})
+
+const { execute: getCities, data: cityOptions } = CityApi.index({
+  filter: {
+    state_id: form.value.address.stateId
+  }
+}, {
+  immediate: false,
+  lazy: true,
+  server: false
+})
+
+const { execute: getStreets, data: streetOptions } = StreetApi.index({
+  filter: {
+    city_id: form.value.address.cityId
+  }
+}, {
+  immediate: false,
+  lazy: true,
+  server: false
+})
+
+watch(user, () => {
+  form.value.user.firstName = (user?.value as any)?.first_name || '';
+  form.value.user.lastName = (user?.value as any)?.last_name || '';
+  form.value.user.email = (user?.value as any)?.email || '';
+  form.value.user.roleId = (user?.value as any)?.role_id || '';
+  form.value.user.isActive = (user?.value as any)?.is_active == 1 ? true : false;
+  form.value.address.address = (user?.value as any)?.address?.address || '';
+  form.value.address.continentId = (user?.value as any)?.address?.continent_id;
+  form.value.address.countryId = (user?.value as any)?.address?.country_id;
+  form.value.address.stateId = (user?.value as any)?.address?.state_id;
+  form.value.address.cityId = (user?.value as any)?.address?.city_id;
+  form.value.address.streetId = (user?.value as any)?.address?.street_id;
+  form.value.address.zip = (user?.value as any)?.address?.zip || '';
+  form.value.social.website = (user?.value as any)?.social?.website || '';
+  form.value.social.facebook = (user?.value as any)?.social?.facebook;
+  form.value.social.instagram = (user?.value as any)?.social?.instagram;
+  form.value.social.linkedin = (user?.value as any)?.social?.linkedin;
+  form.value.social.pintrest = (user?.value as any)?.social?.pintrest;
+  form.value.social.telegram = (user?.value as any)?.social?.telegram;
+  form.value.social.twitter = (user?.value as any)?.social?.twitter;
+  form.value.social.vk = (user?.value as any)?.social?.vk;
+  form.value.social.whatsapp = (user?.value as any)?.social?.whatsapp;
 
 
   getCountinents().then(async () => {
@@ -156,10 +161,11 @@ AdminUserApi.show(id as string, {
       })
     }
   })
+}, {
+  deep: true,
+  immediate: true
 })
 
-
-const { data: roles } = RoleApi.index()
 
 const { execute, loading, } = AdminUserApi.put({
 }, {
@@ -182,7 +188,7 @@ const submit = (e: SubmitEvent | Event) => {
     <p class="text-subtitle1">General Information</p>
     <div>
       <FormsProfileImageInput name="image" :url="user?.avatar
-        ? BaseUploadsUrl + user?.avatar?.url
+        ? $config.public.baseApi + user?.avatar?.url
         : '/images/upload-preview.png'
         " @image="(v: any) => {
     form.image = v

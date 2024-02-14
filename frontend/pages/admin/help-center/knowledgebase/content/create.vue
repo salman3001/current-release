@@ -60,7 +60,7 @@ const submit = async () => {
             rules.required('required'),
             async (v) =>
               (await rules.unique(
-                baseApiUrl + '/help-center/content/unique-field',
+                '/help-center/content/unique-field',
                 'title',
                 v
               )) || 'title Already Taken',
@@ -69,7 +69,7 @@ const submit = async () => {
             (v) => rules.slug(v) || 'Slug is not valid',
             async (v) =>
               (await rules.unique(
-                baseApiUrl + '/help-center/content/unique-field',
+                '/help-center/content/unique-field',
                 'slug',
                 v
               )) || 'Slug Already Taken',
@@ -85,7 +85,7 @@ const submit = async () => {
             class="col-12 col-sm-6 col-md-3" :rules="[
               async (v) =>
                 (await rules.unique(
-                  baseApiUrl + '/help-center/content/unique-field',
+                  '/help-center/content/unique-field',
                   'order',
                   v
                 )) || 'Order number not avaialabe. Choose another one',

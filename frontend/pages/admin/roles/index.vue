@@ -60,7 +60,7 @@ const pagination = ref({
 });
 
 
-const { onRequest, loading, rows } = onTableRequest(baseApiUrl + '/roles', pagination, {
+const { onRequest, loading, rows } = onTableRequest('/roles', pagination, {
   populate: {
     permissions: {
       fields: ['*'],
@@ -134,7 +134,7 @@ onMounted(() => {
                   </q-item>
                   <q-item clickable v-close-popup @click="
                     modal.togel('deleteRecord', {
-                      url: baseApiUrl + '/roles/' + props.row.id,
+                      url: '/roles/' + props.row.id,
                       tableRef,
                       title: 'Delete Role?',
                     })

@@ -39,4 +39,4 @@ class AdminUserApiService extends BaseApiClass {
   }
 }
 
-export const AdminUserApi = new AdminUserApiService("/admin-users", "User");
+export const AdminUserApi = new AdminUserApiService("/api/admin-users", "User");

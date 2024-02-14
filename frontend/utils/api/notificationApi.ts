@@ -75,6 +75,6 @@ class NotificationApiService extends BaseApiClass {
 }
 
 export const notifcationApi = new NotificationApiService(
-  "/notifications",
+  "/api/notifications",
   "Notification"
 );

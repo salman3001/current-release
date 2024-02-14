@@ -6,6 +6,7 @@ import { ofetch } from 'ofetch'
 const auth = authStore()
 const { user } = useAuth()
 const upload = ref('')
+const config = useRuntimeConfig()
 
 
 const logout = () => {
@@ -25,6 +26,7 @@ const logout = () => {
     socketToken.value = null
 
     globalThis.$fetch = ofetch.create({
+      baseURL: config.public.baseApi,
       headers: {
         authorization: '',
       },
@@ -40,7 +42,7 @@ onMounted(() => {
 <template>
   <q-btn round class="text-black" unelevated>
     <q-avatar size="36px">
-      <img :src="user && user?.avatar?.url ? baseApiUrl + user?.avatar?.url : '/images/sample-dp.png'">
+      <img :src="user && user?.avatar?.url ? $config.public.baseApi + user?.avatar?.url : '/images/sample-dp.png'">
     </q-avatar>
 
     <q-menu anchor="bottom left">

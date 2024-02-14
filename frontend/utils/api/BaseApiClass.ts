@@ -13,7 +13,7 @@ export class BaseApiClass {
 
   public index(query?: AdditionalParams, opt?: UseFetchOptions<any>) {
     const stringQuery = qs.stringify(query);
-    return useFetch(baseApiUrl + this.url + `?${stringQuery}`, {
+    return useFetch(this.url + `?${stringQuery}`, {
       ...opt,
     });
   }
@@ -24,7 +24,7 @@ export class BaseApiClass {
     opt?: UseFetchOptions<any>
   ) {
     const stringQuery = qs.stringify(query, { encode: false });
-    return useFetch(baseApiUrl + this.url + `/${id}?${stringQuery}`, {
+    return useFetch(this.url + `/${id}?${stringQuery}`, {
       ...opt,
     });
   }
@@ -37,7 +37,7 @@ export class BaseApiClass {
     const execute = async (data: any) => {
       try {
         loading.value = true;
-        const res = await $fetch(baseApiUrl + this.url, {
+        const res = await $fetch(this.url, {
           body: data,
           method: "post",
           ...(opt as any),
@@ -53,7 +53,7 @@ export class BaseApiClass {
         loading.value = false;
         cb?.onError && cb?.onError();
         Notify.create({
-          message: `Failed to create ${baseApiUrl + this.name}`,
+          message: `Failed to create ${this.name}`,
           color: "negative",
         });
       }
@@ -73,7 +73,7 @@ export class BaseApiClass {
     const execute = async (id: string, data: any) => {
       try {
         loading.value = true;
-        const res = await $fetch(baseApiUrl + this.url + `/${id}`, {
+        const res = await $fetch(this.url + `/${id}`, {
           body: data,
           method: "put",
           ...(opt as any),
@@ -109,7 +109,7 @@ export class BaseApiClass {
     const execute = async (id: string) => {
       try {
         loading.value = true;
-        const res = await $fetch(baseApiUrl + this.url + `/${id}`, {
+        const res = await $fetch(this.url + `/${id}`, {
           ...(opt as any),
         });
         loading.value = false;
@@ -143,7 +143,7 @@ export class BaseApiClass {
     const data = ref(null);
     try {
       loading.value = true;
-      const res = await $fetch(baseApiUrl + this.url + "/export", {
+      const res = await $fetch(this.url + "/export", {
         params: {
           ...query,
         },
@@ -174,7 +174,7 @@ export class BaseApiClass {
       const formdata = convertToFormData(data);
       try {
         loading.value = true;
-        const res = await $fetch(baseApiUrl + this.url + "/import", {
+        const res = await $fetch(this.url + "/import", {
           method: "post",
           body: formdata,
           ...(opt as any),

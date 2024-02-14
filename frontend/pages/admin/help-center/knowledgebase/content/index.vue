@@ -43,7 +43,7 @@ const pagination = ref({
 });
 
 
-const { onRequest, loading, rows } = onTableRequest(baseApiUrl + '/help-center/content', pagination, {
+const { onRequest, loading, rows } = onTableRequest('/api/help-center/content', pagination, {
   populate: {
     category: {
       fields: ['*'],
@@ -173,7 +173,7 @@ onMounted(() => {
                   </q-item>
                   <q-item clickable v-close-popup @click="
                     modal.togel('deleteRecord', {
-                      url: baseApiUrl + '/help-center/content/' + props.row.id,
+                      url: '/help-center/content/' + props.row.id,
                       tableRef,
                       title: 'Delete Content?',
                     })

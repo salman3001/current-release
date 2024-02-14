@@ -58,7 +58,7 @@ const pagination = ref({
   rowsNumber: 10,
 });
 
-const { onRequest, loading, rows } = onTableRequest(BlogApi, pagination, {
+const { onRequest, loading, rows } = onTableRequest('/api/blogs', pagination, {
   populate: {
     category: {
       fields: ['name', 'id'],

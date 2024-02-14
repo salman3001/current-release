@@ -30,7 +30,7 @@ const pagination = ref({
 });
 
 
-const { onRequest, loading, rows } = onTableRequest(baseApiUrl+'/help-center/support-ticket', pagination, {
+const { onRequest, loading, rows } = onTableRequest('/api/help-center/support-ticket', pagination, {
   populate: {
     user: {
       fields: ['first_name', 'last_name'],
@@ -149,7 +149,7 @@ onMounted(() => {
                     </q-item-section>
                   </q-item>
                   <q-item clickable v-close-popup @click="() => {
-                navigateTo(routes.admin.help_center.support_ticket_chat(props.row.id))
+                    navigateTo(routes.admin.help_center.support_ticket_chat(props.row.id))
                   }
                     ">
                     <q-item-section>
@@ -159,7 +159,7 @@ onMounted(() => {
                   </q-item>
                   <q-item clickable v-close-popup @click="
                     modal.togel('deleteRecord', {
-                      url: baseApiUrl+'/help-center/support-ticket/' + props.row.id,
+                      url: '/help-center/support-ticket/' + props.row.id,
                       tableRef,
                       title: 'Delete Support ticket?',
                     })

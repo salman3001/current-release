@@ -1,7 +1,12 @@
 <script lang="ts" setup>
 
 definePageMeta({
-  layout:'admin-layout'
+  layout: 'admin-layout'
+})
+
+const { data, execute } = await useFetch('/blogs', {
+  immediate: false,
+  server: false
 })
 
 </script>
@@ -11,6 +16,7 @@ definePageMeta({
     <p class="text-h6"><q-icon name="trending_up"></q-icon> Statistics</p>
     <div class="scroll hide-scrollbar">
       <div class="scrollbar-hide" style="min-width: 450px;max-width: 900px;">
+        <button @click="execute()">clic</button>
         <StatisticsChart />
       </div>
     </div>

@@ -9,7 +9,7 @@ const props = defineProps<{
 }>()
 
 const resolve = ({ data }: any) => {
-  url.value = BaseUploadsUrl + data.value?.url
+  url.value = data.value?.url
   loading.value = false
 }
 
@@ -112,7 +112,7 @@ const creatExcel = () => {
 
 </script>
 <template>
-  <a v-if="url" :href="url" target="_blank"><q-btn color="green-8">Download Excel</q-btn></a>
+  <a v-if="url" :href="$config.public.baseApi + url" target="_blank"><q-btn color="green-8">Download Excel</q-btn></a>
   <q-btn color="primary" v-else-if="loading" :disable="true">
     <q-circular-progress indeterminate size="20px" class="q-px-10" :thickness="1" color="grey-8" track-color="orange-2"
       style="min-width: 8rem" />
