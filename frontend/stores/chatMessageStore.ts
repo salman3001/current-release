@@ -41,7 +41,7 @@ const chatMessageStore = defineStore("chatMessageStore", () => {
       const user = useCookie("user");
       const token = useCookie("token") as any;
 
-      socket.value = io(process.env.UPLOAD + "/ticket_chat/", {
+      socket.value = io(BaseUploadsUrl + "/ticket_chat/", {
         transports: ["websocket"],
         auth: {
           userId: user?.id || "",

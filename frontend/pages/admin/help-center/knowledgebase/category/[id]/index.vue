@@ -1,21 +1,20 @@
 <script setup lang="ts">
-import { useRoute, useRouter } from 'vue-router';
-import { KnowledgebaseCategoryApi } from '../../../../utils/BaseApiService';
-import { ref } from 'vue';
+import { KnowledgebaseCategoryApi } from '@/utils/BaseApiService';
 
-const router = useRouter();
+
+definePageMeta({
+  layout:'admin-layout'
+})
+
 const route = useRoute();
 
-const category = ref<null | Record<string, any>>(null);
-KnowledgebaseCategoryApi.show(route.params.id as string, {
+const {data:category}=KnowledgebaseCategoryApi.show(route.params.id as string, {
   populate: {
     language: {
       fields: ['name'],
     },
   },
-}).then(({ data }) => {
-  category.value = data.value;
-});
+})
 </script>
 
 <template>
@@ -27,7 +26,8 @@ KnowledgebaseCategoryApi.show(route.params.id as string, {
         style="cursor: pointer"
         @click="
           () => {
-            router.push({ name: 'admin.knowlegebase.category.index' });
+            navigateTo(routes.admin.knowlegdebase.category)
+
           }
         "
       />

@@ -2,7 +2,6 @@
 import type { QTableProps } from 'quasar';
 import type { AdditionalParams } from '@/types/QueryParamsTypes';
 import { onMounted, reactive, ref } from 'vue';
-import { useRouter } from 'vue-router';
 import {
   KnowledgebaseCategoryApi,
   LanguageApi,

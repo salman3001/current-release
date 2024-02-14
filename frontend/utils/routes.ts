@@ -16,7 +16,20 @@ export default {
         `/admin/help-center/knowledgebase/content/${id}`,
       content_edit: (id: string) =>
         `/admin/help-center/knowledgebase/content/${id}/edit`,
+      category:"/admin/help-center/knowledgebase/category",
+      category_create: "/admin/help-center/knowledgebase/category/create",
+      category_show: (id: string) =>
+        `/admin/help-center/knowledgebase/category/${id}`,
+      category_edit: (id: string) =>
+        `/admin/help-center/knowledgebase/category/${id}/edit`
     },
+    help_center:{
+      contact_message:"/admin/help-center/contact-message",
+      support_ticket:"/admin/help-center/support-ticket",
+      support_ticket_create: "/admin/help-center/support-ticket/create",
+      support_ticket_chat: (id: string) =>
+        `/admin/help-center/support-ticket/${id}/chat`,
+    }
   },
   auth: {
     admin_login: "/auth/admin/login",

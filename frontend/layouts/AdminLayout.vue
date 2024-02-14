@@ -65,32 +65,26 @@ const auth = authStore()
                           <NuxtLink :to="routes.admin.knowlegdebase.content" class="text-black" style="text-decoration: none">Content</NuxtLink>
                         </q-item-section>
                       </q-item>
-                      <!-- <q-item clickable v-close-popup>
+                      <q-item clickable v-close-popup>
                         <q-item-section>
-                          <NuxtLink :to="{
-                            name: 'admin.knowlegebase.category.index',
-                          }" class="text-black" style="text-decoration: none">Categories</NuxtLink>
+                          <NuxtLink :to="routes.admin.knowlegdebase.category" class="text-black" style="text-decoration: none">Categories</NuxtLink>
                         </q-item-section>
-                      </q-item> -->
+                      </q-item>
                     </q-list>
                   </q-menu>
                 </q-btn>
               </q-item-section>
             </q-item>
-            <!-- <q-item clickable v-close-popup v-if="hasPermission(permissions.MANAGE_TICKETS)">
+            <q-item clickable v-close-popup v-if="hasPermission(permissions.MANAGE_TICKETS)">
               <q-item-section>
-                <NuxtLink :to="{
-                  name: 'admin.supportTicket.index',
-                }" class="text-black" style="text-decoration: none">Support ticket</NuxtLink>
+                <NuxtLink :to="routes.admin.help_center.support_ticket" class="text-black" style="text-decoration: none">Support ticket</NuxtLink>
               </q-item-section>
             </q-item>
             <q-item clickable v-close-popup v-if="hasPermission(permissions.MANAGE_CONTACT_MESSAGES)">
               <q-item-section>
-                <NuxtLink :to="{
-                  name: 'admin.contactMessage.index',
-                }" class="text-black" style="text-decoration: none">Contact Messages</NuxtLink>
+                <NuxtLink :to="routes.admin.help_center.contact_message" class="text-black" style="text-decoration: none">Contact Messages</NuxtLink>
               </q-item-section>
-            </q-item> -->
+            </q-item>
           </NavMenu>
         <!--    <NavMenu title="Blogs" v-if="hasPermission(permissions.MANAGE_BLOGS)">
             <q-item clickable v-close-popup>
