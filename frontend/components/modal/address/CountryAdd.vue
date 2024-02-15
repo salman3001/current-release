@@ -20,7 +20,7 @@ onMounted(() => {
   });
 });
 
-const { execute, pending: loading } = CountriesApi.post(form.value);
+const { execute, loading } = CountriesApi.post();
 </script>
 
 <template>
@@ -32,7 +32,7 @@ const { execute, pending: loading } = CountriesApi.post(form.value);
 
     <q-card-section class="column q-px-md-sm">
       <q-form @submit="async () => {
-        await execute();
+        await execute(form);
         modal.show = !modal.show;
         modal.meta.tableRef.setPagination({}, true);
       }
@@ -43,8 +43,8 @@ const { execute, pending: loading } = CountriesApi.post(form.value);
             label: c?.name,
             value: c?.id,
           })),
-        ]" :rules="[$rules.required('required')]" label="Continent" class="col-auto" style="min-width: 8rem" />
-        <q-input outlined v-model="form.name" label="Name" :rules="[$rules.required('required')]" />
+        ]" :rules="[rules.required('required')]" label="Continent" class="col-auto" style="min-width: 8rem" />
+        <q-input outlined v-model="form.name" label="Name" :rules="[rules.required('required')]" />
         <q-toggle v-model="form.isActive" label="Activate" class="col-12 col-sm-6 col-md-3" />
         <div class="row q-gutter-sm justify-end q-pt-lg">
           <q-btn flat style="background-color: #f2f0dc; min-width: 6rem" @click="modal.show = !modal.show">No</q-btn>

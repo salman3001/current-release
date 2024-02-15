@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { ref } from 'vue';
 
 const modal = modalStore();
 const address = addressStore();
@@ -12,11 +12,9 @@ const form = ref({
   stateId: '',
 });
 
-onMounted(() => {
-  address.getCountinents();
-});
+await address.getCountinents();
 
-const { execute,pending } = CityApi.post(form.value);
+const { execute, loading } = CityApi.post();
 </script>
 
 <template>
@@ -28,7 +26,7 @@ const { execute,pending } = CityApi.post(form.value);
 
     <q-card-section class="column q-px-md-sm">
       <q-form @submit="async () => {
-        await execute();
+        await execute(form);
         modal.show = !modal.show;
         modal.meta.tableRef.setPagination({}, true);
       }
@@ -52,11 +50,11 @@ const { execute,pending } = CityApi.post(form.value);
         <q-toggle v-model="form.isActive" label="Activate" class="col-12 col-sm-6 col-md-3" />
         <div class="row q-gutter-sm justify-end q-pt-lg">
           <q-btn flat style="background-color: #f2f0dc; min-width: 6rem" @click="modal.show = !modal.show">No</q-btn>
-          <q-btn color="primary" v-if="pending">
+          <q-btn color="primary" v-if="loading">
             <q-circular-progress indeterminate size="20px" class="q-px-10" :thickness="1" color="grey-8"
               track-color="orange-2" />
           </q-btn>
-          <q-btn color="primary" type="submit" :disable="pending" v-else style="min-width: 6rem">Yes</q-btn>
+          <q-btn color="primary" type="submit" :disable="loading" v-else style="min-width: 6rem">Yes</q-btn>
         </div>
       </q-form>
     </q-card-section>

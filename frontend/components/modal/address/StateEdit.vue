@@ -17,7 +17,7 @@ StateApi.show(modal.meta?.id).then(({ data }) => {
   form.value.isActive = (data.value as any)?.is_active == 1 ? true : false;
 });
 
-const { execute, pending: loading } = StateApi.put(modal.meta?.id, form.value);
+const { execute, loading } = StateApi.put(modal.meta?.id);
 </script>
 
 <template>
@@ -34,7 +34,7 @@ const { execute, pending: loading } = StateApi.put(modal.meta?.id, form.value);
         modal.meta.tableRef.setPagination({}, true);
       }
         ">
-        <q-input outlined v-model="form.name" label="Name" :rules="[$rules.required('required')]" />
+        <q-input outlined v-model="form.name" label="Name" :rules="[rules.required('required')]" />
         <q-toggle v-model="form.isActive" label="Activate" class="col-12 col-sm-6 col-md-3" />
         <div class="row q-gutter-sm justify-end q-pt-lg">
           <q-btn flat style="background-color: #f2f0dc; min-width: 6rem" @click="modal.show = !modal.show">No</q-btn>

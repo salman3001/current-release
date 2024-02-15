@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import modalStore from '../../../stores/modalStore';
 import { ref } from 'vue';
-import { CityApi } from '../../../utils/BaseApiService';
+import { CityApi } from '@/utils/BaseApiService';
 
 const modal = modalStore();
 
@@ -10,13 +9,16 @@ const form = ref({
   isActive: false,
 });
 
-const city = ref<null | Record<string, any>>(null);
+const { data: city } = await CityApi.show(modal.meta?.id)
 
-CityApi.show(modal.meta?.id).then(({ data }) => {
-  city.value = data.value;
-  form.value.name = (data.value as any)?.name;
-  form.value.isActive = (data.value as any)?.is_active == 1 ? true : false;
-});
+watch(city, () => {
+  form.value.name = (city.value as any)?.name;
+  form.value.isActive = (city.value as any)?.is_active == 1 ? true : false;
+
+}, {
+  deep: true,
+  immediate: true
+})
 
 const { execute, loading } = CityApi.put();
 </script>
@@ -35,7 +37,7 @@ const { execute, loading } = CityApi.put();
         modal.meta.tableRef.setPagination({}, true);
       }
         ">
-        <q-input outlined v-model="form.name" label="Name" :rules="[$rules.required('required')]" />
+        <q-input outlined v-model="form.name" label="Name" :rules="[rules.required('required')]" />
         <q-toggle v-model="form.isActive" label="Activate" class="col-12 col-sm-6 col-md-3" />
         <div class="row q-gutter-sm justify-end q-pt-lg">
           <q-btn flat style="background-color: #f2f0dc; min-width: 6rem" @click="modal.show = !modal.show">No</q-btn>

@@ -1,21 +1,14 @@
 <script setup lang="ts">
-import { QTableProps } from 'quasar';
-import SearchInput from 'src/components/forms/SearchInput.vue';
-import { useGetTableData } from 'src/composables/useGetTableData';
-import { AdditionalParams } from 'src/type';
-import { exportCSV } from 'src/utils/exportCSV';
-import { computed, onMounted, reactive, ref } from 'vue';
-import modalStore from 'src/stores/modalStore';
-import { useRouter } from 'vue-router';
-import { LanguageApi, blogCategoryApi } from 'src/utils/BaseApiService';
-import ImportExcel from 'src/components/ImportExcel.vue';
-import ExportExcel from 'src/components/ExportExcel.vue';
-import { onTableRequest } from 'src/utils/onTableRequest';
+import type { QTableProps } from 'quasar';
+import type { AdditionalParams } from '@/types/QueryParamsTypes';
+import { onMounted, reactive, ref } from 'vue';
+import { LanguageApi, blogCategoryApi } from '@/utils/BaseApiService';
 
-const modal = modalStore();
-const router = useRouter();
-const uploads = ref('');
+definePageMeta({
+  layout: 'admin-layout'
+})
 
+const modal = modalStore()
 const filter = reactive<AdditionalParams>({
   populate: {
     language: {},
@@ -29,10 +22,7 @@ const filter = reactive<AdditionalParams>({
   },
 });
 
-const languages = ref<null | Record<string, any>>(null);
-LanguageApi.index().then(({ data }) => {
-  languages.value = data.value;
-});
+const { data: languages } = await LanguageApi.index()
 
 const tableRef = ref();
 
@@ -44,7 +34,7 @@ const pagination = ref({
   rowsNumber: 10,
 });
 
-const { onRequest, loading, rows } = onTableRequest(blogCategoryApi, pagination, {
+const { onRequest, loading, rows } = onTableRequest('/api/blog-categories', pagination, {
   populate: {
     language: {
       fields: ['name', 'id'],
@@ -85,9 +75,7 @@ const colomns: QTableProps['columns'] = [
 ];
 
 onMounted(() => {
-  uploads.value = process.env.UPLOAD as string;
   tableRef.value && tableRef.value.requestServerInteraction();
-
 });
 </script>
 
@@ -95,7 +83,7 @@ onMounted(() => {
   <q-page class="row q-pa-lg">
     <div class="colomn q-gutter-y-lg" style="width: 100%">
       <div class="row justify-between q-gutter-y-sm">
-        <SearchInput @search="(val) => {
+        <FormsSearchInput @search="(val) => {
           //@ts-ignore
           filter.search.name = val;
           //@ts-ignore
@@ -115,7 +103,7 @@ onMounted(() => {
           <ImportExcel type="blogs-category" />
           <ExportExcel type="blogs-category" />
           <q-btn color="primary" @click="() => {
-            router.push({ name: 'admin.blogs.category.create' });
+            navigateTo(routes.admin.blogs.category_create)
           }
             ">+ Add category</q-btn>
         </div>
@@ -137,10 +125,8 @@ onMounted(() => {
               <q-btn-dropdown size="sm" color="primary" label="Options">
                 <q-list dense>
                   <q-item clickable v-close-popup @click="() => {
-                    router.push({
-                      name: 'admin.blogs.category.show',
-                      params: { id: props.row.id },
-                    });
+                    navigateTo(routes.admin.blogs.category_show(props.row.id))
+
                   }
                     ">
                     <q-item-section>
@@ -150,10 +136,8 @@ onMounted(() => {
                     </q-item-section>
                   </q-item>
                   <q-item clickable v-close-popup @click="() => {
-                    router.push({
-                      name: 'admin.blogs.category.edit',
-                      params: { id: props.row.id },
-                    });
+                    navigateTo(routes.admin.blogs.category_edit(props.row.id))
+
                   }
                     ">
                     <q-item-section>
@@ -162,7 +146,7 @@ onMounted(() => {
                   </q-item>
                   <q-item clickable v-close-popup @click="
                     modal.togel('deleteRecord', {
-                      url: '/blog-categories/' + props.row.id,
+                      url: '/api/blog-categories/' + props.row.id,
                       tableRef,
                       title: 'Delete Category?',
                     })

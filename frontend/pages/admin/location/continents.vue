@@ -1,13 +1,11 @@
 <script setup lang="ts">
-import { QTableProps } from 'quasar';
-import SearchInput from 'src/components/forms/SearchInput.vue';
-import { AdditionalParams } from 'src/type';
+import type { QTableProps } from 'quasar';
+import type { AdditionalParams } from '@/types/QueryParamsTypes';
 import { onMounted, reactive, ref } from 'vue';
-import modalStore from 'src/stores/modalStore';
-import ImportExcel from 'src/components/ImportExcel.vue';
-import ExportExcel from 'src/components/ExportExcel.vue';
-import { ContinentsApi } from 'src/utils/BaseApiService';
-import { onTableRequest } from 'src/utils/onTableRequest';
+
+definePageMeta({
+  layout: 'admin-layout'
+})
 
 const modal = modalStore();
 
@@ -31,7 +29,7 @@ const pagination = ref({
 });
 
 
-const { onRequest, loading, rows } = onTableRequest(ContinentsApi, pagination)
+const { onRequest, loading, rows } = onTableRequest('/api/address/continents', pagination)
 
 
 const colomns: QTableProps['columns'] = [
@@ -66,7 +64,7 @@ onMounted(() => {
   <q-page class="row q-pa-lg">
     <div class="colomn q-gutter-y-lg" style="width: 100%">
       <div class="row justify-between q-gutter-y-sm">
-        <SearchInput @search="(val) => {
+        <FormsSearchInput @search="(val) => {
           //@ts-ignore
           filter.search.name = val;
           //@ts-ignore
@@ -114,7 +112,7 @@ onMounted(() => {
                   </q-item>
                   <q-item clickable v-close-popup @click="
                     modal.togel('deleteRecord', {
-                      url: '/address/continents/' + props.row.id,
+                      url: '/api/address/continents/' + props.row.id,
                       tableRef,
                       title: 'Delete Continent?',
                     })

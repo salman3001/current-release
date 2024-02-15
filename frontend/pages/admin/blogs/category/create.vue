@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { useRoute, useRouter } from 'vue-router';
-import { rules } from '../../../utils/validationRules';
-import { LanguageApi, blogCategoryApi } from '../../../utils/BaseApiService';
+import { LanguageApi, blogCategoryApi } from '@/utils/BaseApiService';
 import { ref } from 'vue';
 
-const router = useRouter();
-const route = useRoute();
+definePageMeta({
+  layout: 'admin-layout'
+})
+
 
 const form = ref({
   name: '',
@@ -18,34 +18,18 @@ const form = ref({
   metaDesc: '',
 });
 
-const languages = ref<null | any[]>(null);
-LanguageApi.index({
+const { data: languages } = await LanguageApi.index({
   fields: ['name', 'id'],
-}).then(({ data }) => {
-  languages.value = data.value;
-});
+})
 
-const category = ref<any | Record<string, any>>(null);
-blogCategoryApi.show(route.params.id as string).then(({ data }) => {
-  category.value = data.value;
-  form.value.name = (data.value as any)?.name;
-  form.value.slug = (data.value as any)?.slug;
-  form.value.languageId = (data.value as any)?.language_id;
-  form.value.order = (data.value as any)?.order;
-  form.value.status = (data.value as any)?.status == 1 ? true : false;
-  form.value.metaTitle = (data.value as any)?.meta_title;
-  form.value.metaKeywords = (data.value as any)?.meta_keywords;
-  form.value.metaDesc = (data.value as any)?.meta_desc;
-});
+const { execute: createCategory, loading: posting } = blogCategoryApi.post(
 
-const { execute: updateCategory, loading: posting } = blogCategoryApi.put(
 );
 
 const submit = async () => {
-  updateCategory(route.params.id as string,
-    form.value).then(() => {
-      router.push({ name: 'admin.blogs.category.index' });
-    });
+  createCategory(form.value).then(() => {
+    navigateTo(routes.admin.blogs.category)
+  });
 };
 </script>
 
@@ -53,42 +37,39 @@ const submit = async () => {
   <div class="q-pa-lg">
     <div class="row items-center q-gutter-sm q-mb-xl">
       <q-icon name="keyboard_backspace" size="30px" style="cursor: pointer" @click="() => {
-          router.push({ name: 'admin.blogs.category.index' });
-        }
+        navigateTo(routes.admin.blogs.category)
+      }
         " />
-      <span class="text-h6"> Edit Blog Category</span>
+      <span class="text-h6"> Add Blog Category</span>
     </div>
     <q-form class="column q-gutter-y-xl" @submit="submit">
       <div class="q-gutter-y-md">
         <div class="row q-col-gutter-md">
           <q-input :debounce="500" outlined v-model="form.name" label="Name" class="col-12 col-sm-6 col-md-3" :rules="[
-            $rules.required('required'),
+            rules.required('required'),
             async (v) =>
               (await rules.unique(
-                'blog-categories/unique-field',
+                '/api/blog-categories/unique-field',
                 'name',
-                v,
-                category?.name
+                v
               )) || 'Name Already Taken',
           ]" />
           <q-input outlined :debounce="500" v-model="form.slug" label="Slug" class="col-12 col-sm-6 col-md-3" :rules="[
             (v) => rules.slug(v) || 'Slug is not valid',
             async (v) =>
               (await rules.unique(
-                'blog-categories/unique-field',
+                '/api/blog-categories/unique-field',
                 'slug',
-                v,
-                category?.slug
+                v
               )) || 'Slug Already Taken',
           ]" hint="It will be auto created if you don't add it." />
           <q-input type="number" :debounce="500" outlined v-model="form.order" label="Order"
             class="col-12 col-sm-6 col-md-3" :rules="[
               async (v) =>
                 (await rules.unique(
-                  'blog-categories/unique-field',
+                  '/api/blog-categories/unique-field',
                   'order',
-                  v,
-                  category?.order
+                  v
                 )) || 'Order No. Not Availabale',
             ]" />
           <q-select v-if="languages" outlined debounce="500" v-model="form.languageId" emit-value map-options
@@ -108,8 +89,8 @@ const submit = async () => {
       </div>
       <div class="row justify-end q-gutter-md">
         <q-btn style="background-color: #e6e4d9; color: #aeaca1; min-width: 8rem" @click="() => {
-            router.push({ name: 'admin.blogs.category.index' });
-          }
+          navigateTo(routes.admin.blogs.category)
+        }
           ">Cancle</q-btn>
         <q-btn color="primary" v-if="posting">
           <q-circular-progress indeterminate size="20px" class="q-px-10" :thickness="1" color="grey-8"

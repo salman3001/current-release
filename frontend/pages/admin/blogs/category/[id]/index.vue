@@ -1,36 +1,35 @@
 <script setup lang="ts">
 import { useRoute, useRouter } from 'vue-router';
-import { BlogApi } from '../../../utils/BaseApiService';
+import { blogCategoryApi } from '@/utils/BaseApiService';
 import { ref } from 'vue';
 
-const router = useRouter();
+definePageMeta({
+  layout: 'admin-layout'
+})
+
 const route = useRoute();
 
-const blog = ref<null | Record<string, any>>(null);
-BlogApi.show(route.params.id as string, {
-  populate: {
-    language: {
-      fields: ['name'],
+const { data: category } = await blogCategoryApi
+  .show(route.params.id as string, {
+    populate: {
+      language: {
+        fields: ['name'],
+      },
     },
-    category: {
-      fields: ['name'],
-    },
-  },
-}).then(({ data }) => {
-  blog.value = data.value;
-});
+  })
 </script>
 
 <template>
   <div class="q-pa-lg">
     <div class="row items-center q-gutter-sm q-mb-xl">
       <q-icon name="keyboard_backspace" size="30px" style="cursor: pointer" @click="() => {
-        router.push({ name: 'admin.blogs.index' });
+        navigateTo(routes.admin.blogs.category)
+
       }
         " />
-      <span class="text-h6"> View Blog </span>
+      <span class="text-h6"> View Blog Category </span>
     </div>
-    <div v-if="blog" class="q-gutter-y-lg">
+    <div v-if="category" class="q-gutter-y-lg">
       <div>
         <p class="text-grey-8 text-h6" style="font-weight: 400">
           General Information
@@ -45,30 +44,22 @@ BlogApi.show(route.params.id as string, {
                 <th style="text-align: start; padding: 0.5rem; min-width: 10rem">
                   Slug
                 </th>
-                <th style="text-align: start; padding: 0.5rem">Category</th>
+                <th style="text-align: start; padding: 0.5rem">Order</th>
                 <th style="text-align: start; padding: 0.5rem">Language</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td style="padding: 0.5rem">{{ blog?.title }}</td>
-                <td style="padding: 0.5rem">{{ blog?.slug }}</td>
+                <td style="padding: 0.5rem">{{ category?.name }}</td>
+                <td style="padding: 0.5rem">{{ category?.slug }}</td>
+
+                <td style="padding: 0.5rem">{{ category?.order }}</td>
                 <td style="padding: 0.5rem">
-                  {{ blog?.category ? blog?.category[0]?.name : '' }}
+                  {{ category?.language?.name }}
                 </td>
-                <td style="padding: 0.5rem">
-                  {{ blog?.language?.name }}
-                </td>
-                <td style="padding: 0.5rem">{{ blog?.order }}</td>
               </tr>
             </tbody>
           </table>
-        </div>
-      </div>
-      <div>
-        <p class="text-grey-8 text-h6" style="font-weight: 400">Content</p>
-        <div class="row q-col-gutter-md full-width">
-          <p v-html="blog?.long_desc" class="full-width"></p>
         </div>
       </div>
       <div>
@@ -78,15 +69,15 @@ BlogApi.show(route.params.id as string, {
         <div class="row q-col-gutter-md">
           <div class="col-12 col-sm-6">
             <p class="text-grey-8" style="font-weight: 500">Meta Title</p>
-            {{ blog?.meta_title }}
+            {{ category?.meta_title }}
           </div>
           <div class="col-12 col-sm-6">
             <p class="text-grey-8" style="font-weight: 500">Meta Keywords</p>
-            {{ blog?.meta_keywords }}
+            {{ category?.meta_keywords }}
           </div>
           <div class="col-12">
             <p class="text-grey-8" style="font-weight: 500">Meta Description</p>
-            {{ blog?.meta_desc }}
+            {{ category?.meta_desc }}
           </div>
         </div>
       </div>

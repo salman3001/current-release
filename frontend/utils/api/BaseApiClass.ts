@@ -1,6 +1,6 @@
 import { Notify } from "quasar";
 import type { AdditionalParams } from "@/types/QueryParamsTypes";
-import type { AsyncDataOptions, UseFetchOptions } from "#app";
+import type { UseFetchOptions } from "#app";
 import qs from "qs";
 
 export class BaseApiClass {

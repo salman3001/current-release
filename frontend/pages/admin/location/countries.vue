@@ -1,17 +1,15 @@
 <script setup lang="ts">
-import { QTableProps } from 'quasar';
-import SearchInput from 'src/components/forms/SearchInput.vue';
-import { AdditionalParams } from 'src/type';
+import type { QTableProps } from 'quasar';
+import type { AdditionalParams } from '@/types/QueryParamsTypes';
 import { onMounted, reactive, ref } from 'vue';
-import modalStore from 'src/stores/modalStore';
-import useAddressStore from 'src/stores/addressStore';
-import ImportExcel from 'src/components/ImportExcel.vue';
-import ExportExcel from 'src/components/ExportExcel.vue';
-import { StateApi } from 'src/utils/BaseApiService';
-import { onTableRequest } from 'src/utils/onTableRequest';
+import { ContinentsApi } from '@/utils/BaseApiService';
+
+definePageMeta({
+  layout: 'admin-layout'
+})
+
 
 const modal = modalStore();
-const address = useAddressStore();
 
 const filter = reactive<AdditionalParams>({
   search: {
@@ -21,18 +19,16 @@ const filter = reactive<AdditionalParams>({
     is_active: null,
   },
   relationFilter: {
-    country: {
+    continent: {
       field: 'id',
       value: '',
-      filter: {
-        continent: {
-          field: 'id',
-          value: '',
-        },
-      },
     },
   },
 });
+
+const { data: continents } = await ContinentsApi.index({
+  fields: ['name', 'id'],
+})
 
 const tableRef = ref();
 
@@ -45,15 +41,10 @@ const pagination = ref({
 });
 
 
-const { onRequest, loading, rows } = onTableRequest(StateApi, pagination, {
+const { onRequest, loading, rows } = onTableRequest('/api/address/countries', pagination, {
   populate: {
-    country: {
-      fields: ['name', 'id', 'continent_id'],
-      populate: {
-        continent: {
-          fields: ['name', 'id'],
-        },
-      },
+    continent: {
+      fields: ['name', 'id'],
     },
   },
 })
@@ -70,15 +61,8 @@ const colomns: QTableProps['columns'] = [
   },
   {
     name: 'continent',
-    field: (row: any) => row?.country?.continent?.name,
+    field: (row: any) => row?.continent?.name,
     label: 'Continent',
-    align: 'left',
-    style: 'height:auto;',
-  },
-  {
-    name: 'country',
-    field: (row: any) => row?.country?.name,
-    label: 'Country',
     align: 'left',
     style: 'height:auto;',
   },
@@ -97,7 +81,6 @@ const colomns: QTableProps['columns'] = [
 ];
 
 onMounted(() => {
-  address.getCountinents();
   tableRef.value && tableRef.value.requestServerInteraction();
 });
 </script>
@@ -106,38 +89,36 @@ onMounted(() => {
   <q-page class="row q-pa-lg">
     <div class="colomn q-gutter-y-lg" style="width: 100%">
       <div class="row justify-between q-gutter-y-sm">
-        <SearchInput @search="(val) => {
+        <FormsSearchInput @search="(val) => {
           //@ts-ignore
           filter.search.name = val;
           //@ts-ignore
         }
           " />
         <div class="row q-gutter-sm">
-          <q-select outlined dense options-dense emit-value map-options
-            v-model="filter.relationFilter!.country.filter!.continent.value"
-            :options="[{ label: 'All', value: null }, ...address.selectContinents]" @update:model-value="(value) => {
-              filter.relationFilter!.country.value = null;
-              address.getCountries(value);
-            }
-              " label="Continent" class="col-auto" style="min-width: 8rem" />
-          <q-select outlined dense options-dense emit-value map-options v-model="filter.relationFilter!.country.value"
-            :options="[{ label: 'All', value: '' }, ...address.selectContries]" label="Country" class="col-auto"
-            style="min-width: 8rem" />
+          <q-select v-if="continents" outlined dense options-dense emit-value map-options
+            v-model="filter.relationFilter!.continent.value" :options="[
+              { label: 'All', value: null },
+              ...continents.map((c) => ({
+                label: c?.name,
+                value: c?.id,
+              })),
+            ]" label="Continent" class="col-auto" style="min-width: 8rem" />
           <q-select outlined dense options-dense emit-value map-options v-model="filter.filter!.is_active" :options="[
             { label: 'All', value: null },
             { label: 'Active', value: 1 },
             { label: 'Inactive', value: 0 },
           ]" label="Status" class="col-auto" style="min-width: 8rem" />
-          <ImportExcel type="state" />
-          <ExportExcel type="state" />
+          <ImportExcel type="country" />
+          <ExportExcel type="country" />
           <q-btn color="primary" @click="() => {
-            modal.togel('addState', { tableRef });
+            modal.togel('addCountry', { tableRef });
           }
-            ">+ Add State</q-btn>
+            ">+ Add Country</q-btn>
         </div>
       </div>
 
-      <q-table ref="tableRef" flat bordered title="States" :loading="loading" :rows="rows" :columns="colomns"
+      <q-table ref="tableRef" flat bordered title="Countries" :loading="loading" :rows="rows" :columns="colomns"
         class="zebra-table" v-model:pagination="pagination" :filter="filter" @request="onRequest" row-key="id">
         <template v-slot:body-cell-is_active="props">
           <q-td :props="props">
@@ -153,7 +134,7 @@ onMounted(() => {
               <q-btn-dropdown size="sm" color="primary" label="Options">
                 <q-list dense>
                   <q-item clickable v-close-popup @click="
-                    modal.togel('editState', {
+                    modal.togel('editCountry', {
                       id: props.row?.id,
                       tableRef,
                     })
@@ -164,9 +145,9 @@ onMounted(() => {
                   </q-item>
                   <q-item clickable v-close-popup @click="
                     modal.togel('deleteRecord', {
-                      url: '/address/states/' + props.row.id,
+                      url: '/api/address/countries/' + props.row.id,
                       tableRef,
-                      title: 'Delete State?',
+                      title: 'Delete Countriy?',
                     })
                     ">
                     <q-item-section>
