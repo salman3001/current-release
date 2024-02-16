@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import editUserStore from 'src/stores/editUserStore';
-import { CityApi, CountriesApi, StateApi } from 'src/utils/BaseApiService';
+import { CityApi, CountriesApi, StateApi } from '@/utils/BaseApiService';
 import { onMounted, ref, } from 'vue';
 
 const editUser = editUserStore()
@@ -35,14 +34,14 @@ onMounted(async () => {
 <template>
   <q-select outlined emit-value map-options v-model="editUser.workExperienceForm.workExperience[index].jobIndustryId"
     :options="editUser.jobIndustry" label="Job Industry" class="col-12 col-sm-6 col-md-3"
-    :rules="[$rules.required('required')]" />
+    :rules="[rules.required('required')]" />
   <q-input outlined v-model="editUser.workExperienceForm.workExperience[index].jobFunction" label="Job Functions"
     class="col-12 col-sm-6 col-md-3" />
   <q-input outlined v-model="editUser.workExperienceForm.workExperience[index].jobTitle" label="Job Title"
-    class="col-12 col-sm-6 col-md-3" :rules="[$rules.required('required')]" />
+    class="col-12 col-sm-6 col-md-3" :rules="[rules.required('required')]" />
   <q-select outlined emit-value map-options v-model="editUser.workExperienceForm.workExperience[index].jobDepartmentId"
     :options="editUser.jobDepartments" label="Job Department" class="col-12 col-sm-6 col-md-3"
-    :rules="[$rules.required('required')]" />
+    :rules="[rules.required('required')]" />
   <q-input outlined v-model="editUser.workExperienceForm.workExperience[index].companyName" label="Company Name"
     class="col-12 col-sm-6 col-md-3" />
   <q-input outlined v-model="editUser.workExperienceForm.workExperience[index].companySize" label="Company Size"

@@ -4,11 +4,6 @@ import {
   KnowledgebaseContentApi,
   LanguageApi,
 } from '@/utils/BaseApiService';
-import { ref } from 'vue';
-
-definePageMeta({
-  layout: 'admin-layout'
-})
 
 const id = useRoute().params.id
 
@@ -111,9 +106,7 @@ const submit = async () => {
                 )) || 'Order number not avaialabe. Choose another one',
             ]" />
           <div class="col-12"  style="min-height: 25rem; width: 100%;">
-            <ck-editor @input="(v) => {
-              form.content = v
-            }" :value="form.content" />
+            <ck-editor v-model="form.content" />
           </div>
         </div>
 

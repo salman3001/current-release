@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import createUserStore from 'src/stores/createUserStore';
-import { CityApi, CountriesApi, StateApi } from 'src/utils/BaseApiService';
+import { CityApi, CountriesApi, StateApi } from '@/utils/BaseApiService';
 import { onMounted, ref } from 'vue';
 
 const createUser = createUserStore()
@@ -64,12 +63,12 @@ onMounted(() => {
       </div>
 
       <q-select outlined emit-value map-options v-model="w.jobIndustryId" :options="createUser.jobIndustry"
-        label="Job Industry" class="col-12 col-sm-6 col-md-3" :rules="[$rules.required('required')]" />
+        label="Job Industry" class="col-12 col-sm-6 col-md-3" :rules="[rules.required('required')]" />
       <q-input outlined v-model="w.jobFunction" label="Job Functions" class="col-12 col-sm-6 col-md-3" />
       <q-input outlined v-model="w.jobTitle" label="Job Title" class="col-12 col-sm-6 col-md-3"
-        :rules="[$rules.required('required')]" />
+        :rules="[rules.required('required')]" />
       <q-select outlined emit-value map-options v-model="w.jobDepartmentId" :options="createUser.jobDepartments"
-        label="Job Department" class="col-12 col-sm-6 col-md-3" :rules="[$rules.required('required')]" />
+        label="Job Department" class="col-12 col-sm-6 col-md-3" :rules="[rules.required('required')]" />
       <q-input outlined v-model="w.companyName" label="Company Name" class="col-12 col-sm-6 col-md-3" />
       <q-input outlined v-model="w.companySize" label="Company Size" class="col-12 col-sm-6 col-md-3" />
       <q-select outlined emit-value map-options v-model="w.countryId" :options="countryOptions" @update:model-value="(value) => {

@@ -5,10 +5,6 @@ import {
 } from '@/utils/BaseApiService';
 import { ref } from 'vue';
 
-definePageMeta({
-  layout: 'admin-layout'
-})
-
 const form = ref({
   name: '',
   slug: '',

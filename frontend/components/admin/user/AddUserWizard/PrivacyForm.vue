@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import createUserStore from 'src/stores/createUserStore';
 
 const createUser = createUserStore()
 defineProps<{

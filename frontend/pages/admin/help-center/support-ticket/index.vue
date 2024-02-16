@@ -5,10 +5,6 @@ import { onMounted, reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { onTableRequest } from '@/utils/onTableRequest';
 
-definePageMeta({
-  layout: 'admin-layout'
-})
-
 const modal = modalStore();
 const { formatDate } = date
 const router = useRouter();

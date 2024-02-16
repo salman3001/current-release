@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import editUserStore from 'src/stores/editUserStore';
-import { userApi } from 'src/utils/BaseApiService';
-import { srollToView } from 'src/utils/scrollToView';
+import { userApi } from '@/utils/BaseApiService';
+
 
 const editUser = editUserStore()
 
@@ -25,7 +24,7 @@ const { execute, loading } = userApi.put();
           </div>
 
           <q-input outlined v-model="s.name" label="Skill Name" class="col-12 col-sm-6 col-md-3"
-            :rules="[$rules.required('required')]" />
+            :rules="[rules.required('required')]" />
           <q-input type="textarea" outlined v-model="s.desc" label="Description" class="col-12" />
 
         </div>

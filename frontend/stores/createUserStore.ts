@@ -8,7 +8,7 @@ import { ref } from "vue";
 // import { userApi } from "~/utils/api/UserApi";
 
 const createUserStore = defineStore("createUser", () => {
-  const form = ref({
+  const initialForm = {
     image: null,
     user: {
       firstName: "",
@@ -84,7 +84,8 @@ const createUserStore = defineStore("createUser", () => {
       onProductUpdate: true,
       onOffers: true,
     },
-  });
+  };
+  const form = ref(initialForm);
 
   const jobDepartments = ref([]);
   const jobIndustry = ref([]);
@@ -175,10 +176,15 @@ const createUserStore = defineStore("createUser", () => {
 
   // const { execute: submit, loading: posting } = userApi.post();
 
+  const resetForm = () => {
+    form.value = initialForm;
+  };
+
   return {
     form,
     // posting,
     // submit,
+    resetForm,
     addNewFavoriteLinks,
     addNewWorkExperience,
     addNewEducation,

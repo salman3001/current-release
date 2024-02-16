@@ -8,7 +8,7 @@ const loading = ref(false)
 const ban = async () => {
   try {
     loading.value = true
-    await $fetch('/users/ban/' + modal.meta.id, {
+    await $fetch('/api/users/ban/' + modal.meta.id, {
     })
     loading.value = false
     Notify.create({ message: 'User Banned!', color: 'positive' });

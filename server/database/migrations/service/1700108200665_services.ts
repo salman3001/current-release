@@ -24,6 +24,7 @@ export default class extends BaseSchema {
         .enum('location_type', Object.values(ServiceLocationType))
         .defaultTo('Physical')
         .notNullable()
+      table.integer('user_id').unsigned().references('id').inTable('users').onDelete('SET NULL')
       table
         .integer('service_category_id')
         .unsigned()

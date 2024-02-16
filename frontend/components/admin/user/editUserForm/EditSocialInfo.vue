@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import editUserStore from 'src/stores/editUserStore';
-import { userApi } from 'src/utils/BaseApiService';
-import { srollToView } from 'src/utils/scrollToView';
+import { userApi } from '@/utils/BaseApiService';
+
 
 const editUser = editUserStore()
 

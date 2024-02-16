@@ -1,8 +1,5 @@
 <script setup lang="ts">
-import { srollToView } from 'src/utils/scrollToView';
-import ExperienceForm from 'src/components/admin/user/editUserForm/ExperienceForm.vue';
-import editUserStore from 'src/stores/editUserStore';
-import { userApi } from 'src/utils/BaseApiService';
+import { userApi } from '@/utils/BaseApiService';
 
 
 const editUser = editUserStore()
@@ -25,7 +22,7 @@ const { execute, loading } = userApi.put();
               </q-btn>
             </div>
           </div>
-          <ExperienceForm :index="i" />
+          <AdminUserEditUserFormExperienceForm :index="i" />
         </div>
         <div class="row justify-end">
           <q-btn color="primary" style="max-width: 14rem" @click="editUser.addNewWorkExperience">+ Add

@@ -1,8 +1,5 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-
-// import NavMenu from 'components/NavMenu.vue';
-// import BaseModal from 'components/modal/BaseModal.vue';
 import { permissions } from '@/utils/enums';
 
 const { hasPermission } = useAuth()
@@ -12,8 +9,6 @@ const leftDrawerOpen = ref(false);
 function toggleLeftDrawer() {
   leftDrawerOpen.value = !leftDrawerOpen.value;
 }
-
-const auth = authStore()
 </script>
 
 <template>
@@ -30,7 +25,7 @@ const auth = authStore()
             <div class="gt-sm">
               <FormsSearchInput />
             </div>
-            <!-- <NotificationMenu /> -->
+            <NotificationMenu />
             <ProfileMenu />
           </div>
         </q-toolbar>
@@ -135,9 +130,7 @@ const auth = authStore()
                 </q-item-section>
               </q-item>
             </NavMenu>
-            <!--        <NuxtLink v-if="hasPermission(permissions.MANAGE_USER)" :to="{
-            name: 'admin.user.index',
-          }" class="text-black" style="text-decoration: none;text-transform: uppercase; font-weight: 500;">
+            <NuxtLink v-if="hasPermission(permissions.MANAGE_USER)" :to="routes.admin.users" class="text-black" style="text-decoration: none;text-transform: uppercase; font-weight: 500;">
 
             <q-btn flat>
 
@@ -147,60 +140,44 @@ const auth = authStore()
           <NavMenu title="Products" v-if="hasPermission(permissions.MANAGE_PRODUCT)">
             <q-item clickable v-close-popup>
               <q-item-section>
-                <NuxtLink :to="{
-                  name: 'admin.product.index',
-                }" class="text-black" style="text-decoration: none">Product List</NuxtLink>
+                <NuxtLink :to="routes.admin.product.index" class="text-black" style="text-decoration: none">Product List</NuxtLink>
               </q-item-section>
             </q-item>
             <q-item clickable v-close-popup>
               <q-item-section>
-                <NuxtLink :to="{
-                  name: 'admin.productCategory.index',
-                }" class="text-black" style="text-decoration: none">Product Category</NuxtLink>
+                <NuxtLink :to="routes.admin.product.category.index" class="text-black" style="text-decoration: none">Product Category</NuxtLink>
               </q-item-section>
             </q-item>
             <q-item clickable v-close-popup>
               <q-item-section>
-                <NuxtLink :to="{
-                  name: 'admin.productSubcategory.index',
-                }" class="text-black" style="text-decoration: none">Product Subcategory</NuxtLink>
+                <NuxtLink :to="routes.admin.product.sub_category.index" class="text-black" style="text-decoration: none">Product Subcategory</NuxtLink>
               </q-item-section>
             </q-item>
             <q-item clickable v-close-popup>
               <q-item-section>
-                <NuxtLink :to="{
-                  name: 'admin.productTag.index',
-                }" class="text-black" style="text-decoration: none">Product Tags</NuxtLink>
+                <NuxtLink :to="routes.admin.product.tag.index" class="text-black" style="text-decoration: none">Product Tags</NuxtLink>
               </q-item-section>
             </q-item>
           </NavMenu>
           <NavMenu title="Services" v-if="hasPermission(permissions.MANAGE_SERVICE)">
             <q-item clickable v-close-popup>
               <q-item-section>
-                <NuxtLink :to="{
-                  name: 'admin.service.index',
-                }" class="text-black" style="text-decoration: none">Service List</NuxtLink>
+                <NuxtLink :to="routes.admin.service.index" class="text-black" style="text-decoration: none">Service List</NuxtLink>
               </q-item-section>
             </q-item>
             <q-item clickable v-close-popup>
               <q-item-section>
-                <NuxtLink :to="{
-                  name: 'admin.serviceCategory.index',
-                }" class="text-black" style="text-decoration: none">Service Category</NuxtLink>
+                <NuxtLink :to="routes.admin.service.category.index" class="text-black" style="text-decoration: none">Service Category</NuxtLink>
               </q-item-section>
             </q-item>
             <q-item clickable v-close-popup>
               <q-item-section>
-                <NuxtLink :to="{
-                  name: 'admin.serviceSubcategory.index',
-                }" class="text-black" style="text-decoration: none">Service Subcategory</NuxtLink>
+                <NuxtLink :to="routes.admin.service.sub_category.index" class="text-black" style="text-decoration: none">Service Subcategory</NuxtLink>
               </q-item-section>
             </q-item>
             <q-item clickable v-close-popup>
               <q-item-section>
-                <NuxtLink :to="{
-                  name: 'admin.serviceTag.index',
-                }" class="text-black" style="text-decoration: none">Service Tags</NuxtLink>
+                <NuxtLink :to="routes.admin.service.tag.index" class="text-black" style="text-decoration: none">Service Tags</NuxtLink>
               </q-item-section>
             </q-item>
           </NavMenu>
@@ -208,42 +185,32 @@ const auth = authStore()
             v-if="hasPermission(permissions.MANAGE_SUBSCRIBERS) || hasPermission(permissions.MANAGE_TEMPLATES) || hasPermission(permissions.MANAGE_CAMPAIGNS)">
             <q-item clickable v-close-popup v-if="hasPermission(permissions.MANAGE_SUBSCRIBERS)">
               <q-item-section>
-                <NuxtLink :to="{
-                  name: 'admin.subscriber.index',
-                }" class="text-black" style="text-decoration: none">Subscribers</NuxtLink>
+                <NuxtLink :to="routes.admin.subscribers.index" class="text-black" style="text-decoration: none">Subscribers</NuxtLink>
               </q-item-section>
             </q-item>
             <q-item clickable v-close-popup v-if="hasPermission(permissions.MANAGE_TEMPLATES)">
               <q-item-section>
-                <NuxtLink :to="{
-                  name: 'admin.template.index',
-                }" class="text-black" style="text-decoration: none">Templates</NuxtLink>
+                <NuxtLink :to="routes.admin.templates.index" class="text-black" style="text-decoration: none">Templates</NuxtLink>
               </q-item-section>
             </q-item>
             <q-item clickable v-close-popup v-if="hasPermission(permissions.MANAGE_CAMPAIGNS)">
               <q-item-section>
-                <NuxtLink :to="{
-                  name: 'admin.campaign.index',
-                }" class="text-black" style="text-decoration: none">Campaigns</NuxtLink>
+                <NuxtLink :to="routes.admin.campaigns.index" class="text-black" style="text-decoration: none">Campaigns</NuxtLink>
               </q-item-section>
             </q-item>
           </NavMenu>
           <NavMenu title="Media" v-if="hasPermission(permissions.MANAGE_MEDIA)">
             <q-item clickable v-close-popup>
               <q-item-section>
-                <NuxtLink :to="{
-                  name: 'admin.media.images',
-                }" class="text-black" style="text-decoration: none">Images</NuxtLink>
+                <NuxtLink :to="routes.admin.media.images" class="text-black" style="text-decoration: none">Images</NuxtLink>
               </q-item-section>
             </q-item>
             <q-item clickable v-close-popup>
               <q-item-section>
-                <NuxtLink :to="{
-                  name: 'admin.media.videos',
-                }" class="text-black" style="text-decoration: none">Videos</NuxtLink>
+                <NuxtLink :to="routes.admin.media.videos" class="text-black" style="text-decoration: none">Videos</NuxtLink>
               </q-item-section>
             </q-item>
-          </NavMenu> -->
+          </NavMenu> 
           </div>
         </q-toolbar>
       </q-header>

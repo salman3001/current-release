@@ -4,9 +4,6 @@ import type { AdditionalParams } from '@/types/QueryParamsTypes';
 import { permissions } from '@/utils/enums';
 import { onTableRequest } from '@/utils/onTableRequest'
 
-definePageMeta({
-  layout: 'admin-layout'
-})
 
 const modal = modalStore();
 const tableRef = ref();

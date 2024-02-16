@@ -2,11 +2,7 @@
 import {
   SupportTickeApi, userApi,
 } from '@/utils/BaseApiService';
-import { ref } from 'vue';
 
-definePageMeta({
-  layout: 'admin-layout'
-})
 
 const form = ref({
   subject: '',
@@ -15,7 +11,7 @@ const form = ref({
   message: '',
 });
 
-const {data:users} =userApi.index()
+const { data: users } = userApi.index()
 
 
 const { execute: createTicket, loading } =
@@ -34,7 +30,7 @@ const submit = async () => {
   <div class="q-pa-lg">
     <div class="row items-center q-gutter-sm q-mb-xl">
       <q-icon name="keyboard_backspace" size="30px" style="cursor: pointer" @click="() => {
-              navigateTo(routes.admin.help_center.support_ticket)
+        navigateTo(routes.admin.help_center.support_ticket)
 
       }
         " />
@@ -54,7 +50,7 @@ const submit = async () => {
       </div>
       <div class="row justify-end q-gutter-md">
         <q-btn style="background-color: #e6e4d9; color: #aeaca1; min-width: 8rem" @click="() => {
-               navigateTo(routes.admin.help_center.support_ticket)
+          navigateTo(routes.admin.help_center.support_ticket)
         }
           ">Cancle</q-btn>
         <q-btn color="primary" v-if="loading">

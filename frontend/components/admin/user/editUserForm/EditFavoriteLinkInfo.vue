@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import editUserStore from 'src/stores/editUserStore';
-import { userApi } from 'src/utils/BaseApiService';
-import { srollToView } from 'src/utils/scrollToView';
+import { userApi } from '@/utils/BaseApiService';
+
 
 const editUser = editUserStore()
 
@@ -18,7 +17,7 @@ const { execute, loading } = userApi.put();
         <div class="row q-col-gutter-md items-center">
           <q-input outlined v-for="(f, i) in editUser.favoriteLinksForm.favoriteLinks" :key="i" v-model="f.link"
             class="col-12 col-sm-6 col-md-3" :label="'Link' + ' ' + (i + 1)" clear-icon="close"
-            :rules="[$rules.required('required')]">
+            :rules="[rules.required('required')]">
             <template v-slot:append>
               <q-icon v-if="i > 0" name="close" color="primary" @click="editUser.popFavoriteLinks" />
             </template>

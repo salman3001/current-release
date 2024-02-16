@@ -1,16 +1,12 @@
 <script setup lang="ts">
 import type { QTableProps } from 'quasar';
 import type { AdditionalParams } from '@/types/QueryParamsTypes';
-import { onMounted, reactive, ref } from 'vue';
 import {
   KnowledgebaseCategoryApi,
   LanguageApi,
 } from '@/utils/BaseApiService';
 import { onTableRequest } from '@/utils/onTableRequest';
 
-definePageMeta({
-  layout: 'admin-layout'
-})
 
 const modal = modalStore();
 const router = useRouter();

@@ -1,21 +1,21 @@
 import { Notify } from "quasar";
 import { ref } from "vue";
 import { BaseApiClass } from "./BaseApiClass";
+import type { UseFetchOptions } from "#app";
 
 class ProductApiService extends BaseApiClass {
   public async deleteScreenShot(
     id: string,
-    config?: AxiosRequestConfig<any> | undefined,
-    cb?: { onSuccess?: () => void; onError?: () => void }
+    cb?: { onSuccess?: () => void; onError?: () => void },
+    opt?: UseFetchOptions<any>
   ) {
     const loading = ref(false);
     const data = ref(null);
     try {
       loading.value = true;
-      const res = await api.get(
-        this.url + "/delete-screenshot" + `/${id}`,
-        config
-      );
+      const res = await $fetch(this.url + "/delete-screenshot" + `/${id}`, {
+        ...(opt as any),
+      });
       if (res?.data) {
         data.value = res?.data;
       }
@@ -23,22 +23,17 @@ class ProductApiService extends BaseApiClass {
       loading.value = false;
     } catch (error: any) {
       if (error?.response) {
+        loading.value = false;
         Notify.create({
-          message:
-            error?.response?.data?.message || `Failed to fetch ${this.name}`,
+          message: `Failed to fetch ${this.name}`,
           color: "negative",
+          icon: "error",
         });
-      } else if (error?.request) {
-        Notify.create({
-          message: `Trying to fetch ${this.name}.Server Not Reachable!`,
-          color: "negative",
-        });
-      } else {
-        Notify.create({ message: error.message, color: "negative" });
       }
-    }
 
-    return { loading, data };
+      return { loading, data };
+    }
   }
 }
+
 export const productApi = new ProductApiService("/api/product", "Product");

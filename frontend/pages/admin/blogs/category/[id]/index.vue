@@ -1,11 +1,6 @@
 <script setup lang="ts">
-import { useRoute, useRouter } from 'vue-router';
 import { blogCategoryApi } from '@/utils/BaseApiService';
-import { ref } from 'vue';
 
-definePageMeta({
-  layout: 'admin-layout'
-})
 
 const route = useRoute();
 

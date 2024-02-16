@@ -1,10 +1,5 @@
 <script setup lang="ts">
-import createUserStore from 'src/stores/createUserStore';
-import { srollToView } from 'src/utils/scrollToView'
 import { onMounted } from 'vue';
-import ExperienceForm from 'src/components/admin/user/AddUserWizard/ExperienceForm.vue';
-
-
 
 const createUser = createUserStore()
 defineProps<{
@@ -24,7 +19,7 @@ onMounted(() => {
   <q-form class="column q-gutter-y-md" @submit="() => {
     $emit('next')
   }" @validation-error="srollToView">
-    <ExperienceForm />
+    <AdminUserAddUserWizardExperienceForm/>
     <div class="column q-gutter-y-md">
       <p class="text-subtitle1">Education</p>
       <div class="row q-col-gutter-md q-pb-lg" v-for="(w, i) in createUser.form.education" :key="i">
@@ -37,9 +32,9 @@ onMounted(() => {
         </div>
 
         <q-input outlined v-model="w.institute" label="Institute" class="col-12 col-sm-6 col-md-3"
-          :rules="[$rules.required('required')]" />
+          :rules="[rules.required('required')]" />
         <q-input outlined v-model="w.degree" label="Degree" class="col-12 col-sm-6 col-md-3"
-          :rules="[$rules.required('required')]" />
+          :rules="[rules.required('required')]" />
         <q-input outlined v-model="w.field" label="Job Title" class="col-12 col-sm-6 col-md-3" />
         <div class="col-12 col-sm-6 col-md-3">
           <q-input outlined v-model="w.startDate" label="Start Date" mask="##/##/####" hint="dd/mm/yyyy">
@@ -97,7 +92,7 @@ onMounted(() => {
         </div>
 
         <q-input outlined v-model="w.name" label="Skill Name" class="col-12 col-sm-6 col-md-3"
-          :rules="[$rules.required('required')]" />
+          :rules="[rules.required('required')]" />
         <q-input type="textarea" outlined v-model="w.desc" label="Description" class="col-12" />
 
       </div>

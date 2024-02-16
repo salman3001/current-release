@@ -36,16 +36,18 @@ const chatMessageStore = defineStore("chatMessageStore", () => {
     audio.play();
   };
 
-  const connectSocket = (ticketId: string) => {
+  const connectSocket = (
+    url: string,
+    user: any,
+    socketToken: any,
+    ticketId: string
+  ) => {
     if (!socket.value) {
-      const user = useCookie("user");
-      const token = useCookie("socketToken") as any;
-
-      socket.value = io("/ticket_chat/", {
+      socket.value = io(url + "/ticket_chat/", {
         transports: ["websocket"],
         auth: {
           userId: user?.id || "",
-          socketToken: token || "",
+          socketToken: socketToken || "",
         },
       });
 

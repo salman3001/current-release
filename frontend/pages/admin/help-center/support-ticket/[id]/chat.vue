@@ -7,9 +7,6 @@ import { onUnmounted, onUpdated, ref } from 'vue';
 import { useScroll } from '@vueuse/core'
 import { formatDistance, parseISO } from 'date-fns';
 
-definePageMeta({
-  layout: 'admin-layout'
-})
 
 const scrollRef = ref<HTMLElement | null>(null)
 const { y } = useScroll(scrollRef)
@@ -19,6 +16,9 @@ const route = useRoute();
 const chatStore = chatMessageStore()
 const message = ref('')
 const updatedOnce = ref(false)
+const user = useCookie('user')
+const socketToken = useCookie('socketToken')
+const config = useRuntimeConfig()
 
 const { data: ticket } = await SupportTickeApi.show(route.params.id as string, {
   populate: {
@@ -28,7 +28,7 @@ const { data: ticket } = await SupportTickeApi.show(route.params.id as string, {
 
 watch(ticket, async () => {
   await chatStore.getMessages((ticket.value as any).id)
-  chatStore.connectSocket((ticket.value as any).id)
+  chatStore.connectSocket(config.public.baseApi, user.value, socketToken.value, (ticket.value as any).id)
 }, {
   deep: true,
   immediate: true

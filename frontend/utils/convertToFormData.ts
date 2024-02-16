@@ -10,16 +10,22 @@ function convertToFormData(
       // Create the full key including parent keys for nested structures
       const fullKey = parentKey ? `${parentKey}[${key}]` : key;
 
-      if (
-        value !== null &&
-        typeof value === "object" &&
-        !(value instanceof File)
-      ) {
-        // Recursively process nested objects
-        convertToFormData(value, formData, fullKey);
-      } else if (value !== null) {
-        // Append non-null values to FormData
-        formData.append(fullKey, value);
+      if (value !== undefined && value !== null) {
+        if (typeof value === "object" && !(value instanceof File)) {
+          // Recursively process nested objects
+          convertToFormData(value, formData, fullKey);
+        } else {
+          if (value instanceof File) {
+            // Handle File instances separately
+            formData.append(fullKey, value, value.name);
+          } else {
+            // Append values to FormData
+            formData.append(fullKey, value.toString());
+          }
+        }
+      } else {
+        // Append null values as empty strings to FormData
+        formData.append(fullKey, "");
       }
     }
   }

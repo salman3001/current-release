@@ -26,6 +26,7 @@ import {
 import { attachment, AttachmentContract } from '@ioc:Adonis/Addons/AttachmentLite'
 import Image from '../Image'
 import Video from '../Video'
+import Review from '../Review'
 
 export default class Service extends BaseModel {
   @column({ isPrimary: true })
@@ -122,6 +123,9 @@ export default class Service extends BaseModel {
     responsiveDimensions: false,
   })
   public brocher: ResponsiveAttachmentContract
+
+  @hasMany(() => Review)
+  public reviews: HasMany<typeof Review>
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { Notify, useQuasar } from "quasar";
+import { Notify } from "quasar";
 import { Socket, io } from "socket.io-client";
 import { ref } from "vue";
 import { notifcationApi } from "~/utils/api/notificationApi";
@@ -7,7 +7,6 @@ import { notifcationApi } from "~/utils/api/notificationApi";
 const notificationStore = defineStore("notification", () => {
   const notifcations = ref<any[]>([]);
   const notificationCount = ref(0);
-  const $q = useQuasar();
   const socket = ref<Socket | null>(null);
 
   const playSound = () => {
@@ -16,9 +15,9 @@ const notificationStore = defineStore("notification", () => {
   };
 
   const getMenuNotifications = async () => {
-    notifcationApi.getMenuNotifications().then(({ data }) => {
-      notifcations.value = (data.value as any)?.notifcations;
-      notificationCount.value = (data.value as any)?.count;
+    notifcationApi.getMenuNotifications().then((data) => {
+      notifcations.value = (data as any)?.notifcations;
+      notificationCount.value = (data as any)?.count;
     });
   };
 
@@ -43,37 +42,33 @@ const notificationStore = defineStore("notification", () => {
   };
 
   const deleteOneNotifcation = async (id: string) => {
-    const { execute } = notifcationApi.delete(id, {
+    const { execute } = notifcationApi.delete({
       onResponse: () => {
         getMenuNotifications();
       },
     });
-    execute();
+    execute(id);
   };
 
   const markAsRead = async (id: string) => {
     const { execute } = notifcationApi.markAsRead(
-      id,
       {},
       {
-        onResponse: () => {
+        onSuccess: () => {
           getMenuNotifications();
         },
       }
     );
-    execute();
+    execute(id);
   };
 
-  const connectSocket = () => {
+  const connectSocket = (url: string, user: any, socketToken: any) => {
     if (!socket.value) {
-      const user = $q.cookies.get("user") as any;
-      const token = $q.cookies.get("socketToken") as any;
-
-      socket.value = io("/notifications/", {
+      socket.value = io(url + "/notifications/", {
         transports: ["websocket"],
         auth: {
           userId: user?.id || "",
-          socketToken: token || "",
+          socketToken: socketToken || "",
         },
       });
 

@@ -2,13 +2,9 @@
 import { KnowledgebaseCategoryApi } from '@/utils/BaseApiService';
 
 
-definePageMeta({
-  layout:'admin-layout'
-})
-
 const route = useRoute();
 
-const {data:category}=KnowledgebaseCategoryApi.show(route.params.id as string, {
+const { data: category } = KnowledgebaseCategoryApi.show(route.params.id as string, {
   populate: {
     language: {
       fields: ['name'],
@@ -24,12 +20,11 @@ const {data:category}=KnowledgebaseCategoryApi.show(route.params.id as string, {
         name="keyboard_backspace"
         size="30px"
         style="cursor: pointer"
-        @click="
-          () => {
+        @click="() => {
             navigateTo(routes.admin.knowlegdebase.category)
 
           }
-        "
+          "
       />
       <span class="text-h6"> View Category </span>
     </div>

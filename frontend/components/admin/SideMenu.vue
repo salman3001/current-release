@@ -4,8 +4,8 @@ import { permissions } from '@/utils/enums';
 
 
 const tab = ref('home')
+const auth = useAuth()
 
-const auth = authStore()
 
 defineEmits(['close'])
 </script>
@@ -16,19 +16,19 @@ defineEmits(['close'])
     </div>
 
 
-    <!-- <q-tab-panels v-model="tab" animated>
+     <q-tab-panels v-model="tab" animated>
       <q-tab-panel name="home" class="column q-py-xl q-gutter-md justify-end">
         <q-list dense style="font-size: 20px;font-weight: 400;" class="">
           <q-item clickable v-close-popup v-if="auth.hasPermission(permissions.MANAGE_ADMIN_USERS)">
             <q-item-section style="text-align: end;">
-              <router-link :to="{ name: 'admin.adminUsers.index' }" class="text-black" style="text-decoration: none">Admin
-                Users</router-link>
+              <nuxt-link :to="routes.admin.admin_users" class="text-black" style="text-decoration: none">Admin
+                Users</nuxt-link>
             </q-item-section>
           </q-item>
           <q-item clickable v-close-popup v-if="auth.hasPermission(permissions.MANAGE_ROLES)">
             <q-item-section style="text-align: end;">
-              <router-link :to="{ name: 'admin.roles.index' }" class="text-black"
-                style="text-decoration: none">Roles</router-link>
+              <nuxt-link :to="routes.admin.roles" class="text-black"
+                style="text-decoration: none">Roles</nuxt-link>
             </q-item-section>
           </q-item>
           <q-item clickable v-close-popup style="text-align: end;"
@@ -52,9 +52,7 @@ defineEmits(['close'])
           </q-item>
           <q-item clickable v-close-popup style="text-align: end;" v-if="auth.hasPermission(permissions.MANAGE_USER)">
             <q-item-section>
-              <router-link :to="{
-                name: 'admin.user.index',
-              }" class="text-black" style="text-decoration: none; ">Users</router-link>
+              <nuxt-link :to="routes.admin.users" class="text-black" style="text-decoration: none; ">Users</nuxt-link>
 
             </q-item-section>
           </q-item>
@@ -94,30 +92,22 @@ defineEmits(['close'])
         <q-list dense style="font-size: 20px;font-weight: 400;" class="">
           <q-item clickable v-close-popup>
             <q-item-section style="text-align: end;">
-              <router-link :to="{
-                name: 'admin.knowlegebase.content.index',
-              }" class="text-black" style="text-decoration: none">Knowledgebase Content</router-link>
+              <nuxt-link :to="routes.admin.knowlegdebase.content" class="text-black" style="text-decoration: none">Knowledgebase Content</nuxt-link>
             </q-item-section>
           </q-item>
           <q-item clickable v-close-popup>
             <q-item-section style="text-align: end;">
-              <router-link :to="{
-                name: 'admin.knowlegebase.category.index',
-              }" class="text-black" style="text-decoration: none">Knowledgebase Categories</router-link>
+              <nuxt-link :to="routes.admin.knowlegdebase.category" class="text-black" style="text-decoration: none">Knowledgebase Categories</nuxt-link>
             </q-item-section>
           </q-item>
           <q-item clickable v-close-popup v-if="auth.hasPermission(permissions.MANAGE_TICKETS)">
             <q-item-section style="text-align: end;">
-              <router-link :to="{
-                name: 'admin.supportTicket.index',
-              }" class="text-black" style="text-decoration: none">Support tickets</router-link>
+              <nuxt-link :to="routes.admin.help_center.support_ticket" class="text-black" style="text-decoration: none">Support tickets</nuxt-link>
             </q-item-section>
           </q-item>
           <q-item clickable v-close-popup v-if="auth.hasPermission(permissions.MANAGE_CONTACT_MESSAGES)">
             <q-item-section style="text-align: end;">
-              <router-link :to="{
-                name: 'admin.contactMessage.index',
-              }" class="text-black" style="text-decoration: none">Contact Messages</router-link>
+              <nuxt-link :to="routes.admin.help_center.contact_message" class="text-black" style="text-decoration: none">Contact Messages</nuxt-link>
             </q-item-section>
           </q-item>
         </q-list>
@@ -132,16 +122,12 @@ defineEmits(['close'])
         <q-list dense style="font-size: 20px;font-weight: 400;" class="">
           <q-item clickable v-close-popup>
             <q-item-section style="text-align: end;">
-              <router-link :to="{
-                name: 'admin.blogs.index',
-              }" class="text-black" style="text-decoration: none">Blog Posts</router-link>
+              <nuxt-link :to="routes.admin.blogs.posts" class="text-black" style="text-decoration: none">Blog Posts</nuxt-link>
             </q-item-section>
           </q-item>
           <q-item clickable v-close-popup>
             <q-item-section style="text-align: end;">
-              <router-link :to="{
-                name: 'admin.blogs.category.index',
-              }" class="text-black" style="text-decoration: none">Blog Categories</router-link>
+              <nuxt-link :to="routes.admin.blogs.category" class="text-black" style="text-decoration: none">Blog Categories</nuxt-link>
             </q-item-section>
           </q-item>
         </q-list>
@@ -158,37 +144,27 @@ defineEmits(['close'])
         <q-list dense style="font-size: 20px;font-weight: 400;" class="">
           <q-item clickable v-close-popup>
             <q-item-section style="text-align: end;">
-              <router-link :to="{
-                name: 'admin.location.continent.index',
-              }" class="text-black" style="text-decoration: none">Continents</router-link>
+              <nuxt-link :to="routes.admin.location.continents" class="text-black" style="text-decoration: none">Continents</nuxt-link>
             </q-item-section>
           </q-item>
           <q-item clickable v-close-popup>
             <q-item-section style="text-align: end;">
-              <router-link :to="{
-                name: 'admin.location.country.index',
-              }" class="text-black" style="text-decoration: none">Countries</router-link>
+              <nuxt-link :to="routes.admin.location.countries" class="text-black" style="text-decoration: none">Countries</nuxt-link>
             </q-item-section>
           </q-item>
           <q-item clickable v-close-popup>
             <q-item-section style="text-align: end;">
-              <router-link :to="{
-                name: 'admin.location.state.index',
-              }" class="text-black" style="text-decoration: none">States</router-link>
+              <nuxt-link :to="routes.admin.location.states" class="text-black" style="text-decoration: none">States</nuxt-link>
             </q-item-section>
           </q-item>
           <q-item clickable v-close-popup>
             <q-item-section style="text-align: end;">
-              <router-link :to="{
-                name: 'admin.location.city.index',
-              }" class="text-black" style="text-decoration: none">Cities</router-link>
+              <nuxt-link :to="routes.admin.location.cities" class="text-black" style="text-decoration: none">Cities</nuxt-link>
             </q-item-section>
           </q-item>
           <q-item clickable v-close-popup>
             <q-item-section style="text-align: end;">
-              <router-link :to="{
-                name: 'admin.location.street.index',
-              }" class="text-black" style="text-decoration: none">Street</router-link>
+              <nuxt-link :to="routes.admin.location.streets" class="text-black" style="text-decoration: none">Street</nuxt-link>
             </q-item-section>
           </q-item>
         </q-list>
@@ -205,30 +181,22 @@ defineEmits(['close'])
         <q-list dense style="font-size: 20px;font-weight: 400;" class="">
           <q-item clickable v-close-popup>
             <q-item-section style="text-align: end;">
-              <router-link :to="{
-                name: 'admin.product.index',
-              }" class="text-black" style="text-decoration: none">Product List</router-link>
+              <nuxt-link :to="routes.admin.product.index" class="text-black" style="text-decoration: none">Product List</nuxt-link>
             </q-item-section>
           </q-item>
           <q-item clickable v-close-popup>
             <q-item-section style="text-align: end;">
-              <router-link :to="{
-                name: 'admin.productCategory.index',
-              }" class="text-black" style="text-decoration: none">Product Category</router-link>
+              <nuxt-link :to="routes.admin.product.category.index" class="text-black" style="text-decoration: none">Product Category</nuxt-link>
             </q-item-section>
           </q-item>
           <q-item clickable v-close-popup>
             <q-item-section style="text-align: end;">
-              <router-link :to="{
-                name: 'admin.productSubcategory.index',
-              }" class="text-black" style="text-decoration: none">Product Subcategory</router-link>
+              <nuxt-link :to="routes.admin.product.sub_category.index" class="text-black" style="text-decoration: none">Product Subcategory</nuxt-link>
             </q-item-section>
           </q-item>
           <q-item clickable v-close-popup>
             <q-item-section style="text-align: end;">
-              <router-link :to="{
-                name: 'admin.productTag.index',
-              }" class="text-black" style="text-decoration: none">Product Tags</router-link>
+              <nuxt-link :to="routes.admin.product.tag.index" class="text-black" style="text-decoration: none">Product Tags</nuxt-link>
             </q-item-section>
           </q-item>
         </q-list>
@@ -244,30 +212,22 @@ defineEmits(['close'])
         <q-list dense style="font-size: 20px;font-weight: 400;" class="">
           <q-item clickable v-close-popup>
             <q-item-section style="text-align: end;">
-              <router-link :to="{
-                name: 'admin.service.index',
-              }" class="text-black" style="text-decoration: none">Service List</router-link>
+              <nuxt-link :to="routes.admin.service.index" class="text-black" style="text-decoration: none">Service List</nuxt-link>
             </q-item-section>
           </q-item>
           <q-item clickable v-close-popup>
             <q-item-section style="text-align: end;">
-              <router-link :to="{
-                name: 'admin.serviceCategory.index',
-              }" class="text-black" style="text-decoration: none">Service Category</router-link>
+              <nuxt-link :to="routes.admin.service.category.index" class="text-black" style="text-decoration: none">Service Category</nuxt-link>
             </q-item-section>
           </q-item>
           <q-item clickable v-close-popup>
             <q-item-section style="text-align: end;">
-              <router-link :to="{
-                name: 'admin.serviceSubcategory.index',
-              }" class="text-black" style="text-decoration: none">Service Subcategory</router-link>
+              <nuxt-link :to="routes.admin.service.sub_category.index" class="text-black" style="text-decoration: none">Service Subcategory</nuxt-link>
             </q-item-section>
           </q-item>
           <q-item clickable v-close-popup>
             <q-item-section style="text-align: end;">
-              <router-link :to="{
-                name: 'admin.serviceTag.index',
-              }" class="text-black" style="text-decoration: none">Service Tags</router-link>
+              <nuxt-link :to="routes.admin.service.tag.index" class="text-black" style="text-decoration: none">Service Tags</nuxt-link>
             </q-item-section>
           </q-item>
         </q-list>
@@ -284,23 +244,17 @@ defineEmits(['close'])
         <q-list dense style="font-size: 20px;font-weight: 400;" class="">
           <q-item clickable v-close-popup v-if="auth.hasPermission(permissions.MANAGE_SUBSCRIBERS)">
             <q-item-section style="text-align: end;">
-              <router-link :to="{
-                name: 'admin.subscriber.index',
-              }" class="text-black" style="text-decoration: none">Subscribers</router-link>
+              <nuxt-link :to="routes.admin.subscribers.index" class="text-black" style="text-decoration: none">Subscribers</nuxt-link>
             </q-item-section>
           </q-item>
           <q-item clickable v-close-popup v-if="auth.hasPermission(permissions.MANAGE_TEMPLATES)">
             <q-item-section style="text-align: end;">
-              <router-link :to="{
-                name: 'admin.template.index',
-              }" class="text-black" style="text-decoration: none">Templates</router-link>
+              <nuxt-link :to="routes.admin.templates.index" class="text-black" style="text-decoration: none">Templates</nuxt-link>
             </q-item-section>
           </q-item>
           <q-item clickable v-close-popup v-if="auth.hasPermission(permissions.MANAGE_CAMPAIGNS)">
             <q-item-section style="text-align: end;">
-              <router-link :to="{
-                name: 'admin.campaign.index',
-              }" class="text-black" style="text-decoration: none">Campaigns</router-link>
+              <nuxt-link :to="routes.admin.campaigns.index" class="text-black" style="text-decoration: none">Campaigns</nuxt-link>
             </q-item-section>
           </q-item>
         </q-list>
@@ -317,25 +271,21 @@ defineEmits(['close'])
         <q-list dense style="font-size: 20px;font-weight: 400;" class="">
           <q-item clickable v-close-popup>
             <q-item-section style="text-align: end;">
-              <router-link :to="{
-                name: 'admin.media.images',
-              }" class="text-black" style="text-decoration: none">Images</router-link>
+              <nuxt-link :to="routes.admin.media.images" class="text-black" style="text-decoration: none">Images</nuxt-link>
             </q-item-section>
           </q-item>
           <q-item clickable v-close-popup>
             <q-item-section style="text-align: end;">
-              <router-link :to="{
-                name: 'admin.media.videos',
-              }" class="text-black" style="text-decoration: none">Videos</router-link>
+              <nuxt-link :to="routes.admin.media.videos" class="text-black" style="text-decoration: none">Videos</nuxt-link>
             </q-item-section>
           </q-item>
         </q-list>
       </q-tab-panel>
 
-      <q-tab-panel name="password">
+      <!-- <q-tab-panel name="password">
         <div class="text-h6">Edit Password</div>
-        <EditPasswordInfo />
-      </q-tab-panel>
-    </q-tab-panels> -->
+        <AdminUserEditUserFormEditPasswordInfo/>
+      </q-tab-panel> -->
+    </q-tab-panels> 
   </q-card>
 </template>

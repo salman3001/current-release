@@ -7,10 +7,6 @@ import { ref } from 'vue';
 
 const id = useRoute().params.id;
 
-definePageMeta({
-  layout: 'admin-layout'
-})
-
 const form = ref({
   name: '',
   slug: '',

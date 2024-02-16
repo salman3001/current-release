@@ -24,6 +24,7 @@ import {
   responsiveAttachment,
 } from '@ioc:Adonis/Addons/ResponsiveAttachment'
 import Video from '../Video'
+import Review from '../Review'
 
 export default class Product extends BaseModel {
   @column({ isPrimary: true })
@@ -117,6 +118,9 @@ export default class Product extends BaseModel {
     responsiveDimensions: false,
   })
   public brocher: ResponsiveAttachmentContract
+
+  @hasMany(() => Review)
+  public reviews: HasMany<typeof Review>
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

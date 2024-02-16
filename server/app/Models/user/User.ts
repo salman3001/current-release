@@ -25,6 +25,10 @@ import {
 } from '@ioc:Adonis/Addons/ResponsiveAttachment'
 import Notifications from '../Notification'
 import SupportTicket from '../helpcenter/SupportTicket'
+import Product from '../product/Product'
+import Service from '../service/Service'
+import Review from '../Review'
+import Cart from '../Cart'
 
 export default class User extends BaseModel {
   @column({ isPrimary: true })
@@ -59,6 +63,9 @@ export default class User extends BaseModel {
 
   @column()
   public isActive: boolean
+
+  @column()
+  public isVender: boolean
 
   @column()
   public isPublic: boolean
@@ -106,6 +113,18 @@ export default class User extends BaseModel {
 
   @hasOne(() => NotificationSetting)
   public NotificationSetting: HasOne<typeof NotificationSetting>
+
+  @hasMany(() => Product)
+  public products: HasMany<typeof Product>
+
+  @hasMany(() => Service)
+  public services: HasMany<typeof Service>
+
+  @hasMany(() => Review)
+  public reviews: HasMany<typeof Review>
+
+  @hasOne(() => Cart)
+  public cart: HasOne<typeof Cart>
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

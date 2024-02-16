@@ -4,10 +4,6 @@ import type { AdditionalParams } from '@/types/QueryParamsTypes';
 import { onMounted, reactive, ref } from 'vue';
 import { LanguageApi, blogCategoryApi } from '@/utils/BaseApiService';
 
-definePageMeta({
-  layout: 'admin-layout'
-})
-
 const modal = modalStore()
 const filter = reactive<AdditionalParams>({
   populate: {

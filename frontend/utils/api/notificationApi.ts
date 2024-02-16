@@ -6,71 +6,118 @@ import type { AsyncDataOptions, UseFetchOptions } from "#app";
 class NotificationApiService extends BaseApiClass {
   public deleteAllNotifcations(
     opt?: UseFetchOptions<any>,
-    asyncDataOpt?: AsyncDataOptions<any>
+    cb?: { onSuccess?: () => void; onError?: () => void }
   ) {
-    return useAsyncData(
-      this.url,
-      () =>
-        $fetch(this.url + `/delete/all`, {
+    const loading = ref(false);
+    const execute = async () => {
+      try {
+        loading.value = true;
+        const res = await $fetch(this.url + `/delete/all`, {
           method: "delete",
           ...(opt as any),
-        }),
-      {
-        ...asyncDataOpt,
-        immediate: false,
+        });
+        loading.value = false;
+        cb?.onSuccess && cb?.onSuccess();
+        Notify.create({
+          message: `${this.name} deleted successfully`,
+          color: "positive",
+          icon: "done",
+        });
+      } catch (error: any) {
+        cb?.onError && cb?.onError();
+        loading.value = false;
+        Notify.create({
+          message: `Failed to delete ${this.name}`,
+          color: "negative",
+        });
       }
-    );
+    };
+
+    return {
+      loading,
+      execute,
+    };
   }
 
   public deleteReadNotifcations(
     opt?: UseFetchOptions<any>,
-    asyncDataOpt?: AsyncDataOptions<any>
+    cb?: { onSuccess?: () => void; onError?: () => void }
   ) {
-    return useAsyncData(
-      this.url,
-      () =>
-        $fetch(this.url + `/delete/read`, {
+    const loading = ref(false);
+    const execute = async () => {
+      try {
+        loading.value = true;
+        const res = await $fetch(this.url + `/delete/read`, {
           method: "delete",
           ...(opt as any),
-        }),
-      {
-        ...asyncDataOpt,
-        immediate: false,
+        });
+        loading.value = false;
+        cb?.onSuccess && cb?.onSuccess();
+        Notify.create({
+          message: `${this.name} deleted successfully`,
+          color: "positive",
+          icon: "done",
+        });
+      } catch (error: any) {
+        cb?.onError && cb?.onError();
+        loading.value = false;
+        Notify.create({
+          message: `Failed to delete ${this.name}`,
+          color: "negative",
+        });
       }
-    );
+    };
+
+    return {
+      loading,
+      execute,
+    };
   }
 
   public async getMenuNotifications(
     query?: AdditionalParams,
     opt?: UseFetchOptions<any>
   ) {
-    return useFetch(this.url + "/get-menu-notifications", {
-      ...opt,
-      body: {
-        ...query,
-      },
+    return $fetch(this.url + "/get-menu-notifications", {
+      query,
+      ...(opt as any),
     });
   }
 
   public markAsRead(
-    id: string,
-    body: any,
     opt?: UseFetchOptions<any>,
-    asyncDataOpt?: AsyncDataOptions<any>
+    cb?: { onSuccess?: () => void; onError?: () => void }
   ) {
-    return useAsyncData(
-      this.url,
-      () =>
-        $fetch(this.url + "/mark-as-read/" + id, {
+    const loading = ref(false);
+    const execute = async (id: string, data?: any) => {
+      try {
+        loading.value = true;
+        const res = await $fetch(this.url + "/mark-as-read/" + id, {
+          body: data,
           method: "post",
-          body,
           ...(opt as any),
-        }),
-      {
-        ...asyncDataOpt,
-        immediate: false,
+        });
+        loading.value = false;
+        cb?.onSuccess && cb?.onSuccess();
+        Notify.create({
+          message: `${this.name} marked as read`,
+          color: "positive",
+          icon: "done",
+        });
+      } catch (error: any) {
+        loading.value = false;
+        cb?.onError && cb?.onError();
+        Notify.create({
+          message: `Failed to mark as read ${this.name}`,
+          color: "negative",
+        });
       }
-    );
+    };
+
+    return {
+      loading,
+      execute,
+    };
   }
 }
 

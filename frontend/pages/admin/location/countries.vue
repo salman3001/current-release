@@ -1,12 +1,8 @@
 <script setup lang="ts">
 import type { QTableProps } from 'quasar';
 import type { AdditionalParams } from '@/types/QueryParamsTypes';
-import { onMounted, reactive, ref } from 'vue';
 import { ContinentsApi } from '@/utils/BaseApiService';
 
-definePageMeta({
-  layout: 'admin-layout'
-})
 
 
 const modal = modalStore();

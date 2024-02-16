@@ -1,12 +1,7 @@
 <script setup lang="ts">
-import ProfileImageInput from 'src/components/forms/ProfileImageInput.vue';
-import { rules } from 'src/utils/validationRules';
-import { srollToView } from 'src/utils/scrollToView'
-import useAddressStore from 'src/stores/addressStore';
-import createUserStore from 'src/stores/createUserStore';
 import { onMounted, ref } from 'vue';
 
-const address = useAddressStore();
+const address = addressStore();
 const createUser = createUserStore()
 
 defineProps<{
@@ -43,7 +38,7 @@ onMounted(() => {
     $emit('next')
   }" @validation-error="srollToView">
     <div>
-      <ProfileImageInput name="image" @image="(v) => {
+      <FormsProfileImageInput name="image" @image="(v) => {
         createUser.form.image = v as unknown as null
 
       }" :url="imagePreviewUrl" />
@@ -51,23 +46,23 @@ onMounted(() => {
     <div class="q-gutter-y-md">
       <div class="row q-col-gutter-md">
         <q-input outlined v-model="createUser.form.user.firstName" label="First Name" class="col-12 col-sm-6 col-md-3"
-          :rules="[$rules.required('required')]" />
+          :rules="[rules.required('required')]" />
         <q-input outlined v-model="createUser.form.user.lastName" label="Last Name" class="col-12 col-sm-6 col-md-3"
-          :rules="[$rules.required('required')]" />
+          :rules="[rules.required('required')]" />
         <q-input outlined debounce="500" v-model="createUser.form.user.email" type="email" label="Email"
           class="col-12 col-sm-6 col-md-3" :rules="[
-            $rules.required('required'),
-            $rules.email('Email is not valid'),
+            rules.required('required'),
+            rules.email('Email is not valid'),
             async (v) =>
-              (await rules.unique('/users/unique-field', 'email', v)) ||
+              (await rules.unique('/api/users/unique-field', 'email', v)) ||
               'Email Already Taken',
           ]" />
         <q-input outlined debounce="500" v-model="createUser.form.user.userName" label="User Name"
           class="col-12 col-sm-6 col-md-3" :rules="[
-            $rules.required('required'),
+            rules.required('required'),
             rules.slug || 'Remove White Spaces',
             async (v) =>
-              (await rules.unique('/users/unique-field', 'user_name', v)) ||
+              (await rules.unique('/api/users/unique-field', 'user_name', v)) ||
               'User Name Already Taken',
           ]" />
         <q-input outlined v-model="createUser.form.user.desc" type="textarea" class="col-12" label="Description" />

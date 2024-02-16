@@ -44,10 +44,11 @@ export default class BaseController {
   ) {}
 
   public async index({ request, response, bouncer }: HttpContextContract) {
-    // if (bouncer && this.bauncerPolicy) {
-    //   await bouncer.with(this.bauncerPolicy).authorize('viewList')
-    // }
-    // const qs = request.qs() as unknown as IndexQs
+    if (bouncer && this.bauncerPolicy) {
+      await bouncer.with(this.bauncerPolicy).authorize('viewList')
+    }
+
+    const qs = request.qs() as unknown as IndexQs
 
     const qs = qsModule.parse(request.parsedUrl.query, { depth: 10 })
 
@@ -144,9 +145,9 @@ export default class BaseController {
   }
 
   public async store({ request, response, bouncer }: HttpContextContract) {
-    // if (bouncer && this.bauncerPolicy) {
-    //   await bouncer.with(this.bauncerPolicy).authorize('create')
-    // }
+    if (bouncer && this.bauncerPolicy) {
+      await bouncer.with(this.bauncerPolicy).authorize('create')
+    }
     const payload = await request.validate(this.storeValidator)
     const record = await this.model.create(payload)
     return response.json({ record })
@@ -155,9 +156,9 @@ export default class BaseController {
   public async update({ params, request, response, bouncer }: HttpContextContract) {
     const id = params.id
     const record = await this.model.findOrFail(id)
-    // if (bouncer && this.bauncerPolicy) {
-    //   await bouncer.with(this.bauncerPolicy).authorize('update', record)
-    // }
+    if (bouncer && this.bauncerPolicy) {
+      await bouncer.with(this.bauncerPolicy).authorize('update', record)
+    }
     const payload = await request.validate(this.updateValidator)
     record?.merge(payload)
     await record?.save()
@@ -167,9 +168,9 @@ export default class BaseController {
   public async destroy({ params, response, bouncer }: HttpContextContract) {
     const id = params.id
     const record = await this.model.findOrFail(id)
-    // if (bouncer && this.bauncerPolicy) {
-    //   await bouncer.with(this.bauncerPolicy).authorize('delete', record)
-    // }
+    if (bouncer && this.bauncerPolicy) {
+      await bouncer.with(this.bauncerPolicy).authorize('delete', record)
+    }
 
     await record?.delete()
     return response.json({ record })

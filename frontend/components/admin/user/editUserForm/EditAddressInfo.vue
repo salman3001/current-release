@@ -1,25 +1,19 @@
 <script setup lang="ts">
-import { srollToView } from 'src/utils/scrollToView';
 import { onMounted, ref } from 'vue';
-import editUserStore from 'src/stores/editUserStore';
-import { CityApi, ContinentsApi, CountriesApi, StateApi, StreetApi, userApi } from 'src/utils/BaseApiService';
+import { CityApi, ContinentsApi, CountriesApi, StateApi, StreetApi, userApi } from '@/utils/BaseApiService';
 
 
 const editUser = editUserStore()
 
 const { execute, loading } = userApi.put();
 
-const continentOptions = ref<any[]>([])
 const countiresOptions = ref<any[]>([])
 const stateOptions = ref<any[]>([])
 const cityOptions = ref<any[]>([])
 const streetOptions = ref<any[]>([])
 
-const getCountinents = async () => {
-  ContinentsApi.index().then(({ data }) => {
-    continentOptions.value = (data.value as any)
-  })
-}
+
+const { data: continentOptions } = await ContinentsApi.index()
 
 const getCountries = async (id: string) => {
   CountriesApi.index({
@@ -61,25 +55,23 @@ const getStreets = async (id: string) => {
   })
 }
 
-onMounted(async () => {
-  await getCountinents().then(async () => {
-    if (editUser.addressForm.address.countryId) {
-      await getCountries(editUser.addressForm.address.continentId).then(async () => {
-        if (editUser.addressForm.address.stateId) {
-          await getStates(editUser.addressForm.address.countryId).then(async () => {
-            if (editUser.addressForm.address.cityId) {
-              await getCities(editUser.addressForm.address.stateId).then(async () => {
-                if (editUser.addressForm.address.streetId) {
-                  await getStreets(editUser.addressForm.address.cityId)
-                }
-              })
-            }
-          })
-        }
-      })
-    }
-  })
-})
+watch(continentOptions, async () => {
+  if (editUser.addressForm.address.countryId) {
+    await getCountries(editUser.addressForm.address.continentId).then(async () => {
+      if (editUser.addressForm.address.stateId) {
+        await getStates(editUser.addressForm.address.countryId).then(async () => {
+          if (editUser.addressForm.address.cityId) {
+            await getCities(editUser.addressForm.address.stateId).then(async () => {
+              if (editUser.addressForm.address.streetId) {
+                await getStreets(editUser.addressForm.address.cityId)
+              }
+            })
+          }
+        })
+      }
+    })
+  }
+}, { deep: true, immediate: true })
 
 </script>
 

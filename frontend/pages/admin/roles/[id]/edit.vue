@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 import { Notify } from 'quasar';
-import type { AdditionalParams } from '@/types/QueryParamsTypes';
 import qs from 'qs'
+
 
 const id = useRoute().params.id;
 const loading = ref(false);
@@ -15,7 +15,7 @@ const permissions = ref<any>(null);
 const submit = async () => {
   try {
     loading.value = true;
-    const res = await $fetch('/roles/' + id, {
+    const res = await $fetch('/api/roles/' + id, {
       body: {
         permissionId: permissionId.value,
         isActive: activate.value
@@ -50,7 +50,7 @@ onMounted(async () => {
   }, { encode: false })
 
   try {
-    const res = await $fetch('/roles/' + id + `?${roleQuery}`,);
+    const res = await $fetch('/api/roles/' + id + `?${roleQuery}`,);
     if (res) {
       role.value = res;
       if (res.is_active == 1) {
@@ -69,7 +69,7 @@ onMounted(async () => {
   }
 
   try {
-    const res = await $fetch('/permissions');
+    const res = await $fetch('/api/permissions');
     if (res) {
       permissions.value = res;
     }

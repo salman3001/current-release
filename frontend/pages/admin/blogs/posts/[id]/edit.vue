@@ -6,18 +6,14 @@ import {
 } from '@/utils/BaseApiService';
 import { ref } from 'vue';
 
-definePageMeta({
-  layout: 'admin-layout'
-})
-
 const id = useRoute().params.id;
 
 
 const form = ref({
   title: '',
   slug: '',
-  languageId: null,
-  blogCategoryId: null,
+  languageId: '',
+  blogCategoryId: '',
   longDesc: '',
   metaTitle: '',
   metaKeywords: '',
@@ -62,15 +58,16 @@ watch(blog, () => {
   immediate: true
 })
 
-const { execute: createBlog, loading: posting } = BlogApi.put();
+const { execute: editBlog, loading: posting } = BlogApi.put({}, {
+  onSuccess: () => {
+    navigateTo(routes.admin.blogs.posts)
+  }
+});
 
 const submit = async (e: SubmitEvent) => {
   const formData = convertToFormData(form.value)
 
-  createBlog(id as string,
-    formData).then(() => {
-      navigateTo(routes.admin.blogs.posts)
-    });
+  editBlog(id as string, formData)
 };
 
 </script>
@@ -120,9 +117,7 @@ const submit = async (e: SubmitEvent) => {
               : '/images/dummy-thumb.jpg'" @image="f => form.image = f as any" />
           </div>
           <div class="full-width" style="display: flex; min-height: 25rem; flex-direction: column">
-            <ck-editor @input="(v) => {
-              form.longDesc = v
-            }" :value="form.longDesc" />
+            <ck-editor v-model="form.longDesc" />
           </div>
 
           <div class="column q-gutter-y-md">

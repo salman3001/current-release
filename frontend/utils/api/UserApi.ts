@@ -26,13 +26,11 @@ class UserApiService extends BaseApiClass {
   // }
 
   public updatePassword(
-    id: string,
-    body: any,
     opt?: UseFetchOptions<any>,
     cb?: { onSuccess?: () => void; onError?: () => void }
   ) {
     const loading = ref(false);
-    const execute = async (data: any) => {
+    const execute = async (id: string, data: any) => {
       try {
         loading.value = true;
         const res = await $fetch(this.url + "/update-password/" + id, {
@@ -56,6 +54,8 @@ class UserApiService extends BaseApiClass {
         });
       }
     };
+
+    return { loading, execute };
   }
 }
 

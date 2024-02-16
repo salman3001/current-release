@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import editUserStore from 'src/stores/editUserStore';
-import { userApi } from 'src/utils/BaseApiService';
-import { srollToView } from 'src/utils/scrollToView';
+import { userApi } from '@/utils/api/UserApi';
 import { onMounted, ref } from 'vue';
 
 const editUser = editUserStore()
@@ -26,9 +24,9 @@ onMounted(() => {
         <div class="row q-col-gutter-md" style="padding-top: 30px;">
           <q-input outlined v-model="editUser.passwordForm.password" :type="isPwd ? 'password' : 'text'" label="Password"
             class="col-12 col-sm-6 col-md-3" :rules="[
-              $rules.required('required'),
-              $rules.minLength(8, 'Minimum 9 charectors required'),
-              $rules.alphaNum('Password Must be alpha numeric'),
+              rules.required('required'),
+              rules.minLength(8, 'Minimum 9 charectors required'),
+              rules.alphaNum('Password Must be alpha numeric'),
             ]">
             <template v-slot:append>
               <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer" @click="isPwd = !isPwd" />
@@ -37,8 +35,8 @@ onMounted(() => {
 
           <q-input outlined v-model="editUser.passwordForm.password_confirmation" :type="isPwd ? 'password' : 'text'"
             label="Cofirm Password" class="col-12 col-sm-6 col-md-3" :rules="[
-              $rules.required('required'),
-              $rules.sameAs(editUser.passwordForm.password, 'Password doesnt match'),
+              rules.required('required'),
+              rules.sameAs(editUser.passwordForm.password, 'Password doesnt match'),
             ]">
             <template v-slot:append>
               <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer" @click="isPwd = !isPwd" />

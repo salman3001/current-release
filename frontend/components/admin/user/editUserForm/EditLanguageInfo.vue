@@ -1,8 +1,6 @@
 <script setup lang="ts">
-import { srollToView } from 'src/utils/scrollToView'
-import editUserStore from 'src/stores/editUserStore';
 import { onMounted } from 'vue';
-import { userApi } from 'src/utils/BaseApiService';
+import { userApi } from '@/utils/BaseApiService';
 
 const editUser = editUserStore()
 const { execute, loading } = userApi.put();

@@ -6,9 +6,6 @@ import {
 } from '@/utils/BaseApiService';
 import { ref } from 'vue';
 
-definePageMeta({
-  layout: 'admin-layout'
-})
 
 const form = ref({
   title: '',
@@ -91,10 +88,7 @@ const submit = async () => {
                 )) || 'Order number not avaialabe. Choose another one',
             ]" />
           <div class="full-width" style="display: flex; min-height: 25rem; flex-direction: column">
-              <ck-editor @input="(v) => {
-                form.content = v
-              }"/>
-            <!-- <ckeditor v-model="form.content" :config="ckConfig"></ckeditor> -->
+              <ck-editor v-model="form.content"/>
           </div>
         </div>
 

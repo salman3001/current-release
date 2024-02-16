@@ -1,10 +1,6 @@
 <script setup lang="ts">
 import { BlogApi } from '@/utils/BaseApiService';
 
-definePageMeta({
-  layout: 'admin-layout'
-})
-
 const id = useRoute().params.id;
 
 const { data: blog } = await BlogApi.show(id as string, {

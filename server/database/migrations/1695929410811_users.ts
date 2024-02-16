@@ -16,6 +16,7 @@ export default class extends BaseSchema {
       table.string('phone', 15)
       table.string('desc')
       table.boolean('is_active').defaultTo(false).notNullable()
+      table.boolean('is_vender').defaultTo(false).notNullable()
       table.boolean('is_public').defaultTo(true)
       table.json('avatar')
       /**

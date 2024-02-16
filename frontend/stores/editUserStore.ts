@@ -214,7 +214,7 @@ const editUserStore = defineStore("editUser", () => {
   // };
 
   const getInitialValues = async (id: string) => {
-    const { data } = await userApi.show(id, {
+    return userApi.show(id, {
       populate: {
         address: {
           fields: ["*"],
@@ -259,7 +259,9 @@ const editUserStore = defineStore("editUser", () => {
         },
       },
     });
+  };
 
+  const setInitialValues = (data: any) => {
     user.value = data.value;
     userForm.value.user.firstName = (data.value as any)?.first_name;
     userForm.value.user.lastName = (data.value as any)?.last_name;
@@ -328,6 +330,8 @@ const editUserStore = defineStore("editUser", () => {
 
     workExperienceForm.value.workExperience = newExperienceData;
 
+    console.log(workExperienceForm.value);
+
     if ((data.value as any)?.languages) {
       languagesForm.value.languages = (data.value as any)?.languages.map(
         (l) => l.id
@@ -361,7 +365,6 @@ const editUserStore = defineStore("editUser", () => {
           : false;
     }
   };
-
   return {
     user,
     userForm,
@@ -390,6 +393,7 @@ const editUserStore = defineStore("editUser", () => {
     addNewSkill,
     popSkill,
     getInitialValues,
+    setInitialValues,
   };
 });
 

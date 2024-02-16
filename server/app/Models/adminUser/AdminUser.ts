@@ -54,6 +54,9 @@ export default class AdminUser extends BaseModel {
   public isActive: boolean
 
   @column()
+  public isAdmin: boolean
+
+  @column()
   public roleId: number
 
   @belongsTo(() => Role)

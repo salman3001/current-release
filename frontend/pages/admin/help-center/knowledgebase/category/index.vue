@@ -6,10 +6,6 @@ import modalStore from '@/stores/modalStore';
 import { LanguageApi } from '@/utils/BaseApiService';
 import { onTableRequest } from '@/utils/onTableRequest';
 
-definePageMeta({
-  layout: 'admin-layout'
-})
-
 const modal = modalStore()
 
 const filter = reactive<AdditionalParams>({

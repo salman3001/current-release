@@ -110,6 +110,7 @@ export class BaseApiClass {
       try {
         loading.value = true;
         const res = await $fetch(this.url + `/${id}`, {
+          method: "delete",
           ...(opt as any),
         });
         loading.value = false;

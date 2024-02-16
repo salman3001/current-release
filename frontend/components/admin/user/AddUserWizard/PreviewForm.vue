@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import createUserStore from 'src/stores/createUserStore';
 import { onMounted, ref } from 'vue';
 import { date } from 'quasar';
 import {
@@ -10,8 +9,7 @@ import {
   JobDepartmentApi,
   LanguageApi,
   userApi
-} from 'src/utils/BaseApiService';
-import { useRouter } from 'vue-router';
+} from '@/utils/BaseApiService';
 
 const createUser = createUserStore()
 defineProps<{
@@ -28,7 +26,6 @@ const JobCountries = ref<any[]>([])
 const Languages = ref<any[]>([])
 const imagePreviewUrl = ref('/images/upload-preview.png')
 
-const router = useRouter()
 const { formatDate } = date
 
 const getImageUrl = () => {
@@ -44,16 +41,11 @@ const getImageUrl = () => {
 }
 
 
-const { execute, loading } = userApi.post({
-  headers: {
-    'Content-Type': 'multipart/form-data'
-  }
-},
+const { execute, loading } = userApi.post({},
   {
     onSuccess: () => {
-      router.push({
-        name: 'admin.user.index'
-      })
+      createUser.resetForm()
+      navigateTo(routes.admin.users)
     }
   }
 )
@@ -133,12 +125,16 @@ onMounted(() => {
 
 })
 
+const submit = () => {
+  const formData = convertToFormData(createUser.form)
+  execute(formData)
+
+}
+
 </script>
 
 <template>
-  <q-form class="q-gutter-y-md" @submit="() => {
-    execute(createUser.form)
-  }">
+  <q-form class="q-gutter-y-md" @submit="submit">
     <div class="q-col-gutter-md">
       <h5>Preview</h5>
       <div class="q-py-md rounded">

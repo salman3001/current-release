@@ -1,17 +1,11 @@
 <script setup lang="ts">
 import type { QTableProps } from 'quasar';
 import type { AdditionalParams } from '@/types/QueryParamsTypes';
-import { RoleApi } from '@/utils/BaseApiService';
 import { onTableRequest } from '@/utils/onTableRequest';
 import { onMounted, reactive, ref } from 'vue';
-import { useRouter } from 'vue-router';
 
 const modal = modalStore();
-const router = useRouter();
 
-definePageMeta({
-  layout: 'admin-layout'
-})
 
 const filter = reactive<AdditionalParams>({
   filter: {
@@ -60,7 +54,7 @@ const pagination = ref({
 });
 
 
-const { onRequest, loading, rows } = onTableRequest('/roles', pagination, {
+const { onRequest, loading, rows } = onTableRequest('/api/roles', pagination, {
   populate: {
     permissions: {
       fields: ['*'],
@@ -79,10 +73,6 @@ onMounted(() => {
     <div class="colomn q-gutter-y-lg" style="width: 100%">
       <div class="row justify-between q-gutter-y-sm">
         <div>
-          <q-icon name="keyboard_backspace" size="30px" style="cursor: pointer" @click="() => {
-            navigateTo(routes.admin.roles);
-          }
-            " />
         </div>
         <div class="row q-gutter-sm">
           <q-select outlined dense options-dense emit-value map-options v-model="filter.filter!.is_active" :options="[

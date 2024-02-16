@@ -6,11 +6,6 @@ import {
 } from '@/utils/BaseApiService';
 import { ref } from 'vue';
 
-definePageMeta({
-  layout: 'admin-layout'
-})
-
-
 const form = ref({
   title: '',
   slug: '',
@@ -84,9 +79,7 @@ const submit = async (e: SubmitEvent) => {
             <FormsImageInput name="image" width="250px" @image="im => form.image = im as any" />
           </div>
           <div class="full-width" style="display: flex; min-height: 25rem; flex-direction: column">
-            <ck-editor @input="(v) => {
-              form.longDesc = v
-            }" />
+            <ck-editor v-model="form.longDesc" />
           </div>
         </div>
 

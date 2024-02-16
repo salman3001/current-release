@@ -1,14 +1,11 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue';
 import { date } from 'quasar';
 import {
   AdminUserApi,
   activityLogApi
 } from '@/utils/BaseApiService';
-import { useRoute, useRouter } from 'vue-router';
 
 const route = useRoute()
-const router = useRouter()
 
 const uploads = ref('')
 const tab = ref(route.query.activity ? 'activity' : 'user')

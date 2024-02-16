@@ -3,10 +3,6 @@ import { onMounted, ref } from 'vue';
 import rules from '@/utils/rules';
 import { Notify } from 'quasar';
 
-definePageMeta({
-  layout: 'admin-layout'
-})
-
 const isPwd = ref(true);
 const loading = ref(false);
 const address = addressStore();

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { type QTableProps, date } from 'quasar';
-import { ContactMessageApi } from '@/utils/BaseApiService';
 import { onTableRequest } from '@/utils/onTableRequest';
+
 import { onMounted, ref } from 'vue';
 
 const modal = modalStore();
@@ -18,7 +18,7 @@ const pagination = ref({
 });
 
 
-const { onRequest, loading, rows } = onTableRequest('/api/contact-message', pagination,)
+const { onRequest, loading, rows } = onTableRequest('/api/help-center/contact-message', pagination,)
 
 
 const colomns: QTableProps['columns'] = [
@@ -117,7 +117,7 @@ onMounted(() => {
                   </q-item> -->
                   <q-item clickable v-close-popup @click="
                     modal.togel('deleteRecord', {
-                      url: '/help-center/contact-message/' + props.row.id,
+                      url: '/api/help-center/contact-message/' + props.row.id,
                       tableRef,
                       title: 'Delete Contact Message?',
                     })

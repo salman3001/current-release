@@ -9,6 +9,11 @@ export enum ServiceLocationType {
   PHYSICAL = 'Physical',
 }
 
+export enum CartItemType {
+  SERVICE = 'service',
+  PRODUCT = 'product',
+}
+
 export enum permissions {
   MANAGE_ADMIN_USERS = 'Manage Admin Users',
   MANAGE_BLOGS = 'Manage Blogs',
