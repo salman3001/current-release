@@ -24,16 +24,4 @@ export default class Seo extends BaseModel {
 
   @column()
   public productId: number
-
-  @column()
-  public serviceSubcategoryId: number
-
-  @column()
-  public serviceCategoryId: number
-
-  @column()
-  public serviceTagId: number
-
-  @column()
-  public serviceId: number
 }

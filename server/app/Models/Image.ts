@@ -24,6 +24,4 @@ export default class Image extends BaseModel {
   @column()
   public productId: number
 
-  @column()
-  public serviceId: number
 }

@@ -10,6 +10,7 @@ import {
   HasMany,
   manyToMany,
   ManyToMany,
+  afterCreate,
 } from '@ioc:Adonis/Lucid/Orm'
 import Address from '../address/Address'
 import Language from '../Language'
@@ -26,9 +27,8 @@ import {
 import Notifications from '../Notification'
 import SupportTicket from '../helpcenter/SupportTicket'
 import Product from '../product/Product'
-import Service from '../service/Service'
-import Review from '../Review'
-import Cart from '../Cart'
+import Review from '../product/Review'
+import Cart from '../product/Cart'
 
 export default class User extends BaseModel {
   @column({ isPrimary: true })
@@ -117,9 +117,6 @@ export default class User extends BaseModel {
   @hasMany(() => Product)
   public products: HasMany<typeof Product>
 
-  @hasMany(() => Service)
-  public services: HasMany<typeof Service>
-
   @hasMany(() => Review)
   public reviews: HasMany<typeof Review>
 
@@ -137,5 +134,10 @@ export default class User extends BaseModel {
     if (user.$dirty.password) {
       user.password = await Hash.make(user.password)
     }
+  }
+
+  @afterCreate()
+  public static async createCart(User: User) {
+    await User.related('cart').create({})
   }
 }

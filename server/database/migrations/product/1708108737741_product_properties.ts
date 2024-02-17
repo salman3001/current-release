@@ -1,22 +1,19 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
 
 export default class extends BaseSchema {
-  protected tableName = 'images'
+  protected tableName = 'product_properties'
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id').primary()
-      table.json('file')
-
-      table.integer('blog_id').unsigned().references('id').inTable('blogs').onDelete('SET NULL')
+      table.string('name', 50).notNullable()
+      table.string('value').notNullable()
       table
-        .integer('product_id')
+        .integer('product_variant_id')
         .unsigned()
         .references('id')
-        .inTable('products')
-        .onDelete('SET NULL')
-
-      table.integer('media_id').unsigned().references('id').inTable('media').onDelete('SET NULL')
+        .inTable('product_variants')
+        .onDelete('CASCADE').notNullable()
     })
   }
 

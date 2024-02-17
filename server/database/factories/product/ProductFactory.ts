@@ -6,15 +6,16 @@ import ProductSubcategoryFactory from './ProductSubcategoryFactory'
 import SeoFactory from '../SeoFactory'
 import ProductTagFactory from './ProductTagFactory'
 import SocialFactory from '../SocialFactory'
+import UserFactory from '../user/UserFactory'
+import ProductVariantFactory from './ProductVariantFactory'
+import { ProductType } from 'App/Helpers/enums'
 
 export default Factory.define(Product, ({ faker }) => {
   return {
+    type: faker.helpers.enumValue(ProductType),
     name: faker.commerce.productName(),
-    phone: faker.phone.number(),
-    email: faker.internet.email(),
     shortDesc: faker.commerce.productDescription(),
     longDesc: faker.lorem.paragraphs(),
-    companyName: faker.company.name(),
     status: false,
     specificLocation: false,
   }
@@ -25,4 +26,6 @@ export default Factory.define(Product, ({ faker }) => {
   .relation('seo', () => SeoFactory)
   .relation('social', () => SocialFactory)
   .relation('tags', () => ProductTagFactory)
+  .relation('user', () => UserFactory)
+  .relation('variants', () => ProductVariantFactory)
   .build()

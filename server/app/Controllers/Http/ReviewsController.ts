@@ -1,6 +1,6 @@
 // import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
-import Review from 'App/Models/Review'
+import Review from 'App/Models/product/Review'
 import BaseController from './BaseController'
 import CreateReviewValidator from 'App/Validators/CreateReviewValidator'
 import UpdateReviewValidator from 'App/Validators/UpdateReviewValidator'

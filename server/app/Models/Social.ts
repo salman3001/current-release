@@ -1,4 +1,3 @@
-import { DateTime } from 'luxon'
 import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
 
 export default class Social extends BaseModel {
@@ -40,7 +39,4 @@ export default class Social extends BaseModel {
 
   @column()
   public productId: number
-
-  @column()
-  public serviceId: number
 }

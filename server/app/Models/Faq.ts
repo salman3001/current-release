@@ -3,10 +3,6 @@ import ProductSubcategory from './product/ProductSubcategory'
 import ProductCategory from './product/ProductCategory'
 import ProductTag from './product/ProductTag'
 import Product from './product/Product'
-import Service from './service/Service'
-import ServiceCategory from './service/ServiceCategory'
-import ServiceSubcategory from './service/ServiceSubcategory'
-import ServiceTag from './service/ServiceTag'
 
 export default class Faq extends BaseModel {
   @column({ isPrimary: true })
@@ -44,25 +40,4 @@ export default class Faq extends BaseModel {
 
   @column()
   public serviceId: number
-
-  @belongsTo(() => Service)
-  public service: BelongsTo<typeof Service>
-
-  @column()
-  public serviceCategoryId: number
-
-  @belongsTo(() => ServiceCategory)
-  public serviceCategory: BelongsTo<typeof ServiceCategory>
-
-  @column()
-  public serviceSubcategoryId: number
-
-  @belongsTo(() => ServiceSubcategory)
-  public serviceSubcategory: BelongsTo<typeof ServiceSubcategory>
-
-  @column()
-  public serviceTagId: number
-
-  @belongsTo(() => ServiceTag)
-  public serviceTags: BelongsTo<typeof ServiceTag>
 }

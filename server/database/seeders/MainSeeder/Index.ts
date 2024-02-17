@@ -11,7 +11,6 @@ import SupportTicketFactory from 'Database/factories/helpcenter/SupportTicketFac
 import PermissionFactory from 'Database/factories/adminUser/PermissionFactory'
 import { TicketStatus, permissions } from 'App/Helpers/enums'
 import ProductCategoryFactory from 'Database/factories/product/ProductCategoryFactory'
-import ServiceCategoryFactory from 'Database/factories/service/ServiceCategoryFactory'
 import CampaignTypeFactory from 'Database/factories/email/CampaignTypeFactory'
 import TemplateFactory from 'Database/factories/email/TemplateFactory'
 
@@ -78,6 +77,11 @@ export default class extends BaseSeeder {
       .with('favoriteLinks', 3)
       .with('skills', 4)
       .with('NotificationSetting')
+      .with('products', 3, (p) => {
+        p.with('variants', 2, (v) => {
+          v.with('properties', 3)
+        })
+      })
       .createMany(10)
 
     await BlogCategoryFactory.with('blogs', 5).createMany(4)
@@ -103,22 +107,6 @@ export default class extends BaseSeeder {
     })
       .with('products', 2, (p) => {
         p.with('faq', 3).with('seo').with('social').with('tags', 3)
-      })
-      .with('faqs', 3)
-      .with('seo')
-      .createMany(3)
-
-    // services
-    await ServiceCategoryFactory.with('subCategory', 3, (sub) => {
-      sub
-        .with('Services', 3, (s) => {
-          s.with('tags', 3).with('faqs', 3).with('seo').with('social')
-        })
-        .with('faqs', 3)
-        .with('seo')
-    })
-      .with('services', 2, (s) => {
-        s.with('tags', 3).with('faqs', 3).with('seo').with('social')
       })
       .with('faqs', 3)
       .with('seo')

@@ -1,8 +1,7 @@
 import { DateTime } from 'luxon'
 import { BaseModel, BelongsTo, belongsTo, column } from '@ioc:Adonis/Lucid/Orm'
-import Service from './service/Service'
-import Product from './product/Product'
-import User from './user/User'
+import Product from './Product'
+import User from '../user/User'
 
 export default class Review extends BaseModel {
   @column({ isPrimary: true })
@@ -15,22 +14,16 @@ export default class Review extends BaseModel {
   public message: string
 
   @column()
-  public productId: number
-
-  @column()
-  public serviceId: number
-
-  @column()
   public userId: number
-
-  @belongsTo(() => Service)
-  public service: BelongsTo<typeof Service>
-
-  @belongsTo(() => Product)
-  public product: BelongsTo<typeof Product>
 
   @belongsTo(() => User)
   public user: BelongsTo<typeof User>
+
+  @column()
+  public productId: number
+
+  @belongsTo(() => Product)
+  public product: BelongsTo<typeof Product>
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

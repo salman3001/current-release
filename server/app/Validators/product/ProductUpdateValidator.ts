@@ -2,7 +2,7 @@ import { schema, CustomMessages, rules } from '@ioc:Adonis/Core/Validator'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 export default class ProductUpdateValidator {
-  constructor(protected ctx: HttpContextContract) {}
+  constructor(protected ctx: HttpContextContract) { }
 
   /*
    * Define schema to validate the "shape", "type", "formatting" and "integrity" of data.
@@ -47,15 +47,8 @@ export default class ProductUpdateValidator {
       })
     ),
     product: schema.object.optional().members({
-      id: schema.number.optional(),
       name: schema.string({ trim: true }),
-      email: schema.string.optional({ trim: true }, [
-        rules.email(),
-        rules.normalizeEmail({ allLowercase: true }),
-      ]),
-      phone: schema.string.optional({ trim: true }, [rules.minLength(9)]),
-      companyName: schema.string.optional({ trim: true }),
-      userId: schema.number.optional(),
+      userId: schema.number(),
       productCategoryId: schema.number.optional(),
       productSubcategoryId: schema.number.optional(),
       specificLocation: schema.boolean.optional(),
@@ -86,6 +79,18 @@ export default class ProductUpdateValidator {
         ans: schema.string(),
       })
     ),
+    variants: schema.array().members(schema.object().members({
+      price: schema.number(),
+      availableQty: schema.number(),
+      image: schema.file.optional({
+        extnames: ['jpg', 'JPG', 'jpeg', 'JPEG', 'png', 'PNG', 'webp', 'WEBP'],
+        size: '5mb',
+      }),
+      properties: schema.array.optional().members(schema.object().members({
+        name: schema.string(),
+        value: schema.string()
+      }))
+    }))
   })
 
   /**

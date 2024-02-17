@@ -14,6 +14,7 @@ const filter = reactive<AdditionalParams>({
   },
   filter: {
     status: null,
+    type: null
   },
   relationFilter: {
     productCategory: {
@@ -72,23 +73,24 @@ const colomns: QTableProps['columns'] = [
     style: 'height:auto;',
   },
   {
+    name: 'type',
+    field: (row: any) => (row?.type as string).toUpperCase(),
+    label: 'Type',
+    align: 'left',
+    style: 'height:auto;',
+  },
+  {
     name: 'productCategory',
     field: (row: any) => row?.productCategory?.name,
     label: 'Product Category',
     align: 'left',
     style: 'height:auto;',
   },
+
   {
     name: 'productSubcategory',
     field: (row: any) => row?.productSubcategory?.name,
     label: 'Product Subcategory',
-    align: 'left',
-    style: 'height:auto;',
-  },
-  {
-    name: 'companyName',
-    field: 'company_name',
-    label: 'Company Name',
     align: 'left',
     style: 'height:auto;',
   },
@@ -128,6 +130,11 @@ const colomns: QTableProps['columns'] = [
         }
           " />
         <div class="row q-gutter-sm">
+          <q-select outlined dense options-dense emit-value map-options v-model="filter.filter!.type" :options="[
+            { label: 'All', value: null },
+            { label: 'Services', value: 'service' },
+            { label: 'Products', value: 'product' },
+          ]" label="Type" class="col-auto" style="min-width: 8rem" />
           <q-select v-if="productCategories" outlined dense options-dense emit-value map-options
             v-model="filter.relationFilter!.productCategory.value" :options="[
               { label: 'All', value: null },

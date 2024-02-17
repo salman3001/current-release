@@ -24,7 +24,9 @@ import {
   responsiveAttachment,
 } from '@ioc:Adonis/Addons/ResponsiveAttachment'
 import Video from '../Video'
-import Review from '../Review'
+import Review from './Review'
+import { ProductType } from 'App/Helpers/enums'
+import ProductVariant from './ProductVariant'
 
 export default class Product extends BaseModel {
   @column({ isPrimary: true })
@@ -34,13 +36,7 @@ export default class Product extends BaseModel {
   public name: string
 
   @column()
-  public companyName: string
-
-  @column()
-  public phone: string
-
-  @column()
-  public email: string
+  public type: ProductType
 
   @column()
   public shortDesc: string
@@ -59,32 +55,6 @@ export default class Product extends BaseModel {
 
   @belongsTo(() => User)
   public user: BelongsTo<typeof User>
-
-  @column()
-  public productCategoryId: number
-
-  @belongsTo(() => ProductCategory)
-  public productCategory: BelongsTo<typeof ProductCategory>
-
-  @column()
-  public productSubcategoryId: number
-
-  @belongsTo(() => ProductSubcategory)
-  public productSubcategory: BelongsTo<typeof ProductSubcategory>
-
-  @hasOne(() => Seo)
-  public seo: HasOne<typeof Seo>
-
-  @hasOne(() => Social)
-  public social: HasOne<typeof Social>
-
-  @hasMany(() => Faq)
-  public faq: HasMany<typeof Faq>
-
-  @manyToMany(() => ProductTag, {
-    pivotTable: 'product_tags_pivot',
-  })
-  public tags: ManyToMany<typeof ProductTag>
 
   @responsiveAttachment({
     folder: 'product/logos',
@@ -119,8 +89,37 @@ export default class Product extends BaseModel {
   })
   public brocher: ResponsiveAttachmentContract
 
+  @column()
+  public productCategoryId: number
+
+  @belongsTo(() => ProductCategory)
+  public productCategory: BelongsTo<typeof ProductCategory>
+
+  @column()
+  public productSubcategoryId: number
+
+  @belongsTo(() => ProductSubcategory)
+  public productSubcategory: BelongsTo<typeof ProductSubcategory>
+
+  @hasOne(() => Seo)
+  public seo: HasOne<typeof Seo>
+
+  @hasOne(() => Social)
+  public social: HasOne<typeof Social>
+
+  @hasMany(() => Faq)
+  public faq: HasMany<typeof Faq>
+
+  @manyToMany(() => ProductTag, {
+    pivotTable: 'product_tags_pivot',
+  })
+  public tags: ManyToMany<typeof ProductTag>
+
   @hasMany(() => Review)
   public reviews: HasMany<typeof Review>
+
+  @hasMany(() => ProductVariant)
+  public variants: HasMany<typeof ProductVariant>
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

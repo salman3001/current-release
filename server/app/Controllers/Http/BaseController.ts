@@ -41,14 +41,12 @@ export default class BaseController {
     private bauncerPolicy?: keyof PoliciesList,
     public perPage?: number,
     public importSelects: string[] = []
-  ) {}
+  ) { }
 
   public async index({ request, response, bouncer }: HttpContextContract) {
     if (bouncer && this.bauncerPolicy) {
       await bouncer.with(this.bauncerPolicy).authorize('viewList')
     }
-
-    const qs = request.qs() as unknown as IndexQs
 
     const qs = qsModule.parse(request.parsedUrl.query, { depth: 10 })
 

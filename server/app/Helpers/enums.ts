@@ -9,7 +9,7 @@ export enum ServiceLocationType {
   PHYSICAL = 'Physical',
 }
 
-export enum CartItemType {
+export enum ProductType {
   SERVICE = 'service',
   PRODUCT = 'product',
 }

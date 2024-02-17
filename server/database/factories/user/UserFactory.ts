@@ -8,6 +8,7 @@ import SkillFactory from './SkillFactory'
 import NotificationSettingFactory from './NotificationSettingFactory'
 import SocialFactory from '../SocialFactory'
 import FavoriteLinkFactory from '../FavoriteLinkFactory'
+import ProductFactory from '../product/ProductFactory'
 
 export default Factory.define(User, ({ faker }) => {
   return {
@@ -15,7 +16,7 @@ export default Factory.define(User, ({ faker }) => {
     firstName: faker.person.firstName(),
     lastName: faker.person.lastName(),
     isActive: false,
-    isPublic: 1,
+    isPublic: true,
     password: '123456789',
     phone: '9999999999',
     userName: faker.internet.userName(),
@@ -30,4 +31,5 @@ export default Factory.define(User, ({ faker }) => {
   .relation('NotificationSetting', () => NotificationSettingFactory)
   .relation('social', () => SocialFactory)
   .relation('favoriteLinks', () => FavoriteLinkFactory)
+  .relation('products', () => ProductFactory)
   .build()

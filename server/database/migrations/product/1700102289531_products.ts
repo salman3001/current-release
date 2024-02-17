@@ -1,4 +1,5 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
+import { ProductType } from 'App/Helpers/enums'
 
 export default class extends BaseSchema {
   protected tableName = 'products'
@@ -7,19 +8,16 @@ export default class extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id').primary()
       table.string('name').notNullable()
-      table.string('phone')
-      table.string('email')
+      table.enum('type', Object.values(ProductType))
       table.string('short_desc')
       table.text('long_desc')
-      table.string('company_name')
-      table.integer('user_id').unsigned().references('id').inTable('users').onDelete('CASCADE')
       table.boolean('status').defaultTo(false).notNullable()
       table.boolean('specific_location').defaultTo(false).notNullable()
+      table.integer('user_id').unsigned().references('id').inTable('users').onDelete('SET NULL')
       table.json('logo')
       table.json('cover')
       table.json('video')
       table.json('brocher')
-      table.integer('user_id').unsigned().references('id').inTable('users').onDelete('SET NULL')
       table
         .integer('product_category_id')
         .unsigned()

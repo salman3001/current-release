@@ -24,14 +24,6 @@ export default class extends BaseSchema {
         .onDelete('CASCADE')
 
       table
-        .integer('service_id', 10)
-        .unsigned()
-        .nullable()
-        .references('id')
-        .inTable('services')
-        .onDelete('CASCADE')
-
-      table
         .integer('continent_id', 10)
         .unsigned()
         .nullable()

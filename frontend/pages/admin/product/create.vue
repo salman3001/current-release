@@ -15,9 +15,6 @@ const form = ref({
   images: [],
   product: {
     name: '',
-    email: '',
-    phone: '',
-    companyName: '',
     userId: '',
     productCategoryId: '',
     productSubcategoryId: '',
@@ -26,6 +23,15 @@ const form = ref({
     longDesc: '',
     status: false
   },
+  variants: [{
+    price: '',
+    availableQty: '',
+    image: null,
+    properties: [{
+      name: '',
+      value: ''
+    }]
+  }],
   tags: [],
   seo: {
     metaTitle: '',
@@ -49,6 +55,22 @@ const form = ref({
   }]
 
 });
+
+const addVariant = () => {
+  form.value.variants.push({ price: '', availableQty: '', image: null, properties: [{ name: '', value: '' }] })
+}
+
+const removeVariant = (index: number) => {
+  form.value.variants.splice(index, 1)
+}
+
+const addVariantProperty = (variantIndex: number) => {
+  form.value.variants[variantIndex].properties.push({ name: '', value: '' })
+}
+
+const removeVariantProperty = (variantIndex: number, propertyIndex: number) => {
+  form.value.variants[variantIndex].properties.splice(propertyIndex, 1)
+}
 
 const { data: productCategories } = await productCategoryApi.index({
   fields: ['name', 'id'],
@@ -102,7 +124,6 @@ const screenShotUrls = computed(() => {
             class="col-12 col-sm-6 col-md-3" :rules="[
               rules.required('required'),
             ]" :options="[...users.map((l: any) => ({ label: l?.first_name, value: l?.id }))]" />
-          <q-input outlined v-model="form.product.companyName" label="Company Name" class="col-12 col-sm-6 col-md-3" />
           <q-select v-if="productCategories" outlined debounce="500" v-model="form.product.productCategoryId" emit-value
             map-options label="Select Category" class="col-12 col-sm-6 col-md-3"
             :options="[...productCategories.map((l: any) => ({ label: l?.name, value: l?.id }))]" />
@@ -124,16 +145,49 @@ const screenShotUrls = computed(() => {
           <q-input outlined v-model="form.product.name" label="ProductName" class="col-12 col-sm-6 col-md-3" :rules="[
             rules.required('Product name is required'),
           ]" />
-          <q-input type="email" outlined v-model="form.product.email" label="Product Email"
-            class="col-12 col-sm-6 col-md-3" :rules="[
-              rules.email('Not Valid Email'),
-            ]" />
-          <q-input type="number" outlined v-model="form.product.phone" label="Product Phone"
-            class="col-12 col-sm-6 col-md-3" :rules="[
-              rules.minLength(9, 'Phone number not valid'),
-            ]" />
         </div>
+      </div>
+      <div class="q-gutter-y-md">
+        <h6>Variants</h6>
+        <div class="row q-pa-md q-gutter-y-md relative-position" style="border: 1px solid gray; border-radius: 10px;"
+          v-for="v, vi in form.variants">
+          <q-badge floating @click="removeVariant(vi)" v-if="vi > 0"><q-icon name="close"
+              style="height: 20px;width: 20px;cursor: pointer;"></q-icon></q-badge>
+          <p style="font-weight: bold;">Variants {{ vi + 1 }}</p>
+          <div class="col-12 q-mb-xl">
+            <div class="q-py-xs" style="font-weight: 500;">Image</div>
+            <FormsImageInput name="Image" @image="(f) => { v.image = f as unknown as null }" style="max-width: 15rem;" />
+          </div>
+          <div class="full-width">
+            <div class="row q-col-gutter-sm">
+              <q-input type="number" outlined v-model="v.price" label="Price" class="col-12 col-sm-6 col-md-3" :rules="[
+                rules.required('Price field is required'),
+              ]" />
+              <q-input type="number" outlined v-model="v.availableQty" label="Available Quantity"
+                class="col-12 col-sm-6 col-md-3" :rules="[
+                  rules.required('Quantity field is required'),
+                ]" />
+            </div>
+            <p style="font-weight: bold;"> Variant Properties</p>
+            <div class="row q-col-gutter-sm relative-position" v-for="p, pi in v.properties">
+              <q-input outlined v-model="p.name" label="Name" class="col-12 col-sm-6 col-md-3" :rules="[
+                rules.required('Price field is required'),
+              ]" />
+              <div class="relative-position justify-center items-center">
+                <q-input outlined v-model="p.value" label="Value" class="col-12 col-sm-6 col-md-3" :rules="[
+                  rules.required('Quantity field is required'),
+                ]" />
+                <q-badge floating @click="removeVariantProperty(vi, pi)" v-if="pi > 0"><q-icon name="close"
+                    style="height: 20px;width: 20px;cursor: pointer;"></q-icon></q-badge>
+              </div>
+            </div>
+            <q-btn outline size="sm" @click="addVariantProperty(vi)">+ Add Property</q-btn>
 
+          </div>
+        </div>
+        <div>
+          <q-btn color="primary" @click="addVariant">+ Add variant</q-btn>
+        </div>
       </div>
       <div>
         <h6>
@@ -186,7 +240,8 @@ const screenShotUrls = computed(() => {
         </div>
         <div class="col-12 q-mb-xl">
           <div class=" q-py-xs" style="font-weight: 500;">Product Brochure</div>
-          <FormsImageInput name="logo" @image="(f) => { form.brocher = f as unknown as null }" style="max-width: 15rem;" />
+          <FormsImageInput name="logo" @image="(f) => { form.brocher = f as unknown as null }"
+            style="max-width: 15rem;" />
         </div>
         <div class="col-12 q-mb-xl">
           <div class="q-py-md" style="font-weight: 500;">Product Screenshots (Max 5 images)</div>

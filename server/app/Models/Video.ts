@@ -15,11 +15,6 @@ export default class Video extends BaseModel {
   file: AttachmentContract
 
   @column()
-  public type: VideoType
-
-  @column()
   public productId: number
 
-  @column()
-  public serviceId: number
 }

@@ -1,5 +1,4 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
-import { VideoType } from 'App/Helpers/enums'
 
 export default class extends BaseSchema {
   protected tableName = 'videos'
@@ -13,13 +12,6 @@ export default class extends BaseSchema {
         .unsigned()
         .references('id')
         .inTable('products')
-        .onDelete('SET NULL')
-
-      table
-        .integer('service_id')
-        .unsigned()
-        .references('id')
-        .inTable('services')
         .onDelete('SET NULL')
 
       table.integer('media_id').unsigned().references('id').inTable('media').onDelete('SET NULL')

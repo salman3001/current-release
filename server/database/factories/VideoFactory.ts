@@ -1,7 +1,7 @@
-import video from 'App/Models/video'
 import Factory from '@ioc:Adonis/Lucid/Factory'
+import Video from 'App/Models/Video'
 
-export default Factory.define(video, ({ faker }) => {
+export default Factory.define(Video, ({ faker }) => {
   return {
     //
   }

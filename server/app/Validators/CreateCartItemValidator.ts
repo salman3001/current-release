@@ -1,9 +1,8 @@
 import { schema, CustomMessages, rules } from '@ioc:Adonis/Core/Validator'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import { CartItemType } from 'App/Helpers/enums'
 
 export default class CreateCartItemValidator {
-  constructor(protected ctx: HttpContextContract) {}
+  constructor(protected ctx: HttpContextContract) { }
 
   /*
    * Define schema to validate the "shape", "type", "formatting" and "integrity" of data.
@@ -25,26 +24,15 @@ export default class CreateCartItemValidator {
    *    ```
    */
   public schema = schema.create({
-    cartId: schema.number([
-      rules.exists({
-        table: 'carts',
-        column: 'id',
-      }),
-    ]),
     qty: schema.number(),
-    type: schema.enum(Object.values(CartItemType)),
-    productId: schema.number.optional([
-      rules.exists({
-        table: 'products',
-        column: 'id',
-      }),
-    ]),
-    serviceId: schema.number.optional([
-      rules.exists({
-        table: 'services',
-        column: 'id',
-      }),
-    ]),
+    cartId: schema.number([rules.exists({
+      table: 'carts',
+      column: 'id'
+    })]),
+    productVariantId: schema.number([rules.exists({
+      table: 'product_variants',
+      column: 'id'
+    })])
   })
 
   /**
