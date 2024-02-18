@@ -13,7 +13,7 @@ export default class MediaController extends BaseController {
     super(Media, null, null, 'MediaPolicy')
   }
 
-  public async store({ request, response, bouncer }: HttpContextContract): Promise<void> {
+  public async store({ request, response, bouncer }: HttpContextContract) {
     await bouncer.with('MediaPolicy').authorize('create')
     const payload = await this.validateRequest(request)
 
@@ -29,7 +29,13 @@ export default class MediaController extends BaseController {
       await media.related('video').create({ file: Attachment.fromFile(payload.video) })
     }
 
-    return response.json({ message: 'Media created' })
+    return response.custom({
+      message: 'Media Added Successfully',
+      code: 201,
+      data: media,
+      status: true,
+      alertType: 'success'
+    })
   }
 
   public async update({ params, request, response, bouncer }: HttpContextContract): Promise<void> {
@@ -64,7 +70,13 @@ export default class MediaController extends BaseController {
       await media.related('video').create({ file: Attachment.fromFile(payload.video) })
     }
 
-    return response.json({ message: 'Media created' })
+    return response.custom({
+      message: 'Media Updated',
+      code: 201,
+      data: media,
+      status: true,
+      alertType: 'success'
+    })
   }
 
   public async destroy({ params, response, bouncer }: HttpContextContract): Promise<void> {
@@ -87,7 +99,13 @@ export default class MediaController extends BaseController {
 
     await media.delete()
 
-    return response.json({ message: 'Media Deleted' })
+    return response.custom({
+      message: 'Media Deleted',
+      code: 200,
+      data: media,
+      status: true,
+      alertType: 'success'
+    })
   }
 
   private async validateRequest(request: HttpContextContract['request']) {

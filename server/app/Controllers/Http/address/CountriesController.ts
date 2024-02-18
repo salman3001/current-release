@@ -18,7 +18,13 @@ export default class CountriesController extends BaseController {
     })
     const payload = await request.validate({ schema: countrySchema })
     const record = await Country.create(payload)
-    return response.json({ message: 'record created', data: record })
+    return response.custom({
+      message: 'Continent Created!',
+      code: 201,
+      data: record,
+      status: true,
+      alertType: 'success'
+    })
   }
 
   public async update({ request, response, params, bouncer }: HttpContextContract) {
@@ -32,7 +38,13 @@ export default class CountriesController extends BaseController {
     const payload = await request.validate({ schema: countrySchema })
     country.merge(payload)
     await country.save()
-    return response.json({ message: 'record updated', data: country })
+    return response.custom({
+      message: 'Continent Updated!',
+      code: 201,
+      data: country,
+      status: true,
+      alertType: 'success'
+    })
   }
 
   public async storeExcelData(data: any): Promise<void> {

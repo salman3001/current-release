@@ -10,19 +10,31 @@ export default class CartItemsController extends BaseController {
     super(CartItem, CreateCartItemValidator, UpdateCartItemValidator)
   }
 
-  public async store({ request, response, bouncer }: HttpContextContract): Promise<void> {
+  public async store({ request, response, bouncer }: HttpContextContract) {
     const payload = await request.validate(CreateCartItemValidator)
     const item = await CartItem.create(payload)
-    return response.json({ message: 'Item Created successfully', data: item })
+    return response.custom({
+      message: 'Cart Item Added',
+      code: 201,
+      data: item,
+      status: true,
+      alertType: 'success'
+    })
   }
 
-  public async update({ params, request, response, bouncer }: HttpContextContract): Promise<void> {
+  public async update({ params, request, response, bouncer }: HttpContextContract) {
     const item = await CartItem.findOrFail(+params.id)
     const payload = await request.validate(UpdateCartItemValidator)
 
     item.merge(payload)
 
     await item.save()
-    return response.json({ message: 'CartItem Updated', data: item })
+    return response.custom({
+      message: 'Cart Item Updated',
+      code: 201,
+      data: item,
+      status: true,
+      alertType: 'success'
+    })
   }
 }

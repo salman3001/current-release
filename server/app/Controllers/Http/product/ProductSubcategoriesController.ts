@@ -30,7 +30,13 @@ export default class ProductSubcategoriesController extends BaseController {
     }
     await category.save()
 
-    return response.json({ message: 'record created', data: category })
+    return response.custom({
+      message: 'Subcategory Added',
+      code: 201,
+      data: category,
+      status: true,
+      alertType: 'success'
+    })
   }
 
   public async update({ request, response, params, bouncer }: HttpContextContract) {
@@ -69,7 +75,13 @@ export default class ProductSubcategoriesController extends BaseController {
     }
     await category.save()
 
-    return response.json({ message: 'record created', data: category })
+    return response.custom({
+      message: 'Subcategory Updated',
+      code: 201,
+      data: category,
+      status: true,
+      alertType: 'success'
+    })
   }
 
   public excludeIncludeExportProperties(record: any) {

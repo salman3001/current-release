@@ -30,9 +30,21 @@ export default class KnowledgeBaseCategoriesController extends BaseController {
           slug: slugify(payload.name),
         })
       }
-      return response.json({ message: 'record created', data: record })
+      return response.custom({
+        message: 'Category Created',
+        code: 201,
+        data: record,
+        status: true,
+        alertType: 'success'
+      })
     } catch (error) {
-      return response.abort({ message: 'Something went wrong' })
+      return response.custom({
+        message: 'Failed to create Category Created',
+        code: 400,
+        data: record,
+        status: false,
+        alertType: 'error'
+      })
     }
   }
 
@@ -42,21 +54,24 @@ export default class KnowledgeBaseCategoriesController extends BaseController {
 
     const payload = await request.validate(HelpcenterContentCategoryValidator)
     const { slug, ...restPayload } = payload
-    try {
-      if (slug) {
-        category.merge(payload)
-        await category.save()
-      } else {
-        category.merge({
-          ...restPayload,
-          slug: slugify(payload.name),
-        })
-        await category.save()
-      }
-      return response.json({ message: 'record updated', data: category })
-    } catch (error) {
-      console.log(error)
-      return response.abort({ message: 'Something went wrong' })
+
+    if (slug) {
+      category.merge(payload)
+      await category.save()
+    } else {
+      category.merge({
+        ...restPayload,
+        slug: slugify(payload.name),
+      })
+      await category.save()
     }
+
+    return response.custom({
+      message: 'Category updated',
+      code: 201,
+      data: category,
+      status: true,
+      alertType: 'success'
+    })
   }
 }

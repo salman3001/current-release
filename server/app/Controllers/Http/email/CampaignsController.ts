@@ -28,7 +28,13 @@ export default class CampaignsController extends BaseController {
       }
     }
 
-    return response.json({ message: 'record created', data: campaign })
+    return response.custom({
+      message: 'Campaign Created!',
+      code: 201,
+      data: campaign,
+      status: true,
+      alertType: 'success'
+    })
   }
 
   public async update({ request, response, params, bouncer }: HttpContextContract) {
@@ -66,7 +72,13 @@ export default class CampaignsController extends BaseController {
       }
     }
 
-    return response.json({ message: 'record created', data: campaign })
+    return response.custom({
+      message: 'Campaign Updated!',
+      code: 201,
+      data: campaign,
+      status: true,
+      alertType: 'success'
+    })
   }
 
   public excludeIncludeExportProperties(record: any) {

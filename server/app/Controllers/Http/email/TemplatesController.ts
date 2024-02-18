@@ -21,7 +21,13 @@ export default class TemplatesController extends BaseController {
     }
 
     await template.save()
-    return response.json({ message: 'record created', data: template })
+    return response.custom({
+      message: 'Template Created',
+      code: 201,
+      data: template,
+      status: true,
+      alertType: 'success'
+    })
   }
 
   public async update({ request, response, params, bouncer }: HttpContextContract) {
@@ -37,7 +43,13 @@ export default class TemplatesController extends BaseController {
       template.thumbnail = await ResponsiveAttachment.fromFile(payload.thumbnail)
     }
     await template.save()
-    return response.json({ message: 'record created', data: template })
+    return response.custom({
+      message: 'Template Updated',
+      code: 201,
+      data: template,
+      status: true,
+      alertType: 'success'
+    })
   }
 
   public excludeIncludeExportProperties(record: any) {

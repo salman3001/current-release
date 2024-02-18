@@ -19,8 +19,12 @@ export default class AuthController {
 
     const user = await AdminUser.findBy('email', payload.email)
     if (!user || user?.isActive == false) {
-      return response.unauthorized({
-        message: 'Failed to login. Account is not active or doesnt exist',
+      return response.custom({
+        message: 'Failed to login. Check your credentials!',
+        code: 400,
+        data: null,
+        status: false,
+        alertType: 'error'
       })
     }
 
@@ -39,17 +43,33 @@ export default class AuthController {
         role.preload('permissions')
       })
 
-      return { token, user, socketToken }
+      return response.custom({
+        message: 'Login Successfull',
+        code: 200,
+        data: { user, token, socketToken },
+        status: true,
+        alertType: 'success'
+      })
     } catch (error) {
-      return response.unauthorized({
+      return response.custom({
         message: 'Failed to login. Check your credentials!',
+        code: 400,
+        data: null,
+        status: false,
+        alertType: 'error'
       })
     }
   }
 
   public async adminLogout({ auth, response }: HttpContextContract) {
     await auth.use('adminUserApi').revoke()
-    return response.json({ message: 'Logout Success!' })
+    return response.custom({
+      message: 'Logout Success',
+      code: 200,
+      data: null,
+      status: true,
+      alertType: 'success'
+    })
   }
 
   public async sendForgotPasswordOtp({ response, request }: HttpContextContract) {
@@ -70,8 +90,12 @@ export default class AuthController {
       await new ForgotPasswordOtpMail(user as any).sendLater()
       return response.json({ message: 'Otp Sent' })
     } else {
-      return response.forbidden({
-        message: 'Invalid Email',
+      return response.custom({
+        message: 'invalid email id',
+        code: 406,
+        data: null,
+        status: false,
+        alertType: 'warning'
       })
     }
   }
@@ -98,15 +122,29 @@ export default class AuthController {
 
         await user.save()
 
-        return response.json({ message: 'password Updated' })
+        return response.custom({
+          message: 'Password updated',
+          code: 200,
+          data: null,
+          status: true,
+          alertType: 'success'
+        })
       } else {
-        return response.forbidden({
-          message: 'Invalid Otp',
+        return response.custom({
+          message: 'Invalid OTP',
+          code: 406,
+          data: null,
+          status: false,
+          alertType: 'error'
         })
       }
     } else {
-      return response.forbidden({
+      return response.custom({
         message: 'Invalid Email',
+        code: 406,
+        data: null,
+        status: false,
+        alertType: 'error'
       })
     }
   }
@@ -128,9 +166,21 @@ export default class AuthController {
       const newPassword = await Hash.make(payload.password)
       user.password = newPassword
       await user.save()
-      return response.json({ message: 'Password Changed' })
+      return response.custom({
+        message: 'Password changed',
+        code: 200,
+        data: null,
+        status: true,
+        alertType: 'success'
+      })
     } else {
-      return response.forbidden({ message: 'Old Password dont match' })
+      return response.custom({
+        message: 'Old password dont match',
+        code: 406,
+        data: null,
+        status: false,
+        alertType: 'error'
+      })
     }
   }
 }

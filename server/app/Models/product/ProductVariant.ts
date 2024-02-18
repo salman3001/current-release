@@ -11,10 +11,32 @@ export default class ProductVariant extends BaseModel {
   public id: number
 
   @column()
+  public name: string
+
+  @column()
   public price: number
 
   @column()
   public availableQty: number
+
+  @column()
+  public hasInifiiteQty: boolean
+
+  @column()
+  public flatDiscount: number
+
+  @column()
+  public features: Object
+
+  @column()
+  public included: Object
+
+  @column()
+  public excluded: Object
+
+  @column()
+  public order: number
+
 
   @responsiveAttachment({
     folder: 'product/variants/images',
@@ -32,6 +54,6 @@ export default class ProductVariant extends BaseModel {
   public product: BelongsTo<typeof Product>
 
   @hasMany(() => ProductProperty)
-  public properties: HasMany<typeof ProductProperty>
+  public aditionalProperties: HasMany<typeof ProductProperty>
 
 }

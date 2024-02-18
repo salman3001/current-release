@@ -25,13 +25,8 @@ export default class CreateReviewValidator {
    */
   public schema = schema.create({
     rating: schema.number(),
-    message: schema.string({ escape: true }, [rules.minLength(3)]),
-    productId: schema.number([
-      rules.exists({
-        table: 'products',
-        column: 'id',
-      }),
-    ]),
+    message: schema.string({ escape: true }),
+    productId: schema.number(),
   })
 
   /**

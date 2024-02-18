@@ -47,7 +47,13 @@ export default class AdminUsersController extends BaseController {
 
     await user.save()
 
-    return response.json(user)
+    return response.custom({
+      message: 'User Created!',
+      code: 201,
+      data: user,
+      status: true,
+      alertType: 'success'
+    })
   }
 
   public async update({ request, response, params, bouncer }: HttpContextContract) {
@@ -93,7 +99,13 @@ export default class AdminUsersController extends BaseController {
 
     await user?.save()
 
-    return response.json(user)
+    return response.custom({
+      message: 'User Updated!',
+      code: 201,
+      data: user,
+      status: true,
+      alertType: 'success'
+    })
   }
 
   public async banUser({ params, response, bouncer }: HttpContextContract) {
@@ -102,9 +114,21 @@ export default class AdminUsersController extends BaseController {
     if (user) {
       user.isActive = false
       await user.save()
-      return response.json({ message: 'User Baned Successfully' })
+      return response.custom({
+        message: 'User banned!',
+        code: 200,
+        data: user,
+        status: true,
+        alertType: 'success'
+      })
     } else {
-      return response.badRequest({ message: 'User not Fund' })
+      return response.custom({
+        message: 'User Not found!',
+        code: 400,
+        data: user,
+        status: false,
+        alertType: 'error'
+      })
     }
   }
 
@@ -112,14 +136,18 @@ export default class AdminUsersController extends BaseController {
     await bouncer.with('RolePolicy').authorize('update')
     const roleId = request.input('roleId')
     const role = await Role.find(+roleId)
-    console.log(roleId)
-    console.log(role)
 
     const user = await AdminUser.find(+params.id)
     await user?.related('role').dissociate()
     if (role) await user?.related('role').associate(role)
 
-    return response.json({ message: 'Role Updates' })
+    return response.custom({
+      message: 'Role Updated!',
+      code: 201,
+      data: null,
+      status: true,
+      alertType: 'success'
+    })
   }
 
   public async updateUserPassword({ params, response, request, bouncer }: HttpContextContract) {
@@ -138,7 +166,13 @@ export default class AdminUsersController extends BaseController {
     // const newPassword = await Hash.make(payload.password)
     user.password = payload.password
     await user.save()
-    return response.json({ message: 'Password Changed' })
+    return response.custom({
+      message: 'Password changed',
+      code: 201,
+      data: null,
+      status: true,
+      alertType: 'success'
+    })
   }
 
   public async getExportRecords(): Promise<LucidRow[]> {

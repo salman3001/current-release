@@ -12,7 +12,13 @@ export default class ContactMessagesController extends BaseController {
 
     const payload = await request.validate({} as any)
     const record = await ContactMessage.create(payload)
-    return response.json({ message: 'record created', data: record })
+    return response.custom({
+      message: 'Contact Message Created',
+      code: 201,
+      data: record,
+      status: true,
+      alertType: 'success'
+    })
   }
 
   public async update({ request, response, params, bouncer }: HttpContextContract) {
@@ -22,7 +28,13 @@ export default class ContactMessagesController extends BaseController {
     const payload = await request.validate({} as any)
     message.merge(payload)
     await message.save()
-    return response.json({ message: 'record updated', data: message })
+    return response.custom({
+      message: 'Contact Message Updated',
+      code: 201,
+      data: message,
+      status: true,
+      alertType: 'success'
+    })
   }
 
   public excludeIncludeExportProperties(record: any) {

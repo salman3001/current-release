@@ -25,14 +25,8 @@ export default class CreateCartItemValidator {
    */
   public schema = schema.create({
     qty: schema.number(),
-    cartId: schema.number([rules.exists({
-      table: 'carts',
-      column: 'id'
-    })]),
-    productVariantId: schema.number([rules.exists({
-      table: 'product_variants',
-      column: 'id'
-    })])
+    cartId: schema.number(),
+    productVariantId: schema.number()
   })
 
   /**

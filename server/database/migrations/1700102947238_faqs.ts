@@ -8,6 +8,7 @@ export default class extends BaseSchema {
       table.increments('id').primary()
       table.string('quest')
       table.string('ans', 1000)
+      table.bigInteger('order').defaultTo(1).notNullable()
       table
         .integer('product_subcategory_id')
         .unsigned()

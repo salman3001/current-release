@@ -10,7 +10,7 @@ export default class CartsController extends BaseController {
     super(Cart, {}, UpdateCartValidator)
   }
 
-  public async update({ params, request, response, bouncer }: HttpContextContract): Promise<void> {
+  public async update({ params, request, response, bouncer }: HttpContextContract) {
     const cart: Cart | null = null
 
     await Database.transaction(async (trx) => {
@@ -28,6 +28,12 @@ export default class CartsController extends BaseController {
       }
     })
 
-    return response.json({ message: 'CartItem Updated', data: cart })
+    return response.custom({
+      message: 'Cart Updated',
+      code: 201,
+      data: cart,
+      status: true,
+      alertType: 'success'
+    })
   }
 }

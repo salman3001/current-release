@@ -14,7 +14,13 @@ export default class ReviewsController extends BaseController {
   public async store({ request, response, bouncer }: HttpContextContract): Promise<void> {
     const payload = await request.validate(CreateReviewValidator)
     const review = await Review.create(payload)
-    return response.json({ message: 'Review Created', data: review })
+    return response.custom({
+      message: 'Review added',
+      code: 201,
+      data: review,
+      status: true,
+      alertType: null
+    })
   }
 
   public async update({ params, request, response, bouncer }: HttpContextContract): Promise<void> {
@@ -24,6 +30,12 @@ export default class ReviewsController extends BaseController {
     review.merge(payload)
 
     await review.save()
-    return response.json({ message: 'Review Updated', data: review })
+    return response.custom({
+      message: 'Review updated',
+      code: 201,
+      data: review,
+      status: true,
+      alertType: null
+    })
   }
 }

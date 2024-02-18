@@ -14,13 +14,21 @@ export default class BlogCategoriesController extends BaseController {
     await bouncer.with('BlogPolicy').authorize('create')
     const { slug, ...payload } = await request.validate(BlogCategoryValidator)
 
+    const category: BlogCategory | null = null
+
     if (slug) {
       await BlogCategory.create({ ...payload, slug })
     } else {
       await BlogCategory.create({ slug: slugify(payload.name), ...payload })
     }
 
-    return response.json({ message: 'Blog Created' })
+    return response.custom({
+      message: 'Blog category Created!',
+      code: 201,
+      data: category,
+      status: true,
+      alertType: 'success'
+    })
   }
 
   public async update({ request, response, params, bouncer }: HttpContextContract) {
@@ -35,7 +43,13 @@ export default class BlogCategoriesController extends BaseController {
     }
     await category.save()
 
-    return response.json({ message: 'Blog Updated' })
+    return response.custom({
+      message: 'Blog category updated!',
+      code: 201,
+      data: category,
+      status: true,
+      alertType: 'success'
+    })
   }
 
   public async storeExcelData(data: any, ctx: HttpContextContract): Promise<void> {

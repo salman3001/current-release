@@ -21,20 +21,23 @@ export default class KnowledgeBaseContentsController extends BaseController {
     const { slug, ...restPayload } = payload
 
     let record: any = null
-    try {
-      if (slug) {
-        record = await KnowledgeBaseContent.create(payload)
-      } else {
-        record = await KnowledgeBaseContent.create({
-          ...restPayload,
-          slug: slugify(payload.title),
-        })
-      }
-      return response.json({ message: 'record created', data: record })
-    } catch (error) {
-      console.log(error)
-      return response.abort({ message: 'Something went wrong' })
+
+    if (slug) {
+      record = await KnowledgeBaseContent.create(payload)
+    } else {
+      record = await KnowledgeBaseContent.create({
+        ...restPayload,
+        slug: slugify(payload.title),
+      })
     }
+    return response.custom({
+      message: 'Content Created',
+      code: 201,
+      data: record,
+      status: true,
+      alertType: 'success'
+    })
+
   }
 
   public async update({ request, response, params, bouncer }: HttpContextContract) {
@@ -43,21 +46,24 @@ export default class KnowledgeBaseContentsController extends BaseController {
     const payload = await request.validate(HelpcenterContentValidator)
     const { slug, ...restPayload } = payload
 
-    try {
-      if (slug) {
-        content.merge(payload)
-        await content.save()
-      } else {
-        content.merge({
-          ...restPayload,
-          slug: slugify(payload.title),
-        })
-        await content.save()
-      }
-      return response.json({ message: 'record updated', data: content })
-    } catch (error) {
-      console.log(error)
-      return response.abort({ message: 'Something went wrong' })
+
+    if (slug) {
+      content.merge(payload)
+      await content.save()
+    } else {
+      content.merge({
+        ...restPayload,
+        slug: slugify(payload.title),
+      })
+      await content.save()
     }
+    return response.custom({
+      message: 'Content Updated',
+      code: 201,
+      data: content,
+      status: true,
+      alertType: 'success'
+    })
+
   }
 }

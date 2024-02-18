@@ -28,12 +28,7 @@ export default class UpdateCartValidator {
     items: schema.array().members(
       schema.object().members({
         qty: schema.number(),
-        productVariantId: schema.number.optional([
-          rules.exists({
-            table: 'product_variants',
-            column: 'id',
-          }),
-        ]),
+        productVariantId: schema.number.optional(),
       })
     ),
   })

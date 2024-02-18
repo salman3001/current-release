@@ -32,7 +32,13 @@ export default class BlogsController extends BaseController {
     }
 
     await blog.save()
-    return response.json({ message: 'Blog Created' })
+    return response.custom({
+      message: 'Blog Created!',
+      code: 201,
+      data: blog,
+      status: true,
+      alertType: 'success'
+    })
   }
 
   public async update({ request, response, params, bouncer }: HttpContextContract) {
@@ -60,7 +66,13 @@ export default class BlogsController extends BaseController {
     }
 
     await blog.save()
-    return response.json({ message: 'Blog Updated' })
+    return response.custom({
+      message: 'Blog category Updated!',
+      code: 201,
+      data: blog,
+      status: true,
+      alertType: 'success'
+    })
   }
 
   public excludeIncludeExportProperties(record: any) {

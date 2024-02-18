@@ -20,7 +20,13 @@ export default class SubscribersController extends BaseController {
       await subscriber.related('interests').attach(payload.interests)
     }
 
-    return response.json({ message: 'record created', data: subscriber })
+    return response.custom({
+      message: 'Subscriber Created',
+      code: 201,
+      data: subscriber,
+      status: true,
+      alertType: 'success'
+    })
   }
 
   public async update({ request, response, params, bouncer }: HttpContextContract) {
@@ -37,7 +43,13 @@ export default class SubscribersController extends BaseController {
       await subscriber.related('interests').attach(payload.interests)
     }
 
-    return response.json({ message: 'record created', data: subscriber })
+    return response.custom({
+      message: 'Subscriber Updated',
+      code: 201,
+      data: subscriber,
+      status: true,
+      alertType: 'success'
+    })
   }
 
   public excludeIncludeExportProperties(record: any) {

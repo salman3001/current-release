@@ -113,7 +113,13 @@ export default class BaseController {
       records = await query.exec()
     }
 
-    return response.json(records)
+    return response.custom({
+      message: '',
+      code: 200,
+      data: records,
+      status: true,
+      alertType: null
+    })
   }
 
   public async show({ request, params, response, bouncer }: HttpContextContract) {
@@ -139,7 +145,13 @@ export default class BaseController {
       await bouncer.with(this.bauncerPolicy).authorize('view', record)
     }
 
-    return response.json(record)
+    return response.custom({
+      message: '',
+      code: 200,
+      data: record,
+      status: true,
+      alertType: null
+    })
   }
 
   public async store({ request, response, bouncer }: HttpContextContract) {
@@ -148,7 +160,13 @@ export default class BaseController {
     }
     const payload = await request.validate(this.storeValidator)
     const record = await this.model.create(payload)
-    return response.json({ record })
+    return response.custom({
+      message: 'Record Created Successfully',
+      code: 201,
+      data: record,
+      status: true,
+      alertType: 'success'
+    })
   }
 
   public async update({ params, request, response, bouncer }: HttpContextContract) {
@@ -160,7 +178,13 @@ export default class BaseController {
     const payload = await request.validate(this.updateValidator)
     record?.merge(payload)
     await record?.save()
-    return response.json({ record })
+    return response.custom({
+      message: 'Record Updated Successfully',
+      code: 201,
+      data: record,
+      status: true,
+      alertType: 'success'
+    })
   }
 
   public async destroy({ params, response, bouncer }: HttpContextContract) {
@@ -171,7 +195,13 @@ export default class BaseController {
     }
 
     await record?.delete()
-    return response.json({ record })
+    return response.custom({
+      message: 'Record Deleted Successfully',
+      code: 200,
+      data: record,
+      status: true,
+      alertType: 'success'
+    })
   }
 
   public async uniqueField({ response, request }: HttpContextContract) {
@@ -179,9 +209,21 @@ export default class BaseController {
     const record = await this.model.findBy(qs.field, qs.value)
 
     if (record) {
-      return response.badRequest({ message: 'Field already exist' })
+      return response.custom({
+        message: 'Field is already taken',
+        code: 400,
+        data: null,
+        status: false,
+        alertType: null
+      })
     } else {
-      return response.ok({ message: 'Field Available' })
+      return response.custom({
+        message: 'The field is available',
+        code: 200,
+        data: null,
+        status: true,
+        alertType: null
+      })
     }
   }
 
@@ -246,7 +288,13 @@ export default class BaseController {
 
     const url = await Drive.getSignedUrl(`${this.model.name}.xlsx`, { expiresIn: '30mins' })
 
-    return response.json({ url })
+    return response.custom({
+      message: 'Export Successfull',
+      code: 200,
+      data: { url },
+      status: true,
+      alertType: "success"
+    })
   }
 
   public async import({ response, bouncer, request }: HttpContextContract) {
@@ -270,7 +318,13 @@ export default class BaseController {
       await this.storeExcelData(deflattenObject, request.ctx as HttpContextContract)
     }
 
-    return response.json({ message: 'File Uploaded. Refresh the page' })
+    return response.custom({
+      message: 'File upload Successfull! Refresh your page',
+      code: 201,
+      data: null,
+      status: true,
+      alertType: "success"
+    })
   }
 
   public async getExportRecords() {

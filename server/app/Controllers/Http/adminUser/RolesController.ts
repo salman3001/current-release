@@ -20,7 +20,13 @@ export default class RolesController extends BaseController {
 
     const record = await Role.create(payload)
 
-    return response.json({ message: 'record created', data: record })
+    return response.custom({
+      message: 'Role Created!',
+      code: 201,
+      data: record,
+      status: true,
+      alertType: 'success'
+    })
   }
 
   public async update({ request, response, params, bouncer }: HttpContextContract) {
@@ -38,6 +44,12 @@ export default class RolesController extends BaseController {
     await role.related('permissions').attach([...permissions])
     await role.save()
 
-    return response.json({ message: 'role updated' })
+    return response.custom({
+      message: 'Role Updated!',
+      code: 201,
+      data: role,
+      status: true,
+      alertType: 'success'
+    })
   }
 }

@@ -17,7 +17,7 @@ export default class SupportTicketsController extends BaseController {
     )
   }
 
-  public async store({ request, response, bouncer }: HttpContextContract): Promise<void> {
+  public async store({ request, response, bouncer }: HttpContextContract) {
     await bouncer.with('SupportTicketPolicy').authorize('create')
     const payload = await request.validate(SupportTicketCreateValidator)
     const { message, ...restPayload } = payload
@@ -31,7 +31,13 @@ export default class SupportTicketsController extends BaseController {
         message: 'New Support Ticket added',
       },
     })
-    return response.json({ message: 'Ticket Created' })
+    return response.custom({
+      message: 'Ticket created',
+      code: 201,
+      data: ticket,
+      status: true,
+      alertType: 'success'
+    })
   }
 
   public async changeStatus({ params, response, bouncer, request }: HttpContextContract) {
@@ -41,7 +47,13 @@ export default class SupportTicketsController extends BaseController {
 
     ticket.status = status
     await ticket.save()
-    response.json({ message: 'Support ticket status updated' })
+    return response.custom({
+      message: 'Ticket Status changed',
+      code: 200,
+      data: ticket,
+      status: true,
+      alertType: 'success'
+    })
   }
 
   public async ticketMessages({ params, response, bouncer, request }: HttpContextContract) {
@@ -55,7 +67,13 @@ export default class SupportTicketsController extends BaseController {
       .orderBy('created_at', 'desc')
       .paginate(page ?? 1, limit ?? 20)
 
-    response.json({ messages })
+    return response.custom({
+      message: '',
+      code: 200,
+      data: messages,
+      status: true,
+      alertType: null
+    })
   }
 
   public async createMessage({ params, response, bouncer, request, auth }: HttpContextContract) {
@@ -77,6 +95,12 @@ export default class SupportTicketsController extends BaseController {
         })
     }
 
-    response.json({ message: 'Message Created' })
+    return response.custom({
+      message: 'Message Created',
+      code: 201,
+      data: message,
+      status: true,
+      alertType: 'success'
+    })
   }
 }

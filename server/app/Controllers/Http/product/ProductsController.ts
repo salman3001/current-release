@@ -102,7 +102,13 @@ export default class ProductsController extends BaseController {
     })
 
 
-    return response.json({ message: 'record created', data: product })
+    return response.custom({
+      message: 'Product Added',
+      code: 201,
+      data: product,
+      status: true,
+      alertType: 'success'
+    })
   }
 
   public async update({ request, response, params, bouncer }: HttpContextContract) {
@@ -240,7 +246,13 @@ export default class ProductsController extends BaseController {
 
     })
 
-    return response.json({ message: 'record updated', data: product })
+    return response.custom({
+      message: 'Product Updated',
+      code: 201,
+      data: product,
+      status: true,
+      alertType: 'success'
+    })
   }
 
   public async destroy({ params, response, bouncer }: HttpContextContract) {
@@ -264,13 +276,25 @@ export default class ProductsController extends BaseController {
 
     await product.delete()
 
-    return response.json({ message: 'record deleted' })
+    return response.custom({
+      message: 'Product Deleted',
+      code: 200,
+      data: product,
+      status: true,
+      alertType: 'success'
+    })
   }
 
   public async deleteScreenShot({ params, response }: HttpContextContract) {
     const image = await Image.findOrFail(+params.id)
     await image.delete()
-    return response.json({ message: 'Screeshot deleted', image })
+    return response.custom({
+      message: 'Product screenshot deleted',
+      code: 200,
+      data: image,
+      status: true,
+      alertType: 'success'
+    })
   }
 
   public excludeIncludeExportProperties(record: any) {

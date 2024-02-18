@@ -11,7 +11,13 @@ export default class CampaignTypesController extends BaseController {
     await bouncer.with('CampaignPolicy').authorize('create')
     const payload = await request.validate({} as any)
     const record = await CampaignType.create(payload)
-    return response.json({ message: 'record created', data: record })
+    return response.custom({
+      message: 'Campaign type Created!',
+      code: 201,
+      data: record,
+      status: true,
+      alertType: 'success'
+    })
   }
 
   public async update({ request, response, params, bouncer }: HttpContextContract) {
@@ -20,6 +26,12 @@ export default class CampaignTypesController extends BaseController {
     const payload = await request.validate({} as any)
     campaignType.merge(payload)
     await campaignType.save()
-    return response.json({ message: 'record updated', campaignType })
+    return response.custom({
+      message: 'Campaign type Updated!',
+      code: 201,
+      data: campaignType,
+      status: true,
+      alertType: 'success'
+    })
   }
 }

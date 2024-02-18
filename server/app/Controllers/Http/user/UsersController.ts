@@ -57,7 +57,13 @@ export default class UsersController extends BaseController {
 
     await user.save()
 
-    return response.json(user)
+    return response.custom({
+      message: 'User Added Successfully',
+      code: 201,
+      data: user,
+      status: true,
+      alertType: 'success'
+    })
   }
 
   public async update({ request, response, params, bouncer }: HttpContextContract) {
@@ -151,7 +157,13 @@ export default class UsersController extends BaseController {
 
     user && (await user.save())
 
-    return response.json(user)
+    return response.custom({
+      message: 'User updated Successfully',
+      code: 201,
+      data: user,
+      status: true,
+      alertType: 'success'
+    })
   }
 
   public async banUser({ params, response, bouncer }: HttpContextContract) {
@@ -159,7 +171,13 @@ export default class UsersController extends BaseController {
     const user = await User.findOrFail(+params.id)
     user.isActive = false
     await user.save()
-    return response.json({ message: 'User Baned Successfully' })
+    return response.custom({
+      message: 'User Banned Successfully',
+      code: 200,
+      data: user,
+      status: true,
+      alertType: 'success'
+    })
   }
 
   public async updateUserPassword({ params, response, request, bouncer }: HttpContextContract) {
@@ -177,7 +195,13 @@ export default class UsersController extends BaseController {
     })
     user.password = payload.password
     await user.save()
-    return response.json({ message: 'Password Changed' })
+    return response.custom({
+      message: 'Password changed',
+      code: 200,
+      data: user,
+      status: true,
+      alertType: 'success'
+    })
   }
 
   public async storeExcelData(data: any, ctx: HttpContextContract): Promise<void> {

@@ -9,7 +9,7 @@ export default class extends BaseSchema {
 
       table.string('name').unique().notNullable()
       table.string('slug').unique().notNullable()
-      table.integer('order').unsigned().unique()
+      table.bigInteger('order').defaultTo(1).notNullable()
       table.boolean('status').defaultTo(false)
       table
         .integer('language_id')

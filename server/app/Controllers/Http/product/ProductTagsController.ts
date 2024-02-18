@@ -30,7 +30,13 @@ export default class ProductTagsController extends BaseController {
     }
     await tag.save()
 
-    return response.json({ message: 'record created', data: tag })
+    return response.custom({
+      message: 'Tag Added',
+      code: 201,
+      data: tag,
+      status: true,
+      alertType: 'success'
+    })
   }
 
   public async update({ request, response, params, bouncer }: HttpContextContract) {
@@ -69,7 +75,13 @@ export default class ProductTagsController extends BaseController {
     }
     await tag.save()
 
-    return response.json({ message: 'record created', data: tag })
+    return response.custom({
+      message: 'Tag updated',
+      code: 201,
+      data: tag,
+      status: true,
+      alertType: 'success'
+    })
   }
 
   public excludeIncludeExportProperties(record: any) {

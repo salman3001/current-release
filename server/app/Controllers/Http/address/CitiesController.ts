@@ -18,7 +18,13 @@ export default class CitiesController extends BaseController {
     })
     const payload = await request.validate({ schema: citySchema })
     const record = await City.create(payload)
-    return response.json({ message: 'record created', data: record })
+    return response.custom({
+      message: 'City created!',
+      code: 201,
+      data: record,
+      status: true,
+      alertType: 'success'
+    })
   }
 
   public async update({ request, response, params, bouncer }: HttpContextContract) {
@@ -32,7 +38,13 @@ export default class CitiesController extends BaseController {
     const payload = await request.validate({ schema: citySchema })
     city.merge(payload)
     await city.save()
-    return response.json({ message: 'record updated', data: city })
+    return response.custom({
+      message: 'City updated!',
+      code: 201,
+      data: city,
+      status: true,
+      alertType: 'success'
+    })
   }
 
   public async storeExcelData(data: any): Promise<void> {

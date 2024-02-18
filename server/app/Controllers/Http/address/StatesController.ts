@@ -17,7 +17,13 @@ export default class StatesController extends BaseController {
     })
     const payload = await request.validate({ schema: StateSchema })
     const record = await State.create(payload)
-    return response.json({ message: 'record created', data: record })
+    return response.custom({
+      message: 'State Created!',
+      code: 201,
+      data: record,
+      status: true,
+      alertType: 'success'
+    })
   }
 
   public async update({ request, response, params, bouncer }: HttpContextContract) {
@@ -31,7 +37,13 @@ export default class StatesController extends BaseController {
     const payload = await request.validate({ schema: StateSchema })
     state.merge(payload)
     await state.save()
-    return response.json({ message: 'record updated', data: state })
+    return response.custom({
+      message: 'State Created!',
+      code: 201,
+      data: state,
+      status: true,
+      alertType: 'success'
+    })
   }
 
   public async storeExcelData(data: any): Promise<void> {

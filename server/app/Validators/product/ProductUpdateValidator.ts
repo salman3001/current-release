@@ -80,8 +80,15 @@ export default class ProductUpdateValidator {
       })
     ),
     variants: schema.array().members(schema.object().members({
+      name: schema.string([rules.maxLength(100)]),
       price: schema.number(),
       availableQty: schema.number(),
+      hasInifiiteQty: schema.boolean(),
+      flatDiscount: schema.number.optional(),
+      features: schema.array.optional().members(schema.string()),
+      included: schema.array.optional().members(schema.string()),
+      excluded: schema.array.optional().members(schema.string()),
+      order: schema.bigint.optional(),
       image: schema.file.optional({
         extnames: ['jpg', 'JPG', 'jpeg', 'JPEG', 'png', 'PNG', 'webp', 'WEBP'],
         size: '5mb',

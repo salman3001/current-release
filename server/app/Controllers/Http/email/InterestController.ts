@@ -12,7 +12,13 @@ export default class InterestController extends BaseController {
 
     const payload = await request.validate({} as any)
     const record = await Interest.create(payload)
-    return response.json({ message: 'record created', data: record })
+    return response.custom({
+      message: 'Interest Created',
+      code: 201,
+      data: record,
+      status: true,
+      alertType: 'success'
+    })
   }
 
   public async update({ request, response, params, bouncer }: HttpContextContract) {
@@ -21,6 +27,12 @@ export default class InterestController extends BaseController {
     const payload = await request.validate({} as any)
     interest.merge(payload)
     await interest.save()
-    return response.json({ message: 'record updated', data: interest })
+    return response.custom({
+      message: 'Interest Updated',
+      code: 201,
+      data: interest,
+      status: true,
+      alertType: 'success'
+    })
   }
 }

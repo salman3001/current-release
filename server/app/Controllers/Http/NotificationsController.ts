@@ -32,7 +32,13 @@ export default class NotificationsController extends BaseController {
       records = await filterRecords(Notification, newQs)
     }
 
-    return response.json(records)
+    return response.custom({
+      message: '',
+      code: 200,
+      data: records,
+      status: true,
+      alertType: null
+    })
   }
 
   public async getMenuNotifications({ response, auth }: HttpContextContract) {
@@ -70,10 +76,15 @@ export default class NotificationsController extends BaseController {
 
       notifcations = user.notifications
 
-      console.log(count)
     }
 
-    return response.json({ notifcations, count })
+    return response.custom({
+      message: '',
+      code: 200,
+      data: { notifcations, count },
+      status: true,
+      alertType: null
+    })
   }
 
   public async destroyRead({ response, auth }: HttpContextContract) {
@@ -88,7 +99,13 @@ export default class NotificationsController extends BaseController {
       }
     }
 
-    return response.json({ message: 'record deleted' })
+    return response.custom({
+      message: 'Notification deleted',
+      code: 200,
+      data: null,
+      status: true,
+      alertType: 'success'
+    })
   }
 
   public async destroyAll({ response, auth }: HttpContextContract) {
@@ -102,13 +119,25 @@ export default class NotificationsController extends BaseController {
       }
     }
 
-    return response.json({ message: 'record deleted' })
+    return response.custom({
+      message: 'All Notification deleted',
+      code: 200,
+      data: null,
+      status: true,
+      alertType: 'success'
+    })
   }
 
   public async markAsRead({ response, params }: HttpContextContract) {
     const id = +params.id
     const notification = await Notification.findOrFail(id)
     await notification.markAsRead()
-    return response.json({ message: 'Notification marked as read' })
+    return response.custom({
+      message: 'Notification marked as read',
+      code: 200,
+      data: notification,
+      status: true,
+      alertType: 'success'
+    })
   }
 }
