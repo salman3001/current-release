@@ -25,8 +25,19 @@ export default class HelpcenterContentCategoryValidator {
    */
   public schema = schema.create({
     id: schema.number.optional(),
-    name: schema.string({ trim: true }),
-    slug: schema.string.optional({ trim: true }),
+    name: schema.string({ trim: true }, [
+      rules.unique({
+        table: 'knowledge_base_categories',
+        column: 'name',
+      }),
+    ]),
+    slug: schema.string.optional({ trim: true }, [
+      rules.regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
+      rules.unique({
+        table: 'knowledge_base_categories',
+        column: 'slug',
+      }),
+    ]),
     languageId: schema.number.optional(),
     order: schema.number.optional(),
     metaTitle: schema.string.optional(),

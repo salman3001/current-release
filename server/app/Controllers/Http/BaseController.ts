@@ -41,7 +41,7 @@ export default class BaseController {
     private bauncerPolicy?: keyof PoliciesList,
     public perPage?: number,
     public importSelects: string[] = []
-  ) { }
+  ) {}
 
   public async index({ request, response, bouncer }: HttpContextContract) {
     if (bouncer && this.bauncerPolicy) {
@@ -117,8 +117,7 @@ export default class BaseController {
       message: '',
       code: 200,
       data: records,
-      status: true,
-      alertType: null
+      success: true,
     })
   }
 
@@ -149,8 +148,7 @@ export default class BaseController {
       message: '',
       code: 200,
       data: record,
-      status: true,
-      alertType: null
+      success: true,
     })
   }
 
@@ -164,8 +162,7 @@ export default class BaseController {
       message: 'Record Created Successfully',
       code: 201,
       data: record,
-      status: true,
-      alertType: 'success'
+      success: true,
     })
   }
 
@@ -182,8 +179,7 @@ export default class BaseController {
       message: 'Record Updated Successfully',
       code: 201,
       data: record,
-      status: true,
-      alertType: 'success'
+      success: true,
     })
   }
 
@@ -199,8 +195,7 @@ export default class BaseController {
       message: 'Record Deleted Successfully',
       code: 200,
       data: record,
-      status: true,
-      alertType: 'success'
+      success: true,
     })
   }
 
@@ -213,16 +208,14 @@ export default class BaseController {
         message: 'Field is already taken',
         code: 400,
         data: null,
-        status: false,
-        alertType: null
+        success: false,
       })
     } else {
       return response.custom({
         message: 'The field is available',
         code: 200,
         data: null,
-        status: true,
-        alertType: null
+        success: true,
       })
     }
   }
@@ -292,8 +285,7 @@ export default class BaseController {
       message: 'Export Successfull',
       code: 200,
       data: { url },
-      status: true,
-      alertType: "success"
+      success: true,
     })
   }
 
@@ -322,8 +314,7 @@ export default class BaseController {
       message: 'File upload Successfull! Refresh your page',
       code: 201,
       data: null,
-      status: true,
-      alertType: "success"
+      success: true,
     })
   }
 
@@ -333,8 +324,11 @@ export default class BaseController {
   }
 
   public async storeExcelData(data: any, ctx: HttpContextContract) {
+    ctx.meta = {
+      currentObjectId: data.id,
+    }
     const validatedData = await validator.validate({
-      schema: new this.updateValidator(ctx).schema,
+      schema: new this.updateValidator(ctx, data.id).schema,
       data: data,
     })
     await this.model.updateOrCreate({ id: validatedData.id }, validatedData)

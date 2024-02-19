@@ -6,7 +6,6 @@ import { Notify } from 'quasar';
 const isPwd = ref(true);
 const loading = ref(false);
 const address = addressStore();
-const config = useRuntimeConfig()
 
 
 const { data: roles } = await RoleApi.index()
@@ -14,6 +13,7 @@ const { data: roles } = await RoleApi.index()
 
 
 const form = ref({
+  image: null,
   user: {
     firstName: '',
     lastName: '',
@@ -48,23 +48,11 @@ const form = ref({
 });
 
 const submit = async (e: SubmitEvent | Event) => {
-  const formData = new FormData(e.target);
-  for (const key in form.value.user) {
-    const element = form.value.user[key] as string;
-    formData.append(`user[${key}]`, element);
-  }
-  for (const key in form.value.address) {
-    const element = form.value.address[key] as string;
-    formData.append(`address[${key}]`, element);
-  }
-  for (const key in form.value.social) {
-    const element = form.value.social[key] as string;
-    formData.append(`social[${key}]`, element);
-  }
+  const formData = convertToFormData(form.value)
 
   try {
     loading.value = true;
-    const res = await $fetch('/admin-users', { body: formData, method: 'post' });
+    const res = await $fetch('/api/admin-users', { body: formData, method: 'post' });
     loading.value = false;
     Notify.create({
       message: 'User added',
@@ -102,7 +90,7 @@ onMounted(async () => {
     <q-form class="column q-gutter-y-md" @submit="submit">
       <p class="text-subtitle1">General Information</p>
       <div>
-        <FormsProfileImageInput name="image" />
+        <FormsProfileImageInput name="image" @image="f => { form.image = f as any }" />
       </div>
       <div class="q-gutter-y-md">
         <div class="row q-col-gutter-md">
@@ -115,7 +103,7 @@ onMounted(async () => {
               rules.required('required'),
               rules.email('Email is not valid'),
               async (v) =>
-                (await rules.unique('/admin-users/unique-field', 'email', v)) ||
+                (await rules.unique('/api/admin-users/unique-field', 'email', v)) ||
                 'Email Already Taken',
             ]" />
           <q-input outlined v-model="form.user.password" :type="isPwd ? 'password' : 'text'" label="Password"
@@ -144,7 +132,7 @@ onMounted(async () => {
           <p class="text-subtitle1">Role Information</p>
           <div class="row q-col-gutter-md">
             <q-toggle v-model="form.user.isActive" label="Activate" class="col-12 col-sm-6 col-md-3" />
-            <q-select v-if="roles" outlined map-options emit-value v-model="form.user.roleId" :options="roles" option-label="name" option-value="id"
+            <q-select v-if="roles" outlined map-options emit-value v-model="form.user.roleId" :options="roles?.data" option-label="name" option-value="id"
               label="Role" class="col-12 col-sm-6 col-md-3" />
           </div>
         </div>

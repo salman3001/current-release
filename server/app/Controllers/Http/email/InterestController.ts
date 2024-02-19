@@ -16,8 +16,7 @@ export default class InterestController extends BaseController {
       message: 'Interest Created',
       code: 201,
       data: record,
-      status: true,
-      alertType: 'success'
+      success: true,
     })
   }
 
@@ -31,8 +30,7 @@ export default class InterestController extends BaseController {
       message: 'Interest Updated',
       code: 201,
       data: interest,
-      status: true,
-      alertType: 'success'
+      success: true,
     })
   }
 }

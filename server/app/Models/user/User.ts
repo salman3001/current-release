@@ -26,9 +26,9 @@ import {
 } from '@ioc:Adonis/Addons/ResponsiveAttachment'
 import Notifications from '../Notification'
 import SupportTicket from '../helpcenter/SupportTicket'
-import Product from '../product/Product'
-import Review from '../product/Review'
-import Cart from '../product/Cart'
+import Service from '../service/Service'
+import Review from '../service/Review'
+import Cart from '../service/Cart'
 
 export default class User extends BaseModel {
   @column({ isPrimary: true })
@@ -114,8 +114,8 @@ export default class User extends BaseModel {
   @hasOne(() => NotificationSetting)
   public NotificationSetting: HasOne<typeof NotificationSetting>
 
-  @hasMany(() => Product)
-  public products: HasMany<typeof Product>
+  @hasMany(() => Service)
+  public services: HasMany<typeof Service>
 
   @hasMany(() => Review)
   public reviews: HasMany<typeof Review>

@@ -4,30 +4,30 @@ import slugify from 'slugify'
 import BlogCategory from 'App/Models/blogs/BlogCategory'
 import BaseController from '../BaseController'
 import { validator } from '@ioc:Adonis/Core/Validator'
+import BlogCategoryUpdateValidator from 'App/Validators/blogs/BlogCategoryUpdateValidator'
 
 export default class BlogCategoriesController extends BaseController {
   constructor() {
-    super(BlogCategory, BlogCategoryValidator, BlogCategoryValidator, 'BlogPolicy')
+    super(BlogCategory, BlogCategoryValidator, BlogCategoryUpdateValidator, 'BlogPolicy')
   }
 
   public async store({ request, response, bouncer }: HttpContextContract) {
     await bouncer.with('BlogPolicy').authorize('create')
     const { slug, ...payload } = await request.validate(BlogCategoryValidator)
 
-    const category: BlogCategory | null = null
+    let category: BlogCategory | null = null
 
     if (slug) {
-      await BlogCategory.create({ ...payload, slug })
+      category = await BlogCategory.create({ ...payload, slug })
     } else {
-      await BlogCategory.create({ slug: slugify(payload.name), ...payload })
+      category = await BlogCategory.create({ slug: slugify(payload.name), ...payload })
     }
 
     return response.custom({
       message: 'Blog category Created!',
       code: 201,
       data: category,
-      status: true,
-      alertType: 'success'
+      success: true,
     })
   }
 
@@ -47,14 +47,16 @@ export default class BlogCategoriesController extends BaseController {
       message: 'Blog category updated!',
       code: 201,
       data: category,
-      status: true,
-      alertType: 'success'
+      success: true,
     })
   }
 
   public async storeExcelData(data: any, ctx: HttpContextContract): Promise<void> {
+    ctx.meta = {
+      currentObjectId: data.id,
+    }
     const validatedData = await validator.validate({
-      schema: new BlogCategoryValidator(ctx).schema,
+      schema: new BlogCategoryUpdateValidator(ctx).schema,
       data,
     })
     await BlogCategory.updateOrCreate(

@@ -61,8 +61,7 @@ export default class UsersController extends BaseController {
       message: 'User Added Successfully',
       code: 201,
       data: user,
-      status: true,
-      alertType: 'success'
+      success: true,
     })
   }
 
@@ -161,8 +160,7 @@ export default class UsersController extends BaseController {
       message: 'User updated Successfully',
       code: 201,
       data: user,
-      status: true,
-      alertType: 'success'
+      success: true,
     })
   }
 
@@ -175,8 +173,7 @@ export default class UsersController extends BaseController {
       message: 'User Banned Successfully',
       code: 200,
       data: user,
-      status: true,
-      alertType: 'success'
+      success: true,
     })
   }
 
@@ -199,12 +196,14 @@ export default class UsersController extends BaseController {
       message: 'Password changed',
       code: 200,
       data: user,
-      status: true,
-      alertType: 'success'
+      success: true,
     })
   }
 
   public async storeExcelData(data: any, ctx: HttpContextContract): Promise<void> {
+    ctx.meta = {
+      currentObjectId: data.id,
+    }
     const validatedData = await validator.validate({
       schema: new UserUpdateeValidator(ctx).schema,
       data: {

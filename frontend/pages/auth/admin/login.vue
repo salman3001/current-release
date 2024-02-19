@@ -32,18 +32,20 @@ const login = async () => {
       maxAge: 60 * 60 * 24
     })
 
-    user.value = res?.user
-    token.value = res?.token
-    socketToken.value = res?.socketToken
-    const authorization = `Bearer ${toRaw(token.value?.token)}`
+
+    user.value = res?.data.user
+    token.value = res?.data.token.token
+    socketToken.value = res?.data?.socketToken
+    const authorization = `Bearer ${toRaw(token.value)}`
     globalThis.$fetch = ofetch.create({
       baseURL: config.public.baseApi,
       headers: {
         authorization,
       },
     })
-    navigateTo(routes.admin.dashboard)
   }
+
+  navigateTo(routes.admin.dashboard)
 
   loading.value = false
 }

@@ -8,7 +8,7 @@ export default class extends BaseSchema {
       table.increments('id').primary()
       table.string('name', 15).notNullable()
       table.boolean('is_active').defaultTo(false)
-      table.json('permissions')
+      table.json('permissions').defaultTo([])
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
        */

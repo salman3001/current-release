@@ -8,9 +8,8 @@ import KnowledgebaseCategoryFactory from 'Database/factories/helpcenter/Knowledg
 import RoleFactory from 'Database/factories/adminUser/RoleFactory'
 import UserFactory from 'Database/factories/user/UserFactory'
 import SupportTicketFactory from 'Database/factories/helpcenter/SupportTicketFactory'
-import PermissionFactory from 'Database/factories/adminUser/PermissionFactory'
 import { TicketStatus, permissions } from 'App/Helpers/enums'
-import ProductCategoryFactory from 'Database/factories/product/ProductCategoryFactory'
+import ServiceCategoryFactory from 'Database/factories/service/ServiceCategoryFactory'
 import CampaignTypeFactory from 'Database/factories/email/CampaignTypeFactory'
 import TemplateFactory from 'Database/factories/email/TemplateFactory'
 
@@ -19,32 +18,32 @@ export default class extends BaseSeeder {
     // if (
     //   (!Seeder.default.environment.includes('development') && Application.inDev) ||
     //   (!Seeder.default.environment.includes('testing') && Application.inTest) ||
-    //   (!Seeder.default.environment.includes('production') && Application.inProduction)
+    //   (!Seeder.default.environment.includes('serviceion') && Application.inProduction)
     // ) {
     //   return
     // }
     await new Seeder.default(this.client).run()
   }
   public async run() {
-    await PermissionFactory.merge([
-      { name: permissions.MANAGE_ADMIN_USERS },
-      { name: permissions.MANAGE_BLOGS },
-      { name: permissions.MANAGE_CAMPAIGNS },
-      { name: permissions.MANAGE_CONTACT_MESSAGES },
-      { name: permissions.MANAGE_INTERESTS },
-      { name: permissions.MANAGE_KNOWLEDGEBASE },
-      { name: permissions.MANAGE_LOCATION },
-      { name: permissions.MANAGE_PRODUCT },
-      { name: permissions.MANAGE_ROLES },
-      { name: permissions.MANAGE_SERVICE },
-      { name: permissions.MANAGE_SUBSCRIBERS },
-      { name: permissions.MANAGE_TEMPLATES },
-      { name: permissions.MANAGE_TICKETS },
-      { name: permissions.MANAGE_USER },
-    ]).createMany(14)
+    const permissionsObject = [
+      permissions.MANAGE_ADMIN_USERS,
+      permissions.MANAGE_BLOGS,
+      permissions.MANAGE_CAMPAIGNS,
+      permissions.MANAGE_CONTACT_MESSAGES,
+      permissions.MANAGE_INTERESTS,
+      permissions.MANAGE_KNOWLEDGEBASE,
+      permissions.MANAGE_LOCATION,
+      permissions.MANAGE_PRODUCT,
+      permissions.MANAGE_ROLES,
+      permissions.MANAGE_SERVICE,
+      permissions.MANAGE_SUBSCRIBERS,
+      permissions.MANAGE_TEMPLATES,
+      permissions.MANAGE_TICKETS,
+      permissions.MANAGE_USER,
+    ]
 
     await RoleFactory.merge([
-      { name: 'Super Admin', isActive: true },
+      { name: 'Super Admin', isActive: true, permissions: permissionsObject },
       { name: 'Moderator' },
       { name: 'Vender' },
     ]).createMany(3)
@@ -77,9 +76,9 @@ export default class extends BaseSeeder {
       .with('favoriteLinks', 3)
       .with('skills', 4)
       .with('NotificationSetting')
-      .with('products', 3, (p) => {
+      .with('services', 3, (p) => {
         p.with('variants', 2, (v) => {
-          v.with('properties', 3)
+          v.with('aditionalProperties', 3)
         })
       })
       .createMany(10)
@@ -96,16 +95,16 @@ export default class extends BaseSeeder {
       { status: TicketStatus.RESPONDED },
     ]).createMany(9)
 
-    // product
-    await ProductCategoryFactory.with('subCategory', 3, (sub) => {
+    // service
+    await ServiceCategoryFactory.with('subCategory', 3, (sub) => {
       sub
-        .with('products', 3, (p) => {
+        .with('services', 3, (p) => {
           p.with('faq', 3).with('seo').with('social').with('tags', 3)
         })
         .with('faqs', 3)
         .with('seo')
     })
-      .with('products', 2, (p) => {
+      .with('services', 2, (p) => {
         p.with('faq', 3).with('seo').with('social').with('tags', 3)
       })
       .with('faqs', 3)

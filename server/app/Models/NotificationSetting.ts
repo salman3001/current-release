@@ -9,7 +9,7 @@ export default class NotificationSetting extends BaseModel {
   @column()
   public onCommentReply: boolean
   @column()
-  public onProductUpdate: boolean
+  public onServiceUpdate: boolean
   @column()
   public onOffers: boolean
   @column()

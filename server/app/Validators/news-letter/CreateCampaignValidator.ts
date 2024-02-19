@@ -29,8 +29,14 @@ export default class CreateCampaignValidator {
       name: schema.string(),
       subject: schema.string(),
       fromName: schema.string(),
-      fromEmail: schema.string({ trim: true }, [rules.normalizeEmail({})]),
-      replyTo: schema.string({ trim: true }, [rules.normalizeEmail({})]),
+      fromEmail: schema.string({ trim: true }, [
+        rules.email(),
+        rules.normalizeEmail({ allLowercase: true }),
+      ]),
+      replyTo: schema.string({ trim: true }, [
+        rules.email(),
+        rules.normalizeEmail({ allLowercase: true }),
+      ]),
       status: schema.boolean(),
       deliveryDateTime: schema.date({
         format: 'dd/MM/yyyy HH:mm',

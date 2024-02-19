@@ -1,4 +1,4 @@
-import type { permissions } from "@/utils/enums";
+import { permissions } from "@/utils/enums";
 
 export default function useAuth() {
   const user = useCookie("user");
@@ -22,16 +22,8 @@ export default function useAuth() {
       return false;
     }
 
-    if (user) {
-      const permissionValid = user.value?.role?.permissions?.filter(
-        (perm: any) => perm.name == name
-      ) || [];
-
-      if (permissionValid.length > 0) {
-        return true;
-      } else {
-        return false;
-      }
+    if (user && (user.value?.role?.permissions as string[])?.includes(name)) {
+      return true;
     } else {
       return false;
     }

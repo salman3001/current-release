@@ -10,29 +10,29 @@ export default class extends BaseSchema {
       table.string('meta_keywords')
       table.string('meta_desc')
       table
-        .integer('product_id')
+        .integer('service_id')
         .unsigned()
         .references('id')
-        .inTable('products')
+        .inTable('services')
         .onDelete('CASCADE')
       table
-        .integer('product_category_id')
+        .integer('service_category_id')
         .unsigned()
         .references('id')
-        .inTable('product_categories')
+        .inTable('service_categories')
         .onDelete('CASCADE')
       table
-        .integer('product_subcategory_id')
+        .integer('service_subcategory_id')
         .unsigned()
         .references('id')
-        .inTable('product_subcategories')
+        .inTable('service_subcategories')
         .onDelete('CASCADE')
 
       table
-        .integer('product_tag_id')
+        .integer('service_tag_id')
         .unsigned()
         .references('id')
-        .inTable('product_tags')
+        .inTable('service_tags')
         .onDelete('CASCADE')
     })
   }

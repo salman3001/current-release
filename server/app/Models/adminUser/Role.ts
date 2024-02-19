@@ -1,6 +1,5 @@
-import { BaseModel, HasMany, ManyToMany, column, hasMany, manyToMany } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, HasMany, column, hasMany } from '@ioc:Adonis/Lucid/Orm'
 import AdminUser from './AdminUser'
-import Permission from './Permission'
 
 export default class Role extends BaseModel {
   @column({ isPrimary: true })
@@ -15,6 +14,9 @@ export default class Role extends BaseModel {
   @hasMany(() => AdminUser)
   public AdminUser: HasMany<typeof AdminUser>
 
-  @manyToMany(() => Permission)
-  public permissions: ManyToMany<typeof Permission>
+  @column({
+    consume: (v: any) => JSON.parse(v),
+    prepare: (v: any) => JSON.stringify(v),
+  })
+  public permissions: string[]
 }

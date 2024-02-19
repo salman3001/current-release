@@ -38,5 +38,5 @@ export default class Social extends BaseModel {
   public userId: number
 
   @column()
-  public productId: number
+  public serviceId: number
 }

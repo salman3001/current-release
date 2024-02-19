@@ -51,8 +51,7 @@ export default class AdminUsersController extends BaseController {
       message: 'User Created!',
       code: 201,
       data: user,
-      status: true,
-      alertType: 'success'
+      success: true,
     })
   }
 
@@ -78,7 +77,6 @@ export default class AdminUsersController extends BaseController {
     }
     if (payload.social) {
       await user.load('social')
-      console.log(payload.social)
 
       if (user.social) {
         await user.social.delete()
@@ -103,8 +101,7 @@ export default class AdminUsersController extends BaseController {
       message: 'User Updated!',
       code: 201,
       data: user,
-      status: true,
-      alertType: 'success'
+      success: true,
     })
   }
 
@@ -118,16 +115,14 @@ export default class AdminUsersController extends BaseController {
         message: 'User banned!',
         code: 200,
         data: user,
-        status: true,
-        alertType: 'success'
+        success: true,
       })
     } else {
       return response.custom({
         message: 'User Not found!',
         code: 400,
         data: user,
-        status: false,
-        alertType: 'error'
+        success: false,
       })
     }
   }
@@ -145,8 +140,7 @@ export default class AdminUsersController extends BaseController {
       message: 'Role Updated!',
       code: 201,
       data: null,
-      status: true,
-      alertType: 'success'
+      success: true,
     })
   }
 
@@ -170,8 +164,7 @@ export default class AdminUsersController extends BaseController {
       message: 'Password changed',
       code: 201,
       data: null,
-      status: true,
-      alertType: 'success'
+      success: true,
     })
   }
 
@@ -201,7 +194,10 @@ export default class AdminUsersController extends BaseController {
 
   public async storeExcelData(data: any, ctx: HttpContextContract): Promise<void> {
     const { address, social, ...rest } = data
-    console.log(rest)
+
+    ctx.meta = {
+      currentObjectId: data.id,
+    }
 
     const validatedData = await validator.validate({
       schema: new AdminUserUpdateValidator(ctx).schema,

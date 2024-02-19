@@ -1,6 +1,7 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import ContactMessage from 'App/Models/helpcenter/ContactMessage'
 import BaseController from '../BaseController'
+import { schema, rules } from '@ioc:Adonis/Core/Validator'
 
 export default class ContactMessagesController extends BaseController {
   constructor() {
@@ -9,15 +10,23 @@ export default class ContactMessagesController extends BaseController {
 
   public async store({ request, response, bouncer }: HttpContextContract) {
     await bouncer.with('ContactMessagePolicy').authorize('create')
+    const validationSchema = schema.create({
+      name: schema.string(),
+      title: schema.string(),
+      email: schema.string({ escape: true }, [
+        rules.email(),
+        rules.normalizeEmail({ allLowercase: true }),
+      ]),
+      message: schema.string([rules.minLength(10)]),
+    })
 
-    const payload = await request.validate({} as any)
+    const payload = await request.validate({ schema: validationSchema })
     const record = await ContactMessage.create(payload)
     return response.custom({
       message: 'Contact Message Created',
       code: 201,
       data: record,
-      status: true,
-      alertType: 'success'
+      success: true,
     })
   }
 
@@ -32,8 +41,7 @@ export default class ContactMessagesController extends BaseController {
       message: 'Contact Message Updated',
       code: 201,
       data: message,
-      status: true,
-      alertType: 'success'
+      success: true,
     })
   }
 

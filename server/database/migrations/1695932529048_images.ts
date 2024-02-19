@@ -10,10 +10,10 @@ export default class extends BaseSchema {
 
       table.integer('blog_id').unsigned().references('id').inTable('blogs').onDelete('SET NULL')
       table
-        .integer('product_id')
+        .integer('service_id')
         .unsigned()
         .references('id')
-        .inTable('products')
+        .inTable('services')
         .onDelete('SET NULL')
 
       table.integer('media_id').unsigned().references('id').inTable('media').onDelete('SET NULL')

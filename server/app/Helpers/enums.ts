@@ -9,11 +9,6 @@ export enum ServiceLocationType {
   PHYSICAL = 'Physical',
 }
 
-export enum ProductType {
-  SERVICE = 'service',
-  PRODUCT = 'product',
-}
-
 export enum permissions {
   MANAGE_ADMIN_USERS = 'Manage Admin Users',
   MANAGE_BLOGS = 'Manage Blogs',
@@ -24,7 +19,7 @@ export enum permissions {
   MANAGE_CONTACT_MESSAGES = 'Manage Cotact Messages',
   MANAGE_KNOWLEDGEBASE = 'Manage Knowledgebase',
   MANAGE_TICKETS = 'Manage Support Tickets',
-  MANAGE_PRODUCT = 'Manage Products',
+  MANAGE_PRODUCT = 'Manage Services',
   MANAGE_SERVICE = 'Manage Services',
   MANAGE_USER = 'Manage Users',
   MANAGE_LOCATION = 'Manage Location',

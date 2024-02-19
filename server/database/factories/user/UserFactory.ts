@@ -8,7 +8,7 @@ import SkillFactory from './SkillFactory'
 import NotificationSettingFactory from './NotificationSettingFactory'
 import SocialFactory from '../SocialFactory'
 import FavoriteLinkFactory from '../FavoriteLinkFactory'
-import ProductFactory from '../product/ProductFactory'
+import ServiceFactory from '../service/ServiceFactory'
 
 export default Factory.define(User, ({ faker }) => {
   return {
@@ -31,5 +31,5 @@ export default Factory.define(User, ({ faker }) => {
   .relation('NotificationSetting', () => NotificationSettingFactory)
   .relation('social', () => SocialFactory)
   .relation('favoriteLinks', () => FavoriteLinkFactory)
-  .relation('products', () => ProductFactory)
+  .relation('services', () => ServiceFactory)
   .build()

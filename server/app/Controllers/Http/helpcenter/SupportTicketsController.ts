@@ -6,6 +6,7 @@ import SupportTicketCreateValidator from 'App/Validators/helpcenter/SupportTicke
 import ChatMessage from 'App/Models/helpcenter/ChatMessage'
 import AdminUser from 'App/Models/adminUser/AdminUser'
 import User from 'App/Models/user/User'
+import { schema } from '@ioc:Adonis/Core/Validator'
 
 export default class SupportTicketsController extends BaseController {
   constructor() {
@@ -35,24 +36,27 @@ export default class SupportTicketsController extends BaseController {
       message: 'Ticket created',
       code: 201,
       data: ticket,
-      status: true,
-      alertType: 'success'
+      success: true,
     })
   }
 
   public async changeStatus({ params, response, bouncer, request }: HttpContextContract) {
-    const status = request.input('status') as TicketStatus
+    const validationSchema = schema.create({
+      status: schema.enum(Object.values(TicketStatus)),
+    })
+
+    const payload = await request.validate({ schema: validationSchema })
+
     bouncer.with('SupportTicketPolicy').authorize('update')
     const ticket = await SupportTicket.findOrFail(+params.id)
 
-    ticket.status = status
+    ticket.status = payload.status
     await ticket.save()
     return response.custom({
       message: 'Ticket Status changed',
       code: 200,
       data: ticket,
-      status: true,
-      alertType: 'success'
+      success: true,
     })
   }
 
@@ -71,8 +75,7 @@ export default class SupportTicketsController extends BaseController {
       message: '',
       code: 200,
       data: messages,
-      status: true,
-      alertType: null
+      success: true,
     })
   }
 
@@ -99,8 +102,7 @@ export default class SupportTicketsController extends BaseController {
       message: 'Message Created',
       code: 201,
       data: message,
-      status: true,
-      alertType: 'success'
+      success: true,
     })
   }
 }

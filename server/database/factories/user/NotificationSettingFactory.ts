@@ -6,6 +6,6 @@ export default Factory.define(NotificationSetting, () => {
     onCommentReply: true,
     onMessageRecieve: false,
     onOffers: true,
-    onProductUpdate: true,
+    onServiceUpdate: true,
   }
 }).build()

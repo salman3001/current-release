@@ -29,6 +29,10 @@ export default class CreateSubscriberValidator {
       firstName: schema.string({ trim: true }),
       lastName: schema.string({ trim: true }),
       email: schema.string({ trim: true }, [
+        rules.unique({
+          table: 'subscribers',
+          column: 'email',
+        }),
         rules.email(),
         rules.normalizeEmail({ allLowercase: true }),
       ]),

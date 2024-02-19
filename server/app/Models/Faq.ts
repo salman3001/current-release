@@ -1,8 +1,8 @@
 import { BaseModel, BelongsTo, belongsTo, column } from '@ioc:Adonis/Lucid/Orm'
-import ProductSubcategory from './product/ProductSubcategory'
-import ProductCategory from './product/ProductCategory'
-import ProductTag from './product/ProductTag'
-import Product from './product/Product'
+import ServiceSubcategory from './service/ServiceSubcategory'
+import ServiceCategory from './service/ServiceCategory'
+import ServiceTag from './service/ServiceTag'
+import Service from './service/Service'
 
 export default class Faq extends BaseModel {
   @column({ isPrimary: true })
@@ -15,28 +15,28 @@ export default class Faq extends BaseModel {
   public ans: string
 
   @column()
-  public productSubcategoryId: number
+  public serviceSubcategoryId: number
 
-  @belongsTo(() => ProductSubcategory)
-  public productSubcategory: BelongsTo<typeof ProductSubcategory>
-
-  @column()
-  public productCategoryId: number
-
-  @belongsTo(() => ProductCategory)
-  public productCategory: BelongsTo<typeof ProductCategory>
+  @belongsTo(() => ServiceSubcategory)
+  public serviceSubcategory: BelongsTo<typeof ServiceSubcategory>
 
   @column()
-  public productId: number
+  public serviceCategoryId: number
 
-  @belongsTo(() => Product)
-  public product: BelongsTo<typeof Product>
+  @belongsTo(() => ServiceCategory)
+  public serviceCategory: BelongsTo<typeof ServiceCategory>
 
   @column()
-  public productTagId: number
+  public serviceId: number
 
-  @belongsTo(() => ProductTag)
-  public productTag: BelongsTo<typeof ProductTag>
+  @belongsTo(() => Service)
+  public service: BelongsTo<typeof Service>
+
+  @column()
+  public serviceTagId: number
+
+  @belongsTo(() => ServiceTag)
+  public serviceTag: BelongsTo<typeof ServiceTag>
 
   @column()
   public serviceId: number

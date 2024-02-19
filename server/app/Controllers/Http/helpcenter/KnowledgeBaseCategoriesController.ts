@@ -3,13 +3,14 @@ import KnowledgeBaseCategory from 'App/Models/helpcenter/KnowledgeBaseCategory'
 import HelpcenterContentCategoryValidator from 'App/Validators/helpcenter/HelpcenterContentCategoryValidator'
 import slugify from 'slugify'
 import BaseController from '../BaseController'
+import HelpcenterContentCategoryUpdateValidator from 'App/Validators/helpcenter/HelpcenterContentCategoryUpdateValidator'
 
 export default class KnowledgeBaseCategoriesController extends BaseController {
   constructor() {
     super(
       KnowledgeBaseCategory,
       HelpcenterContentCategoryValidator,
-      HelpcenterContentCategoryValidator,
+      HelpcenterContentCategoryUpdateValidator,
       'KnowledgebasePolicy'
     )
   }
@@ -34,16 +35,14 @@ export default class KnowledgeBaseCategoriesController extends BaseController {
         message: 'Category Created',
         code: 201,
         data: record,
-        status: true,
-        alertType: 'success'
+        success: true,
       })
     } catch (error) {
       return response.custom({
         message: 'Failed to create Category Created',
         code: 400,
         data: record,
-        status: false,
-        alertType: 'error'
+        success: false,
       })
     }
   }
@@ -52,7 +51,7 @@ export default class KnowledgeBaseCategoriesController extends BaseController {
     await bouncer.with('KnowledgebasePolicy').authorize('update')
     const category = await KnowledgeBaseCategory.findOrFail(+params.id)
 
-    const payload = await request.validate(HelpcenterContentCategoryValidator)
+    const payload = await request.validate(HelpcenterContentCategoryUpdateValidator)
     const { slug, ...restPayload } = payload
 
     if (slug) {
@@ -70,8 +69,7 @@ export default class KnowledgeBaseCategoriesController extends BaseController {
       message: 'Category updated',
       code: 201,
       data: category,
-      status: true,
-      alertType: 'success'
+      success: true,
     })
   }
 }

@@ -23,10 +23,10 @@ export default class extends BaseSchema {
         .onDelete('CASCADE')
       table.integer('user_id').unsigned().references('id').inTable('users').onDelete('CASCADE')
       table
-        .integer('product_id')
+        .integer('service_id')
         .unsigned()
         .references('id')
-        .inTable('products')
+        .inTable('services')
         .onDelete('CASCADE')
     })
   }

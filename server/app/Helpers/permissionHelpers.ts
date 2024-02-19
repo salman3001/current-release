@@ -12,10 +12,7 @@ export const hasPermission = async (user: AdminUser, permission: string) => {
       return false
     }
 
-    await user.role.load('permissions')
-    const validPermission = user.role.permissions.filter((p) => p.name === permission)
-
-    if (validPermission.length > 0) {
+    if ((user.role?.permissions as string[])?.includes(permission)) {
       return true
     }
     return false

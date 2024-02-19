@@ -22,6 +22,5 @@ export default class Image extends BaseModel {
   public file: ResponsiveAttachmentContract
 
   @column()
-  public productId: number
-
+  public serviceId: number
 }

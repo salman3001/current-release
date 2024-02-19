@@ -1,5 +1,5 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import { schema } from '@ioc:Adonis/Core/Validator'
+import { schema, rules } from '@ioc:Adonis/Core/Validator'
 import BaseController from '../BaseController'
 import Street from 'App/Models/address/Street'
 import { validator } from '@ioc:Adonis/Core/Validator'
@@ -12,7 +12,12 @@ export default class StreetsController extends BaseController {
   public async store({ request, response, bouncer }: HttpContextContract) {
     await bouncer.with('LocationPolicy').authorize('create')
     const streetSchema = schema.create({
-      name: schema.string({ trim: true }),
+      name: schema.string({ trim: true }, [
+        rules.unique({
+          table: 'streets',
+          column: 'name',
+        }),
+      ]),
       isActive: schema.boolean.optional(),
       cityId: schema.number.optional(),
     })
@@ -22,8 +27,7 @@ export default class StreetsController extends BaseController {
       message: 'Street Created!',
       code: 201,
       data: record,
-      status: true,
-      alertType: 'success'
+      success: true,
     })
   }
 
@@ -31,7 +35,13 @@ export default class StreetsController extends BaseController {
     await bouncer.with('LocationPolicy').authorize('update')
     const street = await Street.findOrFail(+params.id)
     const streetSchema = schema.create({
-      name: schema.string({ trim: true }),
+      name: schema.string({ trim: true }, [
+        rules.unique({
+          table: 'streets',
+          column: 'name',
+          whereNot: { id: +params.id },
+        }),
+      ]),
       isActive: schema.boolean.optional(),
       cityId: schema.number.optional(),
     })
@@ -42,8 +52,7 @@ export default class StreetsController extends BaseController {
       message: 'Street Created!',
       code: 201,
       data: street,
-      status: true,
-      alertType: 'success'
+      success: true,
     })
   }
 
@@ -51,7 +60,15 @@ export default class StreetsController extends BaseController {
     const validatedData = await validator.validate({
       schema: schema.create({
         id: schema.number(),
-        name: schema.string({ trim: true }),
+        name: schema.string({ trim: true }, [
+          rules.unique({
+            table: 'streets',
+            column: 'name',
+            whereNot: {
+              id: data.id,
+            },
+          }),
+        ]),
         isActive: schema.boolean.optional(),
         cityId: schema.number.optional(),
       }),

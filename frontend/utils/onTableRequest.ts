@@ -37,10 +37,11 @@ export const onTableRequest = (
     try {
       const data = (await $fetch(url + `?${query}`)) as any;
       loading.value = false;
-      rows.value = (data as any).data;
-      pagination.value.page = (data as any).meta?.current_page;
-      pagination.value.rowsPerPage = (data as any).meta?.per_page;
-      pagination.value.rowsNumber = (data as any).meta?.total;
+
+      rows.value = (data?.data as any).data;
+      pagination.value.page = (data.data as any).meta?.current_page;
+      pagination.value.rowsPerPage = (data.data as any).meta?.per_page;
+      pagination.value.rowsNumber = (data.data as any).meta?.total;
       pagination.value.descending = descending;
       pagination.value.sortBy = sortBy;
     } catch (error) {

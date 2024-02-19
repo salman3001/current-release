@@ -23,8 +23,7 @@ export default class AuthController {
         message: 'Failed to login. Check your credentials!',
         code: 400,
         data: null,
-        status: false,
-        alertType: 'error'
+        success: false,
       })
     }
 
@@ -37,26 +36,21 @@ export default class AuthController {
 
       user.socketToken = socketToken
 
+      await user.load('role')
       await user.save()
-
-      await user?.load('role', (role) => {
-        role.preload('permissions')
-      })
 
       return response.custom({
         message: 'Login Successfull',
         code: 200,
         data: { user, token, socketToken },
-        status: true,
-        alertType: 'success'
+        success: true,
       })
     } catch (error) {
       return response.custom({
         message: 'Failed to login. Check your credentials!',
         code: 400,
         data: null,
-        status: false,
-        alertType: 'error'
+        success: false,
       })
     }
   }
@@ -67,8 +61,7 @@ export default class AuthController {
       message: 'Logout Success',
       code: 200,
       data: null,
-      status: true,
-      alertType: 'success'
+      success: true,
     })
   }
 
@@ -94,8 +87,7 @@ export default class AuthController {
         message: 'invalid email id',
         code: 406,
         data: null,
-        status: false,
-        alertType: 'warning'
+        success: false,
       })
     }
   }
@@ -126,16 +118,14 @@ export default class AuthController {
           message: 'Password updated',
           code: 200,
           data: null,
-          status: true,
-          alertType: 'success'
+          success: true,
         })
       } else {
         return response.custom({
           message: 'Invalid OTP',
           code: 406,
           data: null,
-          status: false,
-          alertType: 'error'
+          success: false,
         })
       }
     } else {
@@ -143,8 +133,7 @@ export default class AuthController {
         message: 'Invalid Email',
         code: 406,
         data: null,
-        status: false,
-        alertType: 'error'
+        success: false,
       })
     }
   }
@@ -170,16 +159,14 @@ export default class AuthController {
         message: 'Password changed',
         code: 200,
         data: null,
-        status: true,
-        alertType: 'success'
+        success: true,
       })
     } else {
       return response.custom({
         message: 'Old password dont match',
         code: 406,
         data: null,
-        status: false,
-        alertType: 'error'
+        success: false,
       })
     }
   }

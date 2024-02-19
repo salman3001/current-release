@@ -97,7 +97,7 @@ onMounted(() => {
 
         <div class="row q-gutter-sm">
           <q-select v-model="filter.filter!.roleId" v-if="!rolesLoading" dense options-dense emit-value map-options
-            outlined :options="[{ label: 'All', value: null }, ...roles.map((r: any) => ({
+            outlined :options="[{ label: 'All', value: null }, ...roles?.data.map((r: any) => ({
               label: r.name,
               value: r.id,
             }))]" label="Role" class="col-auto" style="min-width: 8rem" />

@@ -4,10 +4,11 @@ import CreateSubscriberValidator from 'App/Validators/news-letter/CreateSubscrib
 import BaseController from '../BaseController'
 import { validator } from '@ioc:Adonis/Core/Validator'
 import { DateTime } from 'luxon'
+import UpdateSubscriberValidator from 'App/Validators/news-letter/UpdateSubscriberValidator'
 
 export default class SubscribersController extends BaseController {
   constructor() {
-    super(Subscriber, CreateSubscriberValidator, CreateSubscriberValidator, 'SubscriberPolicy')
+    super(Subscriber, CreateSubscriberValidator, UpdateSubscriberValidator, 'SubscriberPolicy')
   }
 
   public async store({ request, response, bouncer }: HttpContextContract) {
@@ -24,8 +25,7 @@ export default class SubscribersController extends BaseController {
       message: 'Subscriber Created',
       code: 201,
       data: subscriber,
-      status: true,
-      alertType: 'success'
+      success: true,
     })
   }
 
@@ -33,7 +33,7 @@ export default class SubscribersController extends BaseController {
     await bouncer.with('SubscriberPolicy').authorize('update')
 
     const subscriber = await Subscriber.findOrFail(+params.id)
-    const payload = await request.validate(CreateSubscriberValidator)
+    const payload = await request.validate(UpdateSubscriberValidator)
 
     subscriber.merge(payload.subscriber)
     await subscriber.save()
@@ -47,8 +47,7 @@ export default class SubscribersController extends BaseController {
       message: 'Subscriber Updated',
       code: 201,
       data: subscriber,
-      status: true,
-      alertType: 'success'
+      success: true,
     })
   }
 

@@ -3,7 +3,7 @@ import { BasePolicy } from '@ioc:Adonis/Addons/Bouncer'
 import { permissions } from 'App/Helpers/enums'
 import { hasPermission, isAdmin } from 'App/Helpers/permissionHelpers'
 
-export default class ProductPolicy extends BasePolicy {
+export default class ServicePolicy extends BasePolicy {
   @action({ allowGuest: true })
   public async viewList(user: any) {
     return true

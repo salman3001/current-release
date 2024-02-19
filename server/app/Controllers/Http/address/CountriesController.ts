@@ -1,5 +1,5 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import { schema } from '@ioc:Adonis/Core/Validator'
+import { schema, rules } from '@ioc:Adonis/Core/Validator'
 import Country from 'App/Models/address/Country'
 import BaseController from '../BaseController'
 import { validator } from '@ioc:Adonis/Core/Validator'
@@ -12,18 +12,22 @@ export default class CountriesController extends BaseController {
   public async store({ request, response, bouncer }: HttpContextContract) {
     await bouncer.with('LocationPolicy').authorize('create')
     const countrySchema = schema.create({
-      name: schema.string({ trim: true }),
+      name: schema.string({ trim: true }, [
+        rules.unique({
+          table: 'countries',
+          column: 'name',
+        }),
+      ]),
       isActive: schema.boolean.optional(),
       continentId: schema.number.optional(),
     })
     const payload = await request.validate({ schema: countrySchema })
     const record = await Country.create(payload)
     return response.custom({
-      message: 'Continent Created!',
+      message: 'country Created!',
       code: 201,
       data: record,
-      status: true,
-      alertType: 'success'
+      success: true,
     })
   }
 
@@ -31,7 +35,13 @@ export default class CountriesController extends BaseController {
     await bouncer.with('LocationPolicy').authorize('update')
     const country = await Country.findOrFail(+params.id)
     const countrySchema = schema.create({
-      name: schema.string({ trim: true }),
+      name: schema.string({ trim: true }, [
+        rules.unique({
+          table: 'countries',
+          column: 'name',
+          whereNot: { id: +params.id },
+        }),
+      ]),
       isActive: schema.boolean.optional(),
       continentId: schema.number.optional(),
     })
@@ -39,11 +49,10 @@ export default class CountriesController extends BaseController {
     country.merge(payload)
     await country.save()
     return response.custom({
-      message: 'Continent Updated!',
+      message: 'country Updated!',
       code: 201,
       data: country,
-      status: true,
-      alertType: 'success'
+      success: true,
     })
   }
 
@@ -51,7 +60,15 @@ export default class CountriesController extends BaseController {
     const validatedData = await validator.validate({
       schema: schema.create({
         id: schema.number(),
-        name: schema.string({ trim: true }),
+        name: schema.string({ trim: true }, [
+          rules.unique({
+            table: 'countries',
+            column: 'name',
+            whereNot: {
+              id: data.id,
+            },
+          }),
+        ]),
         isActive: schema.boolean.optional(),
         continentId: schema.number.optional(),
       }),

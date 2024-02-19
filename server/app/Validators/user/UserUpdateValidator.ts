@@ -35,9 +35,12 @@ export default class UserUpdateeValidator {
       email: schema.string({ trim: true }, [
         rules.email(),
         rules.normalizeEmail({ allLowercase: true }),
+        rules.unique({ table: 'users', column: 'email', whereNot: { id: this.ctx.params.id } }),
       ]),
       password: schema.string.optional({ trim: true }),
-      userName: schema.string({ trim: true }),
+      userName: schema.string({ trim: true }, [
+        rules.unique({ table: 'users', column: 'user_name', whereNot: { id: this.ctx.params.id } }),
+      ]),
       phone: schema.string.optional(),
       desc: schema.string.optional(),
       isActive: schema.boolean.optional(),
@@ -79,6 +82,7 @@ export default class UserUpdateeValidator {
         cityId: schema.number.optional(),
         stateId: schema.number.optional(),
         countryId: schema.number.optional(),
+        zip: schema.string.optional(),
         startDate: schema.date.optional({ format: 'dd/MM/yyyy' }),
         endDate: schema.date.optional({ format: 'dd/MM/yyyy' }),
         desc: schema.string.optional({ trim: true }),
@@ -105,7 +109,7 @@ export default class UserUpdateeValidator {
     NotificationSettings: schema.object.optional().members({
       onMessageRecieve: schema.boolean.optional(),
       onCommentReply: schema.boolean.optional(),
-      onProductUpdate: schema.boolean.optional(),
+      onServiceUpdate: schema.boolean.optional(),
       onOffers: schema.boolean.optional(),
     }),
   })

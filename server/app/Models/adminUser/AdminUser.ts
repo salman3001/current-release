@@ -20,7 +20,6 @@ import {
 } from '@ioc:Adonis/Addons/ResponsiveAttachment'
 import Activity from '../Activity'
 import Notifications from '../Notification'
-import { convertKeysToCamelCase } from 'App/Helpers/toCamelCase'
 
 export default class AdminUser extends BaseModel {
   @column({ isPrimary: true })

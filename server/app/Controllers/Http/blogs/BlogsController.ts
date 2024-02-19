@@ -5,10 +5,11 @@ import slugify from 'slugify'
 import { ResponsiveAttachment } from '@ioc:Adonis/Addons/ResponsiveAttachment'
 import BaseController from '../BaseController'
 import { validator } from '@ioc:Adonis/Core/Validator'
+import BlogUpdateValidator from 'App/Validators/blogs/BlogUpdateValidator'
 
 export default class BlogsController extends BaseController {
   constructor() {
-    super(Blog, BlogValidator, BlogValidator, 'BlogPolicy')
+    super(Blog, BlogValidator, BlogUpdateValidator, 'BlogPolicy')
   }
 
   public async store({ request, response, bouncer }: HttpContextContract) {
@@ -36,8 +37,7 @@ export default class BlogsController extends BaseController {
       message: 'Blog Created!',
       code: 201,
       data: blog,
-      status: true,
-      alertType: 'success'
+      success: true,
     })
   }
 
@@ -46,7 +46,7 @@ export default class BlogsController extends BaseController {
 
     const blog = await Blog.findOrFail(+params.id)
 
-    const { image, blogCategoryId, slug, ...payload } = await request.validate(BlogValidator)
+    const { image, blogCategoryId, slug, ...payload } = await request.validate(BlogUpdateValidator)
 
     if (slug) {
       blog.merge({ ...payload, slug })
@@ -70,8 +70,7 @@ export default class BlogsController extends BaseController {
       message: 'Blog category Updated!',
       code: 201,
       data: blog,
-      status: true,
-      alertType: 'success'
+      success: true,
     })
   }
 
@@ -81,8 +80,11 @@ export default class BlogsController extends BaseController {
   }
 
   public async storeExcelData(data: any, ctx: HttpContextContract): Promise<void> {
+    ctx.meta = {
+      currentObjectId: data.id,
+    }
     const validatedData = await validator.validate({
-      schema: new BlogValidator(ctx).schema,
+      schema: new BlogUpdateValidator(ctx).schema,
       data,
     })
     await Blog.updateOrCreate(

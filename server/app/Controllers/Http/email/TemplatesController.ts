@@ -25,8 +25,7 @@ export default class TemplatesController extends BaseController {
       message: 'Template Created',
       code: 201,
       data: template,
-      status: true,
-      alertType: 'success'
+      success: true,
     })
   }
 
@@ -47,8 +46,7 @@ export default class TemplatesController extends BaseController {
       message: 'Template Updated',
       code: 201,
       data: template,
-      status: true,
-      alertType: 'success'
+      success: true,
     })
   }
 

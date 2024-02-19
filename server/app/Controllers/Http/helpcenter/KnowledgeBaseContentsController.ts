@@ -3,13 +3,14 @@ import HelpcenterContentValidator from 'App/Validators/helpcenter/HelpcenterCont
 import slugify from 'slugify'
 import BaseController from '../BaseController'
 import KnowledgeBaseContent from 'App/Models/helpcenter/KnowledgeBaseContent'
+import HelpcenterContentUpdateValidator from 'App/Validators/helpcenter/HelpcenterContentUpdateValidator'
 
 export default class KnowledgeBaseContentsController extends BaseController {
   constructor() {
     super(
       KnowledgeBaseContent,
       HelpcenterContentValidator,
-      HelpcenterContentValidator,
+      HelpcenterContentUpdateValidator,
       'KnowledgebasePolicy'
     )
   }
@@ -34,18 +35,15 @@ export default class KnowledgeBaseContentsController extends BaseController {
       message: 'Content Created',
       code: 201,
       data: record,
-      status: true,
-      alertType: 'success'
+      success: true,
     })
-
   }
 
   public async update({ request, response, params, bouncer }: HttpContextContract) {
     await bouncer.with('KnowledgebasePolicy').authorize('update')
     const content = await KnowledgeBaseContent.findOrFail(+params.id)
-    const payload = await request.validate(HelpcenterContentValidator)
+    const payload = await request.validate(HelpcenterContentUpdateValidator)
     const { slug, ...restPayload } = payload
-
 
     if (slug) {
       content.merge(payload)
@@ -61,9 +59,7 @@ export default class KnowledgeBaseContentsController extends BaseController {
       message: 'Content Updated',
       code: 201,
       data: content,
-      status: true,
-      alertType: 'success'
+      success: true,
     })
-
   }
 }

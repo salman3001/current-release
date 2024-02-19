@@ -1,11 +1,11 @@
 import Route from '@ioc:Adonis/Core/Route'
 
 Route.group(() => {
-  Route.get('service/delete-screenshot/:id', 'service/ServicesController.deleteScreenShot')
+  Route.get('service/delete-screenshot/:id', 'service/ServiceController.deleteScreenShot')
 
-  Route.get('service/export', 'service/ServicesController.export')
-  Route.post('service/import', 'service/ServicesController.import')
-  Route.resource('service', 'service/ServicesController').apiOnly()
+  Route.get('service/export', 'service/ServiceController.export')
+  Route.post('service/import', 'service/ServiceController.import')
+  Route.resource('service', 'service/ServiceController').apiOnly()
 
   Route.get('service-category/export', 'service/ServiceCategoriesController.export')
   Route.post('service-category/import', 'service/ServiceCategoriesController.import')

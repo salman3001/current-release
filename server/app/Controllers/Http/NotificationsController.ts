@@ -36,8 +36,7 @@ export default class NotificationsController extends BaseController {
       message: '',
       code: 200,
       data: records,
-      status: true,
-      alertType: null
+      success: true,
     })
   }
 
@@ -75,15 +74,13 @@ export default class NotificationsController extends BaseController {
       }
 
       notifcations = user.notifications
-
     }
 
     return response.custom({
       message: '',
       code: 200,
       data: { notifcations, count },
-      status: true,
-      alertType: null
+      success: true,
     })
   }
 
@@ -103,8 +100,7 @@ export default class NotificationsController extends BaseController {
       message: 'Notification deleted',
       code: 200,
       data: null,
-      status: true,
-      alertType: 'success'
+      success: true,
     })
   }
 
@@ -123,8 +119,7 @@ export default class NotificationsController extends BaseController {
       message: 'All Notification deleted',
       code: 200,
       data: null,
-      status: true,
-      alertType: 'success'
+      success: true,
     })
   }
 
@@ -136,8 +131,7 @@ export default class NotificationsController extends BaseController {
       message: 'Notification marked as read',
       code: 200,
       data: notification,
-      status: true,
-      alertType: 'success'
+      success: true,
     })
   }
 }

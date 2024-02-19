@@ -14,14 +14,14 @@ export default class Seo extends BaseModel {
   public metaDesc: string
 
   @column()
-  public productSubcategoryId: number
+  public serviceSubcategoryId: number
 
   @column()
-  public productCategoryId: number
+  public serviceCategoryId: number
 
   @column()
-  public productTagId: number
+  public serviceTagId: number
 
   @column()
-  public productId: number
+  public serviceId: number
 }

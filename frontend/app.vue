@@ -3,7 +3,7 @@ import { ofetch } from 'ofetch'
 const token = useCookie('token')
 const config = useRuntimeConfig()
 
-const authorization = `Bearer ${toRaw(token.value?.token)}`
+const authorization = `Bearer ${toRaw(token.value)}`
 globalThis.$fetch = ofetch.create({
   baseURL: config.public.baseApi,
   headers: {

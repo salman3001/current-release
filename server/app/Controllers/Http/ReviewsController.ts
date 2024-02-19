@@ -1,6 +1,6 @@
 // import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
-import Review from 'App/Models/product/Review'
+import Review from 'App/Models/service/Review'
 import BaseController from './BaseController'
 import CreateReviewValidator from 'App/Validators/CreateReviewValidator'
 import UpdateReviewValidator from 'App/Validators/UpdateReviewValidator'
@@ -18,8 +18,7 @@ export default class ReviewsController extends BaseController {
       message: 'Review added',
       code: 201,
       data: review,
-      status: true,
-      alertType: null
+      success: true,
     })
   }
 
@@ -34,8 +33,7 @@ export default class ReviewsController extends BaseController {
       message: 'Review updated',
       code: 201,
       data: review,
-      status: true,
-      alertType: null
+      success: true,
     })
   }
 }

@@ -12,5 +12,5 @@ Route.group(() => {
   Route.get('roles/export', 'adminUser/RolesController.export')
   Route.post('roles/import', 'adminUser/RolesController.import')
   Route.resource('roles', 'adminUser/RolesController').apiOnly()
-  Route.resource('permissions', 'adminUser/PermissionsController').apiOnly()
+  Route.get('all-permissions', 'adminUser/RolesController.allPermissions')
 }).prefix('api')

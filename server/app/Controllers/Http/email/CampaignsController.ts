@@ -32,8 +32,7 @@ export default class CampaignsController extends BaseController {
       message: 'Campaign Created!',
       code: 201,
       data: campaign,
-      status: true,
-      alertType: 'success'
+      success: true,
     })
   }
 
@@ -76,8 +75,7 @@ export default class CampaignsController extends BaseController {
       message: 'Campaign Updated!',
       code: 201,
       data: campaign,
-      status: true,
-      alertType: 'success'
+      success: true,
     })
   }
 

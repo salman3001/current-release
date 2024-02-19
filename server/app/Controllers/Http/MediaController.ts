@@ -33,8 +33,7 @@ export default class MediaController extends BaseController {
       message: 'Media Added Successfully',
       code: 201,
       data: media,
-      status: true,
-      alertType: 'success'
+      success: true,
     })
   }
 
@@ -74,8 +73,7 @@ export default class MediaController extends BaseController {
       message: 'Media Updated',
       code: 201,
       data: media,
-      status: true,
-      alertType: 'success'
+      success: true,
     })
   }
 
@@ -103,8 +101,7 @@ export default class MediaController extends BaseController {
       message: 'Media Deleted',
       code: 200,
       data: media,
-      status: true,
-      alertType: 'success'
+      success: true,
     })
   }
 

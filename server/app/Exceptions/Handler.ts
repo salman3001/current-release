@@ -30,11 +30,36 @@ export default class ExceptionHandler extends HttpExceptionHandler {
     // }
 
     if (ctx.response.getStatus() === 422) {
-      return ctx.response.status(ctx.response.getStatus()).send({ status: false, message: "Not all the fields are filled correctly", data: null, errors: error.messages.errors })
+      return ctx.response.status(ctx.response.getStatus()).send({
+        success: false,
+        message: 'Not all the fields are filled correctly',
+        data: null,
+        errors: error.messages,
+      })
     }
 
     if (ctx.response.getStatus() === 500) {
-      return ctx.response.status(ctx.response.getStatus()).send({ status: false, message: "Server Error", data: null })
+      return ctx.response
+        .status(ctx.response.getStatus())
+        .send({ success: false, message: 'Server Error', data: null, error: error.message })
+    }
+
+    if (ctx.response.getStatus() === 400) {
+      return ctx.response
+        .status(ctx.response.getStatus())
+        .send({ success: false, message: 'Bad Request', data: null, error: error.message })
+    }
+
+    if (ctx.response.getStatus() === 403) {
+      return ctx.response
+        .status(ctx.response.getStatus())
+        .send({ success: false, message: 'Authorization failed', data: null, error: error.message })
+    }
+
+    if (ctx.response.getStatus() === 404) {
+      return ctx.response
+        .status(ctx.response.getStatus())
+        .send({ success: false, message: 'Not Found', data: null, error: error.message })
     }
     /**
      * Forward rest of the exceptions to the parent class
