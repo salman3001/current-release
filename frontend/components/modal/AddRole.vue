@@ -1,0 +1,41 @@
+<script setup lang="ts">
+import { ref } from 'vue';
+
+const modal = modalStore();
+
+const form = ref({
+  name: '',
+  isActive: false,
+});
+
+const { execute, loading } = RoleApi.post();
+</script>
+
+<template>
+  <q-card style="width: 100%">
+    <q-toolbar style="background-color: #ebeae4">
+      <q-toolbar-title><span class="text-weight-bold">Add Role</span></q-toolbar-title>
+      <q-btn flat dense icon="close" v-close-popup />
+    </q-toolbar>
+
+    <q-card-section class="column q-px-md-sm">
+      <q-form @submit="async () => {
+        await execute(form);
+        modal.show = !modal.show;
+        modal.meta.tableRef.setPagination({}, true);
+      }
+        ">
+        <q-input outlined v-model="form.name" label="Name" :rules="[rules.required('required')]" />
+        <q-toggle v-model="form.isActive" label="Activate" class="col-12 col-sm-6 col-md-3" />
+        <div class="row q-gutter-sm justify-end q-pt-lg">
+          <q-btn flat style="background-color: #f2f0dc; min-width: 6rem" @click="modal.show = !modal.show">No</q-btn>
+          <q-btn color="primary" v-if="loading">
+            <q-circular-progress indeterminate size="20px" class="q-px-10" :thickness="1" color="grey-8"
+              track-color="orange-2" />
+          </q-btn>
+          <q-btn color="primary" type="submit" :disable="loading" v-else style="min-width: 6rem">Yes</q-btn>
+        </div>
+      </q-form>
+    </q-card-section>
+  </q-card>
+</template>
