@@ -64,7 +64,7 @@ export default class RolesController extends BaseController {
     }
 
     return response.custom({
-      message: '',
+      message: null,
       code: 200,
       data: permissionsArray,
       success: true,

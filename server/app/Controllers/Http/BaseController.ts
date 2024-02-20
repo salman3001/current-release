@@ -43,15 +43,16 @@ export default class BaseController {
     public importSelects: string[] = []
   ) {}
 
-  public async index({ request, response, bouncer }: HttpContextContract) {
-    if (bouncer && this.bauncerPolicy) {
-      await bouncer.with(this.bauncerPolicy).authorize('viewList')
+  public async index(ctx: HttpContextContract) {
+    if (ctx.bouncer && this.bauncerPolicy) {
+      await ctx.bouncer.with(this.bauncerPolicy).authorize('viewList')
     }
 
-    const qs = qsModule.parse(request.parsedUrl.query, { depth: 10 })
+    const qs = qsModule.parse(ctx.request.parsedUrl.query, { depth: 10 })
 
     let records: ModelPaginatorContract<LucidRow> | LucidRow[] | [] = []
-    const query = this.model.query()
+    const query = this.getIndexQuery(ctx)
+
     if (qs.relationFilter) {
       this.relationFiler(qs.relationFilter, query)
     }
@@ -113,22 +114,19 @@ export default class BaseController {
       records = await query.exec()
     }
 
-    return response.custom({
-      message: '',
+    return ctx.response.custom({
+      message: null,
       code: 200,
       data: records,
       success: true,
     })
   }
 
-  public async show({ request, params, response, bouncer }: HttpContextContract) {
-    // const qs = request.qs() as unknown as { fields: string[]; populate: Populate }
-    const qs = qsModule.parse(request.parsedUrl.query, { depth: 10 })
+  public async show(ctx: HttpContextContract) {
+    // const qs = ctx.request.qs() as unknown as { fields: string[]; populate: Populate }
+    const qs = qsModule.parse(ctx.request.parsedUrl.query, { depth: 10 })
 
-    const id = +params.id
-
-    const query = this.model.query()
-    query.where('id', id)
+    const query = this.getShowQuery(ctx)
 
     if (qs?.populate) {
       await this.populate(qs.populate, query)
@@ -140,25 +138,25 @@ export default class BaseController {
 
     const record = await query.first()
 
-    if (record && bouncer && this.bauncerPolicy) {
-      await bouncer.with(this.bauncerPolicy).authorize('view', record)
+    if (record && ctx.bouncer && this.bauncerPolicy) {
+      await ctx.bouncer.with(this.bauncerPolicy).authorize('view', record)
     }
 
-    return response.custom({
-      message: '',
+    return ctx.response.custom({
+      message: null,
       code: 200,
       data: record,
       success: true,
     })
   }
 
-  public async store({ request, response, bouncer }: HttpContextContract) {
-    if (bouncer && this.bauncerPolicy) {
-      await bouncer.with(this.bauncerPolicy).authorize('create')
+  public async store(ctx: HttpContextContract) {
+    if (ctx.bouncer && this.bauncerPolicy) {
+      await ctx.bouncer.with(this.bauncerPolicy).authorize('create')
     }
-    const payload = await request.validate(this.storeValidator)
+    const payload = await ctx.request.validate(this.storeValidator)
     const record = await this.model.create(payload)
-    return response.custom({
+    return ctx.response.custom({
       message: 'Record Created Successfully',
       code: 201,
       data: record,
@@ -166,16 +164,16 @@ export default class BaseController {
     })
   }
 
-  public async update({ params, request, response, bouncer }: HttpContextContract) {
-    const id = params.id
+  public async update(ctx: HttpContextContract) {
+    const id = +ctx.params.id
     const record = await this.model.findOrFail(id)
-    if (bouncer && this.bauncerPolicy) {
-      await bouncer.with(this.bauncerPolicy).authorize('update', record)
+    if (ctx.bouncer && this.bauncerPolicy) {
+      await ctx.bouncer.with(this.bauncerPolicy).authorize('update', record)
     }
-    const payload = await request.validate(this.updateValidator)
+    const payload = await ctx.request.validate(this.updateValidator)
     record?.merge(payload)
     await record?.save()
-    return response.custom({
+    return ctx.response.custom({
       message: 'Record Updated Successfully',
       code: 201,
       data: record,
@@ -183,15 +181,15 @@ export default class BaseController {
     })
   }
 
-  public async destroy({ params, response, bouncer }: HttpContextContract) {
-    const id = params.id
+  public async destroy(ctx: HttpContextContract) {
+    const id = +ctx.params.id
     const record = await this.model.findOrFail(id)
-    if (bouncer && this.bauncerPolicy) {
-      await bouncer.with(this.bauncerPolicy).authorize('delete', record)
+    if (ctx.bouncer && this.bauncerPolicy) {
+      await ctx.bouncer.with(this.bauncerPolicy).authorize('delete', record)
     }
 
     await record?.delete()
-    return response.custom({
+    return ctx.response.custom({
       message: 'Record Deleted Successfully',
       code: 200,
       data: record,
@@ -199,19 +197,19 @@ export default class BaseController {
     })
   }
 
-  public async uniqueField({ response, request }: HttpContextContract) {
-    const qs = request.qs() as { field: string; value: string }
+  public async uniqueField(ctx: HttpContextContract) {
+    const qs = ctx.request.qs() as { field: string; value: string }
     const record = await this.model.findBy(qs.field, qs.value)
 
     if (record) {
-      return response.custom({
+      return ctx.response.custom({
         message: 'Field is already taken',
         code: 400,
         data: null,
         success: false,
       })
     } else {
-      return response.custom({
+      return ctx.response.custom({
         message: 'The field is available',
         code: 200,
         data: null,
@@ -260,8 +258,8 @@ export default class BaseController {
     }
   }
 
-  public async export({ response, bouncer }: HttpContextContract) {
-    this.bauncerPolicy && (await bouncer.with(this.bauncerPolicy).authorize('viewList'))
+  public async export(ctx: HttpContextContract) {
+    this.bauncerPolicy && (await ctx.bouncer.with(this.bauncerPolicy).authorize('viewList'))
 
     const records = await this.getExportRecords()
 
@@ -281,7 +279,7 @@ export default class BaseController {
 
     const url = await Drive.getSignedUrl(`${this.model.name}.xlsx`, { expiresIn: '30mins' })
 
-    return response.custom({
+    return ctx.response.custom({
       message: 'Export Successfull',
       code: 200,
       data: { url },
@@ -289,13 +287,13 @@ export default class BaseController {
     })
   }
 
-  public async import({ response, bouncer, request }: HttpContextContract) {
-    this.bauncerPolicy && (await bouncer.with(this.bauncerPolicy).authorize('create'))
+  public async import(ctx: HttpContextContract) {
+    this.bauncerPolicy && (await ctx.bouncer.with(this.bauncerPolicy).authorize('create'))
     const validatorSchema = schema.create({
       file: schema.file({ extnames: ['xlsx'] }),
     })
 
-    const { file } = await request.validate({ schema: validatorSchema })
+    const { file } = await ctx.request.validate({ schema: validatorSchema })
 
     await file.moveToDisk('./', {
       name: `${this.model.name}.xlsx`,
@@ -307,10 +305,10 @@ export default class BaseController {
 
     for (const j of json as any) {
       const deflattenObject = unflatten(j)
-      await this.storeExcelData(deflattenObject, request.ctx as HttpContextContract)
+      await this.storeExcelData(deflattenObject, ctx.request.ctx as HttpContextContract)
     }
 
-    return response.custom({
+    return ctx.response.custom({
       message: 'File upload Successfull! Refresh your page',
       code: 201,
       data: null,
@@ -336,5 +334,14 @@ export default class BaseController {
 
   public excludeIncludeExportProperties(record: any) {
     return record
+  }
+
+  public getIndexQuery(ctx: HttpContextContract): any {
+    return this.model.query()
+  }
+
+  public getShowQuery(ctx: HttpContextContract): any {
+    const id = ctx.params.id
+    return this.model.query().where('id', id)
   }
 }

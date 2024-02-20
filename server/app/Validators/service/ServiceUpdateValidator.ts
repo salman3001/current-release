@@ -46,7 +46,7 @@ export default class ServiceUpdateValidator {
         size: '5mb',
       })
     ),
-    service: schema.object.optional().members({
+    service: schema.object().members({
       name: schema.string({ trim: true }),
       userId: schema.number(),
       serviceCategoryId: schema.number.optional(),
@@ -77,29 +77,6 @@ export default class ServiceUpdateValidator {
       schema.object().members({
         quest: schema.string(),
         ans: schema.string(),
-      })
-    ),
-    variants: schema.array().members(
-      schema.object().members({
-        name: schema.string([rules.maxLength(100)]),
-        price: schema.number(),
-        availableQty: schema.number(),
-        hasInifiiteQty: schema.boolean(),
-        flatDiscount: schema.number.optional(),
-        features: schema.array.optional().members(schema.string()),
-        included: schema.array.optional().members(schema.string()),
-        excluded: schema.array.optional().members(schema.string()),
-        order: schema.bigint.optional(),
-        image: schema.file.optional({
-          extnames: ['jpg', 'JPG', 'jpeg', 'JPEG', 'png', 'PNG', 'webp', 'WEBP'],
-          size: '5mb',
-        }),
-        properties: schema.array.optional().members(
-          schema.object().members({
-            name: schema.string(),
-            value: schema.string(),
-          })
-        ),
       })
     ),
   })

@@ -72,7 +72,7 @@ export default class SupportTicketsController extends BaseController {
       .paginate(page ?? 1, limit ?? 20)
 
     return response.custom({
-      message: '',
+      message: null,
       code: 200,
       data: messages,
       success: true,

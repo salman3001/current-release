@@ -1,7 +1,7 @@
 import { schema, CustomMessages, rules } from '@ioc:Adonis/Core/Validator'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
-export default class CreateReviewValidator {
+export default class VariantCreateValidator {
   constructor(protected ctx: HttpContextContract) {}
 
   /*
@@ -11,21 +11,37 @@ export default class CreateReviewValidator {
    * 1. The username must be of data type string. But then also, it should
    *    not contain special characters or numbers.
    *    ```
-   *     schema.string([ rules.alpha() ])
+   *     schema.string({}, [ rules.alpha() ])
    *    ```
    *
    * 2. The email must be of data type string, formatted as a valid
    *    email. But also, not used by any other user.
    *    ```
-   *     schema.string([
+   *     schema.string({}, [
    *       rules.email(),
    *       rules.unique({ table: 'users', column: 'email' }),
    *     ])
    *    ```
    */
   public schema = schema.create({
-    rating: schema.number([rules.containsNumber([1, 2, 3, 4, 5])]),
-    message: schema.string({ escape: true }),
+    image: schema.file.optional({
+      extnames: ['jpg', 'JPG', 'jpeg', 'JPEG', 'png', 'PNG', 'webp', 'WEBP'],
+      size: '5mb',
+    }),
+    name: schema.string([rules.maxLength(100)]),
+    price: schema.number(),
+    availableQty: schema.number.optional(),
+    hasInifiiteQty: schema.boolean(),
+    flatDiscount: schema.number.optional(),
+    features: schema.array.optional().members(schema.string()),
+    included: schema.array.optional().members(schema.string()),
+    excluded: schema.array.optional().members(schema.string()),
+    aditionalProperties: schema.array.optional().members(
+      schema.object().members({
+        name: schema.string(),
+        value: schema.string(),
+      })
+    ),
   })
 
   /**

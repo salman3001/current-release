@@ -5,6 +5,7 @@ import {
   HasMany,
   HasOne,
   ManyToMany,
+  beforeDelete,
   belongsTo,
   column,
   hasMany,
@@ -122,4 +123,29 @@ export default class Service extends BaseModel {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime
+
+  @beforeDelete()
+  public static async deleteRelations(service: Service) {
+    await service.load('screenshots')
+    await service.load('video')
+    await service.load('variants')
+
+    if (service.screenshots) {
+      await Promise.all(
+        service.screenshots.map(async (img) => {
+          await img.delete()
+        })
+      )
+    }
+
+    if (service.video) {
+      await service.video.delete()
+    }
+
+    if (service.variants) {
+      for (const v of service.variants) {
+        await v.delete()
+      }
+    }
+  }
 }

@@ -62,7 +62,7 @@ export default class extends BaseSeeder {
     }).createMany(3)
 
     await UserFactory.merge([
-      { email: 'user@gmail.com', password: '123456789', userName: 'user123' },
+      { email: 'user@gmail.com', password: '123456789', userName: 'user123', isActive: true },
     ])
       .with('address', 1, (add) => {
         add.with('continent', 1).with('country').with('state').with('city').with('street')

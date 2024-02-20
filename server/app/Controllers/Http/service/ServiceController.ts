@@ -18,28 +18,13 @@ export default class ServiceController extends BaseController {
   public async store({ request, response, bouncer }: HttpContextContract) {
     await bouncer.with('ServicePolicy').authorize('create')
 
-    console.log(request.body())
+    console.log(request.all())
     const payload = await request.validate(ServiceCreateValidator)
 
     let service: Service | null = null
 
     await Database.transaction(async (trx) => {
-      service = await Service.create(payload.service)
-      service.useTransaction(trx)
-
-      for (const variant of payload.variants) {
-        const { aditionalProperties, image, ...restVariant } = variant
-        const createdVariant = await service.related('variants').create(restVariant)
-        createdVariant.useTransaction(trx)
-        if (aditionalProperties) {
-          await createdVariant.related('aditionalProperties').createMany(aditionalProperties)
-        }
-        if (image) {
-          createdVariant.image = await ResponsiveAttachment.fromFile(image)
-        }
-
-        await createdVariant.save()
-      }
+      service = await Service.create(payload.service, { client: trx })
 
       if (payload.seo) {
         await service.related('seo').create(payload.seo)
@@ -128,33 +113,6 @@ export default class ServiceController extends BaseController {
         await service.save()
       }
 
-      for (const variant of payload.variants) {
-        const { properties, image, ...restVariant } = variant
-
-        await service.load('variants')
-
-        if (service.variants) {
-          for (const variant of service.variants) {
-            for (const prop of variant.aditionalProperties) {
-              await prop.delete()
-            }
-            await variant.delete()
-          }
-        }
-
-        const createdVariant = await service.related('variants').create(restVariant)
-        createdVariant.useTransaction(trx)
-
-        if (properties) {
-          await createdVariant.related('aditionalProperties').createMany(properties)
-        }
-        if (image) {
-          createdVariant.image = await ResponsiveAttachment.fromFile(image)
-        }
-
-        await createdVariant.save()
-      }
-
       if (payload.seo) {
         await service.load('seo')
         if (service.seo) {
@@ -214,9 +172,12 @@ export default class ServiceController extends BaseController {
         const images = await Promise.all(
           payload.images.map(async (img) => {
             try {
-              const storeImg = await Image.create({
-                file: await ResponsiveAttachment.fromFile(img),
-              })
+              const storeImg = await Image.create(
+                {
+                  file: await ResponsiveAttachment.fromFile(img),
+                },
+                { client: trx }
+              )
               return storeImg
             } catch (error) {
               console.error('Error storing image:', error)
@@ -238,12 +199,19 @@ export default class ServiceController extends BaseController {
           await service.video.delete()
         }
 
-        const video = await Video.create({ file: Attachment.fromFile(payload.video) })
+        const video = await Video.create(
+          { file: Attachment.fromFile(payload.video) },
+          { client: trx }
+        )
         await service.related('video').save(video)
       }
 
       await service.save()
     })
+
+    if (service) {
+      await (service as Service).refresh()
+    }
 
     return response.custom({
       message: 'Service Updated',
@@ -257,21 +225,6 @@ export default class ServiceController extends BaseController {
     await bouncer.with('ServicePolicy').authorize('delete')
 
     const service = await Service.findOrFail(+params.id)
-    await service.load('screenshots')
-    await service.load('video')
-
-    if (service.screenshots) {
-      await Promise.all(
-        service.screenshots.map(async (img) => {
-          await img.delete()
-        })
-      )
-    }
-
-    if (service.video) {
-      await service.video.delete()
-    }
-
     await service.delete()
 
     return response.custom({

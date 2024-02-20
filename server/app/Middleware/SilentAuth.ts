@@ -17,14 +17,12 @@ export default class SilentAuthMiddleware {
      */
     if (await auth.use('adminUserApi').check()) {
       auth.defaultGuard = 'adminUserApi'
-      return next()
-    }
-
-    if (await auth.use('userApi').check()) {
+      return await next()
+    } else if (await auth.use('userApi').check()) {
       auth.defaultGuard = 'userApi'
-      return next()
+      return await next()
+    } else {
+      await next()
     }
-
-    await next()
   }
 }

@@ -62,7 +62,6 @@ export const { policies } = Bouncer.registerPolicies({
   ContactMessagePolicy: () => import('App/Policies/ContactMessagePolicy'),
   KnowledgebasePolicy: () => import('App/Policies/KnowledgebasePolicy'),
   LocationPolicy: () => import('App/Policies/LocationPolicy'),
-  ProductPolicy: () => import('App/Policies/ProductPolicy'),
   RolePolicy: () => import('App/Policies/RolePolicy'),
   ServicePolicy: () => import('App/Policies/ServicePolicy'),
   SubscriberPolicy: () => import('App/Policies/SubscriberPolicy'),
@@ -72,4 +71,7 @@ export const { policies } = Bouncer.registerPolicies({
   IntrestPolicy: () => import('App/Policies/InterestPolicy'),
   NotificationPolicy: () => import('App/Policies/NotificationPolicy'),
   MediaPolicy: () => import('App/Policies/MediaPolicy'),
+  ReviewPolicy: () => import('App/Policies/ReviewPolicy'),
+  CartPolicy: () => import('App/Policies/CartPolicy'),
+  CartItemPolicy: () => import('App/Policies/CartItemPolicy'),
 })

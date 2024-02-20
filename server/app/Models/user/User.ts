@@ -28,7 +28,7 @@ import Notifications from '../Notification'
 import SupportTicket from '../helpcenter/SupportTicket'
 import Service from '../service/Service'
 import Review from '../service/Review'
-import Cart from '../service/Cart'
+import Cart from './Cart'
 
 export default class User extends BaseModel {
   @column({ isPrimary: true })

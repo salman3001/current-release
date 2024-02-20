@@ -55,8 +55,66 @@ export default class AuthController {
     }
   }
 
+  public async userLogin({ auth, request, response }: HttpContextContract) {
+    const payloadSchema = schema.create({
+      email: schema.string({ trim: true }, [
+        rules.email(),
+        rules.normalizeEmail({ allLowercase: true }),
+      ]),
+      password: schema.string({ trim: true }),
+    })
+
+    const payload = await request.validate({ schema: payloadSchema })
+
+    const user = await User.findBy('email', payload.email)
+    if (!user || user?.isActive == false) {
+      return response.custom({
+        message: 'Failed to login. Check your credentials!',
+        code: 400,
+        data: null,
+        success: false,
+      })
+    }
+
+    try {
+      const token = await auth.use('userApi').attempt(payload.email, payload.password, {
+        expiresIn: '1 day',
+      })
+
+      const socketToken = Math.floor(100000 + Math.random() * 900000).toString()
+
+      user.socketToken = socketToken
+
+      await user.save()
+
+      return response.custom({
+        message: 'Login Successfull',
+        code: 200,
+        data: { user, token, socketToken },
+        success: true,
+      })
+    } catch (error) {
+      return response.custom({
+        message: 'Failed to login. Check your credentials!',
+        code: 400,
+        data: null,
+        success: false,
+      })
+    }
+  }
+
   public async adminLogout({ auth, response }: HttpContextContract) {
     await auth.use('adminUserApi').revoke()
+    return response.custom({
+      message: 'Logout Success',
+      code: 200,
+      data: null,
+      success: true,
+    })
+  }
+
+  public async userLogout({ auth, response }: HttpContextContract) {
+    await auth.use('userApi').revoke()
     return response.custom({
       message: 'Logout Success',
       code: 200,

@@ -3,7 +3,7 @@ declare module '@ioc:Adonis/Core/Response' {
     custom(opt: {
       code: number
       data: null | Record<any, any>
-      message: string
+      message: string | null
       success: boolean
       error?: string
     }): this
