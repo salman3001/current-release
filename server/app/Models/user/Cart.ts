@@ -1,5 +1,5 @@
 import { BaseModel, BelongsTo, HasMany, belongsTo, column, hasMany } from '@ioc:Adonis/Lucid/Orm'
-import User from '../user/User'
+import User from './User'
 import CartItem from './CartItem'
 
 export default class Cart extends BaseModel {
@@ -14,5 +14,4 @@ export default class Cart extends BaseModel {
 
   @hasMany(() => CartItem)
   items: HasMany<typeof CartItem>
-
 }

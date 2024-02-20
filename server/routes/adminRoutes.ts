@@ -2,8 +2,8 @@ import Route from '@ioc:Adonis/Core/Route'
 
 Route.group(() => {
   Route.get('/admin-users/unique-field', 'adminUser/AdminUsersController.uniqueField')
-  Route.get('admin-users/change-role/:id', 'adminUser/AdminUsersController.changeRole')
-  Route.get('admin-users/ban/:id', 'adminUser/AdminUsersController.banUser')
+  Route.post('admin-users/change-role/:id', 'adminUser/AdminUsersController.changeRole')
+  Route.post('admin-users/ban/:id', 'adminUser/AdminUsersController.banUser')
   Route.get('admin-users/activities', 'adminUser/ActivitiesController.index')
   Route.get('admin-users/export', 'adminUser/AdminUsersController.export')
   Route.post('admin-users/import', 'adminUser/AdminUsersController.import')

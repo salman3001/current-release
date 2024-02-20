@@ -33,7 +33,7 @@ export default class NotificationsController extends BaseController {
     }
 
     return response.custom({
-      message: '',
+      message: null,
       code: 200,
       data: records,
       success: true,
@@ -77,7 +77,7 @@ export default class NotificationsController extends BaseController {
     }
 
     return response.custom({
-      message: '',
+      message: null,
       code: 200,
       data: { notifcations, count },
       success: true,

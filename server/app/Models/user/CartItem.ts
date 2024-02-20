@@ -1,5 +1,5 @@
 import { BaseModel, BelongsTo, belongsTo, column, computed } from '@ioc:Adonis/Lucid/Orm'
-import ServiceVariant from './ServiceVariant'
+import ServiceVariant from '../service/ServiceVariant'
 
 export default class CartItem extends BaseModel {
   @column({ isPrimary: true })

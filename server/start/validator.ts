@@ -7,30 +7,21 @@
 // | boot.
 // |
 // */
-// import { validator } from '@ioc:Adonis/Core/Validator'
+import { validator } from '@ioc:Adonis/Core/Validator'
 // import Database from '@ioc:Adonis/Lucid/Database'
 // import { LucidModel, LucidRow } from '@ioc:Adonis/Lucid/Orm'
 
-// validator.rule('exitInParent', async (value, [currentModelName,parentMoodelName, column], options) => {
-//   if (typeof value !== 'string') {
-//     return
-//   }
+validator.rule('containsNumber', async (value, [numberArray], options) => {
+  if (typeof value !== 'number' && !Array.isArray(numberArray)) {
+    return
+  }
 
-//   const currentModel= await Database.from(currentModelName).where('id',value).first() as LucidRow
-
-//   if(currentModel)
-//   await currentModel.related(parentMoodelName)
-
-//   const model = await Database.from(parentMoodel).whereExist((model)=>{
-//     model[parentMoodelName]
-//   })
-
-//   if (!model) {
-//     options.errorReporter.report(
-//       options.pointer,
-//       'Parent Model Does Not Exist',
-//       'Parent Model Does Not Exist ',
-//       options.arrayExpressionPointer
-//     )
-//   }
-// })
+  if (!numberArray.includes(value)) {
+    options.errorReporter.report(
+      options.pointer,
+      `Not a valid number. choices ${(numberArray as []).toString()}`,
+      `Not a valid number. choices ${(numberArray as []).toString()}`,
+      options.arrayExpressionPointer
+    )
+  }
+})

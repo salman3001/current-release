@@ -1,6 +1,6 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
-import CartItem from 'App/Models/service/CartItem'
+import CartItem from 'App/Models/user/CartItem'
 import BaseController from '../BaseController'
 import CreateCartItemValidator from 'App/Validators/CreateCartItemValidator'
 import UpdateCartItemValidator from 'App/Validators/UpdateCartItemValidator'

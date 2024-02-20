@@ -34,7 +34,7 @@ export default class ExceptionHandler extends HttpExceptionHandler {
         success: false,
         message: 'Not all the fields are filled correctly',
         data: null,
-        errors: error.messages,
+        errors: error.messages.errors,
       })
     }
 

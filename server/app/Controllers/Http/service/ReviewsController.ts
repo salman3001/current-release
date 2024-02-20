@@ -1,19 +1,31 @@
 // import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 import Review from 'App/Models/service/Review'
-import BaseController from './BaseController'
+import BaseController from '../BaseController'
 import CreateReviewValidator from 'App/Validators/CreateReviewValidator'
 import UpdateReviewValidator from 'App/Validators/UpdateReviewValidator'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 export default class ReviewsController extends BaseController {
   constructor() {
-    super(Review, CreateReviewValidator, UpdateReviewValidator)
+    super(Review, CreateReviewValidator, UpdateReviewValidator, 'ReviewPolicy')
   }
 
-  public async store({ request, response, bouncer }: HttpContextContract): Promise<void> {
+  public getIndexQuery(ctx: HttpContextContract) {
+    const serviceId = ctx?.params.serviceId
+
+    return Review.query().where('service_id', serviceId)
+  }
+
+  public async store({ request, response, bouncer, auth, params }: HttpContextContract) {
+    await bouncer.with('ReviewPolicy').authorize('create')
+
+    const user = auth.user
+    const serviceId = params.serviceId
+
     const payload = await request.validate(CreateReviewValidator)
-    const review = await Review.create(payload)
+
+    const review = await Review.create({ ...payload, userId: user?.id, serviceId: serviceId })
     return response.custom({
       message: 'Review added',
       code: 201,
@@ -22,8 +34,10 @@ export default class ReviewsController extends BaseController {
     })
   }
 
-  public async update({ params, request, response, bouncer }: HttpContextContract): Promise<void> {
+  public async update({ params, request, response, bouncer }: HttpContextContract) {
     const review = await Review.findOrFail(+params.id)
+
+    await bouncer.with('ReviewPolicy').authorize('update')
     const payload = await request.validate(UpdateReviewValidator)
 
     review.merge(payload)
