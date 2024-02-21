@@ -45,7 +45,7 @@ export default class Service extends BaseModel {
   public status: boolean
 
   @column()
-  public specificLocation: boolean
+  public locationSpecific: boolean
 
   @column()
   public userId: number

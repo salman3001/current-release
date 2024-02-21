@@ -10,7 +10,7 @@ export default class extends BaseSchema {
       table.string('short_desc')
       table.text('long_desc')
       table.boolean('status').defaultTo(false).notNullable()
-      table.boolean('specific_location').defaultTo(false).notNullable()
+      table.boolean('location_specific').defaultTo(true).notNullable()
       table.integer('user_id').unsigned().references('id').inTable('users').onDelete('SET NULL')
       table.json('logo')
       table.json('cover')

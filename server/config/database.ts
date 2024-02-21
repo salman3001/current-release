@@ -6,9 +6,7 @@
  */
 
 import Env from '@ioc:Adonis/Core/Env'
-import Application from '@ioc:Adonis/Core/Application'
 import type { DatabaseConfig } from '@ioc:Adonis/Lucid/Database'
-import path from 'path'
 
 const databaseConfig: DatabaseConfig = {
   /*
@@ -26,60 +24,32 @@ const databaseConfig: DatabaseConfig = {
   connections: {
     /*
     |--------------------------------------------------------------------------
-    | SQLite
+    | PostgreSQL config
     |--------------------------------------------------------------------------
     |
-    | Configuration for the SQLite database.  Make sure to install the driver
+    | Configuration for PostgreSQL database. Make sure to install the driver
     | from npm when using this connection
     |
-    | npm i sqlite3
+    | npm i pg
     |
     */
-    sqlite: {
-      client: 'sqlite',
+    pg: {
+      client: 'pg',
       connection: {
-        filename: path.resolve(Application.databasePath('db.sqlite3')),
-      },
-      pool: {
-        afterCreate: (conn, cb) => {
-          conn.run('PRAGMA foreign_keys=true', cb)
-        },
+        host: Env.get('PG_HOST'),
+        port: Env.get('PG_PORT'),
+        user: Env.get('PG_USER'),
+        password: Env.get('PG_PASSWORD', ''),
+        database: Env.get('PG_DB_NAME'),
       },
       migrations: {
         naturalSort: true,
       },
-      useNullAsDefault: true,
       healthCheck: false,
       debug: false,
     },
 
-    /*
-    |--------------------------------------------------------------------------
-    | MySQL config
-    |--------------------------------------------------------------------------
-    |
-    | Configuration for MySQL database. Make sure to install the driver
-    | from npm when using this connection
-    |
-    | npm i mysql2
-    |
-    */
-    mysql: {
-      client: 'mysql2',
-      connection: {
-        host: Env.get('MYSQL_HOST'),
-        port: Env.get('MYSQL_PORT'),
-        user: Env.get('MYSQL_USER'),
-        password: Env.get('MYSQL_PASSWORD', ''),
-        database: Env.get('MYSQL_DB_NAME'),
-      },
-      migrations: {
-        naturalSort: true,
-      },
-      healthCheck: false,
-      debug: false,
-    },
-  },
+  }
 }
 
 export default databaseConfig

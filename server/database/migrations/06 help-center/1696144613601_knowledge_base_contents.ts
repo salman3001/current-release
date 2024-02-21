@@ -22,8 +22,6 @@ export default class extends BaseSchema {
       table.string('meta_title')
       table.string('meta_desc')
       table.string('meta_keywords')
-
-      table.index(['slug'])
     })
   }
 

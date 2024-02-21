@@ -15,7 +15,7 @@ export default Factory.define(Service, ({ faker }) => {
     shortDesc: faker.commerce.productDescription(),
     longDesc: faker.lorem.paragraphs(),
     status: false,
-    specificLocation: false,
+    locationSpecific: false,
   }
 })
   .relation('faq', () => FaqFactory)
