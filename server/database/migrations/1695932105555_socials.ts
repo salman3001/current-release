@@ -16,14 +16,13 @@ export default class extends BaseSchema {
       table.string('whatsapp')
       table.string('telegram')
       table
-        .integer('admin_user_profile_id')
+        .integer('user_profile_id')
         .unsigned()
         .references('id')
-        .inTable('admin_user_profiles')
+        .inTable('user_profiles')
         .onDelete('CASCADE')
-      table.integer('user_profile_id').unsigned().references('id').inTable('user_profiles').onDelete('CASCADE')
       table
-        .integer('businesses_id')
+        .integer('business_id')
         .unsigned()
         .references('id')
         .inTable('businesses')

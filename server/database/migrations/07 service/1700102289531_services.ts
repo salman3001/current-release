@@ -11,7 +11,17 @@ export default class extends BaseSchema {
       table.text('long_desc')
       table.boolean('status').defaultTo(false).notNullable()
       table.boolean('location_specific').defaultTo(true).notNullable()
-      table.integer('vender_user_id').unsigned().notNullable().references('id').inTable('vender_users').onDelete('CASCADE')
+      table.point('geo_location')
+      table.json('cover')
+      table.json('brocher')
+      table.json('video')
+      table
+        .integer('business_id')
+        .unsigned()
+        .notNullable()
+        .references('id')
+        .inTable('businesses')
+        .onDelete('CASCADE')
 
       table
         .integer('service_category_id')

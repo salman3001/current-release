@@ -12,17 +12,20 @@ import {
   hasOne,
   manyToMany,
 } from '@ioc:Adonis/Lucid/Orm'
-import User from '../user/User'
 import ServiceCategory from './ServiceCategory'
 import ServiceSubcategory from './ServiceSubcategory'
 import ServiceTag from './ServiceTag'
 import Seo from '../Seo'
 import Image from '../Image'
 import Faq from '../Faq'
-import Social from '../Social'
-import Video from '../Video'
 import Review from './Review'
 import ServiceVariant from './ServiceVariant'
+import Business from '../venderUser/Business'
+import {
+  ResponsiveAttachmentContract,
+  responsiveAttachment,
+} from '@ioc:Adonis/Addons/ResponsiveAttachment'
+import { AttachmentContract, attachment } from '@ioc:Adonis/Addons/AttachmentLite'
 
 export default class Service extends BaseModel {
   @column({ isPrimary: true })
@@ -44,34 +47,55 @@ export default class Service extends BaseModel {
   public locationSpecific: boolean
 
   @column()
+  public geoLocation: string
+
+  @responsiveAttachment({
+    folder: 'service/covers',
+    preComputeUrls: true,
+    forceFormat: 'webp',
+    disableThumbnail: true,
+    responsiveDimensions: false,
+  })
+  public cover: ResponsiveAttachmentContract
+
+  @responsiveAttachment({
+    folder: 'service/brochers',
+    preComputeUrls: true,
+    forceFormat: 'webp',
+    disableThumbnail: true,
+    responsiveDimensions: false,
+  })
+  public brocher: ResponsiveAttachmentContract
+
+  @attachment({
+    folder: 'service/videos',
+    preComputeUrl: true,
+  })
+  public video: AttachmentContract
+
+  @column()
   public businessId: number
-
-  @belongsTo(() => User)
-  public business: BelongsTo<typeof User>
-
-  @hasMany(() => Image)
-  public images: HasMany<typeof Image>
-
-  @hasOne(() => Video)
-  public video: HasOne<typeof Video>
 
   @column()
   public serviceCategoryId: number
 
-  @belongsTo(() => ServiceCategory)
-  public serviceCategory: BelongsTo<typeof ServiceCategory>
-
   @column()
   public serviceSubcategoryId: number
+
+  @belongsTo(() => Business)
+  public business: BelongsTo<typeof Business>
+
+  @belongsTo(() => ServiceCategory)
+  public serviceCategory: BelongsTo<typeof ServiceCategory>
 
   @belongsTo(() => ServiceSubcategory)
   public serviceSubcategory: BelongsTo<typeof ServiceSubcategory>
 
+  @hasMany(() => Image)
+  public images: HasMany<typeof Image>
+
   @hasOne(() => Seo)
   public seo: HasOne<typeof Seo>
-
-  @hasOne(() => Social)
-  public social: HasOne<typeof Social>
 
   @hasMany(() => Faq)
   public faq: HasMany<typeof Faq>
@@ -96,7 +120,6 @@ export default class Service extends BaseModel {
   @beforeDelete()
   public static async deleteRelations(service: Service) {
     await service.load('images')
-    await service.load('video')
     await service.load('variants')
 
     if (service.images) {
@@ -105,10 +128,6 @@ export default class Service extends BaseModel {
           await img.delete()
         })
       )
-    }
-
-    if (service.video) {
-      await service.video.delete()
     }
 
     if (service.variants) {

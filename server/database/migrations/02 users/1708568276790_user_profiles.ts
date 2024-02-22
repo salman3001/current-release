@@ -7,12 +7,21 @@ export default class extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
       table.json('avatar')
-      table.string('business_name')
-      table.json('logo')
-      table.json('cover')
-      table.json('video')
-      table.json('brocher')
-      table.integer('user_id').unsigned().notNullable().references('id').inTable('users').onDelete('CASCADE')
+      table.integer('user_id').unsigned().references('id').inTable('users').onDelete('CASCADE')
+
+      table
+        .integer('admin_user_id')
+        .unsigned()
+        .references('id')
+        .inTable('admin_users')
+        .onDelete('CASCADE')
+
+      table
+        .integer('vender_user_id')
+        .unsigned()
+        .references('id')
+        .inTable('vender_users')
+        .onDelete('CASCADE')
 
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL

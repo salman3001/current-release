@@ -12,7 +12,7 @@ import {
 } from '@ioc:Adonis/Lucid/Orm'
 import Cart from './Cart'
 import Notification from '../Notification'
-import UserProfile from './UserProfile'
+import UserProfile from '../UserProfile'
 
 export default class User extends BaseModel {
   @column({ isPrimary: true })
@@ -39,7 +39,7 @@ export default class User extends BaseModel {
   @column()
   public isPublic: boolean
 
-  @column()
+  @column({ serializeAs: null })
   public token: string | null
 
   @column({ serializeAs: null })
@@ -70,5 +70,6 @@ export default class User extends BaseModel {
   @afterCreate()
   public static async createCart(User: User) {
     await User.related('cart').create({})
+    await User.related('profile').create({})
   }
 }

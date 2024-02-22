@@ -7,12 +7,6 @@ export default class extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
       table.json('file')
-      table
-        .integer('service_id')
-        .unsigned()
-        .references('id')
-        .inTable('services')
-        .onDelete('SET NULL')
 
       table.integer('media_id').unsigned().references('id').inTable('media').onDelete('SET NULL')
 

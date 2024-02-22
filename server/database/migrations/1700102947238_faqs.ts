@@ -8,7 +8,7 @@ export default class extends BaseSchema {
       table.increments('id').primary()
       table.string('quest')
       table.string('ans', 1000)
-      table.bigInteger('order').defaultTo(1).notNullable()
+      table.integer('order').defaultTo(1).notNullable()
       table
         .integer('service_subcategory_id')
         .unsigned()
@@ -33,6 +33,13 @@ export default class extends BaseSchema {
         .unsigned()
         .references('id')
         .inTable('service_tags')
+        .onDelete('CASCADE')
+
+      table
+        .integer('business_id')
+        .unsigned()
+        .references('id')
+        .inTable('businesses')
         .onDelete('CASCADE')
     })
   }

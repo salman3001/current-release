@@ -1,10 +1,9 @@
-import { BaseModel, BelongsTo, HasMany, belongsTo, column, hasMany } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, BelongsTo, belongsTo, column } from '@ioc:Adonis/Lucid/Orm'
 import {
   ResponsiveAttachmentContract,
   responsiveAttachment,
 } from '@ioc:Adonis/Addons/ResponsiveAttachment'
 import Service from './Service'
-import ServiceProperty from './ServiceProperty'
 
 export default class ServiceVariant extends BaseModel {
   @column({ isPrimary: true })
@@ -28,10 +27,16 @@ export default class ServiceVariant extends BaseModel {
   @column()
   public features: Object
 
-  @column()
+  @column({
+    prepare: (v) => JSON.stringify(v),
+    consume: (v) => JSON.stringify(v),
+  })
   public included: Object
 
-  @column()
+  @column({
+    prepare: (v) => JSON.stringify(v),
+    consume: (v) => JSON.stringify(v),
+  })
   public excluded: Object
 
   @column()
@@ -52,6 +57,6 @@ export default class ServiceVariant extends BaseModel {
   @belongsTo(() => Service)
   public service: BelongsTo<typeof Service>
 
-  @hasMany(() => ServiceProperty)
-  public aditionalProperties: HasMany<typeof ServiceProperty>
+  @column()
+  public aditionalProperties: Object
 }

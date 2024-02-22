@@ -1,2 +1,3 @@
-# current-release
-A web application for software listing and reviews 
+# Urvigo
+
+A web application for software listing and reviews

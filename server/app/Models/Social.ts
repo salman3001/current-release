@@ -31,11 +31,9 @@ export default class Social extends BaseModel {
   @column()
   public telegram: string
 
-  public adminUserProfileId: number
-
   @column()
   public userProfileId: number
 
   @column()
-  public venderProfileId: number
+  public businessId: number
 }

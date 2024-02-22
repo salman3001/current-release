@@ -1,8 +1,4 @@
-import { BaseModel, BelongsTo, belongsTo, column } from '@ioc:Adonis/Lucid/Orm'
-import ServiceSubcategory from './service/ServiceSubcategory'
-import ServiceCategory from './service/ServiceCategory'
-import ServiceTag from './service/ServiceTag'
-import Service from './service/Service'
+import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
 
 export default class Faq extends BaseModel {
   @column({ isPrimary: true })
@@ -17,27 +13,15 @@ export default class Faq extends BaseModel {
   @column()
   public serviceSubcategoryId: number
 
-  @belongsTo(() => ServiceSubcategory)
-  public serviceSubcategory: BelongsTo<typeof ServiceSubcategory>
-
   @column()
   public serviceCategoryId: number
 
-  @belongsTo(() => ServiceCategory)
-  public serviceCategory: BelongsTo<typeof ServiceCategory>
-
   @column()
   public serviceId: number
-
-  @belongsTo(() => Service)
-  public service: BelongsTo<typeof Service>
 
   @column()
   public serviceTagId: number
 
-  @belongsTo(() => ServiceTag)
-  public serviceTag: BelongsTo<typeof ServiceTag>
-
   @column()
-  public serviceId: number
+  public businessId: number
 }

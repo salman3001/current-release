@@ -12,6 +12,7 @@ import { TicketStatus, permissions } from 'App/Helpers/enums'
 import ServiceCategoryFactory from 'Database/factories/service/ServiceCategoryFactory'
 import CampaignTypeFactory from 'Database/factories/email/CampaignTypeFactory'
 import TemplateFactory from 'Database/factories/email/TemplateFactory'
+import VenderUserFactory from 'Database/factories/venderUser/VenderUserFactory'
 
 export default class extends BaseSeeder {
   private async runSeeder(Seeder: { default: typeof BaseSeeder }) {
@@ -49,39 +50,28 @@ export default class extends BaseSeeder {
     ]).createMany(3)
 
     await AdminUserFactory.merge([{ email: 'admin@gmail.com', isActive: true, roleId: 1 }])
-      .with('social')
       .with('activities', 3)
       .createMany(14)
 
-    await ContinentFactory.with('country', 3, (country) => {
-      country.with('state', 3, (state) => {
-        state.with('city', 3, (city) => {
-          city.with('street', 4)
+    await VenderUserFactory.merge([{ email: 'vender@gmail.com', isActive: true }])
+      .with('business', 3, (b) => {
+        b.with('services', 7, (p) => {
+          p.with('variants', 2)
+          p.with('faq')
+          b.with('reviews', 10)
+          b.with('social')
+          b.with('addresses')
         })
+        b.with('faq', 3)
+        b.with('reviews', 10)
+        b.with('social')
+        b.with('addresses')
       })
-    }).createMany(3)
+      .createMany(8)
 
     await UserFactory.merge([
-      { email: 'user@gmail.com', password: '123456789', userName: 'user123', isActive: true },
-    ])
-      .with('address', 1, (add) => {
-        add.with('continent', 1).with('country').with('state').with('city').with('street')
-      })
-      .with('educations', 2)
-      .with('experiences', 2, (ex) => {
-        ex.with('city').with('country').with('state').with('department').with('industry')
-      })
-      .with('languages', 2)
-      .with('social')
-      .with('favoriteLinks', 3)
-      .with('skills', 4)
-      .with('NotificationSetting')
-      .with('services', 3, (p) => {
-        p.with('variants', 2, (v) => {
-          v.with('aditionalProperties', 3)
-        })
-      })
-      .createMany(10)
+      { email: 'user@gmail.com', password: '123456789', isActive: true },
+    ]).createMany(10)
 
     await BlogCategoryFactory.with('blogs', 5).createMany(4)
     await KnowledgebaseCategoryFactory.with('contents', 5).createMany(3)
@@ -97,16 +87,8 @@ export default class extends BaseSeeder {
 
     // service
     await ServiceCategoryFactory.with('subCategory', 3, (sub) => {
-      sub
-        .with('services', 3, (p) => {
-          p.with('faq', 3).with('seo').with('social').with('tags', 3)
-        })
-        .with('faqs', 3)
-        .with('seo')
+      sub.with('faqs', 3).with('seo')
     })
-      .with('services', 2, (p) => {
-        p.with('faq', 3).with('seo').with('social').with('tags', 3)
-      })
       .with('faqs', 3)
       .with('seo')
       .createMany(3)

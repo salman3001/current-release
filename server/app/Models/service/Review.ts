@@ -1,6 +1,5 @@
 import { DateTime } from 'luxon'
 import { BaseModel, BelongsTo, belongsTo, column } from '@ioc:Adonis/Lucid/Orm'
-import Service from './Service'
 import User from '../user/User'
 
 export default class Review extends BaseModel {
@@ -20,10 +19,10 @@ export default class Review extends BaseModel {
   public user: BelongsTo<typeof User>
 
   @column()
-  public serviceId: number
+  public businessId: number
 
-  @belongsTo(() => Service)
-  public service: BelongsTo<typeof Service>
+  @column()
+  public serviceId: number
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

@@ -5,9 +5,8 @@ import ServiceCategoryFactory from './ServiceCategoryFactory'
 import ServiceSubcategoryFactory from './ServiceSubcategoryFactory'
 import SeoFactory from '../SeoFactory'
 import ServiceTagFactory from './ServiceTagFactory'
-import SocialFactory from '../SocialFactory'
-import UserFactory from '../user/UserFactory'
 import ServiceVariantFactory from './ServiceVariantFactory'
+import BusinessFactory from '../venderUser/BusinessFactory'
 
 export default Factory.define(Service, ({ faker }) => {
   return {
@@ -16,14 +15,14 @@ export default Factory.define(Service, ({ faker }) => {
     longDesc: faker.lorem.paragraphs(),
     status: false,
     locationSpecific: false,
+    geoLocation: `${faker.location.longitude()},${faker.location.latitude()}`,
   }
 })
+  .relation('business', () => BusinessFactory)
   .relation('faq', () => FaqFactory)
   .relation('serviceCategory', () => ServiceCategoryFactory)
   .relation('serviceSubcategory', () => ServiceSubcategoryFactory)
   .relation('seo', () => SeoFactory)
-  .relation('social', () => SocialFactory)
   .relation('tags', () => ServiceTagFactory)
-  .relation('user', () => UserFactory)
   .relation('variants', () => ServiceVariantFactory)
   .build()

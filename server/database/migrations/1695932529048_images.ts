@@ -8,13 +8,19 @@ export default class extends BaseSchema {
       table.increments('id').primary()
       table.json('file')
 
-      table.integer('blog_id').unsigned().references('id').inTable('blogs').onDelete('SET NULL')
       table
         .integer('service_id')
         .unsigned()
         .references('id')
         .inTable('services')
-        .onDelete('SET NULL')
+        .onDelete('CASCADE')
+
+      table
+        .integer('business_id')
+        .unsigned()
+        .references('id')
+        .inTable('businesses')
+        .onDelete('CASCADE')
 
       table.integer('media_id').unsigned().references('id').inTable('media').onDelete('SET NULL')
     })

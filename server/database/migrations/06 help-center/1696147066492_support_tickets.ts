@@ -9,10 +9,10 @@ export default class extends BaseSchema {
       table.increments('id').primary()
       table.string('subject').notNullable()
       table
-        .integer('user_id')
+        .integer('vender_user_id')
         .unsigned()
         .references('id')
-        .inTable('users')
+        .inTable('vender_users')
         .onDelete('CASCADE')
         .notNullable()
 

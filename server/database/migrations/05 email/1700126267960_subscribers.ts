@@ -10,8 +10,7 @@ export default class extends BaseSchema {
       table.string('last_name', 50)
       table.string('email', 255).notNullable().unique()
       table.string('phone', 15)
-      table.dateTime('dob')
-      table.boolean('status').defaultTo(false).notNullable()
+      table.boolean('status').defaultTo(true).notNullable()
 
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL

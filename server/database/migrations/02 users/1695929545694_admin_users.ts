@@ -8,15 +8,12 @@ export default class extends BaseSchema {
       table.increments('id').primary()
       table.string('email', 255).notNullable().unique()
       table.string('password', 180).notNullable()
-      table.string('token').nullable()
-      table.string('socket_token').nullable()
       table.string('first_name', 50)
       table.string('last_name')
       table.string('phone', 15)
-      table.string('desc')
+      table.string('token').nullable()
+      table.string('socket_token').nullable()
       table.boolean('is_active').defaultTo(false).notNullable()
-      table.boolean('is_admin').defaultTo(true).notNullable()
-      table.json('avatar')
       table.integer('role_id').unsigned().references('roles.id').onDelete('SET NULL')
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL

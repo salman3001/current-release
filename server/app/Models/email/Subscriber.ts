@@ -1,7 +1,6 @@
 import { DateTime } from 'luxon'
-import { BaseModel, HasOne, ManyToMany, column, hasOne, manyToMany } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, ManyToMany, column, manyToMany } from '@ioc:Adonis/Lucid/Orm'
 import Interest from './Interest'
-import Image from '../Image'
 
 export default class Subscriber extends BaseModel {
   @column({ isPrimary: true })
@@ -21,11 +20,6 @@ export default class Subscriber extends BaseModel {
 
   @column()
   status: boolean
-
-  @column.dateTime({
-    // serialize: (value) => value.toFormat('dd/MM/yyyy'),
-  })
-  dob: DateTime
 
   @manyToMany(() => Interest, {
     pivotTable: 'subscriber_interests_pivot',

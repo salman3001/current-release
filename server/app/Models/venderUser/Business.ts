@@ -1,30 +1,52 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
+import {
+  BaseModel,
+  BelongsTo,
+  HasMany,
+  HasOne,
+  belongsTo,
+  column,
+  hasMany,
+  hasOne,
+} from '@ioc:Adonis/Lucid/Orm'
+import Seo from '../Seo'
+import Social from '../Social'
+import Faq from '../Faq'
+import {
+  ResponsiveAttachmentContract,
+  responsiveAttachment,
+} from '@ioc:Adonis/Addons/ResponsiveAttachment'
+import Image from '../Image'
+import Service from '../service/Service'
+import VenderUser from './VenderUser'
+import { AttachmentContract, attachment } from '@ioc:Adonis/Addons/AttachmentLite'
+import Address from '../address/Address'
+import Review from '../service/Review'
 
 export default class Business extends BaseModel {
   @column({ isPrimary: true })
   public id: number
 
-  @hasOne(() => Seo)
-  public seo: HasOne<typeof Seo>
+  @column()
+  public name: string
 
-  @hasOne(() => Social)
-  public social: HasOne<typeof Social>
+  @column()
+  public shortDesc: string
 
-  @hasMany(() => Faq)
-  public faq: HasMany<typeof Faq>
+  @column()
+  public longDesc: string
+
+  @column()
+  public isActive: boolean
 
   @responsiveAttachment({
-    folder: 'business/brochers',
+    folder: 'business/logos',
     preComputeUrls: true,
     forceFormat: 'webp',
     disableThumbnail: true,
     responsiveDimensions: false,
   })
-  public brocher: ResponsiveAttachmentContract
-
-  @hasMany(() => Image)
-  public images: HasMany<typeof Image>
+  public logo: ResponsiveAttachmentContract
 
   @responsiveAttachment({
     folder: 'business/covers',
@@ -36,17 +58,46 @@ export default class Business extends BaseModel {
   public cover: ResponsiveAttachmentContract
 
   @responsiveAttachment({
-    folder: 'business/logos',
+    folder: 'business/brochers',
     preComputeUrls: true,
     forceFormat: 'webp',
     disableThumbnail: true,
     responsiveDimensions: false,
   })
-  public logo: ResponsiveAttachmentContract
+  public brocher: ResponsiveAttachmentContract
 
+  @attachment({
+    folder: 'business/videos',
+    preComputeUrl: true,
+  })
+  public video: AttachmentContract
 
-  // @hasMany(() => Service)
-  // public services: HasMany<typeof Service>
+  @column()
+  public venderUserId: number
+
+  @hasMany(() => Image)
+  public images: HasMany<typeof Image>
+
+  @hasOne(() => Seo)
+  public seo: HasOne<typeof Seo>
+
+  @hasOne(() => Social)
+  public social: HasOne<typeof Social>
+
+  @hasMany(() => Faq)
+  public faq: HasMany<typeof Faq>
+
+  @hasOne(() => Address)
+  public addresses: HasOne<typeof Address>
+
+  @belongsTo(() => VenderUser)
+  public vender: BelongsTo<typeof VenderUser>
+
+  @hasMany(() => Service)
+  public services: HasMany<typeof Service>
+
+  @hasMany(() => Review)
+  public reviews: HasMany<typeof Review>
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

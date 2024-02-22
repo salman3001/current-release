@@ -16,6 +16,13 @@ export default class extends BaseSchema {
         .inTable('services')
         .onDelete('CASCADE')
 
+      table
+        .integer('business_id')
+        .unsigned()
+        .references('id')
+        .inTable('businesses')
+        .onDelete('CASCADE')
+
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
        */

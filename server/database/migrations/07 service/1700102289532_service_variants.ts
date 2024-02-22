@@ -14,6 +14,7 @@ export default class extends BaseSchema {
       table.json('features')
       table.json('included')
       table.json('excluded')
+      table.json('additional_properties')
       table.bigInteger('order').defaultTo(1).notNullable()
       table.json('image')
       table

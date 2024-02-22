@@ -8,18 +8,13 @@ import {
   HasOne,
   belongsTo,
   BelongsTo,
+  afterCreate,
   hasMany,
   HasMany,
 } from '@ioc:Adonis/Lucid/Orm'
 import Role from './Role'
-import Address from '../address/Address'
-import Social from '../Social'
-import {
-  responsiveAttachment,
-  ResponsiveAttachmentContract,
-} from '@ioc:Adonis/Addons/ResponsiveAttachment'
+import UserProfile from '../UserProfile'
 import Activity from '../Activity'
-import Notifications from '../Notification'
 
 export default class AdminUser extends BaseModel {
   @column({ isPrimary: true })
@@ -31,12 +26,6 @@ export default class AdminUser extends BaseModel {
   @column({ serializeAs: null })
   public password: string
 
-  @column({ serializeAs: null })
-  public socketToken: string
-
-  @column()
-  public rememberMeToken: string | null
-
   @column()
   public firstName: string
 
@@ -47,7 +36,10 @@ export default class AdminUser extends BaseModel {
   public phone: string
 
   @column()
-  public desc: string
+  public token: string | null
+
+  @column({ serializeAs: null })
+  public socketToken: string
 
   @column()
   public isActive: boolean
@@ -58,31 +50,14 @@ export default class AdminUser extends BaseModel {
   @column()
   public roleId: number
 
+  @hasOne(() => UserProfile)
+  public profile: HasOne<typeof UserProfile>
+
   @belongsTo(() => Role)
   public role: BelongsTo<typeof Role>
 
-  @hasOne(() => Address, {
-    foreignKey: 'adminUserId',
-  })
-  public address: HasOne<typeof Address>
-
   @hasMany(() => Activity)
   public activities: HasMany<typeof Activity>
-
-  @hasMany(() => Notifications)
-  public notifications: HasMany<typeof Notifications>
-
-  @hasOne(() => Social)
-  public social: HasOne<typeof Social>
-
-  @responsiveAttachment({
-    folder: 'admin-user',
-    preComputeUrls: true,
-    forceFormat: 'webp',
-    disableThumbnail: true,
-    responsiveDimensions: false,
-  })
-  public avatar: ResponsiveAttachmentContract
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
@@ -99,5 +74,10 @@ export default class AdminUser extends BaseModel {
     if (adminUser.$dirty.email) {
       adminUser.email = adminUser.email.toLowerCase()
     }
+  }
+
+  @afterCreate()
+  public static async createProfile(adminUser: AdminUser) {
+    await adminUser.related('profile').create({})
   }
 }

@@ -6,13 +6,21 @@ export default class extends BaseSchema {
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
-      table.json('avatar')
       table.string('name').unique().notNullable()
-      table.integer('vender_user_id').unsigned().notNullable().references('id').inTable('vender_users').onDelete('CASCADE')
+      table.string('short_desc')
+      table.text('long_desc')
+      table.boolean('is_active')
       table.json('logo')
       table.json('cover')
-      table.json('video')
       table.json('brocher')
+      table.json('video')
+      table
+        .integer('vender_user_id')
+        .unsigned()
+        .notNullable()
+        .references('id')
+        .inTable('vender_users')
+        .onDelete('CASCADE')
 
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL

@@ -1,6 +1,5 @@
 import Subscriber from 'App/Models/email/Subscriber'
 import Factory from '@ioc:Adonis/Lucid/Factory'
-import { DateTime } from 'luxon'
 import InterestFactory from './InterestFactory'
 
 export default Factory.define(Subscriber, ({ faker }) => {
@@ -10,7 +9,6 @@ export default Factory.define(Subscriber, ({ faker }) => {
     email: faker.internet.email(),
     phone: faker.number.int({ max: 999999999, min: 111111111 }).toString(),
     status: false,
-    dob: DateTime.now(),
   }
 })
   .relation('interests', () => InterestFactory)
