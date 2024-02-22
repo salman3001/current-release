@@ -8,19 +8,27 @@ export default class extends BaseSchema {
       table.increments('id').primary()
       table.string('address')
       table
-        .integer('admin_user_id', 10)
+        .integer('admin_user_profile_id', 10)
         .unsigned()
         .nullable()
         .references('id')
-        .inTable('admin_users')
+        .inTable('admin_user_profiles')
         .onDelete('CASCADE')
 
       table
-        .integer('user_id', 10)
+        .integer('user_profile_id', 10)
         .unsigned()
         .nullable()
         .references('id')
-        .inTable('users')
+        .inTable('user_profiles')
+        .onDelete('CASCADE')
+
+      table
+        .integer('businesse_id', 10)
+        .unsigned()
+        .nullable()
+        .references('id')
+        .inTable('businesses')
         .onDelete('CASCADE')
 
       table

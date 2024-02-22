@@ -8,5 +8,5 @@ export default class FavoriteLink extends BaseModel {
   public link: string
 
   @column()
-  public userId: number
+  public userProfileId: number
 }

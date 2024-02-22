@@ -12,7 +12,7 @@ export default class extends BaseSchema {
       table.date('start_date')
       table.date('end_date')
       table.text('desc')
-      table.integer('user_id').unsigned().references('id').inTable('users').onDelete('CASCADE')
+      table.integer('user_profile_id').unsigned().references('id').inTable('user_profiles').onDelete('CASCADE')
     })
   }
 

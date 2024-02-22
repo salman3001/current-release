@@ -13,6 +13,12 @@ export default class extends BaseSchema {
         .references('id')
         .inTable('admin_users')
         .onDelete('CASCADE')
+      table
+        .integer('vender_user_id')
+        .unsigned()
+        .references('id')
+        .inTable('vender_users')
+        .onDelete('CASCADE')
       table.string('name').notNullable()
       table.string('type').notNullable()
       table.string('token', 64).notNullable().unique()

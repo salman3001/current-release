@@ -13,13 +13,13 @@ export default class Address extends BaseModel {
   public address: string
 
   @column()
-  public adminUserId: number
+  public adminUserProfileId: number
 
   @column()
-  public userId: number
+  public userProfileId: number
 
   @column()
-  public serviceId: number
+  public venderUserProfileId: number
 
   @column()
   public continentId: number

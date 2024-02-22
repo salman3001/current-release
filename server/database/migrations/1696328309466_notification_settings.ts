@@ -10,7 +10,7 @@ export default class extends BaseSchema {
       table.boolean('on_comment_reply').defaultTo(true)
       table.boolean('on_service_update').defaultTo(true)
       table.boolean('on_offers').defaultTo(true)
-      table.integer('user_id', 10).unsigned().references('id').inTable('users').onDelete('CASCADE')
+      table.integer('user_profile_id', 10).unsigned().references('id').inTable('user_profiles').onDelete('CASCADE')
     })
   }
 

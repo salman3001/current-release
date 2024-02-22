@@ -35,3 +35,10 @@ export enum MediaTypes {
   VIDEO = 'Video',
   IMAGE = 'Image',
 }
+
+export enum userTypes {
+  USER = 'user',
+  ADMIN = 'admin',
+  VENDER = 'vender',
+}
+

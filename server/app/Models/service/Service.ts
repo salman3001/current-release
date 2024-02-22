@@ -20,10 +20,6 @@ import Seo from '../Seo'
 import Image from '../Image'
 import Faq from '../Faq'
 import Social from '../Social'
-import {
-  ResponsiveAttachmentContract,
-  responsiveAttachment,
-} from '@ioc:Adonis/Addons/ResponsiveAttachment'
 import Video from '../Video'
 import Review from './Review'
 import ServiceVariant from './ServiceVariant'
@@ -48,43 +44,16 @@ export default class Service extends BaseModel {
   public locationSpecific: boolean
 
   @column()
-  public userId: number
+  public businessId: number
 
   @belongsTo(() => User)
-  public user: BelongsTo<typeof User>
-
-  @responsiveAttachment({
-    folder: 'service/logos',
-    preComputeUrls: true,
-    forceFormat: 'webp',
-    disableThumbnail: true,
-    responsiveDimensions: false,
-  })
-  public logo: ResponsiveAttachmentContract
+  public business: BelongsTo<typeof User>
 
   @hasMany(() => Image)
-  public screenshots: HasMany<typeof Image>
-
-  @responsiveAttachment({
-    folder: 'service/covers',
-    preComputeUrls: true,
-    forceFormat: 'webp',
-    disableThumbnail: true,
-    responsiveDimensions: false,
-  })
-  public cover: ResponsiveAttachmentContract
+  public images: HasMany<typeof Image>
 
   @hasOne(() => Video)
   public video: HasOne<typeof Video>
-
-  @responsiveAttachment({
-    folder: 'service/brochers',
-    preComputeUrls: true,
-    forceFormat: 'webp',
-    disableThumbnail: true,
-    responsiveDimensions: false,
-  })
-  public brocher: ResponsiveAttachmentContract
 
   @column()
   public serviceCategoryId: number
@@ -126,13 +95,13 @@ export default class Service extends BaseModel {
 
   @beforeDelete()
   public static async deleteRelations(service: Service) {
-    await service.load('screenshots')
+    await service.load('images')
     await service.load('video')
     await service.load('variants')
 
-    if (service.screenshots) {
+    if (service.images) {
       await Promise.all(
-        service.screenshots.map(async (img) => {
+        service.images.map(async (img) => {
           await img.delete()
         })
       )

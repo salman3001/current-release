@@ -13,5 +13,5 @@ export default class NotificationSetting extends BaseModel {
   @column()
   public onOffers: boolean
   @column()
-  public userId: boolean
+  public userProfileId: boolean
 }

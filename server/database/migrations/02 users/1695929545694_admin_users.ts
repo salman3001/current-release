@@ -8,7 +8,7 @@ export default class extends BaseSchema {
       table.increments('id').primary()
       table.string('email', 255).notNullable().unique()
       table.string('password', 180).notNullable()
-      table.string('remember_me_token').nullable()
+      table.string('token').nullable()
       table.string('socket_token').nullable()
       table.string('first_name', 50)
       table.string('last_name')

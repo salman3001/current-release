@@ -24,5 +24,5 @@ export default class Education extends BaseModel {
   public desc: string
 
   @column()
-  public userId: number
+  public userProfileId: number
 }
