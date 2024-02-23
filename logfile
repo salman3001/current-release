@@ -39,3 +39,282 @@
 2024-02-23 06:59:47.358 +04 [2736] STATEMENT:  insert into "knowledge_base_contents" ("knowledge_base_category_id", "meta_desc", "meta_keywords", "meta_title", "slug", "title") values ($1, $2, $3, $4, $5, $6) returning "id"
 2024-02-23 07:00:04.460 +04 [15912] LOG:  checkpoint starting: time
 2024-02-23 07:01:06.793 +04 [15912] LOG:  checkpoint complete: wrote 570 buffers (3.5%); 0 WAL file(s) added, 0 removed, 0 recycled; write=62.116 s, sync=0.153 s, total=62.333 s; sync files=560, longest=0.006 s, average=0.001 s; distance=6424 kB, estimate=6424 kB; lsn=0/3A97848, redo lsn=0/398BD58
+2024-02-23 07:06:20.776 +04 [13272] ERROR:  value too long for type character varying(255)
+2024-02-23 07:06:20.776 +04 [13272] STATEMENT:  insert into "knowledge_base_contents" ("knowledge_base_category_id", "meta_desc", "meta_keywords", "meta_title", "slug", "title") values ($1, $2, $3, $4, $5, $6) returning "id"
+2024-02-23 07:07:44.427 +04 [14188] ERROR:  value too long for type character varying(255)
+2024-02-23 07:07:44.427 +04 [14188] STATEMENT:  insert into "knowledge_base_contents" ("knowledge_base_category_id", "meta_desc", "meta_keywords", "meta_title", "slug", "title") values ($1, $2, $3, $4, $5, $6) returning "id"
+2024-02-23 07:08:34.179 +04 [2268] ERROR:  duplicate key value violates unique constraint "businesses_name_unique"
+2024-02-23 07:08:34.179 +04 [2268] DETAIL:  Key (name)=(aranea) already exists.
+2024-02-23 07:08:34.179 +04 [2268] STATEMENT:  insert into "businesses" ("created_at", "is_active", "long_desc", "name", "short_desc", "updated_at", "vender_user_id") values ($1, $2, $3, $4, $5, $6, $7) returning "id"
+2024-02-23 07:08:56.814 +04 [6728] ERROR:  column "user_id" of relation "support_tickets" does not exist at character 81
+2024-02-23 07:08:56.814 +04 [6728] STATEMENT:  insert into "support_tickets" ("created_at", "status", "subject", "updated_at", "user_id") values ($1, $2, $3, $4, $5) returning "id"
+2024-02-23 07:10:04.804 +04 [15912] LOG:  checkpoint starting: time
+2024-02-23 07:11:21.725 +04 [15912] LOG:  checkpoint complete: wrote 717 buffers (4.4%); 0 WAL file(s) added, 0 removed, 1 recycled; write=76.569 s, sync=0.221 s, total=76.921 s; sync files=1055, longest=0.006 s, average=0.001 s; distance=12109 kB, estimate=12109 kB; lsn=0/455F198, redo lsn=0/455F160
+2024-02-23 07:15:04.721 +04 [15912] LOG:  checkpoint starting: time
+2024-02-23 07:16:04.497 +04 [15912] LOG:  checkpoint complete: wrote 558 buffers (3.4%); 0 WAL file(s) added, 0 removed, 0 recycled; write=59.588 s, sync=0.149 s, total=59.776 s; sync files=318, longest=0.007 s, average=0.001 s; distance=4047 kB, estimate=11302 kB; lsn=0/4953118, redo lsn=0/49530E0
+2024-02-23 08:13:08.880 +04 [16332] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 08:13:23.845 +04 [13528] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 08:13:46.497 +04 [4748] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 08:13:58.203 +04 [15092] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 08:14:07.084 +04 [4128] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 08:15:04.572 +04 [15912] LOG:  checkpoint starting: time
+2024-02-23 08:15:05.990 +04 [15912] LOG:  checkpoint complete: wrote 14 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=1.392 s, sync=0.014 s, total=1.419 s; sync files=11, longest=0.007 s, average=0.002 s; distance=7 kB, estimate=10173 kB; lsn=0/4954F88, redo lsn=0/4954F50
+2024-02-23 08:15:11.164 +04 [12476] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 08:15:50.282 +04 [15896] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 08:16:04.397 +04 [11396] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 08:16:17.427 +04 [8156] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 08:16:29.548 +04 [10908] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 08:17:21.206 +04 [15600] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 08:18:12.976 +04 [11824] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 08:18:51.509 +04 [13520] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 08:20:04.995 +04 [15912] LOG:  checkpoint starting: time
+2024-02-23 08:20:05.553 +04 [15912] LOG:  checkpoint complete: wrote 6 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.538 s, sync=0.009 s, total=0.558 s; sync files=6, longest=0.006 s, average=0.002 s; distance=9 kB, estimate=9156 kB; lsn=0/4957550, redo lsn=0/4957518
+2024-02-23 08:25:04.553 +04 [15912] LOG:  checkpoint starting: time
+2024-02-23 08:25:05.113 +04 [15912] LOG:  checkpoint complete: wrote 6 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.539 s, sync=0.010 s, total=0.560 s; sync files=6, longest=0.006 s, average=0.002 s; distance=8 kB, estimate=8242 kB; lsn=0/4959678, redo lsn=0/4959640
+2024-02-23 08:25:12.302 +04 [15808] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 08:25:42.722 +04 [13340] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 08:25:52.458 +04 [15032] ERROR:  invalid input syntax for type json
+2024-02-23 08:25:52.458 +04 [15032] DETAIL:  Expected ":", but found ",".
+2024-02-23 08:25:52.458 +04 [15032] CONTEXT:  JSON data, line 1: {"Manage Admin Users",...
+	unnamed portal parameter $3 = '...'
+2024-02-23 08:25:52.458 +04 [15032] STATEMENT:  insert into "roles" ("is_active", "name", "permissions") values ($1, $2, $3) returning "id"
+2024-02-23 08:27:44.117 +04 [10124] ERROR:  duplicate key value violates unique constraint "businesses_name_unique"
+2024-02-23 08:27:44.117 +04 [10124] DETAIL:  Key (name)=(teneo) already exists.
+2024-02-23 08:27:44.117 +04 [10124] STATEMENT:  insert into "businesses" ("created_at", "is_active", "long_desc", "name", "short_desc", "updated_at", "vender_user_id") values ($1, $2, $3, $4, $5, $6, $7) returning "id"
+2024-02-23 08:27:59.618 +04 [10412] ERROR:  value too long for type character varying(255)
+2024-02-23 08:27:59.618 +04 [10412] STATEMENT:  insert into "support_tickets" ("created_at", "status", "subject", "updated_at", "vender_user_id") values ($1, $2, $3, $4, $5) returning "id"
+2024-02-23 08:28:38.299 +04 [15888] ERROR:  duplicate key value violates unique constraint "businesses_name_unique"
+2024-02-23 08:28:38.299 +04 [15888] DETAIL:  Key (name)=(velociter) already exists.
+2024-02-23 08:28:38.299 +04 [15888] STATEMENT:  insert into "businesses" ("created_at", "is_active", "long_desc", "name", "short_desc", "updated_at", "vender_user_id") values ($1, $2, $3, $4, $5, $6, $7) returning "id"
+2024-02-23 08:30:04.107 +04 [15912] LOG:  checkpoint starting: time
+2024-02-23 08:30:57.481 +04 [14724] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 08:31:30.695 +04 [15912] LOG:  checkpoint complete: wrote 801 buffers (4.9%); 0 WAL file(s) added, 0 removed, 1 recycled; write=86.170 s, sync=0.246 s, total=86.588 s; sync files=1301, longest=0.006 s, average=0.001 s; distance=13656 kB, estimate=13656 kB; lsn=0/56B0A90, redo lsn=0/56AF6E8
+2024-02-23 08:31:31.541 +04 [1588] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 08:32:12.740 +04 [15492] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 08:35:04.708 +04 [15912] LOG:  checkpoint starting: time
+2024-02-23 08:35:05.248 +04 [15912] LOG:  checkpoint complete: wrote 6 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.524 s, sync=0.005 s, total=0.540 s; sync files=6, longest=0.002 s, average=0.001 s; distance=5 kB, estimate=12291 kB; lsn=0/56B0E18, redo lsn=0/56B0DE0
+2024-02-23 08:37:05.548 +04 [3584] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 08:39:58.763 +04 [11448] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 08:40:04.256 +04 [15912] LOG:  checkpoint starting: time
+2024-02-23 08:40:04.816 +04 [15912] LOG:  checkpoint complete: wrote 6 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.541 s, sync=0.011 s, total=0.560 s; sync files=6, longest=0.007 s, average=0.002 s; distance=4 kB, estimate=11062 kB; lsn=0/56B1FA0, redo lsn=0/56B1F68
+2024-02-23 08:40:13.189 +04 [10460] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 08:42:05.321 +04 [14800] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 08:42:34.469 +04 [4352] ERROR:  column "user_type" of relation "admin_users" does not exist at character 137
+2024-02-23 08:42:34.469 +04 [4352] STATEMENT:  insert into "admin_users" ("created_at", "email", "first_name", "is_active", "last_name", "password", "phone", "role_id", "updated_at", "user_type") values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) returning "id"
+2024-02-23 08:45:04.823 +04 [15912] LOG:  checkpoint starting: time
+2024-02-23 08:45:47.867 +04 [12392] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 08:46:15.877 +04 [15912] LOG:  checkpoint complete: wrote 659 buffers (4.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=70.790 s, sync=0.189 s, total=71.054 s; sync files=566, longest=0.006 s, average=0.001 s; distance=5967 kB, estimate=10552 kB; lsn=0/5C86AF0, redo lsn=0/5C85D28
+2024-02-23 08:46:46.657 +04 [6972] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 08:47:07.918 +04 [5804] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 08:47:52.788 +04 [15984] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 08:49:58.928 +04 [2476] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 08:50:04.896 +04 [15912] LOG:  checkpoint starting: time
+2024-02-23 08:50:05.669 +04 [15912] LOG:  checkpoint complete: wrote 8 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.750 s, sync=0.012 s, total=0.774 s; sync files=8, longest=0.006 s, average=0.002 s; distance=11 kB, estimate=9498 kB; lsn=0/5C88B28, redo lsn=0/5C88AF0
+2024-02-23 09:20:04.713 +04 [15912] LOG:  checkpoint starting: time
+2024-02-23 09:20:05.498 +04 [15912] LOG:  checkpoint complete: wrote 8 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.767 s, sync=0.012 s, total=0.786 s; sync files=8, longest=0.006 s, average=0.002 s; distance=8 kB, estimate=8549 kB; lsn=0/5C8ADB0, redo lsn=0/5C8AD78
+2024-02-23 09:28:08.400 +04 [10548] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 09:48:48.451 +04 [16952] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 09:52:25.645 +04 [17040] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 10:00:04.529 +04 [15912] LOG:  checkpoint starting: time
+2024-02-23 10:00:05.289 +04 [15912] LOG:  checkpoint complete: wrote 7 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.737 s, sync=0.009 s, total=0.760 s; sync files=4, longest=0.006 s, average=0.003 s; distance=11 kB, estimate=7695 kB; lsn=0/5C8DC48, redo lsn=0/5C8DC10
+2024-02-23 10:00:25.704 +04 [16724] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 10:00:25.708 +04 [16032] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 10:01:08.924 +04 [10196] ERROR:  insert or update on table "experiences" violates foreign key constraint "experiences_job_industry_id_foreign"
+2024-02-23 10:01:08.924 +04 [10196] DETAIL:  Key (job_industry_id)=(1) is not present in table "job_industries".
+2024-02-23 10:01:08.924 +04 [10196] STATEMENT:  insert into "experiences" ("city_id", "company_name", "company_size", "country_id", "desc", "end_date", "is_current", "job_department_id", "job_function", "job_industry_id", "job_title", "start_date", "state_id", "user_profile_id", "zip") values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) returning "id"
+2024-02-23 10:05:04.290 +04 [15912] LOG:  checkpoint starting: time
+2024-02-23 10:05:05.596 +04 [15912] LOG:  checkpoint complete: wrote 13 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=1.277 s, sync=0.017 s, total=1.306 s; sync files=11, longest=0.006 s, average=0.002 s; distance=8 kB, estimate=6927 kB; lsn=0/5C8FD18, redo lsn=0/5C8FCE0
+2024-02-23 10:09:04.905 +04 [16336] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 10:09:04.905 +04 [10196] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 10:10:04.593 +04 [15912] LOG:  checkpoint starting: time
+2024-02-23 10:10:50.970 +04 [1716] ERROR:  insert or update on table "experiences" violates foreign key constraint "experiences_job_industry_id_foreign"
+2024-02-23 10:10:50.970 +04 [1716] DETAIL:  Key (job_industry_id)=(1) is not present in table "job_industries".
+2024-02-23 10:10:50.970 +04 [1716] STATEMENT:  insert into "experiences" ("city_id", "company_name", "company_size", "country_id", "desc", "end_date", "is_current", "job_department_id", "job_function", "job_industry_id", "job_title", "start_date", "state_id", "user_profile_id", "zip") values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) returning "id"
+2024-02-23 10:11:04.466 +04 [15912] LOG:  checkpoint complete: wrote 556 buffers (3.4%); 0 WAL file(s) added, 0 removed, 1 recycled; write=59.659 s, sync=0.171 s, total=59.873 s; sync files=312, longest=0.006 s, average=0.001 s; distance=3692 kB, estimate=6603 kB; lsn=0/611F770, redo lsn=0/602AD68
+2024-02-23 10:11:29.002 +04 [1716] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 10:11:29.002 +04 [5220] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 10:12:18.966 +04 [13372] ERROR:  insert or update on table "experiences" violates foreign key constraint "experiences_city_id_foreign"
+2024-02-23 10:12:18.966 +04 [13372] DETAIL:  Key (city_id)=(1) is not present in table "cities".
+2024-02-23 10:12:18.966 +04 [13372] STATEMENT:  insert into "experiences" ("city_id", "company_name", "company_size", "country_id", "desc", "end_date", "is_current", "job_department_id", "job_function", "job_industry_id", "job_title", "start_date", "state_id", "user_profile_id", "zip") values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) returning "id"
+2024-02-23 10:13:41.792 +04 [13372] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 10:13:41.792 +04 [17216] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 10:15:04.463 +04 [15912] LOG:  checkpoint starting: time
+2024-02-23 10:16:14.602 +04 [15912] LOG:  checkpoint complete: wrote 649 buffers (4.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=69.938 s, sync=0.160 s, total=70.140 s; sync files=317, longest=0.006 s, average=0.001 s; distance=4454 kB, estimate=6388 kB; lsn=0/6484950, redo lsn=0/6484918
+2024-02-23 10:18:48.368 +04 [14772] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 10:18:48.369 +04 [11928] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 10:20:04.598 +04 [15912] LOG:  checkpoint starting: time
+2024-02-23 10:21:10.035 +04 [15912] LOG:  checkpoint complete: wrote 603 buffers (3.7%); 0 WAL file(s) added, 0 removed, 0 recycled; write=65.228 s, sync=0.162 s, total=65.438 s; sync files=317, longest=0.003 s, average=0.001 s; distance=4091 kB, estimate=6159 kB; lsn=0/68835B0, redo lsn=0/6883578
+2024-02-23 10:45:04.082 +04 [15912] LOG:  checkpoint starting: time
+2024-02-23 10:45:06.032 +04 [15912] LOG:  checkpoint complete: wrote 18 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=1.926 s, sync=0.010 s, total=1.950 s; sync files=5, longest=0.006 s, average=0.002 s; distance=42 kB, estimate=5547 kB; lsn=0/688DEB8, redo lsn=0/688DE80
+2024-02-23 10:55:04.042 +04 [15912] LOG:  checkpoint starting: time
+2024-02-23 10:55:07.274 +04 [15912] LOG:  checkpoint complete: wrote 30 buffers (0.2%); 0 WAL file(s) added, 0 removed, 0 recycled; write=3.198 s, sync=0.025 s, total=3.233 s; sync files=27, longest=0.006 s, average=0.001 s; distance=17 kB, estimate=4994 kB; lsn=0/6892508, redo lsn=0/68924D0
+2024-02-23 10:58:12.598 +04 [15668] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 10:58:12.598 +04 [15860] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 11:04:47.146 +04 [14388] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 11:04:47.146 +04 [1412] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 11:05:04.304 +04 [15912] LOG:  checkpoint starting: time
+2024-02-23 11:06:13.227 +04 [15912] LOG:  checkpoint complete: wrote 639 buffers (3.9%); 0 WAL file(s) added, 0 removed, 0 recycled; write=68.662 s, sync=0.190 s, total=68.924 s; sync files=557, longest=0.006 s, average=0.001 s; distance=5939 kB, estimate=5939 kB; lsn=0/6E5F2B0, redo lsn=0/6E5F240
+2024-02-23 11:07:03.412 +04 [8864] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 11:07:03.413 +04 [14816] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 11:07:14.211 +04 [14876] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 11:07:14.211 +04 [16156] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 11:07:14.211 +04 [15480] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 11:07:30.747 +04 [17252] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 11:07:30.747 +04 [11076] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 11:07:30.748 +04 [308] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 11:07:44.822 +04 [9688] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 11:07:44.822 +04 [8464] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 11:07:44.822 +04 [12824] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 11:08:10.743 +04 [4900] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 11:08:10.743 +04 [6268] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 11:08:10.743 +04 [15992] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 11:10:04.232 +04 [15912] LOG:  checkpoint starting: time
+2024-02-23 11:10:07.413 +04 [15912] LOG:  checkpoint complete: wrote 30 buffers (0.2%); 0 WAL file(s) added, 0 removed, 0 recycled; write=3.139 s, sync=0.030 s, total=3.181 s; sync files=30, longest=0.006 s, average=0.001 s; distance=58 kB, estimate=5351 kB; lsn=0/6E6DD78, redo lsn=0/6E6DD40
+2024-02-23 11:10:21.133 +04 [14192] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 11:10:21.133 +04 [13104] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 11:17:25.324 +04 [7596] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 11:18:21.428 +04 [7812] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 11:20:04.414 +04 [15912] LOG:  checkpoint starting: time
+2024-02-23 11:20:04.750 +04 [15912] LOG:  checkpoint complete: wrote 4 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.311 s, sync=0.011 s, total=0.337 s; sync files=4, longest=0.007 s, average=0.003 s; distance=5 kB, estimate=4816 kB; lsn=0/6E6F460, redo lsn=0/6E6F428
+2024-02-23 11:25:04.765 +04 [15912] LOG:  checkpoint starting: time
+2024-02-23 11:25:06.797 +04 [15912] LOG:  checkpoint complete: wrote 20 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=2.009 s, sync=0.013 s, total=2.033 s; sync files=20, longest=0.001 s, average=0.001 s; distance=31 kB, estimate=4338 kB; lsn=0/6E772F0, redo lsn=0/6E772B8
+2024-02-23 11:26:34.945 +04 [13168] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 11:37:59.143 +04 [13004] ERROR:  column "is_public" of relation "vender_users" does not exist at character 79
+2024-02-23 11:37:59.143 +04 [13004] STATEMENT:  insert into "vender_users" ("created_at", "email", "first_name", "is_active", "is_public", "last_name", "password", "phone", "updated_at") values ($1, $2, $3, $4, $5, $6, $7, $8, $9) returning "id"
+2024-02-23 11:38:28.625 +04 [13004] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 11:40:04.803 +04 [15912] LOG:  checkpoint starting: time
+2024-02-23 11:40:05.880 +04 [15912] LOG:  checkpoint complete: wrote 11 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=1.051 s, sync=0.012 s, total=1.077 s; sync files=11, longest=0.006 s, average=0.002 s; distance=6 kB, estimate=3905 kB; lsn=0/6E78ED8, redo lsn=0/6E78EA0
+2024-02-23 11:41:11.246 +04 [16532] ERROR:  column "notifications.id" must appear in the GROUP BY clause or be used in an aggregate function at character 8
+2024-02-23 11:41:11.246 +04 [16532] STATEMENT:  select "id", count(*) as "count" from "notifications" where "admin_user_id" = $1 limit $2
+2024-02-23 11:41:50.478 +04 [16532] ERROR:  column "notifications.id" must appear in the GROUP BY clause or be used in an aggregate function at character 8
+2024-02-23 11:41:50.478 +04 [16532] STATEMENT:  select "id", count(*) as "count" from "notifications" where "admin_user_id" = $1 limit $2
+2024-02-23 11:42:36.359 +04 [16532] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 11:43:24.132 +04 [9380] ERROR:  column "notifications.id" must appear in the GROUP BY clause or be used in an aggregate function at character 8
+2024-02-23 11:43:24.132 +04 [9380] STATEMENT:  select "id", count(*) as "count" from "notifications" where "admin_user_id" = $1 group by "admin_user_id" limit $2
+2024-02-23 11:43:33.118 +04 [9380] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 11:43:43.542 +04 [11212] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 11:45:04.870 +04 [15912] LOG:  checkpoint starting: time
+2024-02-23 11:45:06.410 +04 [15912] LOG:  checkpoint complete: wrote 15 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=1.510 s, sync=0.025 s, total=1.540 s; sync files=15, longest=0.008 s, average=0.002 s; distance=6 kB, estimate=3515 kB; lsn=0/6E7A850, redo lsn=0/6E7A818
+2024-02-23 11:48:35.568 +04 [7096] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 11:50:04.415 +04 [15912] LOG:  checkpoint starting: time
+2024-02-23 11:50:06.210 +04 [15912] LOG:  checkpoint complete: wrote 17 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=1.767 s, sync=0.014 s, total=1.795 s; sync files=12, longest=0.007 s, average=0.002 s; distance=47 kB, estimate=3168 kB; lsn=0/6E86478, redo lsn=0/6E86440
+2024-02-23 12:11:20.160 +04 [13124] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 12:15:04.235 +04 [15912] LOG:  checkpoint starting: time
+2024-02-23 12:15:24.340 +04 [4172] ERROR:  insert or update on table "service_tags_pivot" violates foreign key constraint "service_tags_pivot_service_tag_id_foreign"
+2024-02-23 12:15:24.340 +04 [4172] DETAIL:  Key (service_tag_id)=(1) is not present in table "service_tags".
+2024-02-23 12:15:24.340 +04 [4172] STATEMENT:  insert into "service_tags_pivot" ("service_id", "service_tag_id") values ($1, $2), ($3, $4), ($5, $6)
+2024-02-23 12:16:02.383 +04 [15912] LOG:  checkpoint complete: wrote 541 buffers (3.3%); 0 WAL file(s) added, 0 removed, 1 recycled; write=57.942 s, sync=0.160 s, total=58.148 s; sync files=306, longest=0.006 s, average=0.001 s; distance=3630 kB, estimate=3630 kB; lsn=0/73227C8, redo lsn=0/7212030
+2024-02-23 12:17:20.275 +04 [4172] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 12:20:04.402 +04 [15912] LOG:  checkpoint starting: time
+2024-02-23 12:20:43.398 +04 [14560] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 12:21:14.156 +04 [15912] LOG:  checkpoint complete: wrote 648 buffers (4.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=69.544 s, sync=0.164 s, total=69.755 s; sync files=315, longest=0.006 s, average=0.001 s; distance=4361 kB, estimate=4361 kB; lsn=0/7654628, redo lsn=0/76545F0
+2024-02-23 12:23:58.253 +04 [6272] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 12:24:26.616 +04 [16168] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 12:25:04.166 +04 [15912] LOG:  checkpoint starting: time
+2024-02-23 12:25:05.921 +04 [15912] LOG:  checkpoint complete: wrote 17 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=1.734 s, sync=0.017 s, total=1.756 s; sync files=17, longest=0.006 s, average=0.001 s; distance=43 kB, estimate=3929 kB; lsn=0/765F420, redo lsn=0/765F3E8
+2024-02-23 12:26:14.430 +04 [17376] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 12:31:20.189 +04 [16832] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 12:33:10.595 +04 [16392] ERROR:  column "aditional_properties" of relation "service_variants" does not exist at character 33
+2024-02-23 12:33:10.595 +04 [16392] STATEMENT:  insert into "service_variants" ("aditional_properties", "available_qty", "excluded", "features", "flat_discount", "has_inifiite_qty", "included", "name", "price", "service_id") values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) returning "id"
+2024-02-23 12:34:05.748 +04 [16392] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 12:35:48.273 +04 [15692] ERROR:  invalid input syntax for type json
+2024-02-23 12:35:48.273 +04 [15692] DETAIL:  Expected ":", but found ",".
+2024-02-23 12:35:48.273 +04 [15692] CONTEXT:  JSON data, line 1: {"{\"name\":\"color\",\"value\":\"red\"}",...
+	unnamed portal parameter $1 = '...'
+2024-02-23 12:35:48.273 +04 [15692] STATEMENT:  insert into "service_variants" ("additional_properties", "available_qty", "excluded", "features", "flat_discount", "has_inifiite_qty", "included", "name", "price", "service_id") values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) returning "id"
+2024-02-23 12:36:04.914 +04 [15692] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 12:40:04.957 +04 [15912] LOG:  checkpoint starting: time
+2024-02-23 12:40:05.538 +04 [15912] LOG:  checkpoint complete: wrote 6 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.556 s, sync=0.010 s, total=0.582 s; sync files=6, longest=0.006 s, average=0.002 s; distance=22 kB, estimate=3538 kB; lsn=0/7664DB0, redo lsn=0/7664D78
+2024-02-23 12:41:46.398 +04 [2736] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 12:42:33.387 +04 [17196] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 12:43:04.910 +04 [16584] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 12:44:52.776 +04 [804] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 12:45:21.132 +04 [5220] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 12:46:09.217 +04 [10008] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 12:48:32.769 +04 [304] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-02-23 12:48:52.302 +04 [17156] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
