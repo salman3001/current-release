@@ -4,13 +4,17 @@ import {
   HasMany,
   HasOne,
   afterCreate,
+  beforeSave,
   column,
+  computed,
   hasMany,
   hasOne,
 } from '@ioc:Adonis/Lucid/Orm'
 import Business from './Business'
 import Notification from '../Notification'
 import UserProfile from '../UserProfile'
+import Hash from '@ioc:Adonis/Core/Hash'
+
 
 export default class VenderUser extends BaseModel {
   @column({ isPrimary: true })
@@ -43,6 +47,12 @@ export default class VenderUser extends BaseModel {
   @column({ serializeAs: null })
   public socketToken: string
 
+  @computed()
+  public get userType() {
+    return 'vendor'
+  }
+
+
   @hasOne(() => UserProfile)
   public profile: HasOne<typeof UserProfile>
 
@@ -64,5 +74,12 @@ export default class VenderUser extends BaseModel {
   @afterCreate()
   public static async createProfile(user: VenderUser) {
     await user.related('profile').create({})
+  }
+
+  @beforeSave()
+  public static async hashPassword(user: VenderUser) {
+    if (user.$dirty.password) {
+      user.password = await Hash.make(user.password)
+    }
   }
 }

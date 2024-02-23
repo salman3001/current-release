@@ -34,27 +34,6 @@ export default class Experience extends BaseModel {
   @column()
   public companySize: string
 
-  @column()
-  public cityId: number
-
-  @belongsTo(() => City)
-  public city: BelongsTo<typeof City>
-
-  @column()
-  public stateId: number
-
-  @belongsTo(() => State)
-  public state: BelongsTo<typeof State>
-
-  @column()
-  public zip: string
-
-  @column()
-  public countryId: number
-
-  @belongsTo(() => Country)
-  public country: BelongsTo<typeof Country>
-
   @column.date()
   public startDate: DateTime
 

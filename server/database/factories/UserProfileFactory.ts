@@ -4,7 +4,6 @@ import EducationFactory from './user/EducationFactory'
 import ExperienceFactory from './user/ExperienceFactory'
 import LanguageFactory from './LanguageFactory'
 import SkillFactory from './user/SkillFactory'
-import NotificationSettingFactory from './user/NotificationSettingFactory'
 import SocialFactory from './SocialFactory'
 import FavoriteLinkFactory from './FavoriteLinkFactory'
 
@@ -15,7 +14,6 @@ export default Factory.define(UserProfile, ({ faker }) => {
   .relation('experiences', () => ExperienceFactory)
   .relation('languages', () => LanguageFactory)
   .relation('skills', () => SkillFactory)
-  .relation('NotificationSetting', () => NotificationSettingFactory)
   .relation('social', () => SocialFactory)
   .relation('favoriteLinks', () => FavoriteLinkFactory)
   .build()

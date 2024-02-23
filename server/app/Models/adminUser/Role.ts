@@ -15,7 +15,6 @@ export default class Role extends BaseModel {
   public AdminUser: HasMany<typeof AdminUser>
 
   @column({
-    consume: (v: any) => JSON.parse(v),
     prepare: (v: any) => JSON.stringify(v),
   })
   public permissions: string[]

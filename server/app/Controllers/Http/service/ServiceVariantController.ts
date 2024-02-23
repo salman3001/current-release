@@ -4,7 +4,6 @@ import BaseController from '../BaseController'
 import Database from '@ioc:Adonis/Lucid/Database'
 import VariantCreateValidator from 'App/Validators/service/VariantCreateValidator'
 import ServiceVariant from 'App/Models/service/ServiceVariant'
-import Service from 'App/Models/service/Service'
 
 export default class ServiceVariantController extends BaseController {
   constructor() {
@@ -50,8 +49,6 @@ export default class ServiceVariantController extends BaseController {
 
     await Database.transaction(async (trx) => {
       variant = await ServiceVariant.findOrFail(+params.id, { client: trx })
-
-      const service = await Service.findOrFail(+params.serviceId, { client: trx })
 
       const { image, ...restPayload } = payload
 

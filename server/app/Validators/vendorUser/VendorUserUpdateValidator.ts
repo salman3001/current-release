@@ -1,7 +1,7 @@
-import { schema, rules } from '@ioc:Adonis/Core/Validator'
+import { schema, CustomMessages, rules } from '@ioc:Adonis/Core/Validator'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
-export default class AdminUserValidator {
+export default class VendorUserUpdateValidator {
   constructor(protected ctx: HttpContextContract) { }
 
   /*
@@ -24,18 +24,17 @@ export default class AdminUserValidator {
    *    ```
    */
   public schema = schema.create({
+    id: schema.number.optional(),
+    firstName: schema.string.optional({ trim: true }),
+    lastName: schema.string({ trim: true }),
     email: schema.string({ trim: true }, [
       rules.email(),
-      rules.unique({ table: 'admin_users', column: 'email' }),
       rules.normalizeEmail({ allLowercase: true }),
+      rules.unique({ table: 'users', column: 'email', whereNot: { id: this.ctx.params.id } }),
     ]),
-    firstName: schema.string({ trim: true }),
-    lastName: schema.string({ trim: true }),
-    phone: schema.string.optional({ trim: true }, [rules.minLength(8)]),
-    password: schema.string({ trim: true }, [rules.minLength(8), rules.alphaNum()]),
-    desc: schema.string.optional(),
+    password: schema.string.optional({ trim: true }),
+    phone: schema.string.optional(),
     isActive: schema.boolean.optional(),
-    roleId: schema.number.optional(),
   })
 
   /**
@@ -49,5 +48,5 @@ export default class AdminUserValidator {
    * }
    *
    */
-  public messages = {}
+  public messages: CustomMessages = {}
 }

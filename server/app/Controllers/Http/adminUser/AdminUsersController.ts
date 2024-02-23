@@ -3,12 +3,12 @@ import AdminUser from 'App/Models/adminUser/AdminUser'
 import AdminUserValidator from 'App/Validators/adminUser/AdminUserValidator'
 import AdminUserUpdateValidator from 'App/Validators/adminUser/AdminUserUpdateValidator'
 import Role from 'App/Models/adminUser/Role'
-import { ResponsiveAttachment } from '@ioc:Adonis/Addons/ResponsiveAttachment'
-import { schema, rules, validator } from '@ioc:Adonis/Core/Validator'
+import { schema, rules } from '@ioc:Adonis/Core/Validator'
 import BaseController from '../BaseController'
-import Address from 'App/Models/address/Address'
-import Social from 'App/Models/Social'
 import { LucidRow } from '@ioc:Adonis/Lucid/Orm'
+import UserProfileUpdateValidator from 'App/Validators/UserProfileUpdateValidator'
+import { ResponsiveAttachment } from '@ioc:Adonis/Addons/ResponsiveAttachment'
+import UserProfile from 'App/Models/UserProfile'
 
 export default class AdminUsersController extends BaseController {
   constructor() {
@@ -18,32 +18,7 @@ export default class AdminUsersController extends BaseController {
   public async store({ request, response, bouncer }: HttpContextContract) {
     await bouncer.with('AdminUserPolicy').authorize('create')
     const payload = await request.validate(AdminUserValidator)
-    const user = await AdminUser.create(payload.user)
-
-    if (payload.address) {
-      const address = await Address.create({
-        address: payload?.address?.address || '',
-        continentId: payload?.address?.continentId
-          ? Number(payload?.address?.continentId)
-          : undefined,
-        countryId: payload?.address?.countryId ? Number(payload?.address?.countryId) : undefined,
-        stateId: payload?.address?.stateId ? Number(payload?.address?.stateId) : undefined,
-        cityId: payload?.address?.cityId ? Number(payload?.address?.cityId) : undefined,
-        streetId: payload?.address?.streetId ? Number(payload?.address?.streetId) : undefined,
-        zip: payload?.address?.zip,
-      })
-
-      user.related('address').save(address)
-    }
-
-    if (payload.social) {
-      const social = await Social.create(payload.social)
-      user.related('social').save(social)
-    }
-
-    if (payload.image) {
-      user.avatar = await ResponsiveAttachment.fromFile(payload.image)
-    }
+    const user = await AdminUser.create(payload)
 
     await user.save()
 
@@ -59,40 +34,11 @@ export default class AdminUsersController extends BaseController {
     let user = await AdminUser.findOrFail(+params.id)
     await bouncer.with('AdminUserPolicy').authorize('update', user as AdminUser)
     const payload = await request.validate(AdminUserUpdateValidator)
-    user.merge(payload.user)
+    user.merge(payload)
     await user.save()
 
-    await user.related('notifications').create({
-      data: { message: 'behnchod' },
-    })
-
-    if (payload.address) {
-      await user.load('address')
-      if (user.address) {
-        await user.address.delete()
-        await user.related('address').create(payload.address)
-      } else {
-        await user.related('address').create(payload.address)
-      }
-    }
-    if (payload.social) {
-      await user.load('social')
-
-      if (user.social) {
-        await user.social.delete()
-        const social = await Social.create(payload.social)
-        await user.related('social').save(social)
-      } else {
-        const social = await Social.create(payload.social)
-        await user.related('social').save(social)
-      }
-    }
-    if (payload.user.roleId) {
-      user.roleId = +payload.user.roleId
-    }
-
-    if (payload.image) {
-      user.avatar = await ResponsiveAttachment.fromFile(payload.image)
+    if (payload.roleId) {
+      user.roleId = +payload.roleId
     }
 
     await user?.save()
@@ -101,6 +47,114 @@ export default class AdminUsersController extends BaseController {
       message: 'User Updated!',
       code: 201,
       data: user,
+      success: true,
+    })
+  }
+
+  public async updateProfile({ request, response, params, bouncer }: HttpContextContract) {
+    const user = await AdminUser.findOrFail(+params.id)
+    await bouncer.with('AdminUserPolicy').authorize('update', user as unknown as AdminUser)
+    user.load('profile')
+    const profile = await UserProfile.findByOrFail('admin_user_id', user.id)
+
+    const payload = await request.validate(UserProfileUpdateValidator)
+    if (payload.address) {
+
+      await profile.load('addresses')
+
+      if (profile.addresses) {
+        for (const address of profile.addresses) {
+          await address.delete()
+        }
+        await profile.related('addresses').createMany(payload.address)
+      } else {
+        await profile.related('addresses').createMany(payload.address)
+      }
+    }
+
+    if (payload.social) {
+      await profile?.load('social')
+      if (profile?.social) {
+        await profile.social.delete()
+        await profile.related('social').create(payload.social)
+      } else {
+        await profile.related('social').create(payload.social)
+      }
+    }
+
+    if (payload.favoriteLinks) {
+      await profile?.load('favoriteLinks')
+
+      if (profile?.favoriteLinks) {
+        profile.favoriteLinks.forEach((l) => {
+          l.delete()
+        })
+      }
+
+      await profile.related('favoriteLinks').createMany(payload.favoriteLinks)
+    }
+
+    if (payload.workExperience) {
+      await profile?.load('experiences')
+
+      if (profile?.experiences) {
+        if (profile?.experiences) {
+          for (const e of profile.experiences) {
+            await e.delete()
+          }
+        }
+      }
+      await profile.related('experiences').createMany(payload.workExperience)
+    }
+
+    if (payload.education) {
+      await profile?.load('educations')
+
+      if (profile?.educations) {
+        if (profile?.educations) {
+          for (const e of profile.educations) {
+            await e.delete()
+          }
+        }
+      }
+      await profile.related('educations').createMany(payload.education)
+    }
+
+    if (payload.image) {
+      profile.avatar = await ResponsiveAttachment.fromFile(payload.image)
+    }
+
+    if (payload.languages) {
+      await profile.load('languages')
+      if (profile.languages) {
+        profile.related('languages').detach()
+        await profile.related('languages').attach(payload.languages)
+      } else {
+        await profile.related('languages').attach(payload.languages)
+      }
+    }
+
+    if (payload.skills) {
+      await profile?.load('skills')
+      if (profile?.skills) {
+        await profile.related('skills').detach()
+        await profile.related('skills').createMany(payload.skills)
+      } else {
+        await profile.related('skills').createMany(payload.skills)
+      }
+    }
+
+    if (payload.NotificationSettings) {
+
+      profile.notificationSetting = payload.NotificationSettings
+    }
+
+    await user.save()
+
+    return response.custom({
+      message: 'User Profile Updated!',
+      code: 201,
+      data: profile,
       success: true,
     })
   }
@@ -177,70 +231,37 @@ export default class AdminUsersController extends BaseController {
         'email',
         'password',
         'phone',
-        'desc',
         'is_active',
         'role_id'
       )
-      .preload('address', (a) => {
-        a.select('address', 'continent_id', 'country_id', 'state_id', 'city_id', 'street_id', 'zip')
-      })
-      .preload('social', (s) => {
-        s.select('vk', 'website', 'facebook', 'twitter', 'instagram', 'linkedin')
-      })
       .exec()
 
     return records
   }
 
-  public async storeExcelData(data: any, ctx: HttpContextContract): Promise<void> {
-    const { address, social, ...rest } = data
+  // public async storeExcelData(data: any, ctx: HttpContextContract): Promise<void> {
+  //   const { address, social, ...rest } = data
 
-    ctx.meta = {
-      currentObjectId: data.id,
-    }
+  //   ctx.meta = {
+  //     currentObjectId: data.id,
+  //   }
 
-    const validatedData = await validator.validate({
-      schema: new AdminUserUpdateValidator(ctx).schema,
-      data: {
-        user: rest,
-        address,
-        social,
-      },
-    })
+  //   const validatedData = await validator.validate({
+  //     schema: new AdminUserUpdateValidator(ctx).schema,
+  //     data: {
+  //       user: rest,
+  //       address,
+  //       social,
+  //     },
+  //   })
 
-    const user = await AdminUser.updateOrCreate(
-      { email: validatedData.user.email },
-      validatedData.user
-    )
-    if (validatedData.address) {
-      await user.load('address')
-      if (user.address) {
-        user.address.merge(validatedData.address)
-        await user.address.save()
-      } else {
-        await user.related('address').create(validatedData.address)
-      }
-    }
-
-    if (validatedData.social) {
-      await user.load('social')
-      if (user.social) {
-        user.social.merge(validatedData.social)
-        await user.social.save()
-      } else {
-        await user.related('social').create(validatedData.social)
-      }
-    }
-  }
+  //   const user = await AdminUser.updateOrCreate(
+  //     { email: validatedData.user.email },
+  //     validatedData.user
+  //   )
+  // }
 
   public excludeIncludeExportProperties(record: any) {
-    const {
-      'social.adminUserId': x,
-      'address.adminUserId': y,
-      'social': s,
-      'address': a,
-      ...rest
-    } = record
-    return { ...rest, password: '' }
+    return { ...record, password: '' }
   }
 }

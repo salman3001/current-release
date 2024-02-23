@@ -11,10 +11,12 @@ import {
   afterCreate,
   hasMany,
   HasMany,
+  computed,
 } from '@ioc:Adonis/Lucid/Orm'
 import Role from './Role'
 import UserProfile from '../UserProfile'
 import Activity from '../Activity'
+import Notification from '../Notification'
 
 export default class AdminUser extends BaseModel {
   @column({ isPrimary: true })
@@ -45,10 +47,12 @@ export default class AdminUser extends BaseModel {
   public isActive: boolean
 
   @column()
-  public isAdmin: boolean
-
-  @column()
   public roleId: number
+
+  @computed()
+  public get userType() {
+    return 'admin'
+  }
 
   @hasOne(() => UserProfile)
   public profile: HasOne<typeof UserProfile>
@@ -58,6 +62,9 @@ export default class AdminUser extends BaseModel {
 
   @hasMany(() => Activity)
   public activities: HasMany<typeof Activity>
+
+  @hasMany(() => Notification)
+  public notifications: HasMany<typeof Notification>
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

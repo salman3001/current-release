@@ -19,6 +19,10 @@ export default class Notification extends BaseModel {
   @column()
   public adminUserId: number
 
+  @column()
+  public venderUserId: number
+
+
   public async markAsRead() {
     this.readAt = DateTime.now()
     await this.save()

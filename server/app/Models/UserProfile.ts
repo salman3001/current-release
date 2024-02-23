@@ -22,7 +22,6 @@ import Education from './user/Education'
 import Language from './Language'
 import Skill from './user/Skill'
 import FavoriteLink from './FavoriteLink'
-import NotificationSetting from './NotificationSetting'
 import User from './user/User'
 
 export default class UserProfile extends BaseModel {
@@ -46,6 +45,11 @@ export default class UserProfile extends BaseModel {
 
   @column()
   public venderUserId: number
+
+  @column({
+    prepare: (v: any) => JSON.stringify(v),
+  })
+  public notificationSetting: Object
 
   @belongsTo(() => User)
   public user: BelongsTo<typeof User>
@@ -76,8 +80,6 @@ export default class UserProfile extends BaseModel {
   @hasMany(() => FavoriteLink)
   public favoriteLinks: HasMany<typeof FavoriteLink>
 
-  @hasOne(() => NotificationSetting)
-  public NotificationSetting: HasOne<typeof NotificationSetting>
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

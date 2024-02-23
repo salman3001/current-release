@@ -4,8 +4,8 @@ import SupportTicket from 'App/Models/helpcenter/SupportTicket'
 
 export default Factory.define(SupportTicket, ({ faker }) => {
   return {
-    subject: faker.lorem.lines(),
+    subject: faker.lorem.lines(1),
     status: TicketStatus.OPEN,
-    userId: faker.number.int({ min: 1, max: 5 }),
+    venderUserId: faker.number.int({ min: 1, max: 5 }),
   }
 }).build()

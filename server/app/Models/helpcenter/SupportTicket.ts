@@ -1,8 +1,8 @@
 import { DateTime } from 'luxon'
 import { BaseModel, BelongsTo, HasMany, belongsTo, column, hasMany } from '@ioc:Adonis/Lucid/Orm'
 import { TicketStatus } from 'App/Helpers/enums'
-import User from '../user/User'
 import ChatMessage from './ChatMessage'
+import VenderUser from '../venderUser/VenderUser'
 
 export default class SupportTicket extends BaseModel {
   @column({ isPrimary: true })
@@ -12,10 +12,10 @@ export default class SupportTicket extends BaseModel {
   public subject: string
 
   @column()
-  public userId: number
+  public venderUserId: number
 
-  @belongsTo(() => User)
-  public user: BelongsTo<typeof User>
+  @belongsTo(() => VenderUser)
+  public vender: BelongsTo<typeof VenderUser>
 
   @column()
   public status: TicketStatus

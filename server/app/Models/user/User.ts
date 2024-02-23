@@ -9,6 +9,7 @@ import {
   afterCreate,
   hasMany,
   HasMany,
+  computed,
 } from '@ioc:Adonis/Lucid/Orm'
 import Cart from './Cart'
 import Notification from '../Notification'
@@ -44,6 +45,11 @@ export default class User extends BaseModel {
 
   @column({ serializeAs: null })
   public socketToken: string
+
+  @computed()
+  public get userType() {
+    return 'customer'
+  }
 
   @hasOne(() => UserProfile)
   public profile: HasOne<typeof UserProfile>

@@ -2,7 +2,7 @@ import { schema, CustomMessages, rules } from '@ioc:Adonis/Core/Validator'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 export default class VariantCreateValidator {
-  constructor(protected ctx: HttpContextContract) {}
+  constructor(protected ctx: HttpContextContract) { }
 
   /*
    * Define schema to validate the "shape", "type", "formatting" and "integrity" of data.
@@ -36,7 +36,7 @@ export default class VariantCreateValidator {
     features: schema.array.optional().members(schema.string()),
     included: schema.array.optional().members(schema.string()),
     excluded: schema.array.optional().members(schema.string()),
-    aditionalProperties: schema.array.optional().members(
+    additionalProperties: schema.array.optional().members(
       schema.object().members({
         name: schema.string(),
         value: schema.string(),

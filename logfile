@@ -12,3 +12,30 @@
 2024-02-22 06:06:23.745 +04 [1672] STATEMENT:  insert into "knowledge_base_contents" ("knowledge_base_category_id", "meta_desc", "meta_keywords", "meta_title", "slug", "title") values ($1, $2, $3, $4, $5, $6) returning "id"
 2024-02-22 06:10:44.227 +04 [10964] LOG:  checkpoint starting: time
 2024-02-22 06:11:47.569 +04 [10964] LOG:  checkpoint complete: wrote 592 buffers (3.6%); 0 WAL file(s) added, 0 removed, 0 recycled; write=63.144 s, sync=0.159 s, total=63.342 s; sync files=299, longest=0.006 s, average=0.001 s; distance=3496 kB, estimate=3496 kB; lsn=0/2D9C7B8, redo lsn=0/2D9C780
+2024-02-22 08:30:26.783 +04 [12804] LOG:  background worker "logical replication launcher" (PID 15120) was terminated by exception 0xC000013A
+2024-02-22 08:30:26.783 +04 [12804] HINT:  See C include file "ntstatus.h" for a description of the hexadecimal value.
+2024-02-22 08:30:26.783 +04 [12804] LOG:  terminating any other active server processes
+2024-02-22 08:30:26.808 +04 [12804] LOG:  all server processes terminated; reinitializing
+^C2024-02-23 06:50:04.173 +04 [13092] LOG:  starting PostgreSQL 16.2, compiled by Visual C++ build 1937, 64-bit
+2024-02-23 06:50:04.178 +04 [13092] LOG:  listening on IPv6 address "::1", port 5412
+2024-02-23 06:50:04.178 +04 [13092] LOG:  listening on IPv4 address "127.0.0.1", port 5412
+2024-02-23 06:50:04.222 +04 [16060] LOG:  database system was interrupted; last known up at 2024-02-22 06:11:47 +04
+2024-02-23 06:50:04.358 +04 [16060] LOG:  database system was not properly shut down; automatic recovery in progress
+2024-02-23 06:50:04.361 +04 [16060] LOG:  redo starts at 0/2D9C780
+2024-02-23 06:50:04.361 +04 [16060] LOG:  invalid record length at 0/2D9C868: expected at least 24, got 0
+2024-02-23 06:50:04.361 +04 [16060] LOG:  redo done at 0/2D9C830 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+2024-02-23 06:50:04.364 +04 [15912] LOG:  checkpoint starting: end-of-recovery immediate wait
+2024-02-23 06:50:04.373 +04 [15912] LOG:  checkpoint complete: wrote 3 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.002 s, sync=0.003 s, total=0.010 s; sync files=2, longest=0.002 s, average=0.002 s; distance=0 kB, estimate=0 kB; lsn=0/2D9C868, redo lsn=0/2D9C868
+2024-02-23 06:50:04.391 +04 [13092] LOG:  database system is ready to accept connections
+2024-02-23 06:50:17.076 +04 [13072] ERROR:  column "business_id" of relation "addresses" does not exist at character 37
+2024-02-23 06:50:17.076 +04 [13072] STATEMENT:  insert into "addresses" ("address", "business_id", "geo_location") values ($1, $2, $3) returning "id"
+2024-02-23 06:51:35.180 +04 [3556] ERROR:  value too long for type character varying(255)
+2024-02-23 06:51:35.180 +04 [3556] STATEMENT:  insert into "knowledge_base_contents" ("knowledge_base_category_id", "meta_desc", "meta_keywords", "meta_title", "slug", "title") values ($1, $2, $3, $4, $5, $6) returning "id"
+2024-02-23 06:55:04.378 +04 [15912] LOG:  checkpoint starting: time
+2024-02-23 06:56:11.463 +04 [15912] LOG:  checkpoint complete: wrote 615 buffers (3.8%); 0 WAL file(s) added, 0 removed, 1 recycled; write=66.853 s, sync=0.160 s, total=67.085 s; sync files=562, longest=0.006 s, average=0.001 s; distance=5797 kB, estimate=5797 kB; lsn=0/3345D88, redo lsn=0/3345D50
+2024-02-23 06:58:53.725 +04 [12348] ERROR:  value too long for type character varying(255)
+2024-02-23 06:58:53.725 +04 [12348] STATEMENT:  insert into "knowledge_base_contents" ("knowledge_base_category_id", "meta_desc", "meta_keywords", "meta_title", "slug", "title") values ($1, $2, $3, $4, $5, $6) returning "id"
+2024-02-23 06:59:47.358 +04 [2736] ERROR:  value too long for type character varying(255)
+2024-02-23 06:59:47.358 +04 [2736] STATEMENT:  insert into "knowledge_base_contents" ("knowledge_base_category_id", "meta_desc", "meta_keywords", "meta_title", "slug", "title") values ($1, $2, $3, $4, $5, $6) returning "id"
+2024-02-23 07:00:04.460 +04 [15912] LOG:  checkpoint starting: time
+2024-02-23 07:01:06.793 +04 [15912] LOG:  checkpoint complete: wrote 570 buffers (3.5%); 0 WAL file(s) added, 0 removed, 0 recycled; write=62.116 s, sync=0.153 s, total=62.333 s; sync files=560, longest=0.006 s, average=0.001 s; distance=6424 kB, estimate=6424 kB; lsn=0/3A97848, redo lsn=0/398BD58

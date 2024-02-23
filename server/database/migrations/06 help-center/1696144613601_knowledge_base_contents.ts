@@ -8,7 +8,7 @@ export default class extends BaseSchema {
       table.increments('id').primary()
       table.string('title').unique().notNullable()
       table.string('slug').unique().notNullable()
-      table.bigInteger('order').defaultTo(1).notNullable()
+      table.integer('order').defaultTo(1).notNullable()
       table.boolean('is_active').defaultTo(false)
       table
         .integer('knowledge_base_category_id')

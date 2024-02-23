@@ -9,7 +9,7 @@ export default class extends BaseSchema {
       table.string('name').notNullable()
       table.string('short_desc')
       table.text('long_desc')
-      table.boolean('status').defaultTo(false).notNullable()
+      table.boolean('is_active').defaultTo(false).notNullable()
       table.boolean('location_specific').defaultTo(true).notNullable()
       table.point('geo_location')
       table.json('cover')

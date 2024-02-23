@@ -14,6 +14,12 @@ export default class Notifications extends BaseSchema {
         .references('id')
         .inTable('admin_users')
         .onDelete('CASCADE')
+      table
+        .integer('vender_user_id')
+        .unsigned()
+        .references('id')
+        .inTable('vender_users')
+        .onDelete('CASCADE')
       table.timestamp('read_at', { useTz: true })
       table.timestamp('created_at', { useTz: true }).notNullable()
       table.timestamp('updated_at', { useTz: true }).notNullable()

@@ -8,7 +8,7 @@ import SocialFactory from '../SocialFactory'
 
 export default Factory.define(Business, ({ faker }) => {
   return {
-    name: faker.lorem.word(),
+    name: faker.lorem.words(2),
     isActive: true,
     shortDesc: faker.lorem.sentence(),
     longDesc: faker.lorem.paragraph(),

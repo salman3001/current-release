@@ -41,7 +41,7 @@ export default class Service extends BaseModel {
   public longDesc: string
 
   @column()
-  public status: boolean
+  public isActive: boolean
 
   @column()
   public locationSpecific: boolean

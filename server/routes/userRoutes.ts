@@ -15,6 +15,6 @@ Route.group(() => {
   // Route.resource('scoial', 'user/user/SocialController').apiOnly()
 
   // cart
-  Route.get('my-cart', 'user/CartsController.index')
+  Route.get('my-cart', 'user/CartsController.show')
   Route.put('update-my-cart', 'user/CartsController.update')
 }).prefix('api')

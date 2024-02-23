@@ -7,8 +7,8 @@ export default Factory.define(BlogCategory, ({ faker }) => {
     name: faker.lorem.word(),
     slug: faker.lorem.slug(5),
     metaTitle: faker.lorem.lines(1),
-    metaDesc: faker.lorem.sentence(10),
-    metaKeywords: faker.lorem.words(10),
+    metaDesc: faker.lorem.lines(1),
+    metaKeywords: faker.lorem.words(5),
   }
 })
   .relation('blogs', () => BlogFactory)

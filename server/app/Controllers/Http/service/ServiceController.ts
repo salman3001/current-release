@@ -18,7 +18,6 @@ export default class ServiceController extends BaseController {
   public async store({ request, response, bouncer }: HttpContextContract) {
     await bouncer.with('ServicePolicy').authorize('create')
 
-    console.log(request.all())
     const payload = await request.validate(ServiceCreateValidator)
 
     let service: Service | null = null
@@ -34,16 +33,8 @@ export default class ServiceController extends BaseController {
         await service.related('tags').attach(payload.tags)
       }
 
-      if (payload.social) {
-        await service.related('social').create(payload.social)
-      }
-
       if (payload.faq) {
         await service.related('faq').createMany(payload.faq)
-      }
-
-      if (payload.logo) {
-        service.logo = await ResponsiveAttachment.fromFile(payload.logo)
       }
 
       if (payload.cover) {
@@ -76,15 +67,11 @@ export default class ServiceController extends BaseController {
         // Filter out any null values (images that failed to store)
         const validImages = images.filter((img) => img !== null)
 
-        await service.related('screenshots').saveMany(validImages as Image[])
+        await service.related('images').saveMany(validImages as Image[])
       }
 
       if (payload.video) {
-        const video = await Video.create(
-          { file: Attachment.fromFile(payload.video) },
-          { client: trx }
-        )
-        await service.related('video').save(video)
+        service.video = Attachment.fromFile(payload.video)
       }
 
       await service.save()
@@ -128,16 +115,6 @@ export default class ServiceController extends BaseController {
         await service.related('tags').attach(payload.tags)
       }
 
-      if (payload.social) {
-        await service.load('social')
-        if (service.social) {
-          service.social.merge(payload.social)
-          await service.social.save()
-        } else {
-          await service.related('social').create(payload.social)
-        }
-      }
-
       if (payload.faq) {
         await service.load('faq')
         if (service.faq) {
@@ -146,10 +123,6 @@ export default class ServiceController extends BaseController {
           }
         }
         await service.related('faq').createMany(payload.faq)
-      }
-
-      if (payload.logo) {
-        service.logo = await ResponsiveAttachment.fromFile(payload.logo)
       }
 
       if (payload.cover) {
@@ -161,10 +134,10 @@ export default class ServiceController extends BaseController {
       }
 
       if (payload.images) {
-        await service.load('screenshots')
+        await service.load('images')
 
         await Promise.all(
-          service.screenshots.map(async (s) => {
+          service.images.map(async (s) => {
             await s.delete()
           })
         )
@@ -189,21 +162,15 @@ export default class ServiceController extends BaseController {
 
         // Filter out any null values (images that failed to store)
         const validImages = images.filter((img) => img !== null)
-        await service.related('screenshots').saveMany(validImages as Image[])
+        await service.related('images').saveMany(validImages as Image[])
       }
 
       if (payload.video) {
-        await service.load('video')
-
         if (service.video) {
           await service.video.delete()
         }
 
-        const video = await Video.create(
-          { file: Attachment.fromFile(payload.video) },
-          { client: trx }
-        )
-        await service.related('video').save(video)
+        service.video = Attachment.fromFile(payload.video)
       }
 
       await service.save()

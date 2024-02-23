@@ -4,6 +4,7 @@ import Cart from 'App/Models/user/Cart'
 import BaseController from '../BaseController'
 import UpdateCartValidator from 'App/Validators/UpdateCartValidator'
 import Database from '@ioc:Adonis/Lucid/Database'
+import User from 'App/Models/user/User'
 
 export default class CartsController extends BaseController {
   constructor() {
@@ -12,15 +13,20 @@ export default class CartsController extends BaseController {
 
   public getShowQuery(ctx: HttpContextContract) {
     const user = ctx.auth.user
-    if (!user) {
+
+    const isCustomer = user instanceof User
+
+    if (!user || !isCustomer) {
+      console.log(isCustomer);
       return ctx.response.custom({
         code: 401,
         data: null,
         message: 'Not Authorized',
         success: false,
       })
+    } else {
+      return Cart.query().where('user_id', user!.id)
     }
-    return Cart.query().where('user_id', user!.id)
   }
 
   public async update({ request, response, bouncer, auth }: HttpContextContract) {

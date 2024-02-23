@@ -24,18 +24,18 @@ export default class ServiceVariant extends BaseModel {
   @column()
   public flatDiscount: number
 
-  @column()
+  @column({
+    prepare: (v) => JSON.stringify(v),
+  })
   public features: Object
 
   @column({
     prepare: (v) => JSON.stringify(v),
-    consume: (v) => JSON.stringify(v),
   })
   public included: Object
 
   @column({
     prepare: (v) => JSON.stringify(v),
-    consume: (v) => JSON.stringify(v),
   })
   public excluded: Object
 
@@ -57,6 +57,9 @@ export default class ServiceVariant extends BaseModel {
   @belongsTo(() => Service)
   public service: BelongsTo<typeof Service>
 
-  @column()
-  public aditionalProperties: Object
+  @column({
+    prepare: (v) => JSON.stringify(v),
+
+  })
+  public additionalProperties: Object
 }

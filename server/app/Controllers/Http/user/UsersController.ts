@@ -2,7 +2,6 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import UserCreateValidator from 'App/Validators/user/UserCreateValidator'
 import UserUpdateeValidator from 'App/Validators/user/UserUpdateValidator'
 import User from 'App/Models/user/User'
-import { ResponsiveAttachment } from '@ioc:Adonis/Addons/ResponsiveAttachment'
 import BaseController from '../BaseController'
 import { schema, rules, validator } from '@ioc:Adonis/Core/Validator'
 
@@ -16,44 +15,8 @@ export default class UsersController extends BaseController {
     const user = new User()
     await bouncer.with('userPolicy').authorize('create')
 
-    user.merge(payload.user)
+    user.merge(payload)
     await user.save()
-
-    if (payload.address) {
-      user.related('address').create(payload.address)
-    }
-
-    if (payload.social) {
-      await user.related('social').create(payload.social)
-    }
-
-    if (payload.image) {
-      user.avatar = await ResponsiveAttachment.fromFile(payload.image)
-    }
-
-    if (payload.favoriteLinks) {
-      await user.related('favoriteLinks').createMany(payload.favoriteLinks)
-    }
-
-    if (payload.workExperience) {
-      await user.related('experiences').createMany(payload.workExperience)
-    }
-
-    if (payload.education) {
-      await user.related('educations').createMany(payload.education)
-    }
-
-    if (payload.languages) {
-      await user.related('languages').attach(payload.languages)
-    }
-
-    if (payload.skills) {
-      await user.related('skills').createMany(payload.skills)
-    }
-
-    if (payload.NotificationSettings) {
-      await user.related('NotificationSetting').create(payload.NotificationSettings)
-    }
 
     await user.save()
 
@@ -71,90 +34,8 @@ export default class UsersController extends BaseController {
     const user = await User.findOrFail(id)
     await bouncer.with('userPolicy').authorize('update', user)
 
-    if (payload.user) {
-      user.merge(payload.user)
-      await user.save()
-    }
-
-    if (payload.address) {
-      await user?.load('address')
-
-      if (user?.address) {
-        await user.address.delete()
-        await user.related('address').create(payload.address)
-      } else {
-        await user.related('address').create(payload.address)
-      }
-    }
-
-    if (payload.social) {
-      await user?.load('social')
-      if (user?.social) {
-        await user.social.delete()
-        await user.related('social').create(payload.social)
-      } else {
-        await user.related('social').create(payload.social)
-      }
-    }
-
-    if (payload.favoriteLinks) {
-      await user?.load('favoriteLinks')
-
-      if (user?.favoriteLinks) {
-        user.favoriteLinks.forEach((l) => {
-          l.delete()
-        })
-      }
-
-      user && (await user.related('favoriteLinks').createMany(payload.favoriteLinks))
-    }
-
-    if (payload.workExperience) {
-      await user?.load('experiences')
-
-      if (user?.experiences) {
-        user.experiences.forEach((l) => {
-          l.delete()
-        })
-      }
-      user && (await user.related('experiences').createMany(payload.workExperience))
-    }
-
-    if (payload.image) {
-      user.avatar = await ResponsiveAttachment.fromFile(payload.image)
-    }
-
-    if (payload.languages) {
-      await user?.load('languages')
-      if (user?.languages) {
-        user.related('languages').detach()
-        user && (await user.related('languages').attach(payload.languages))
-      } else {
-        user && (await user.related('languages').attach(payload.languages))
-      }
-    }
-
-    if (payload.skills) {
-      await user?.load('skills')
-      if (user?.skills) {
-        await user.related('skills').detach()
-        user && (await user.related('skills').createMany(payload.skills))
-      } else {
-        user && (await user.related('skills').createMany(payload.skills))
-      }
-    }
-
-    if (payload.NotificationSettings) {
-      await user?.load('NotificationSetting')
-      if (user?.NotificationSetting) {
-        user.NotificationSetting.delete()
-        user && (await user.related('NotificationSetting').create(payload.NotificationSettings))
-      } else {
-        user && (await user.related('NotificationSetting').create(payload.NotificationSettings))
-      }
-    }
-
-    user && (await user.save())
+    user.merge(payload)
+    await user.save()
 
     return response.custom({
       message: 'User updated Successfully',
@@ -211,7 +92,7 @@ export default class UsersController extends BaseController {
       },
     })
 
-    await User.updateOrCreate({ id: validatedData.user!.id }, validatedData.user!)
+    await User.updateOrCreate({ id: validatedData.id }, validatedData)
   }
 
   public excludeIncludeExportProperties(record: any) {

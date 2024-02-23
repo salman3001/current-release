@@ -7,6 +7,7 @@
 
 import AdminUser from 'App/Models/adminUser/AdminUser'
 import User from 'App/Models/user/User'
+import VenderUser from 'App/Models/venderUser/VenderUser'
 
 declare module '@ioc:Adonis/Addons/Auth' {
   /*
@@ -42,6 +43,11 @@ declare module '@ioc:Adonis/Addons/Auth' {
     adminUser: {
       implementation: LucidProviderContract<typeof AdminUser>
       config: LucidProviderConfig<typeof AdminUser>
+    }
+
+    venderUser: {
+      implementation: LucidProviderContract<typeof VenderUser>
+      config: LucidProviderConfig<typeof VenderUser>
     }
   }
 
@@ -94,6 +100,12 @@ declare module '@ioc:Adonis/Addons/Auth' {
       implementation: OATGuardContract<'adminUser', 'adminUserApi'>
       config: OATGuardConfig<'adminUser'>
       client: OATClientContract<'adminUser'>
+    }
+
+    venderUserApi: {
+      implementation: OATGuardContract<'venderUser', 'venderUserApi'>
+      config: OATGuardConfig<'venderUser'>
+      client: OATClientContract<'venderUser'>
     }
   }
 }

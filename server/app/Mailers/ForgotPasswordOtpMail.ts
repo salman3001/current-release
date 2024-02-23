@@ -12,7 +12,7 @@ export default class ForgotPasswordOtpMail extends BaseMailer {
     const template = await Template.findBy('name', 'Forgot Password Email')
 
     const otp = Math.floor(100000 + Math.random() * 900000)
-    this.user.rememberMeToken = otp.toString()
+    this.user.token = otp.toString()
     await this.user.save()
     if (template) {
       const html = await View.renderRaw(template?.content, { otp })

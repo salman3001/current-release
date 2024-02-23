@@ -8,7 +8,7 @@ export default class extends BaseSchema {
       table.increments('id')
       table.json('avatar')
       table.integer('user_id').unsigned().references('id').inTable('users').onDelete('CASCADE')
-
+      table.json('notification_settings')
       table
         .integer('admin_user_id')
         .unsigned()

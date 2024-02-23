@@ -13,7 +13,7 @@ export default Factory.define(Service, ({ faker }) => {
     name: faker.commerce.productName(),
     shortDesc: faker.commerce.productDescription(),
     longDesc: faker.lorem.paragraphs(),
-    status: false,
+    isActive: false,
     locationSpecific: false,
     geoLocation: `${faker.location.longitude()},${faker.location.latitude()}`,
   }

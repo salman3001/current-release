@@ -1,8 +1,8 @@
-import { schema, CustomMessages, rules } from '@ioc:Adonis/Core/Validator'
+import { schema, CustomMessages } from '@ioc:Adonis/Core/Validator'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 export default class ServiceCreateValidator {
-  constructor(protected ctx: HttpContextContract) {}
+  constructor(protected ctx: HttpContextContract) { }
 
   /*
    * Define schema to validate the "shape", "type", "formatting" and "integrity" of data.
@@ -24,10 +24,6 @@ export default class ServiceCreateValidator {
    *    ```
    */
   public schema = schema.create({
-    logo: schema.file.optional({
-      extnames: ['jpg', 'JPG', 'jpeg', 'JPEG', 'png', 'PNG', 'webp', 'WEBP'],
-      size: '5mb',
-    }),
     cover: schema.file.optional({
       extnames: ['jpg', 'JPG', 'jpeg', 'JPEG', 'png', 'PNG', 'webp', 'WEBP'],
       size: '5mb',
@@ -48,30 +44,19 @@ export default class ServiceCreateValidator {
     ),
     service: schema.object().members({
       name: schema.string({ trim: true }),
-      userId: schema.number(),
-      serviceCategoryId: schema.number.optional(),
-      serviceSubcategoryId: schema.number.optional(),
-      specificLocation: schema.boolean.optional(),
       shortDesc: schema.string.optional(),
       longDesc: schema.string.optional(),
-      status: schema.boolean.optional(),
+      isActive: schema.boolean.optional(),
+      locationSpecific: schema.boolean.optional(),
+      geoLocation: schema.string(),
+      businessId: schema.number(),
+      serviceCategoryId: schema.number.optional(),
+      serviceSubcategoryId: schema.number.optional(),
     }),
-    tags: schema.array.optional().members(schema.number()),
     seo: schema.object.optional().members({
       metaTitle: schema.string.optional(),
       metaKeywords: schema.string.optional(),
       metaDesc: schema.string.optional(),
-    }),
-    social: schema.object.optional().members({
-      website: schema.string.optional({ trim: true }),
-      facebook: schema.string.optional({ trim: true }),
-      twitter: schema.string.optional({ trim: true }),
-      instagram: schema.string.optional({ trim: true }),
-      pintrest: schema.string.optional({ trim: true }),
-      linkedin: schema.string.optional({ trim: true }),
-      vk: schema.string.optional({ trim: true }),
-      whatsapp: schema.string.optional({ trim: true }),
-      telegram: schema.string.optional({ trim: true }),
     }),
     faq: schema.array.optional().members(
       schema.object().members({
@@ -79,6 +64,7 @@ export default class ServiceCreateValidator {
         ans: schema.string(),
       })
     ),
+    tags: schema.array.optional().members(schema.number()),
   })
 
   /**

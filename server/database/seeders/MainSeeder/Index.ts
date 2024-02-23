@@ -2,7 +2,6 @@
 import BaseSeeder from '@ioc:Adonis/Lucid/Seeder'
 import AdminUserFactory from 'Database/factories/adminUser/AdminUserFactory'
 import ContactMessageFactory from 'Database/factories/helpcenter/ContactMessageFactory'
-import ContinentFactory from 'Database/factories/address/ContinentFactory'
 import BlogCategoryFactory from 'Database/factories/blogs/BlogCategoryFactory'
 import KnowledgebaseCategoryFactory from 'Database/factories/helpcenter/KnowledgebaseCategoryFactory'
 import RoleFactory from 'Database/factories/adminUser/RoleFactory'
@@ -13,6 +12,10 @@ import ServiceCategoryFactory from 'Database/factories/service/ServiceCategoryFa
 import CampaignTypeFactory from 'Database/factories/email/CampaignTypeFactory'
 import TemplateFactory from 'Database/factories/email/TemplateFactory'
 import VenderUserFactory from 'Database/factories/venderUser/VenderUserFactory'
+import JobDepartmentFactory from 'Database/factories/user/JobDepartmentFactory'
+import LanguageFactory from 'Database/factories/LanguageFactory'
+import JobIndustryFactory from 'Database/factories/user/JobIndustryFactory'
+import ServiceTagFactory from 'Database/factories/service/ServiceTagFactory'
 
 export default class extends BaseSeeder {
   private async runSeeder(Seeder: { default: typeof BaseSeeder }) {
@@ -105,5 +108,10 @@ export default class extends BaseSeeder {
       content:
         'Forgot Your Password! Dont Worry. Here is your 6 digts code {{otp}}, Use it to reset the password',
     }).create()
+
+    await JobDepartmentFactory.createMany(10)
+    await JobIndustryFactory.createMany(10)
+    await LanguageFactory.createMany(10)
+    await ServiceTagFactory.createMany(10)
   }
 }
