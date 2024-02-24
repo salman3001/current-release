@@ -5,8 +5,6 @@ import Service from 'App/Models/service/Service'
 import ServiceCreateValidator from 'App/Validators/service/ServiceCreateValidator'
 import ServiceUpdateValidator from 'App/Validators/service/ServiceUpdateValidator'
 import BaseController from '../BaseController'
-import Video from 'App/Models/Video'
-import { Attachment } from '@ioc:Adonis/Addons/AttachmentLite'
 import { validator } from '@ioc:Adonis/Core/Validator'
 import Database from '@ioc:Adonis/Lucid/Database'
 
@@ -70,9 +68,9 @@ export default class ServiceController extends BaseController {
         await service.related('images').saveMany(validImages as Image[])
       }
 
-      if (payload.video) {
-        service.video = Attachment.fromFile(payload.video)
-      }
+      // if (payload.video) {
+      //   service.video = Attachment.fromFile(payload.video)
+      // }
 
       await service.save()
     })
@@ -86,14 +84,13 @@ export default class ServiceController extends BaseController {
   }
 
   public async update({ request, response, params, bouncer }: HttpContextContract) {
-    await bouncer.with('ServicePolicy').authorize('update')
-
     const payload = await request.validate(ServiceUpdateValidator)
 
     let service: Service | null = null
 
     await Database.transaction(async (trx) => {
       service = await Service.findOrFail(+params.id, { client: trx })
+      await bouncer.with('ServicePolicy').authorize('update', service)
 
       if (payload.service) {
         service.merge(payload.service)
@@ -108,11 +105,6 @@ export default class ServiceController extends BaseController {
         } else {
           await service.related('seo').create(payload.seo)
         }
-      }
-
-      if (payload.tags) {
-        await service.related('tags').detach()
-        await service.related('tags').attach(payload.tags)
       }
 
       if (payload.faq) {
@@ -165,13 +157,11 @@ export default class ServiceController extends BaseController {
         await service.related('images').saveMany(validImages as Image[])
       }
 
-      if (payload.video) {
-        if (service.video) {
-          await service.video.delete()
-        }
+      // if (payload.video) {
+      //   if (service.video) {
 
-        service.video = Attachment.fromFile(payload.video)
-      }
+      //   service.video = Attachment.fromFile(payload.video)
+      // }
 
       await service.save()
     })
@@ -189,9 +179,8 @@ export default class ServiceController extends BaseController {
   }
 
   public async destroy({ params, response, bouncer }: HttpContextContract) {
-    await bouncer.with('ServicePolicy').authorize('delete')
-
     const service = await Service.findOrFail(+params.id)
+    await bouncer.with('ServicePolicy').authorize('delete', service)
     await service.delete()
 
     return response.custom({

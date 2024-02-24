@@ -68,7 +68,6 @@ export default class Business extends BaseModel {
 
   @attachment({
     folder: 'business/videos',
-    preComputeUrl: true,
   })
   public video: AttachmentContract
 
@@ -87,8 +86,8 @@ export default class Business extends BaseModel {
   @hasMany(() => Faq)
   public faq: HasMany<typeof Faq>
 
-  @hasOne(() => Address)
-  public addresses: HasOne<typeof Address>
+  @hasMany(() => Address)
+  public addresses: HasMany<typeof Address>
 
   @belongsTo(() => VenderUser)
   public vender: BelongsTo<typeof VenderUser>

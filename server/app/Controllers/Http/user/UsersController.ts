@@ -4,6 +4,9 @@ import UserUpdateeValidator from 'App/Validators/user/UserUpdateValidator'
 import User from 'App/Models/user/User'
 import BaseController from '../BaseController'
 import { schema, rules, validator } from '@ioc:Adonis/Core/Validator'
+import UserProfileUpdateValidator from 'App/Validators/UserProfileUpdateValidator'
+import UserProfile from 'App/Models/UserProfile'
+import { ResponsiveAttachment } from '@ioc:Adonis/Addons/ResponsiveAttachment'
 
 export default class UsersController extends BaseController {
   constructor() {
@@ -16,8 +19,6 @@ export default class UsersController extends BaseController {
     await bouncer.with('userPolicy').authorize('create')
 
     user.merge(payload)
-    await user.save()
-
     await user.save()
 
     return response.custom({
@@ -41,6 +42,112 @@ export default class UsersController extends BaseController {
       message: 'User updated Successfully',
       code: 201,
       data: user,
+      success: true,
+    })
+  }
+
+  public async updateProfile({ request, response, params, bouncer }: HttpContextContract) {
+    const user = await User.findOrFail(+params.id)
+    await bouncer.with('userPolicy').authorize('update', user)
+    user.load('profile')
+    const profile = await UserProfile.findByOrFail('user_id', user.id)
+
+    const payload = await request.validate(UserProfileUpdateValidator)
+    if (payload.address) {
+      await profile.load('addresses')
+
+      if (profile.addresses) {
+        for (const address of profile.addresses) {
+          await address.delete()
+        }
+        await profile.related('addresses').createMany(payload.address)
+      } else {
+        await profile.related('addresses').createMany(payload.address)
+      }
+    }
+
+    if (payload.social) {
+      await profile?.load('social')
+      if (profile?.social) {
+        await profile.social.delete()
+        await profile.related('social').create(payload.social)
+      } else {
+        await profile.related('social').create(payload.social)
+      }
+    }
+
+    if (payload.favoriteLinks) {
+      await profile?.load('favoriteLinks')
+
+      if (profile?.favoriteLinks) {
+        profile.favoriteLinks.forEach((l) => {
+          l.delete()
+        })
+      }
+
+      await profile.related('favoriteLinks').createMany(payload.favoriteLinks)
+    }
+
+    if (payload.workExperience) {
+      await profile?.load('experiences')
+
+      if (profile?.experiences) {
+        if (profile?.experiences) {
+          for (const e of profile.experiences) {
+            await e.delete()
+          }
+        }
+      }
+      await profile.related('experiences').createMany(payload.workExperience)
+    }
+
+    if (payload.education) {
+      await profile?.load('educations')
+
+      if (profile?.educations) {
+        if (profile?.educations) {
+          for (const e of profile.educations) {
+            await e.delete()
+          }
+        }
+      }
+      await profile.related('educations').createMany(payload.education)
+    }
+
+    if (payload.image) {
+      profile.avatar = await ResponsiveAttachment.fromFile(payload.image)
+    }
+
+    if (payload.languages) {
+      await profile.load('languages')
+      if (profile.languages) {
+        profile.related('languages').detach()
+        await profile.related('languages').attach(payload.languages)
+      } else {
+        await profile.related('languages').attach(payload.languages)
+      }
+    }
+
+    if (payload.skills) {
+      await profile?.load('skills')
+      if (profile?.skills) {
+        await profile.related('skills').detach()
+        await profile.related('skills').createMany(payload.skills)
+      } else {
+        await profile.related('skills').createMany(payload.skills)
+      }
+    }
+
+    if (payload.NotificationSettings) {
+      profile.notificationSetting = payload.NotificationSettings
+    }
+
+    await user.save()
+
+    return response.custom({
+      message: 'User Profile Updated!',
+      code: 201,
+      data: profile,
       success: true,
     })
   }

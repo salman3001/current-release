@@ -1,7 +1,7 @@
-import { schema, CustomMessages, rules } from '@ioc:Adonis/Core/Validator'
+import { schema, CustomMessages } from '@ioc:Adonis/Core/Validator'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
-export default class UpdateCartValidator {
+export default class WishlistUpdateValidator {
   constructor(protected ctx: HttpContextContract) {}
 
   /*
@@ -24,12 +24,7 @@ export default class UpdateCartValidator {
    *    ```
    */
   public schema = schema.create({
-    items: schema.array().members(
-      schema.object().members({
-        qty: schema.number(),
-        serviceVariantId: schema.number(),
-      })
-    ),
+    serviceVariantIds: schema.array().members(schema.number()),
   })
 
   /**

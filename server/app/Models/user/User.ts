@@ -14,6 +14,7 @@ import {
 import Cart from './Cart'
 import Notification from '../Notification'
 import UserProfile from '../UserProfile'
+import Wishlist from './Wishlist'
 
 export default class User extends BaseModel {
   @column({ isPrimary: true })
@@ -60,6 +61,9 @@ export default class User extends BaseModel {
   @hasOne(() => Cart)
   public cart: HasOne<typeof Cart>
 
+  @hasOne(() => Wishlist)
+  public wishlist: HasOne<typeof Wishlist>
+
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 
@@ -77,5 +81,6 @@ export default class User extends BaseModel {
   public static async createCart(User: User) {
     await User.related('cart').create({})
     await User.related('profile').create({})
+    await User.related('wishlist').create({})
   }
 }

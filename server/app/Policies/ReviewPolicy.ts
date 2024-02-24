@@ -1,14 +1,21 @@
+import { action } from '@ioc:Adonis/Addons/Bouncer'
 import { BasePolicy } from '@ioc:Adonis/Addons/Bouncer'
 import Review from 'App/Models/service/Review'
 import User from 'App/Models/user/User'
 
 export default class ReviewPolicy extends BasePolicy {
+  @action({ allowGuest: true })
   public async viewList(user: User) {
     return true
   }
-  public async view(user: User) {}
+
+  @action({ allowGuest: true })
+  public async view(user: User) {
+    return true
+  }
+
   public async create(user: User) {
-    if (user) {
+    if (user && user instanceof User) {
       return true
     } else {
       return false

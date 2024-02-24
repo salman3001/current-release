@@ -15,7 +15,6 @@ import Notification from '../Notification'
 import UserProfile from '../UserProfile'
 import Hash from '@ioc:Adonis/Core/Hash'
 
-
 export default class VenderUser extends BaseModel {
   @column({ isPrimary: true })
   public id: number
@@ -52,12 +51,11 @@ export default class VenderUser extends BaseModel {
     return 'vendor'
   }
 
-
   @hasOne(() => UserProfile)
   public profile: HasOne<typeof UserProfile>
 
-  @hasMany(() => Business)
-  public business: HasMany<typeof Business>
+  @hasOne(() => Business)
+  public business: HasOne<typeof Business>
 
   @hasMany(() => Notification)
   public notifications: HasMany<typeof Notification>

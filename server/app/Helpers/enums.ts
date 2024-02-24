@@ -25,6 +25,7 @@ export enum permissions {
   MANAGE_LOCATION = 'Manage Location',
   MANAGE_ROLES = 'Manage Roles',
   MANAGE_MEDIA = 'Manage Media',
+  MANAGE_BUSINESS = 'Manage Business',
 }
 
 export enum NotificationTypes {
@@ -41,4 +42,3 @@ export enum userTypes {
   ADMIN = 'admin',
   VENDER = 'vender',
 }
-

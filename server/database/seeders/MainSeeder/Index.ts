@@ -56,8 +56,8 @@ export default class extends BaseSeeder {
       .with('activities', 3)
       .createMany(14)
 
-    await VenderUserFactory.merge([{ email: 'vender@gmail.com', isActive: true }])
-      .with('business', 3, (b) => {
+    await VenderUserFactory.merge([{ email: 'vendor@gmail.com', isActive: true }])
+      .with('business', 1, (b) => {
         b.with('services', 7, (p) => {
           p.with('variants', 2)
           p.with('faq')

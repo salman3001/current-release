@@ -59,7 +59,6 @@ export default class AdminUsersController extends BaseController {
 
     const payload = await request.validate(UserProfileUpdateValidator)
     if (payload.address) {
-
       await profile.load('addresses')
 
       if (profile.addresses) {
@@ -145,7 +144,6 @@ export default class AdminUsersController extends BaseController {
     }
 
     if (payload.NotificationSettings) {
-
       profile.notificationSetting = payload.NotificationSettings
     }
 
@@ -224,16 +222,7 @@ export default class AdminUsersController extends BaseController {
 
   public async getExportRecords(): Promise<LucidRow[]> {
     const records = await AdminUser.query()
-      .select(
-        'id',
-        'first_name',
-        'last_name',
-        'email',
-        'password',
-        'phone',
-        'is_active',
-        'role_id'
-      )
+      .select('id', 'first_name', 'last_name', 'email', 'password', 'phone', 'is_active', 'role_id')
       .exec()
 
     return records

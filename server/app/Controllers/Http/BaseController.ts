@@ -23,7 +23,7 @@ export interface IndexQs {
   page: number | null
   rowsPerPage: string | null
   sortBy: string | null
-  descending: boolean | null
+  descending: 'true' | 'false' | null
   search: Search | null
   filter: Filter | null
   relationFilter: RelationFilter | null
@@ -53,65 +53,16 @@ export default class BaseController {
     let records: ModelPaginatorContract<LucidRow> | LucidRow[] | [] = []
     const query = this.getIndexQuery(ctx)
 
-    if (qs.relationFilter) {
-      this.relationFiler(qs.relationFilter, query)
-    }
-
-    if (qs.sortBy) {
-      if (qs.descending === 'true') {
-        query.orderBy(qs.sortBy, 'desc')
-      } else if (qs.descending === 'false') {
-        query.orderBy(qs.sortBy, 'asc')
-      }
-    }
+    const filteredQuery = this.indexfilterQuery(qs, query)
 
     if (qs.populate) {
-      await this.populate(qs.populate, query)
-    }
-
-    if (qs.filter) {
-      for (const key in qs.filter) {
-        const element = qs.filter[key]
-        if (element !== null && element !== '') {
-          query.where(key, element)
-        }
-      }
-    }
-
-    if (qs.whereNotNull) {
-      query.whereNotNull(qs.whereNotNull)
-    }
-
-    if (qs.whereNull) {
-      query.whereNotNull(qs.whereNull)
-    }
-
-    if (qs.search) {
-      let i = 0
-
-      query.where((b) => {
-        for (const key in qs.search) {
-          const element = qs.search[key]
-          if (element !== '') {
-            if (i === 0) {
-              b.whereLike(key, '%' + element + '%')
-            } else {
-              b.orWhereLike(key, '%' + element + '%')
-            }
-            i++
-          }
-        }
-      })
-    }
-
-    if (qs.fields) {
-      records = await query.select(qs.fields)
+      await this.populate(qs.populate, filteredQuery)
     }
 
     if (qs.page) {
-      records = await query.paginate(qs.page, Number(qs?.rowsPerPage) || this.perPage)
+      records = await filteredQuery.paginate(qs.page, Number(qs?.rowsPerPage) || this.perPage)
     } else {
-      records = await query.exec()
+      records = await filteredQuery.exec()
     }
 
     return ctx.response.custom({
@@ -128,15 +79,13 @@ export default class BaseController {
 
     const query = this.getShowQuery(ctx)
 
-    if (qs?.populate) {
-      await this.populate(qs.populate, query)
+    const filteredQuery = this.showfilterQuery(qs, query)
+
+    if (qs.populate) {
+      await this.populate(qs.populate, filteredQuery)
     }
 
-    if (qs?.fields) {
-      query.select(qs?.fields)
-    }
-
-    const record = await query.first()
+    const record = await filteredQuery.first()
 
     if (record && ctx.bouncer && this.bauncerPolicy) {
       await ctx.bouncer.with(this.bauncerPolicy).authorize('view', record)
@@ -216,6 +165,69 @@ export default class BaseController {
         success: true,
       })
     }
+  }
+
+  public indexfilterQuery(qs: IndexQs, query: ModelQueryBuilderContract<any, any>) {
+    if (qs.relationFilter) {
+      this.relationFiler(qs.relationFilter, query)
+    }
+
+    if (qs.sortBy) {
+      if (qs.descending === 'true') {
+        query.orderBy(qs.sortBy, 'desc')
+      } else if (qs.descending === 'false') {
+        query.orderBy(qs.sortBy, 'asc')
+      }
+    }
+
+    if (qs.filter) {
+      for (const key in qs.filter) {
+        const element = qs.filter[key]
+        if (element !== null && element !== '') {
+          query.where(key, element)
+        }
+      }
+    }
+
+    if (qs.whereNotNull) {
+      query.whereNotNull(qs.whereNotNull)
+    }
+
+    if (qs.whereNull) {
+      query.whereNotNull(qs.whereNull)
+    }
+
+    if (qs.search) {
+      let i = 0
+
+      query.where((b) => {
+        for (const key in qs.search) {
+          const element = qs.search[key]
+          if (element !== '') {
+            if (i === 0) {
+              b.whereLike(key, '%' + element + '%')
+            } else {
+              b.orWhereLike(key, '%' + element + '%')
+            }
+            i++
+          }
+        }
+      })
+    }
+
+    if (qs.fields) {
+      query.select(qs.fields)
+    }
+
+    return query
+  }
+
+  public showfilterQuery(qs: IndexQs, query: ModelQueryBuilderContract<any, any>) {
+    if (qs.fields) {
+      query.select(qs.fields)
+    }
+
+    return query
   }
 
   public async populate(populate: Populate, query: ModelQueryBuilderContract<any>) {
@@ -336,11 +348,11 @@ export default class BaseController {
     return record
   }
 
-  public getIndexQuery(ctx: HttpContextContract): any {
+  public getIndexQuery(ctx: HttpContextContract): ModelQueryBuilderContract<any, any> {
     return this.model.query()
   }
 
-  public getShowQuery(ctx: HttpContextContract): any {
+  public getShowQuery(ctx: HttpContextContract): ModelQueryBuilderContract<any, any> {
     const id = ctx.params.id
     return this.model.query().where('id', id)
   }

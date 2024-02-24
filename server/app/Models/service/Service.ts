@@ -69,7 +69,6 @@ export default class Service extends BaseModel {
 
   @attachment({
     folder: 'service/videos',
-    preComputeUrl: true,
   })
   public video: AttachmentContract
 

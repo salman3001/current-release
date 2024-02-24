@@ -26,5 +26,8 @@ Route.group(() => {
   Route.resource('service-tags', 'service/ServiceTagsController').apiOnly()
 
   // reviews
-  Route.resource('/service/:serviceId/reviews', 'service/ReviewsController').apiOnly()
+  Route.resource('/service/:serviceId/reviews', 'service/ReviewsController').only([
+    'store',
+    'index',
+  ])
 }).prefix('api')
