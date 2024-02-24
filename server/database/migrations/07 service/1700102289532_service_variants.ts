@@ -7,7 +7,7 @@ export default class extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id').primary()
       table.string('name', 100).notNullable()
-      table.decimal('price', 8, 2).notNullable()
+      table.decimal('price', 12, 2).notNullable()
       table.integer('available_qty').defaultTo(1)
       table.boolean('has_inifiite_qty').defaultTo(false)
       table.integer('flat_discount')

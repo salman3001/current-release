@@ -37,6 +37,13 @@ export enum MediaTypes {
   IMAGE = 'Image',
 }
 
+export enum OrderStatus {
+  PLACED = 'placed',
+  CONFIRMED = 'confirmed',
+  REJECTED = 'rejected',
+  DELIVERED = 'delivered',
+}
+
 export enum userTypes {
   USER = 'user',
   ADMIN = 'admin',
