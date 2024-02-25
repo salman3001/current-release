@@ -179,19 +179,19 @@ const authConfig: AuthConfig = {
         model: () => import('App/Models/adminUser/AdminUser'),
       },
     },
-    venderUserApi: {
+    vendorUserApi: {
       driver: 'oat',
       tokenProvider: {
         type: 'api',
         driver: 'database',
         table: 'api_tokens',
-        foreignKey: 'vender_user_id',
+        foreignKey: 'vendor_user_id',
       },
       provider: {
         driver: 'lucid',
         identifierKey: 'id',
         uids: ['email'],
-        model: () => import('App/Models/venderUser/VenderUser'),
+        model: () => import('App/Models/vendorUser/VendorUser'),
       },
     },
   },

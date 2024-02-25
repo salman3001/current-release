@@ -20,7 +20,7 @@ import Image from '../Image'
 import Faq from '../Faq'
 import Review from './Review'
 import ServiceVariant from './ServiceVariant'
-import Business from '../venderUser/Business'
+import Business from '../vendorUser/Business'
 import {
   ResponsiveAttachmentContract,
   responsiveAttachment,

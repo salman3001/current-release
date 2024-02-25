@@ -1,4 +1,4 @@
-import { BaseModel, BelongsTo, belongsTo, column, computed } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, BelongsTo, afterFetch, beforeFetch, belongsTo, column, computed } from '@ioc:Adonis/Lucid/Orm'
 import ServiceVariant from '../service/ServiceVariant'
 
 export default class CartItem extends BaseModel {
@@ -17,8 +17,4 @@ export default class CartItem extends BaseModel {
   @belongsTo(() => ServiceVariant)
   public serviceVariant: BelongsTo<typeof ServiceVariant>
 
-  @computed()
-  public itemTotal(model: CartItem): number {
-    return model.qty * model.serviceVariant.price
-  }
 }

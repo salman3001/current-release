@@ -2,7 +2,7 @@ import { action } from '@ioc:Adonis/Addons/Bouncer'
 import { BasePolicy } from '@ioc:Adonis/Addons/Bouncer'
 import { permissions } from 'App/Helpers/enums'
 import { hasPermission, isAdmin } from 'App/Helpers/permissionHelpers'
-import VenderUser from 'App/Models/venderUser/VenderUser'
+import VendorUser from 'App/Models/vendorUser/VendorUser'
 
 export default class VendorUserPolicy extends BasePolicy {
   public async viewList(user: any) {
@@ -13,7 +13,7 @@ export default class VendorUserPolicy extends BasePolicy {
     }
   }
 
-  public async view(user: any, userModel: VenderUser) {
+  public async view(user: any, userModel: VendorUser) {
     if (user.id == userModel.id) {
       return true
     }
@@ -29,7 +29,7 @@ export default class VendorUserPolicy extends BasePolicy {
     return true
   }
 
-  public async update(user: any, userModel: VenderUser) {
+  public async update(user: any, userModel: VendorUser) {
     if (user.id == userModel.id) {
       return true
     }

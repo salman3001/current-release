@@ -14,8 +14,9 @@ import Business from './Business'
 import Notification from '../Notification'
 import UserProfile from '../UserProfile'
 import Hash from '@ioc:Adonis/Core/Hash'
+import Order from '../Order'
 
-export default class VenderUser extends BaseModel {
+export default class VendorUser extends BaseModel {
   @column({ isPrimary: true })
   public id: number
 
@@ -57,6 +58,9 @@ export default class VenderUser extends BaseModel {
   @hasOne(() => Business)
   public business: HasOne<typeof Business>
 
+  @hasMany(() => Order)
+  public orders: HasMany<typeof Order>
+
   @hasMany(() => Notification)
   public notifications: HasMany<typeof Notification>
 
@@ -70,12 +74,12 @@ export default class VenderUser extends BaseModel {
   public updatedAt: DateTime
 
   @afterCreate()
-  public static async createProfile(user: VenderUser) {
+  public static async createProfile(user: VendorUser) {
     await user.related('profile').create({})
   }
 
   @beforeSave()
-  public static async hashPassword(user: VenderUser) {
+  public static async hashPassword(user: VendorUser) {
     if (user.$dirty.password) {
       user.password = await Hash.make(user.password)
     }

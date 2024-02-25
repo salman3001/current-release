@@ -15,11 +15,11 @@ export default class extends BaseSchema {
       table.json('brocher')
       table.json('video')
       table
-        .integer('vender_user_id')
+        .integer('vendor_user_id')
         .unsigned()
         .notNullable()
         .references('id')
-        .inTable('vender_users')
+        .inTable('vendor_users')
         .onDelete('CASCADE')
 
       /**

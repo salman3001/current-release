@@ -29,6 +29,7 @@ import '../routes/vendorUserRoutes'
 import '../routes/serviceRoutes'
 import '../routes/emailRoutes'
 import '../routes/notificationRoutes'
+import '../routes/orderRutes'
 
 Route.get('api', async ({ response }) => {
   console.log('api ran')

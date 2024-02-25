@@ -1,5 +1,5 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import VenderUser from 'App/Models/venderUser/VenderUser'
+import VendorUser from 'App/Models/vendorUser/VendorUser'
 import BaseController from '../BaseController'
 import VendorUserUpdateValidator from 'App/Validators/vendorUser/VendorUserUpdateValidator'
 import VendorUserCreateValidator from 'App/Validators/vendorUser/VendorUserCreateValidator'
@@ -11,11 +11,11 @@ import Database from '@ioc:Adonis/Lucid/Database'
 import BusinesUpdateValidator from 'App/Validators/BusinesUpdateValidator'
 import Image from 'App/Models/Image'
 import { Attachment } from '@ioc:Adonis/Addons/AttachmentLite'
-import Business from 'App/Models/venderUser/Business'
+import Business from 'App/Models/vendorUser/Business'
 
-export default class VenderUsersController extends BaseController {
+export default class VendorUsersController extends BaseController {
   constructor() {
-    super(VenderUser, VendorUserCreateValidator, VendorUserUpdateValidator, 'VendorUserPolicy')
+    super(VendorUser, VendorUserCreateValidator, VendorUserUpdateValidator, 'VendorUserPolicy')
   }
 
   public async store({ request, response, bouncer }: HttpContextContract) {
@@ -23,10 +23,10 @@ export default class VenderUsersController extends BaseController {
 
     await bouncer.with('VendorUserPolicy').authorize('create')
 
-    let user: VenderUser | null = null
+    let user: VendorUser | null = null
 
     await Database.transaction(async (trx) => {
-      user = await VenderUser.create(payload, { client: trx })
+      user = await VendorUser.create(payload, { client: trx })
       await user.related('business').create({ name: bussinessName })
     })
 
@@ -41,7 +41,7 @@ export default class VenderUsersController extends BaseController {
   public async update({ request, response, params, bouncer }: HttpContextContract) {
     const payload = await request.validate(VendorUserUpdateValidator)
     const id = params.id
-    const user = await VenderUser.findOrFail(id)
+    const user = await VendorUser.findOrFail(id)
     await bouncer.with('VendorUserPolicy').authorize('update', user)
 
     user.merge(payload)
@@ -56,7 +56,7 @@ export default class VenderUsersController extends BaseController {
   }
 
   public async updateProfile({ request, response, params, bouncer }: HttpContextContract) {
-    const user = await VenderUser.findOrFail(+params.id)
+    const user = await VendorUser.findOrFail(+params.id)
     await bouncer.with('VendorUserPolicy').authorize('update', user)
     user.load('profile')
     const profile = await UserProfile.findByOrFail('user_id', user.id)
@@ -162,11 +162,11 @@ export default class VenderUsersController extends BaseController {
   }
 
   public async updateBusiness({ request, response, params, bouncer }: HttpContextContract) {
-    const user = await VenderUser.findOrFail(+params.id)
+    const user = await VendorUser.findOrFail(+params.id)
 
     const payload = await request.validate(BusinesUpdateValidator)
 
-    const business = await Business.findByOrFail('vender_user_id', user.id)
+    const business = await Business.findByOrFail('vendor_user_id', user.id)
 
     if (!business) {
       return response.custom({
@@ -262,7 +262,7 @@ export default class VenderUsersController extends BaseController {
 
   public async banUser({ params, response, bouncer }: HttpContextContract) {
     await bouncer.with('VendorUserPolicy').authorize('delete')
-    const user = await VenderUser.findOrFail(+params.id)
+    const user = await VendorUser.findOrFail(+params.id)
     user.isActive = false
     await user.save()
     return response.custom({
@@ -274,7 +274,7 @@ export default class VenderUsersController extends BaseController {
   }
 
   public async updateUserPassword({ params, response, request, bouncer }: HttpContextContract) {
-    const user = await VenderUser.findOrFail(+params.id)
+    const user = await VendorUser.findOrFail(+params.id)
 
     await bouncer.with('VendorUserPolicy').authorize('update', user)
 
@@ -307,7 +307,7 @@ export default class VenderUsersController extends BaseController {
       },
     })
 
-    await VenderUser.updateOrCreate({ id: validatedData.id }, validatedData)
+    await VendorUser.updateOrCreate({ id: validatedData.id }, validatedData)
   }
 
   public excludeIncludeExportProperties(record: any) {

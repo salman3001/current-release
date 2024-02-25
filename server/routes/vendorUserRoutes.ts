@@ -1,23 +1,23 @@
 import Route from '@ioc:Adonis/Core/Route'
 
 Route.group(() => {
-  Route.get('vendor-users/export', 'venderUser/VenderUsersController.export')
-  Route.post('vendor-users/import', 'venderUser/VenderUsersController.import')
-  Route.get('vendor-users/unique-field', 'venderUser/VenderUsersController.uniqueField')
-  Route.post('vendor-users/ban/:id', 'venderUser/VenderUsersController.banUser')
+  Route.get('vendor-users/export', 'vendorUser/VendorUsersController.export')
+  Route.post('vendor-users/import', 'vendorUser/VendorUsersController.import')
+  Route.get('vendor-users/unique-field', 'vendorUser/VendorUsersController.uniqueField')
+  Route.post('vendor-users/ban/:id', 'vendorUser/VendorUsersController.banUser')
   Route.post(
     'vendor-users/update-password/:id',
-    'venderUser/VenderUsersController.updateUserPassword'
+    'vendorUser/VendorUsersController.updateUserPassword'
   )
 
   // update profile
-  Route.put('vendor-users/:id/update-profile', 'venderUser/VenderUsersController.updateProfile')
+  Route.put('vendor-users/:id/update-profile', 'vendorUser/VendorUsersController.updateProfile')
 
   // update business
-  Route.put('vendor-users/:id/update-business', 'venderUser/VenderUsersController.updateBusiness')
+  Route.put('vendor-users/:id/update-business', 'vendorUser/VendorUsersController.updateBusiness')
 
-  Route.resource('vendor-users', 'venderUser/VenderUsersController').apiOnly()
+  Route.resource('vendor-users', 'vendorUser/VendorUsersController').apiOnly()
 
   // business list
-  Route.get('businesses', 'venderUser/BuissnessesController.index')
+  Route.get('businesses', 'vendorUser/BuissnessesController.index')
 }).prefix('api')

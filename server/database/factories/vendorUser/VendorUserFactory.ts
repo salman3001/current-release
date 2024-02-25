@@ -1,9 +1,9 @@
-import VenderUser from 'App/Models/venderUser/VenderUser'
+import VendorUser from 'App/Models/vendorUser/VendorUser'
 import Factory from '@ioc:Adonis/Lucid/Factory'
 import BusinessFactory from './BusinessFactory'
 import UserProfileFactory from '../UserProfileFactory'
 
-export default Factory.define(VenderUser, ({ faker }) => {
+export default Factory.define(VendorUser, ({ faker }) => {
   return {
     firstName: faker.person.firstName(),
     lastName: faker.person.lastName(),

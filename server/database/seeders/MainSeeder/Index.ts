@@ -11,7 +11,7 @@ import { TicketStatus, permissions } from 'App/Helpers/enums'
 import ServiceCategoryFactory from 'Database/factories/service/ServiceCategoryFactory'
 import CampaignTypeFactory from 'Database/factories/email/CampaignTypeFactory'
 import TemplateFactory from 'Database/factories/email/TemplateFactory'
-import VenderUserFactory from 'Database/factories/venderUser/VenderUserFactory'
+import VendorUserFactory from 'Database/factories/vendorUser/VendorUserFactory'
 import JobDepartmentFactory from 'Database/factories/user/JobDepartmentFactory'
 import LanguageFactory from 'Database/factories/LanguageFactory'
 import JobIndustryFactory from 'Database/factories/user/JobIndustryFactory'
@@ -29,34 +29,23 @@ export default class extends BaseSeeder {
     await new Seeder.default(this.client).run()
   }
   public async run() {
-    const permissionsObject = [
-      permissions.MANAGE_ADMIN_USERS,
-      permissions.MANAGE_BLOGS,
-      permissions.MANAGE_CAMPAIGNS,
-      permissions.MANAGE_CONTACT_MESSAGES,
-      permissions.MANAGE_INTERESTS,
-      permissions.MANAGE_KNOWLEDGEBASE,
-      permissions.MANAGE_LOCATION,
-      permissions.MANAGE_PRODUCT,
-      permissions.MANAGE_ROLES,
-      permissions.MANAGE_SERVICE,
-      permissions.MANAGE_SUBSCRIBERS,
-      permissions.MANAGE_TEMPLATES,
-      permissions.MANAGE_TICKETS,
-      permissions.MANAGE_USER,
-    ]
+    const permissionsObject: any[] = []
+
+    for (const perm of Object.values(permissions)) {
+      permissionsObject.push(perm)
+    }
 
     await RoleFactory.merge([
       { name: 'Super Admin', isActive: true, permissions: permissionsObject },
       { name: 'Moderator' },
-      { name: 'Vender' },
+      { name: 'Vendor' },
     ]).createMany(3)
 
     await AdminUserFactory.merge([{ email: 'admin@gmail.com', isActive: true, roleId: 1 }])
       .with('activities', 3)
       .createMany(14)
 
-    await VenderUserFactory.merge([{ email: 'vendor@gmail.com', isActive: true }])
+    await VendorUserFactory.merge([{ email: 'vendor@gmail.com', isActive: true }])
       .with('business', 1, (b) => {
         b.with('services', 7, (p) => {
           p.with('variants', 2)

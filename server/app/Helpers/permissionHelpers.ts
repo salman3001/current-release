@@ -1,6 +1,6 @@
 import AdminUser from 'App/Models/adminUser/AdminUser'
 import User from 'App/Models/user/User'
-import VenderUser from 'App/Models/venderUser/VenderUser'
+import VendorUser from 'App/Models/vendorUser/VendorUser'
 
 export const hasPermission = async (user: AdminUser, permission: string) => {
   await user.load('role')
@@ -20,7 +20,7 @@ export const hasPermission = async (user: AdminUser, permission: string) => {
   }
 }
 
-export const isAdmin = (user: AdminUser | User) => {
+export const isAdmin = (user: AdminUser | User | VendorUser) => {
   if (user instanceof AdminUser) {
     return true
   } else {
@@ -29,8 +29,8 @@ export const isAdmin = (user: AdminUser | User) => {
 
 }
 
-export const isVender = (user: VenderUser | User | AdminUser) => {
-  if (user instanceof VenderUser) {
+export const isVendor = (user: VendorUser | User | AdminUser) => {
+  if (user instanceof VendorUser) {
     return true
   } else {
     false

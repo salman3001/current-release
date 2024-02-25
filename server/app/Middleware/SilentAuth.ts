@@ -18,8 +18,8 @@ export default class SilentAuthMiddleware {
     if (await auth.use('adminUserApi').check()) {
       auth.defaultGuard = 'adminUserApi'
       return await next()
-    } else if (await auth.use('venderUserApi').check()) {
-      auth.defaultGuard = 'venderUserApi'
+    } else if (await auth.use('vendorUserApi').check()) {
+      auth.defaultGuard = 'vendorUserApi'
       return await next()
     } else if (await auth.use('userApi').check()) {
       auth.defaultGuard = 'userApi'

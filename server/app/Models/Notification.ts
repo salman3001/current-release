@@ -20,7 +20,7 @@ export default class Notification extends BaseModel {
   public adminUserId: number
 
   @column()
-  public venderUserId: number
+  public vendorUserId: number
 
 
   public async markAsRead() {

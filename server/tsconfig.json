@@ -2,7 +2,7 @@
   "extends": "adonis-preset-ts/tsconfig.json",
   "include": [
     "**/*",
-    "../1708567743664_vender_users.ts"
+    "../1708567743664_vendor_users.ts"
   ],
   "exclude": [
     "node_modules",

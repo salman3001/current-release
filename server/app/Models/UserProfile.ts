@@ -44,7 +44,7 @@ export default class UserProfile extends BaseModel {
   public adminUserId: number
 
   @column()
-  public venderUserId: number
+  public vendorUserId: number
 
   @column({
     prepare: (v: any) => JSON.stringify(v),

@@ -15,6 +15,7 @@ import Cart from './Cart'
 import Notification from '../Notification'
 import UserProfile from '../UserProfile'
 import Wishlist from './Wishlist'
+import Order from '../Order'
 
 export default class User extends BaseModel {
   @column({ isPrimary: true })
@@ -57,6 +58,9 @@ export default class User extends BaseModel {
 
   @hasMany(() => Notification)
   public notifications: HasMany<typeof Notification>
+
+  @hasMany(() => Order)
+  public orders: HasMany<typeof Order>
 
   @hasOne(() => Cart)
   public cart: HasOne<typeof Cart>

@@ -3,7 +3,7 @@ import { BasePolicy } from '@ioc:Adonis/Addons/Bouncer'
 import { permissions } from 'App/Helpers/enums'
 import { hasPermission, isAdmin } from 'App/Helpers/permissionHelpers'
 import SupportTicket from 'App/Models/helpcenter/SupportTicket'
-import VenderUser from 'App/Models/venderUser/VenderUser'
+import VendorUser from 'App/Models/vendorUser/VendorUser'
 
 export default class SupportTicketPolicy extends BasePolicy {
   public async viewList(user: any) {
@@ -15,7 +15,7 @@ export default class SupportTicketPolicy extends BasePolicy {
   }
 
   public async view(user: any, ticket: SupportTicket) {
-    if (user instanceof VenderUser && ticket.venderUserId == user.id) {
+    if (user instanceof VendorUser && ticket.vendorUserId == user.id) {
       return true
     }
 

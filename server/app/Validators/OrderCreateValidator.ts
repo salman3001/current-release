@@ -1,7 +1,7 @@
-import { schema, CustomMessages, rules } from '@ioc:Adonis/Core/Validator'
+import { schema, CustomMessages } from '@ioc:Adonis/Core/Validator'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
-export default class VendorUserCreateValidator {
+export default class OrderCreateValidator {
   constructor(protected ctx: HttpContextContract) { }
 
   /*
@@ -11,35 +11,23 @@ export default class VendorUserCreateValidator {
    * 1. The username must be of data type string. But then also, it should
    *    not contain special characters or numbers.
    *    ```
-   *     schema.string({}, [ rules.alpha() ])
+   *     schema.string([ rules.alpha() ])
    *    ```
    *
    * 2. The email must be of data type string, formatted as a valid
    *    email. But also, not used by any other user.
    *    ```
-   *     schema.string({}, [
+   *     schema.string([
    *       rules.email(),
    *       rules.unique({ table: 'users', column: 'email' }),
    *     ])
    *    ```
    */
   public schema = schema.create({
-    firstName: schema.string({ trim: true }),
-    lastName: schema.string({ trim: true }),
-    bussinessName: schema.string({ escape: true }, [
-      rules.unique({
-        table: 'businesses',
-        column: 'name',
-      }),
-    ]),
-    email: schema.string({ trim: true }, [
-      rules.email(),
-      rules.normalizeEmail({ allLowercase: true }),
-      rules.unique({ table: 'vendor_users', column: 'email' }),
-    ]),
-    password: schema.string({ trim: true }),
-    phone: schema.string.optional(),
-    isActive: schema.boolean.optional(),
+    paymentdetail: schema.object().members({
+      paymentMode: schema.enum(['cod', 'online']),
+      paymentStatus: schema.enum(['pending', 'paid'])
+    })
   })
 
   /**

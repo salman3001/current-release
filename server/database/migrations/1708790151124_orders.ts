@@ -9,13 +9,15 @@ export default class extends BaseSchema {
       table.increments('id')
       table.integer('user_id', 10).unsigned().references('id').inTable('users').onDelete('SET NULL')
       table
-        .integer('vender_user_id', 10)
+        .integer('vendor_user_id', 10)
         .unsigned()
         .references('id')
-        .inTable('vender_users')
+        .inTable('vendor_users')
         .onDelete('SET NULL')
-      table.json('detail')
+      table.json('order_detail')
+      table.json('payment_detail')
       table.enum('status', Object.values(OrderStatus)).notNullable().defaultTo(OrderStatus.PLACED)
+
       table.decimal('total', 20, 2).notNullable()
 
       /**

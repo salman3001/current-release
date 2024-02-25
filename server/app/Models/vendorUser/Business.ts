@@ -18,7 +18,7 @@ import {
 } from '@ioc:Adonis/Addons/ResponsiveAttachment'
 import Image from '../Image'
 import Service from '../service/Service'
-import VenderUser from './VenderUser'
+import VendorUser from './VendorUser'
 import { AttachmentContract, attachment } from '@ioc:Adonis/Addons/AttachmentLite'
 import Address from '../address/Address'
 import Review from '../service/Review'
@@ -72,7 +72,7 @@ export default class Business extends BaseModel {
   public video: AttachmentContract
 
   @column()
-  public venderUserId: number
+  public vendorUserId: number
 
   @hasMany(() => Image)
   public images: HasMany<typeof Image>
@@ -89,8 +89,8 @@ export default class Business extends BaseModel {
   @hasMany(() => Address)
   public addresses: HasMany<typeof Address>
 
-  @belongsTo(() => VenderUser)
-  public vender: BelongsTo<typeof VenderUser>
+  @belongsTo(() => VendorUser)
+  public vendor: BelongsTo<typeof VendorUser>
 
   @hasMany(() => Service)
   public services: HasMany<typeof Service>

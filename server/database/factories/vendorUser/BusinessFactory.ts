@@ -1,4 +1,4 @@
-import Business from 'App/Models/venderUser/Business'
+import Business from 'App/Models/vendorUser/Business'
 import Factory from '@ioc:Adonis/Lucid/Factory'
 import ServiceFactory from '../service/ServiceFactory'
 import AddressFactory from '../address/AddressFactory'

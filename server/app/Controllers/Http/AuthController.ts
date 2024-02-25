@@ -4,7 +4,7 @@ import AdminUser from 'App/Models/adminUser/AdminUser'
 import Hash from '@ioc:Adonis/Core/Hash'
 import User from 'App/Models/user/User'
 import ForgotPasswordOtpMail from 'App/Mailers/ForgotPasswordOtpMail'
-import VenderUser from 'App/Models/venderUser/VenderUser'
+import VendorUser from 'App/Models/vendorUser/VendorUser'
 
 export default class AuthController {
   public async login({ auth, request, response }: HttpContextContract) {
@@ -20,14 +20,14 @@ export default class AuthController {
 
     const payload = await request.validate({ schema: payloadSchema })
 
-    let user: AdminUser | User | VenderUser | null = null
+    let user: AdminUser | User | VendorUser | null = null
 
     if (payload.userType === 'admin') {
       user = await AdminUser.findBy('email', payload.email)
     }
 
     if (payload.userType === 'vendor') {
-      user = await VenderUser.findBy('email', payload.email)
+      user = await VendorUser.findBy('email', payload.email)
     }
 
     if (payload.userType === 'customer') {
@@ -54,9 +54,9 @@ export default class AuthController {
       await user.load('role')
     }
 
-    if (user instanceof VenderUser) {
+    if (user instanceof VendorUser) {
 
-      token = await auth.use('venderUserApi').attempt(payload.email, payload.password, {
+      token = await auth.use('vendorUserApi').attempt(payload.email, payload.password, {
         expiresIn: '1 day',
       })
       console.log('ran');
@@ -104,7 +104,7 @@ export default class AuthController {
       await auth.use('userApi').revoke()
     }
     if (payload.userType == 'vendor') {
-      await auth.use('venderUserApi').revoke()
+      await auth.use('vendorUserApi').revoke()
     }
 
     return response.custom({
@@ -128,14 +128,14 @@ export default class AuthController {
       schema: validationSchema,
     })
 
-    let user: AdminUser | User | VenderUser | null = null
+    let user: AdminUser | User | VendorUser | null = null
 
     if (payload.userType === 'admin') {
       user = await AdminUser.findBy('email', payload.email)
     }
 
     if (payload.userType === 'vendor') {
-      user = await VenderUser.findBy('email', payload.email)
+      user = await VendorUser.findBy('email', payload.email)
     }
 
     if (payload.userType === 'customer') {
@@ -171,14 +171,14 @@ export default class AuthController {
       schema: validationSchema,
     })
 
-    let user: AdminUser | User | VenderUser | null = null
+    let user: AdminUser | User | VendorUser | null = null
 
     if (payload.userType === 'admin') {
       user = await AdminUser.findBy('email', payload.email)
     }
 
     if (payload.userType === 'vendor') {
-      user = await VenderUser.findBy('email', payload.email)
+      user = await VendorUser.findBy('email', payload.email)
     }
 
     if (payload.userType === 'customer') {
@@ -228,14 +228,14 @@ export default class AuthController {
       schema: validationSchema,
     })
 
-    let user: AdminUser | User | VenderUser | null = null
+    let user: AdminUser | User | VendorUser | null = null
 
     if (payload.userType === 'admin') {
       user = await AdminUser.findOrFail(+params.id)
     }
 
     if (payload.userType === 'vendor') {
-      user = await VenderUser.findOrFail(+params.id)
+      user = await VendorUser.findOrFail(+params.id)
     }
 
     if (payload.userType === 'customer') {

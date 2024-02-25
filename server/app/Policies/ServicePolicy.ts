@@ -3,7 +3,7 @@ import { BasePolicy } from '@ioc:Adonis/Addons/Bouncer'
 import { permissions } from 'App/Helpers/enums'
 import { hasPermission, isAdmin } from 'App/Helpers/permissionHelpers'
 import Service from 'App/Models/service/Service'
-import VenderUser from 'App/Models/venderUser/VenderUser'
+import VendorUser from 'App/Models/vendorUser/VendorUser'
 
 export default class ServicePolicy extends BasePolicy {
   @action({ allowGuest: true })
@@ -17,7 +17,7 @@ export default class ServicePolicy extends BasePolicy {
   }
 
   public async create(user: any) {
-    if (user instanceof VenderUser) {
+    if (user instanceof VendorUser) {
       return true
     }
 
@@ -29,7 +29,7 @@ export default class ServicePolicy extends BasePolicy {
   }
 
   public async update(user: any, service: Service) {
-    if (user instanceof VenderUser) {
+    if (user instanceof VendorUser) {
       await user.load('business')
       if (user.business.id == service.businessId) {
         return true
@@ -44,7 +44,7 @@ export default class ServicePolicy extends BasePolicy {
   }
 
   public async delete(user: any, service: Service) {
-    if (user instanceof VenderUser) {
+    if (user instanceof VendorUser) {
       await user.load('business')
       if (user.business.id == service.businessId) {
         return true

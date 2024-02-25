@@ -6,7 +6,7 @@ import ServiceSubcategoryFactory from './ServiceSubcategoryFactory'
 import SeoFactory from '../SeoFactory'
 import ServiceTagFactory from './ServiceTagFactory'
 import ServiceVariantFactory from './ServiceVariantFactory'
-import BusinessFactory from '../venderUser/BusinessFactory'
+import BusinessFactory from '../vendorUser/BusinessFactory'
 
 export default Factory.define(Service, ({ faker }) => {
   return {

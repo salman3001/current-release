@@ -14,10 +14,10 @@ export default class extends BaseSchema {
         .inTable('admin_users')
         .onDelete('CASCADE')
       table
-        .integer('vender_user_id')
+        .integer('vendor_user_id')
         .unsigned()
         .references('id')
-        .inTable('vender_users')
+        .inTable('vendor_users')
         .onDelete('CASCADE')
       table.string('name').notNullable()
       table.string('type').notNullable()

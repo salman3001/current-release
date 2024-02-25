@@ -6,6 +6,6 @@ export default Factory.define(SupportTicket, ({ faker }) => {
   return {
     subject: faker.lorem.lines(1),
     status: TicketStatus.OPEN,
-    venderUserId: faker.number.int({ min: 1, max: 5 }),
+    vendorUserId: faker.number.int({ min: 1, max: 5 }),
   }
 }).build()

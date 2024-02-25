@@ -1,5 +1,5 @@
 // import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import Business from 'App/Models/venderUser/Business'
+import Business from 'App/Models/vendorUser/Business'
 import BusinesUpdateValidator from 'App/Validators/BusinesUpdateValidator'
 import BaseController from '../BaseController'
 
