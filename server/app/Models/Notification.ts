@@ -1,17 +1,22 @@
 import { DateTime } from 'luxon'
 import { column, BaseModel, afterCreate } from '@ioc:Adonis/Lucid/Orm'
 import Ws from 'App/services/Ws'
+import { NotificationTypes } from 'App/Helpers/enums'
 
 export default class Notification extends BaseModel {
   @column({ isPrimary: true })
   public id: number
 
   @column({
-    consume: (v) => {
+    prepare: (v) => {
       return JSON.parse(v)
     },
   })
-  public data: object
+  public data: {
+    type: NotificationTypes.ORDER_CREATED
+    message: string
+    meta: Record<any, any>
+  }
 
   @column()
   public userId: number
@@ -21,7 +26,6 @@ export default class Notification extends BaseModel {
 
   @column()
   public vendorUserId: number
-
 
   public async markAsRead() {
     this.readAt = DateTime.now()
