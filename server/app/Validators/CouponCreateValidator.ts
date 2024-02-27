@@ -1,8 +1,8 @@
 import { schema, CustomMessages, rules } from '@ioc:Adonis/Core/Validator'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import { DiscountType } from 'App/Helpers/enums'
+import { CouponType, DiscountType } from 'App/Helpers/enums'
 
-export default class VariantCreateValidator {
+export default class CouponCreateValidator {
   constructor(protected ctx: HttpContextContract) {}
 
   /*
@@ -12,37 +12,28 @@ export default class VariantCreateValidator {
    * 1. The username must be of data type string. But then also, it should
    *    not contain special characters or numbers.
    *    ```
-   *     schema.string({}, [ rules.alpha() ])
+   *     schema.string([ rules.alpha() ])
    *    ```
    *
    * 2. The email must be of data type string, formatted as a valid
    *    email. But also, not used by any other user.
    *    ```
-   *     schema.string({}, [
+   *     schema.string([
    *       rules.email(),
    *       rules.unique({ table: 'users', column: 'email' }),
    *     ])
    *    ```
    */
   public schema = schema.create({
-    image: schema.file.optional({
-      extnames: ['jpg', 'JPG', 'jpeg', 'JPEG', 'png', 'PNG', 'webp', 'WEBP'],
-      size: '5mb',
-    }),
-    name: schema.string([rules.maxLength(100)]),
-    price: schema.number(),
+    name: schema.string({ escape: true }, [rules.maxLength(50)]),
+    desc: schema.string({ escape: true }, [rules.maxLength(256)]),
     discountType: schema.enum(Object.values(DiscountType)),
-    discountFlat: schema.number.optional([rules.numberLessThanField('price'), rules.minNumber(0)]),
+    discountFlat: schema.number.optional([rules.minNumber(0)]),
     discountPercentage: schema.number.optional([rules.maxNumber(99), rules.minNumber(0)]),
-    features: schema.array.optional().members(schema.string()),
-    included: schema.array.optional().members(schema.string()),
-    excluded: schema.array.optional().members(schema.string()),
-    additionalProperties: schema.array.optional().members(
-      schema.object().members({
-        name: schema.string(),
-        value: schema.string(),
-      })
-    ),
+    maxUsers: schema.number(),
+    minPurchaseAmount: schema.number([rules.minNumber(0)]),
+    validFrom: schema.date({ format: 'dd/MM/yyyy HH:mm' }, [rules.after(1, 'minute')]),
+    expiredAt: schema.date({ format: 'dd/MM/yyyy HH:mm' }, [rules.afterField('validFrom')]),
   })
 
   /**

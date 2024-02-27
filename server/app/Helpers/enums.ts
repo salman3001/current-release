@@ -27,6 +27,7 @@ export enum permissions {
   MANAGE_MEDIA = 'Manage Media',
   MANAGE_BUSINESS = 'Manage Business',
   MANAGE_ORDERS = 'Manage Orders',
+  MANAGE_COUPONS = 'Manage Coupons',
 }
 
 export enum NotificationTypes {
@@ -50,4 +51,14 @@ export enum userTypes {
   USER = 'user',
   ADMIN = 'admin',
   VENDER = 'vendor',
+}
+
+export enum CouponType {
+  VENDOR = 'vendor',
+  ADMIN = 'admin',
+}
+
+export enum DiscountType {
+  FLAT = 'flat',
+  PERCENATAGE = 'percentage',
 }

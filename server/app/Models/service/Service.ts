@@ -26,6 +26,7 @@ import {
   responsiveAttachment,
 } from '@ioc:Adonis/Addons/ResponsiveAttachment'
 import { AttachmentContract, attachment } from '@ioc:Adonis/Addons/AttachmentLite'
+import Coupon from '../Coupon'
 
 export default class Service extends BaseModel {
   @column({ isPrimary: true })
@@ -109,6 +110,9 @@ export default class Service extends BaseModel {
 
   @hasMany(() => ServiceVariant)
   public variants: HasMany<typeof ServiceVariant>
+
+  @manyToMany(() => Coupon, { pivotTable: 'service_coupons' })
+  public coupons: ManyToMany<typeof Coupon>
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

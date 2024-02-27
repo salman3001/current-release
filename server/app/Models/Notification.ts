@@ -9,7 +9,7 @@ export default class Notification extends BaseModel {
 
   @column({
     prepare: (v) => {
-      return JSON.parse(v)
+      return JSON.stringify(v)
     },
   })
   public data: {

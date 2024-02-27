@@ -4,6 +4,7 @@ import {
   responsiveAttachment,
 } from '@ioc:Adonis/Addons/ResponsiveAttachment'
 import Service from './Service'
+import { DiscountType } from 'App/Helpers/enums'
 
 export default class ServiceVariant extends BaseModel {
   @column({ isPrimary: true })
@@ -16,13 +17,13 @@ export default class ServiceVariant extends BaseModel {
   public price: number
 
   @column()
-  public availableQty: number
+  public discountType: DiscountType
 
   @column()
-  public hasInifiiteQty: boolean
+  public discountFlat: number
 
   @column()
-  public flatDiscount: number
+  public discountPercentage: number
 
   @column({
     prepare: (v) => JSON.stringify(v),
@@ -59,7 +60,6 @@ export default class ServiceVariant extends BaseModel {
 
   @column({
     prepare: (v) => JSON.stringify(v),
-
   })
   public additionalProperties: Object
 }
