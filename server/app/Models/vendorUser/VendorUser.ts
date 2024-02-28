@@ -3,18 +3,21 @@ import {
   BaseModel,
   HasMany,
   HasOne,
+  ManyToMany,
   afterCreate,
   beforeSave,
   column,
   computed,
   hasMany,
   hasOne,
+  manyToMany,
 } from '@ioc:Adonis/Lucid/Orm'
 import Business from './Business'
 import Notification from '../Notification'
 import UserProfile from '../UserProfile'
 import Hash from '@ioc:Adonis/Core/Hash'
-import Order from '../Order'
+import Order from '../orders/Order'
+import ServiceCategory from '../service/ServiceCategory'
 
 export default class VendorUser extends BaseModel {
   @column({ isPrimary: true })
@@ -63,6 +66,11 @@ export default class VendorUser extends BaseModel {
 
   @hasMany(() => Notification)
   public notifications: HasMany<typeof Notification>
+
+  @manyToMany(() => ServiceCategory, {
+    pivotTable: 'vendor_subscribed_categories'
+  })
+  public subscribedCategories: ManyToMany<typeof ServiceCategory>
 
   // @hasMany(() => SupportTicket)
   // public supportTickets: HasMany<typeof SupportTicket>

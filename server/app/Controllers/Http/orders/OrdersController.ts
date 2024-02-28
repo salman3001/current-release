@@ -1,19 +1,18 @@
 // import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
-import Order from 'App/Models/Order'
-import BaseController from './BaseController'
+import Order from 'App/Models/orders/Order'
+import BaseController from '../BaseController'
 import OrderCreateValidator from 'App/Validators/OrderCreateValidator'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import User from 'App/Models/user/User'
 import Cart from 'App/Models/user/Cart'
 import { CouponType, DiscountType, OrderStatus } from 'App/Helpers/enums'
 import Database, { TransactionClientContract } from '@ioc:Adonis/Lucid/Database'
-import VendorUser from 'App/Models/vendorUser/VendorUser'
 import { schema } from '@ioc:Adonis/Core/Validator'
 import BigNumber from 'bignumber.js'
-import Coupon from 'App/Models/Coupon'
+import Coupon from 'App/Models/orders/Coupon'
 import { IOrderGroup, IOrderGroupWithDiscount, IOrderGroupsByVender } from 'App/Helpers/types'
-import OrderGroup from 'App/Models/OrderGroup'
+import OrderGroup from 'App/Models/orders/OrderGroup'
 import { DateTime } from 'luxon'
 
 export default class OrdersController extends BaseController {

@@ -8,8 +8,8 @@ import {
   manyToMany,
 } from '@ioc:Adonis/Lucid/Orm'
 import { CouponType, DiscountType } from 'App/Helpers/enums'
-import VendorUser from './vendorUser/VendorUser'
-import Service from './service/Service'
+import VendorUser from '../vendorUser/VendorUser'
+import Service from '../service/Service'
 
 export default class Coupon extends BaseModel {
   @column({ isPrimary: true })

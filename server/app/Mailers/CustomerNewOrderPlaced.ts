@@ -1,5 +1,5 @@
 import { BaseMailer, MessageContract } from '@ioc:Adonis/Addons/Mail'
-import Order from 'App/Models/Order'
+import Order from 'App/Models/orders/Order'
 import User from 'App/Models/user/User'
 
 export default class CustomerNewOrderPlaced extends BaseMailer {

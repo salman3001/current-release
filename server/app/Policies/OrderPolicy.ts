@@ -1,6 +1,6 @@
 import { BasePolicy } from '@ioc:Adonis/Addons/Bouncer'
 import User from 'App/Models/user/User'
-import Order from 'App/Models/Order'
+import Order from 'App/Models/orders/Order'
 import VendorUser from 'App/Models/vendorUser/VendorUser'
 import AdminUser from 'App/Models/adminUser/AdminUser'
 import { hasPermission, isAdmin } from 'App/Helpers/permissionHelpers'

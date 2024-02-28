@@ -15,7 +15,7 @@ import Cart from './Cart'
 import Notification from '../Notification'
 import UserProfile from '../UserProfile'
 import Wishlist from './Wishlist'
-import Order from '../Order'
+import Order from '../orders/Order'
 
 export default class User extends BaseModel {
   @column({ isPrimary: true })

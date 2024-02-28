@@ -9,7 +9,7 @@ import {
   hasMany,
 } from '@ioc:Adonis/Lucid/Orm'
 import { NotificationTypes } from 'App/Helpers/enums'
-import User from './user/User'
+import User from '../user/User'
 import Order from './Order'
 
 export default class OrderGroup extends BaseModel {

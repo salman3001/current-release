@@ -62,3 +62,8 @@ export enum DiscountType {
   FLAT = 'flat',
   PERCENATAGE = 'percentage',
 }
+
+export enum BudgetType {
+  HOURLY = 'hourly',
+  FIXED = 'fixed',
+}

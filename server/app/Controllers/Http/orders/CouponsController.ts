@@ -1,7 +1,7 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
-import Coupon from 'App/Models/Coupon'
-import BaseController from './BaseController'
+import Coupon from 'App/Models/orders/Coupon'
+import BaseController from '../BaseController'
 import CouponCreateValidator from 'App/Validators/CouponCreateValidator'
 import VendorUser from 'App/Models/vendorUser/VendorUser'
 import { CouponType } from 'App/Helpers/enums'

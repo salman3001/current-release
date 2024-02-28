@@ -26,7 +26,7 @@ import {
   responsiveAttachment,
 } from '@ioc:Adonis/Addons/ResponsiveAttachment'
 import { AttachmentContract, attachment } from '@ioc:Adonis/Addons/AttachmentLite'
-import Coupon from '../Coupon'
+import Coupon from '../orders/Coupon'
 
 export default class Service extends BaseModel {
   @column({ isPrimary: true })

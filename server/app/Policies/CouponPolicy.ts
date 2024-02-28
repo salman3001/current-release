@@ -1,7 +1,7 @@
 import { BasePolicy } from '@ioc:Adonis/Addons/Bouncer'
 import { CouponType, permissions } from 'App/Helpers/enums'
 import { hasPermission, isAdmin } from 'App/Helpers/permissionHelpers'
-import Coupon from 'App/Models/Coupon'
+import Coupon from 'App/Models/orders/Coupon'
 import AdminUser from 'App/Models/adminUser/AdminUser'
 import User from 'App/Models/user/User'
 import VendorUser from 'App/Models/vendorUser/VendorUser'

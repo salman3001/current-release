@@ -3,10 +3,12 @@ import {
   BaseModel,
   HasMany,
   HasOne,
+  ManyToMany,
   column,
   computed,
   hasMany,
   hasOne,
+  manyToMany,
 } from '@ioc:Adonis/Lucid/Orm'
 import Faq from '../Faq'
 import Seo from '../Seo'
@@ -16,6 +18,7 @@ import {
   ResponsiveAttachmentContract,
   responsiveAttachment,
 } from '@ioc:Adonis/Addons/ResponsiveAttachment'
+import VendorUser from '../vendorUser/VendorUser'
 
 export default class ServiceCategory extends BaseModel {
   @column({ isPrimary: true })
@@ -53,6 +56,11 @@ export default class ServiceCategory extends BaseModel {
 
   @hasOne(() => Seo)
   public seo: HasOne<typeof Seo>
+
+  @manyToMany(() => VendorUser, {
+    pivotTable: 'vendor_subscribed_categories'
+  })
+  public subscribedVendors: ManyToMany<typeof VendorUser>
 
   @computed()
   public get subCategoryCount() {

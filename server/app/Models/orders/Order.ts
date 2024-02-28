@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon'
 import { BaseModel, BelongsTo, afterCreate, belongsTo, column } from '@ioc:Adonis/Lucid/Orm'
 import { NotificationTypes, OrderStatus } from 'App/Helpers/enums'
-import VendorUser from './vendorUser/VendorUser'
+import VendorUser from '../vendorUser/VendorUser'
 import OrderGroup from './OrderGroup'
 
 export default class Order extends BaseModel {
