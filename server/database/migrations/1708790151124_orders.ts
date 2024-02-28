@@ -7,7 +7,12 @@ export default class extends BaseSchema {
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
-      table.integer('user_id', 10).unsigned().references('id').inTable('users').onDelete('SET NULL')
+      table
+        .integer('order_group_id', 10)
+        .unsigned()
+        .references('id')
+        .inTable('order_groups')
+        .onDelete('SET NULL')
       table
         .integer('vendor_user_id', 10)
         .unsigned()
@@ -15,10 +20,7 @@ export default class extends BaseSchema {
         .inTable('vendor_users')
         .onDelete('SET NULL')
       table.json('order_detail')
-      table.json('payment_detail')
       table.enum('status', Object.values(OrderStatus)).notNullable().defaultTo(OrderStatus.PLACED)
-
-      table.decimal('total', 20, 2).notNullable()
 
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL

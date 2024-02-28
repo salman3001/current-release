@@ -7,51 +7,70 @@ import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import User from 'App/Models/user/User'
 import Cart from 'App/Models/user/Cart'
 import { CouponType, DiscountType, OrderStatus } from 'App/Helpers/enums'
-import Database from '@ioc:Adonis/Lucid/Database'
+import Database, { TransactionClientContract } from '@ioc:Adonis/Lucid/Database'
 import VendorUser from 'App/Models/vendorUser/VendorUser'
 import { schema } from '@ioc:Adonis/Core/Validator'
-import CartItem from 'App/Models/user/CartItem'
 import BigNumber from 'bignumber.js'
 import Coupon from 'App/Models/Coupon'
+import { IOrderGroup, IOrderGroupWithDiscount, IOrderGroupsByVender } from 'App/Helpers/types'
+import OrderGroup from 'App/Models/OrderGroup'
+import { DateTime } from 'luxon'
 
 export default class OrdersController extends BaseController {
   constructor() {
     super(Order, OrderCreateValidator, OrderCreateValidator, 'OrderPolicy')
   }
 
-  public async myOrders({ auth, response, bouncer, request }: HttpContextContract) {
-    await bouncer.with('OrderPolicy').authorize('ownList')
+  public async customerOrdersList({ auth, response, bouncer, request }: HttpContextContract) {
+    await bouncer.with('OrderPolicy').authorize('customerList')
+
+    const user = auth.user!
+
+    let ordersGroups: OrderGroup[] = []
+
+    const orderGroupQuery = OrderGroup.query().where('user_id', user.id)
+    this.indexfilterQuery(request.qs() as any, orderGroupQuery)
+    if (request.qs().populate) {
+      await this.populate(request.qs().populate as any, orderGroupQuery)
+    }
+
+    if (request.qs().page) {
+      ordersGroups = await orderGroupQuery.paginate(
+        request.qs().page,
+        request.qs().perPage || this.perPage
+      )
+    } else {
+      ordersGroups = await orderGroupQuery.exec()
+    }
+
+    return response.custom({
+      code: 200,
+      success: true,
+      message: null,
+      data: ordersGroups,
+    })
+  }
+
+  public async venodrOrdersList({ auth, response, bouncer, request }: HttpContextContract) {
+    await bouncer.with('OrderPolicy').authorize('vendorList')
 
     const user = auth.user!
 
     let orders: Order[] = []
 
-    if (user instanceof User) {
-      const orderQuery = Order.query().where('user_id', user.id)
-      this.indexfilterQuery(request.qs() as any, orderQuery)
-      if (request.qs().populate) {
-        await this.populate(request.qs().populate as any, orderQuery)
-      }
-
-      if (request.qs().page) {
-        orders = await orderQuery.paginate(request.qs().page, request.qs().page || this.perPage)
-      } else {
-        orders = await orderQuery.exec()
-      }
+    const orderGroupQuery = Order.query().where('vendor_user_id', user.id)
+    this.indexfilterQuery(request.qs() as any, orderGroupQuery)
+    if (request.qs().populate) {
+      await this.populate(request.qs().populate as any, orderGroupQuery)
     }
 
-    if (user instanceof VendorUser) {
-      const orderQuery = Order.query().where('vendor_user_id', user.id)
-      this.indexfilterQuery(request.qs() as any, orderQuery)
-      if (request.qs().populate) {
-        await this.populate(request.qs().populate as any, orderQuery)
-      }
-
-      if (request.qs().page) {
-        orders = await orderQuery.paginate(request.qs().page, request.qs().page || this.perPage)
-      } else {
-        orders = await orderQuery.exec()
-      }
+    if (request.qs().page) {
+      orders = await orderGroupQuery.paginate(
+        request.qs().page,
+        request.qs().perPage || this.perPage
+      )
+    } else {
+      orders = await orderGroupQuery.exec()
     }
 
     return response.custom({
@@ -80,7 +99,9 @@ export default class OrdersController extends BaseController {
 
     const couponId = request.body().couponId
 
-    const orders = await this.groupOrdersByVendor(cart, couponId)
+    const orderGroupsByVendor = await this.groupOrdersByVendor(cart)
+
+    const orders = await this.applyCoupon(orderGroupsByVendor, couponId)
 
     return response.custom({
       code: 200,
@@ -94,6 +115,7 @@ export default class OrdersController extends BaseController {
     await bouncer.with('OrderPolicy').authorize('create')
     const payload = await request.validate(OrderCreateValidator)
     const user = auth.user as User
+    const couponId = request.body().couponId
 
     const cart = await Cart.query()
       .where('user_id', user.id)
@@ -117,34 +139,44 @@ export default class OrdersController extends BaseController {
       })
     }
 
+    let orderGroup: OrderGroup | null = null
+
     await Database.transaction(async (trx) => {
       cart?.useTransaction(trx)
-      const { grand_total, orders } = await this.groupOrdersByVendor(cart)
+      const orderGroupsByVendor = this.groupOrdersByVendor(cart)
 
-      if (grand_total)
-        for (const order of orders) {
-          Order.create(
-            {
-              userId: auth.user?.id,
-              vendorUserId: order.vendorId,
-              total: order.order_total,
-              status: OrderStatus.PLACED,
-              orderDetail: order.items,
-              paymentDetail: payload.paymentdetail,
-            },
-            { client: trx }
-          )
-        }
+      const { orders, ...restOrder } = await this.applyCoupon(orderGroupsByVendor, couponId, trx)
+
+      orderGroup = await OrderGroup.create(
+        {
+          orderGroupDetail: restOrder,
+          paymentDetail: payload.paymentdetail,
+          userId: user.id,
+        },
+        { client: trx }
+      )
+
+      for (const order of orders) {
+        await orderGroup.related('orders').create({
+          vendorUserId: order.vendorId,
+          status: OrderStatus.PLACED,
+          orderDetail: order,
+        })
+      }
 
       for (const item of cart!.items) {
         await item.delete()
       }
     })
 
+    if (orderGroup) {
+      await orderGroup.refresh()
+    }
+
     return response.custom({
       code: 201,
       message: 'Order created successfully',
-      data: null,
+      data: orderGroup,
       success: true,
     })
   }
@@ -192,34 +224,32 @@ export default class OrdersController extends BaseController {
     const serviceIds = this.getServiceIdsfromCart(cart!)
 
     const coupons = await Coupon.query()
+      .where('expired_at', '>', DateTime.local().plus({ minute: 10 }).toSQL())
+      .where('valid_from', '<', DateTime.local().toSQL())
       .whereHas('services', (service) => {
         service.whereIn('services.id', serviceIds)
       })
-      .orWhere('coupon_type', CouponType.ADMIN)
+
+    const adminCoupons = await Coupon.query()
+      .where('coupon_type', CouponType.ADMIN)
+      .where('expired_at', '>', DateTime.local().plus({ minute: 10 }).toSQL())
+      .where('valid_from', '<', DateTime.local().toSQL())
+
+    console.log(DateTime.local().plus({ minute: 10 }).toSQL())
 
     return response.custom({
       code: 200,
-      message: 'Order status updated',
-      data: coupons,
+      message: null,
+      data: [...coupons, ...adminCoupons],
       success: true,
     })
   }
 
-  public async groupOrdersByVendor(cart: Cart | null, couponId: number) {
-    let groupedItems = {}
-
-    let coupon: Coupon | null = null
-    if (couponId) {
-      coupon = await Coupon.query()
-        .where('id', couponId)
-        .preload('services', (services) => {
-          services.select('id')
-        })
-        .first()
-    }
+  public groupOrdersByVendor(cart: Cart | null): IOrderGroupsByVender {
+    let groupedItems: IOrderGroupsByVender = {}
 
     if (cart) {
-      groupedItems = cart.items.reduce((result, item) => {
+      groupedItems = cart.items.reduce((result: IOrderGroupsByVender, item) => {
         const vendorId = item.serviceVariant.service.business.vendor.id
 
         const item_total_without_discount = new BigNumber(item.qty).times(item.serviceVariant.price)
@@ -230,14 +260,14 @@ export default class OrdersController extends BaseController {
           .times(item.serviceVariant.discountPercentage)
           .dividedBy(100)
 
-        const item_total_discount_applied =
+        const item_discount =
           discount_type === DiscountType.FLAT
             ? new BigNumber(item.serviceVariant.discountFlat)
             : discount_type === DiscountType.PERCENATAGE
               ? total_percentage_discount
               : new BigNumber(0)
 
-        const item_total = item_total_without_discount.minus(item_total_discount_applied)
+        const item_total = item_total_without_discount.minus(item_discount)
 
         if (!result[vendorId]) {
           result[vendorId] = {
@@ -249,20 +279,20 @@ export default class OrdersController extends BaseController {
                   service_id: item.serviceVariant.service.id,
                   service_name: item.serviceVariant.service.name,
                   disocunt_type: item.serviceVariant.discountType,
-                  disocunt_flat: item.serviceVariant.discountFlat,
-                  disocunt_percentage: item.serviceVariant.discountPercentage,
+                  disocunt_flat: item.serviceVariant.discountFlat as string,
+                  disocunt_percentage: item.serviceVariant.discountPercentage as string,
                   id: item.serviceVariant.id,
                   name: item.serviceVariant.name,
-                  price: item.serviceVariant.price,
+                  price: item.serviceVariant.price as string,
                 },
                 item_total_without_discount: item_total_without_discount.toFixed(2),
-                item_total_discount_applied: item_total_discount_applied.toFixed(2),
+                item_discount: item_discount.toFixed(2),
                 item_total: item_total.toFixed(2),
               },
             ],
             order_total_without_discount: item_total_without_discount.toFixed(2),
-            order_total_discount_applied: item_total_discount_applied.toFixed(2),
-            coupon_discount_applied: '0.00',
+            order_total_discount: item_discount.toFixed(2),
+            coupon_discount: '0.00',
             order_total: item_total.toFixed(2),
           }
         } else {
@@ -273,14 +303,14 @@ export default class OrdersController extends BaseController {
               service_id: item.serviceVariant.service.id,
               service_name: item.serviceVariant.service.name,
               disocunt_type: item.serviceVariant.discountType,
-              disocunt_flat: item.serviceVariant.discountFlat,
-              disocunt_percentage: item.serviceVariant.discountPercentage,
+              disocunt_flat: item.serviceVariant.discountFlat as string,
+              disocunt_percentage: item.serviceVariant.discountPercentage as string,
               id: item.serviceVariant.id,
               name: item.serviceVariant.name,
-              price: item.serviceVariant.price,
+              price: item.serviceVariant.price as string,
             },
-            item_total_discount_applied: item_total_discount_applied.toFixed(2),
             item_total_without_discount: item_total_without_discount.toFixed(2),
+            item_discount: item_discount.toFixed(2),
             item_total: item_total.toFixed(2),
           })
 
@@ -290,13 +320,13 @@ export default class OrdersController extends BaseController {
             .plus(item_total_without_discount)
             .toFixed(2)
 
-          result[vendorId].order_total_discount_applied = new BigNumber(
-            result[vendorId].order_total_discount_applied
+          result[vendorId].order_total_discount = new BigNumber(
+            result[vendorId].order_total_discount
           )
-            .plus(item_total_discount_applied)
+            .plus(item_discount)
             .toFixed(2)
 
-          result[vendorId].coupon_discount_applied = '0.00'
+          result[vendorId].coupon_discount = '0.00'
 
           result[vendorId].order_total = new BigNumber(result[vendorId].order_total)
             .plus(item_total)
@@ -306,12 +336,31 @@ export default class OrdersController extends BaseController {
         return result
       }, {})
     }
+    return groupedItems
+  }
 
-    let total_discount_applied = new BigNumber(0)
-    let total_coupon_discount_applied = new BigNumber(0)
+  public async applyCoupon(
+    orderGroupsByVendor: IOrderGroupsByVender,
+    couponId: number,
+    trx?: TransactionClientContract
+  ): Promise<IOrderGroupWithDiscount> {
+    let coupon: Coupon | null = null
+
+    if (couponId) {
+      coupon = await Coupon.query({ client: trx })
+        .where('id', couponId)
+        .preload('services', (services) => {
+          services.select('id')
+        })
+        .first()
+    }
+
+    let grand_total_without_discount = new BigNumber(0)
+    let grand_total_discount = new BigNumber(0)
+    let grand_total_coupon_discount = new BigNumber(0)
     let grand_total = new BigNumber(0)
 
-    const orders = Object.values(groupedItems).map((group: any, i) => {
+    const orders: IOrderGroup[] = Object.values(orderGroupsByVendor).map((group, i) => {
       const groupVendorId = group.vendorId
 
       if (coupon?.couponType == CouponType.VENDOR && coupon.vendorUserId == groupVendorId) {
@@ -332,15 +381,18 @@ export default class OrdersController extends BaseController {
         group.order_total = new BigNumber(group.order_total)
           .minus(coupan_discount_amount)
           .toFixed(2)
-        group.coupon_discount_applied = coupan_discount_amount.toFixed()
+        group.coupon_discount = coupan_discount_amount.toFixed()
 
-        total_coupon_discount_applied = total_coupon_discount_applied.plus(coupan_discount_amount)
+        grand_total_coupon_discount = grand_total_coupon_discount.plus(coupan_discount_amount)
       }
 
       grand_total = grand_total.plus(group.order_total)
-      total_discount_applied = total_discount_applied.plus(group.order_total_discount_applied)
+      grand_total_discount = grand_total_discount.plus(group.order_total_discount)
+      grand_total_without_discount = grand_total_without_discount.plus(
+        group.order_total_without_discount
+      )
 
-      return { orderNo: i + 1, ...group }
+      return { ...group, orderNo: i + 1 }
     })
 
     if (coupon?.couponType == CouponType.ADMIN) {
@@ -359,22 +411,19 @@ export default class OrdersController extends BaseController {
 
       grand_total = new BigNumber(grand_total).minus(coupan_discount_amount)
 
-      total_coupon_discount_applied = total_coupon_discount_applied.plus(coupan_discount_amount)
+      grand_total_coupon_discount = grand_total_coupon_discount.plus(coupan_discount_amount)
     }
 
     return {
-      total_discount_applied: total_discount_applied.toFixed(2),
-      total_coupon_discount_applied: total_coupon_discount_applied.toFixed(2),
+      grand_total_without_discount: grand_total_without_discount.toFixed(2),
+      grand_total_discount: grand_total_discount.toFixed(2),
+      grand_total_coupon_discount: grand_total_coupon_discount.toFixed(2),
       grand_total: grand_total.toFixed(2),
       orders,
-    } as unknown as {
-      orders: { vendorId: number; items: []; orderNo: number; order_total: number }[]
-      grand_total: number
-      total_coupon_discount_applied: number
     }
   }
 
-  public getServiceIdsfromCart(cart: Cart) {
+  public getServiceIdsfromCart(cart: Cart): number[] {
     const serviceIds: number[] = []
 
     if (cart?.items) {

@@ -14,16 +14,16 @@ export default class ServiceVariant extends BaseModel {
   public name: string
 
   @column()
-  public price: number
+  public price: string | number
 
   @column()
   public discountType: DiscountType
 
   @column()
-  public discountFlat: number
+  public discountFlat: string | number
 
   @column()
-  public discountPercentage: number
+  public discountPercentage: string | number
 
   @column({
     prepare: (v) => JSON.stringify(v),
