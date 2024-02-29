@@ -15,7 +15,8 @@ import Cart from './Cart'
 import Notification from '../Notification'
 import UserProfile from '../UserProfile'
 import Wishlist from './Wishlist'
-import Order from '../orders/Order'
+import BidOrder from '../orders/BidOrder'
+import OrderGroup from '../orders/OrderGroup'
 
 export default class User extends BaseModel {
   @column({ isPrimary: true })
@@ -59,14 +60,17 @@ export default class User extends BaseModel {
   @hasMany(() => Notification)
   public notifications: HasMany<typeof Notification>
 
-  @hasMany(() => Order)
-  public orders: HasMany<typeof Order>
+  @hasMany(() => OrderGroup)
+  public orders: HasMany<typeof OrderGroup>
 
   @hasOne(() => Cart)
   public cart: HasOne<typeof Cart>
 
   @hasOne(() => Wishlist)
   public wishlist: HasOne<typeof Wishlist>
+
+  @hasMany(() => BidOrder)
+  public bidOrders: HasMany<typeof BidOrder>
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

@@ -1,26 +1,23 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
+import { OrderStatus } from 'App/Helpers/enums'
 
 export default class extends BaseSchema {
-  protected tableName = 'bids'
+  protected tableName = 'bid_orders'
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id').primary()
-      table.decimal('offered_price', 8, 2)
-      table.json('features_included')
-      table.json('features_excluded')
       table
-        .integer('service_requirement_id')
-        .unsigned()
-        .references('id')
-        .inTable('service_requirements')
-        .onDelete('SET NULL')
-      table
-        .integer('vendor_user_id')
+        .integer('vendor_user_id', 10)
         .unsigned()
         .references('id')
         .inTable('vendor_users')
-        .onDelete('CASCADE')
+        .onDelete('SET NULL')
+      table.integer('user_id', 10).unsigned().references('id').inTable('users').onDelete('SET NULL')
+      table.decimal('price', 10, 2)
+      table.json('order_detail')
+      table.json('payment_detail')
+      table.enum('status', Object.values(OrderStatus)).notNullable().defaultTo(OrderStatus.PLACED)
 
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
@@ -31,6 +28,7 @@ export default class extends BaseSchema {
   }
 
   public async down() {
+    this.schema.raw('DROP TYPE IF EXISTS "status"')
     this.schema.dropTable(this.tableName)
   }
 }

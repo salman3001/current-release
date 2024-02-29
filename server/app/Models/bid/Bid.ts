@@ -10,6 +10,12 @@ export default class Bid extends BaseModel {
   @column()
   public offeredPrice: number | string
 
+  @column({ prepare: (v) => JSON.stringify(v) })
+  public featuresIncluded: string[]
+
+  @column({ prepare: (v) => JSON.stringify(v) })
+  public featuresExcluded: string[]
+
   @column()
   public serviceRequirementId: number
 
@@ -19,6 +25,8 @@ export default class Bid extends BaseModel {
   @belongsTo(() => VendorUser)
   public vendorUser: BelongsTo<typeof VendorUser>
 
+  @belongsTo(() => ServiceRequirement)
+  public serviceRequirement: BelongsTo<typeof ServiceRequirement>
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

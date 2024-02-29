@@ -9,7 +9,6 @@ export default class BidController extends BaseController {
     super(Bid, BidValidator, BidValidator, 'BidPolicy')
   }
 
-
   public async index({ request, response, auth, bouncer }: HttpContextContract) {
     await bouncer.with('BidPolicy').authorize('viewList')
 
@@ -33,9 +32,8 @@ export default class BidController extends BaseController {
       code: 200,
       message: null,
       data: bids,
-      success: true
+      success: true,
     })
-
   }
 
   public async store({ auth, bouncer, request, response }: HttpContextContract) {
@@ -45,7 +43,7 @@ export default class BidController extends BaseController {
 
     let bid: Bid | null = null
 
-    await Database.transaction(async trx => {
+    await Database.transaction(async (trx) => {
       bid = await Bid.create({ ...payload, vendorUserId: auth.user!.id }, { client: trx })
     })
 
@@ -57,9 +55,8 @@ export default class BidController extends BaseController {
       code: 201,
       message: 'Bid placed',
       data: bid,
-      success: true
+      success: true,
     })
-
   }
 
   public async update({ auth, bouncer, request, response, params }: HttpContextContract) {
@@ -68,9 +65,7 @@ export default class BidController extends BaseController {
 
     const payload = await request.validate(BidValidator)
 
-
-
-    await Database.transaction(async trx => {
+    await Database.transaction(async (trx) => {
       bid.useTransaction(trx)
       bid.merge({ ...payload, vendorUserId: auth.user!.id })
       await bid.save()
@@ -82,10 +77,7 @@ export default class BidController extends BaseController {
       code: 200,
       message: 'Bid updated',
       data: bid,
-      success: true
+      success: true,
     })
-
   }
-
-
 }

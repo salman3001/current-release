@@ -2,7 +2,7 @@
 
 import Order from 'App/Models/orders/Order'
 import BaseController from '../BaseController'
-import OrderCreateValidator from 'App/Validators/OrderCreateValidator'
+import OrderCreateValidator from 'App/Validators/orders/OrderCreateValidator'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import User from 'App/Models/user/User'
 import Cart from 'App/Models/user/Cart'

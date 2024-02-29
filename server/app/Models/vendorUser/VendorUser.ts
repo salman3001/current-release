@@ -18,6 +18,7 @@ import UserProfile from '../UserProfile'
 import Hash from '@ioc:Adonis/Core/Hash'
 import Order from '../orders/Order'
 import ServiceCategory from '../service/ServiceCategory'
+import BidOrder from '../orders/BidOrder'
 
 export default class VendorUser extends BaseModel {
   @column({ isPrimary: true })
@@ -68,9 +69,12 @@ export default class VendorUser extends BaseModel {
   public notifications: HasMany<typeof Notification>
 
   @manyToMany(() => ServiceCategory, {
-    pivotTable: 'vendor_subscribed_categories'
+    pivotTable: 'vendor_subscribed_categories',
   })
   public subscribedCategories: ManyToMany<typeof ServiceCategory>
+
+  @hasMany(() => BidOrder)
+  public bidOrders: HasMany<typeof BidOrder>
 
   // @hasMany(() => SupportTicket)
   // public supportTickets: HasMany<typeof SupportTicket>

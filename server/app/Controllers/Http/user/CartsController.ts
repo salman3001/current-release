@@ -2,7 +2,7 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 import Cart from 'App/Models/user/Cart'
 import BaseController from '../BaseController'
-import UpdateCartValidator from 'App/Validators/UpdateCartValidator'
+import UpdateCartValidator from 'App/Validators/cart/UpdateCartValidator'
 import Database from '@ioc:Adonis/Lucid/Database'
 
 export default class CartsController extends BaseController {

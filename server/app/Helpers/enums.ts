@@ -27,6 +27,7 @@ export enum permissions {
   MANAGE_MEDIA = 'Manage Media',
   MANAGE_BUSINESS = 'Manage Business',
   MANAGE_ORDERS = 'Manage Orders',
+  MANAGE_BID_ORDERS = 'Manage Bid Orders',
   MANAGE_COUPONS = 'Manage Coupons',
 }
 
