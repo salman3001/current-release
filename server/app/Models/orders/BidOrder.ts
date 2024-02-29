@@ -1,8 +1,8 @@
 import { DateTime } from 'luxon'
 import { BaseModel, BelongsTo, belongsTo, column } from '@ioc:Adonis/Lucid/Orm'
-import { OrderStatus } from 'aws-sdk/clients/outposts'
 import VendorUser from '../vendorUser/VendorUser'
 import User from '../user/User'
+import { OrderStatus } from 'App/Helpers/enums'
 
 export default class BidOrder extends BaseModel {
   @column({ isPrimary: true })

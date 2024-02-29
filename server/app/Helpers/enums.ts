@@ -34,6 +34,7 @@ export enum permissions {
 export enum NotificationTypes {
   NEW_SUPPORT_TICKET = 'new-support-ticket',
   ORDER_CREATED = 'order-created',
+  SERVICE_REQUIREMENT_ADDED = 'service_requirement-added'
 }
 
 export enum MediaTypes {

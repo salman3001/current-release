@@ -1,9 +1,10 @@
 import { DateTime } from 'luxon'
-import { BaseModel, BelongsTo, HasMany, belongsTo, column, hasMany } from '@ioc:Adonis/Lucid/Orm'
-import { BudgetType } from 'aws-sdk/clients/budgets'
+import { BaseModel, BelongsTo, HasMany, afterCreate, belongsTo, column, hasMany } from '@ioc:Adonis/Lucid/Orm'
 import ServiceCategory from '../service/ServiceCategory'
 import User from '../user/User'
 import Bid from './Bid'
+import { BudgetType, NotificationTypes } from 'App/Helpers/enums'
+import VendorUser from '../vendorUser/VendorUser'
 
 export default class ServiceRequirement extends BaseModel {
   @column({ isPrimary: true })
@@ -53,4 +54,27 @@ export default class ServiceRequirement extends BaseModel {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime
+
+  @afterCreate()
+  public static async notifyVendor(serviceRequirement: ServiceRequirement) {
+    const categoryId = serviceRequirement.serviceCategoryId
+
+    const vendors = await VendorUser.query().whereHas('subscribedCategories', b => {
+      b.where('service_category_id', categoryId)
+    })
+
+    for (const vendor of vendors) {
+      await vendor.related('notifications').create({
+        data: {
+          type: NotificationTypes.SERVICE_REQUIREMENT_ADDED,
+          message: 'New Service Requirement Added',
+          meta: {
+            id: serviceRequirement.id,
+            title: serviceRequirement.title,
+          }
+        }
+      })
+    }
+
+  }
 }

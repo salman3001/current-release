@@ -2,7 +2,7 @@ import { schema, CustomMessages } from '@ioc:Adonis/Core/Validator'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 export default class BidOrderCreateValidator {
-  constructor(protected ctx: HttpContextContract) {}
+  constructor(protected ctx: HttpContextContract) { }
 
   /*
    * Define schema to validate the "shape", "type", "formatting" and "integrity" of data.
@@ -24,6 +24,7 @@ export default class BidOrderCreateValidator {
    *    ```
    */
   public schema = schema.create({
+    serviceRequirementId: schema.number(),
     paymentdetail: schema.object().members({
       paymentMode: schema.enum(['cod', 'online']),
       paymentStatus: schema.enum(['pending', 'paid']),

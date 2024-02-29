@@ -296,6 +296,41 @@ export default class VendorUsersController extends BaseController {
     })
   }
 
+  public async updateSubscribedCategories({ response, request, bouncer, auth }: HttpContextContract) {
+    const user = auth.user
+
+    const isVendorUser = user instanceof VendorUser
+    if (!isVendorUser) {
+      return response.custom({
+        code: 401,
+        data: null,
+        message: 'Not Authorized',
+        success: false
+      })
+    }
+
+    await bouncer.with('VendorUserPolicy').authorize('update', user)
+
+    const validationSchema = schema.create({
+      serviceCategoryIds: schema.array().members(schema.number())
+    })
+
+    const payload = await request.validate({
+      schema: validationSchema,
+    })
+    await user.related('subscribedCategories').detach()
+    await user.related('subscribedCategories').attach(payload.serviceCategoryIds)
+
+    return response.custom({
+      message: 'Subscribed categories updated',
+      code: 200,
+      data: user,
+      success: true,
+    })
+  }
+
+
+
   public async storeExcelData(data: any, ctx: HttpContextContract): Promise<void> {
     ctx.meta = {
       currentObjectId: data.id,

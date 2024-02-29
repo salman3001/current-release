@@ -13,7 +13,7 @@ export default class Notification extends BaseModel {
     },
   })
   public data: {
-    type: NotificationTypes.ORDER_CREATED
+    type: NotificationTypes
     message: string
     meta: Record<any, any>
   }

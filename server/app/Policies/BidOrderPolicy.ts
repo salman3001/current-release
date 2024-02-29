@@ -14,6 +14,15 @@ export default class BidOrderPolicy extends BasePolicy {
       false
     }
   }
+
+  public async myList(user: User | AdminUser | VendorUser) {
+    if (user instanceof User || user instanceof VendorUser) {
+      return true
+    } else {
+      false
+    }
+  }
+
   public async view(user: User, bidOrder: BidOrder) {
     if (user instanceof User && bidOrder.userId == user.id) {
       return true
@@ -23,7 +32,21 @@ export default class BidOrderPolicy extends BasePolicy {
       return false
     }
   }
-  public async create(user: User) {}
-  public async update(user: User, bidOrder: BidOrder) {}
-  public async delete(user: User, bidOrder: BidOrder) {}
+  public async create(user: User) {
+    if (user instanceof User) {
+      return true
+    } else {
+      return false
+    }
+  }
+  public async update(user: User, bidOrder: BidOrder) {
+    if (user instanceof VendorUser && bidOrder.userId == user.id) {
+      return true
+    } else {
+      return false
+    }
+  }
+  public async delete(user: User, bidOrder: BidOrder) {
+    return false
+  }
 }
