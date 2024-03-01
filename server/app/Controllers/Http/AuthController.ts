@@ -80,15 +80,6 @@ export default class AuthController {
       data: { user, token, socketToken },
       success: true,
     })
-    // } 
-    // catch (error) {
-    //   return response.custom({
-    //     message: 'Failed to login. Check your credentials!',
-    //     code: 400,
-    //     data: null,
-    //     success: false,
-    //   })
-    // }
   }
 
   public async logout({ auth, response, request }: HttpContextContract) {

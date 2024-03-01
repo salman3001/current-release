@@ -12,42 +12,48 @@
 // to match your app's branding.
 // Tip: Use the "Theme Builder" on Quasar's documentation website.
 
- .ck-editor__editable {
-min-height: 500px;
-min-width: 100%;
+.ck-editor__editable {
+    min-height: 500px;
+    min-width: 100%;
 }
 
 .ck .ck-toolbar {
     flex-wrap: wrap;
 }
 
-$primary   : #050101;
-$secondary : #c58422;
-$accent    : #3d39ed;
-$dark      : #242436;
-$dark-page : #1a1f2b;
-$positive  : #22c55e;
-$negative  : #C10015;
-$info      : #31CCEC;
-$warning   : #F2C037;
+$primary : #7400a6;
+$secondary : #9d70c2;
+$accent : #048a66;
+$dark : #1d1d1d;
+$dark-page : #121212;
+$positive : #21bA45;
+$negative : #d12438;
+$info : #bbbad4;
+$warning : #F2C037;
 
-$space-base   : 16px !default;
+$space-base : 16px !default;
 $space-x-base : $space-base !default;
 $space-y-base : $space-base !default;
 
 $space-none : (x: 0, y: 0) !default;
-$space-xs   : (x: ($space-x-base * .25), y: ($space-y-base * .25)) !default;
-$space-sm   : (x: ($space-x-base * .5), y: ($space-y-base * .5)) !default;
-$space-md   : (x: $space-x-base, y: $space-y-base) !default;
-$space-lg   : (x: ($space-x-base * 1.5), y: ($space-y-base * 1.5)) !default;
-$space-xl   : (x: ($space-x-base * 3), y: ($space-y-base * 3)) !default;
+$space-xs : (x: ($space-x-base * .25), y: ($space-y-base * .25)) !default;
+$space-sm : (x: ($space-x-base * .5), y: ($space-y-base * .5)) !default;
+$space-md : (x: $space-x-base, y: $space-y-base) !default;
+$space-lg : (x: ($space-x-base * 1.5), y: ($space-y-base * 1.5)) !default;
+$space-xl : (x: ($space-x-base * 3), y: ($space-y-base * 3)) !default;
 
 // sorry for long line; we need .sass and it doesn't support multi-line list
-$spaces: ('none': $space-none, 'xs': $space-xs, 'sm': $space-sm, 'md': $space-md, 'lg': $space-lg, 'xl': $space-xl) !default;
+$spaces: (
+    'none': $space-none,
+    'xs': $space-xs,
+    'sm': $space-sm,
+    'md': $space-md,
+    'lg': $space-lg,
+    'xl': $space-xl) !default;
 
 $animate-duration : .3s !default;
-$animate-delay    : .3s !default;
-$animate-repeat   : 1 !default;
+$animate-delay : .3s !default;
+$animate-repeat : 1 !default;
 
 // Max width at which point
 // current size ends
@@ -56,75 +62,162 @@ $breakpoint-sm: 1023px !default;
 $breakpoint-md: 1439px !default;
 $breakpoint-lg: 1919px !default;
 
-$flex-cols      : 12 !default;
+$flex-cols : 12 !default;
 $flex-gutter-xs : ($space-base * .25) !default;
 $flex-gutter-sm : ($space-base * .5) !default;
 $flex-gutter-md : $space-base !default;
 $flex-gutter-lg : ($space-base * 1.5) !default;
 $flex-gutter-xl : ($space-base * 3) !default;
 
-$body-font-size   : 14px !default;
+$body-font-size : 14px !default;
 $body-line-height : 1.5 !default;
 
 // sorry for long line; we need .sass and it doesn't support multi-line list
-$flex-gutter: ('none': 0, 'xs': $flex-gutter-xs, 'sm': $flex-gutter-sm, 'md': $flex-gutter-md, 'lg': $flex-gutter-lg, 'xl': $flex-gutter-xl) !default;
+$flex-gutter: (
+    'none': 0,
+    'xs': $flex-gutter-xs,
+    'sm': $flex-gutter-sm,
+    'md': $flex-gutter-md,
+    'lg': $flex-gutter-lg,
+    'xl': $flex-gutter-xl) !default;
 
 // sorry for long line; we need .sass and it doesn't support multi-line list
-$sizes: ('xs': 0, 'sm': ($breakpoint-xs + 1), 'md': ($breakpoint-sm + 1), 'lg': ($breakpoint-md + 1), 'xl': ($breakpoint-lg + 1)) !default;
+$sizes: (
+    'xs': 0,
+    'sm': ($breakpoint-xs + 1),
+    'md': ($breakpoint-sm + 1),
+    'lg': ($breakpoint-md + 1),
+    'xl': ($breakpoint-lg + 1)) !default;
 
-$breakpoint-xs-max: (map-get($sizes, "sm") - 0.02) !default;
+$breakpoint-xs-max: (
+    map-get($sizes, "sm") - 0.02) !default;
 
 $breakpoint-sm-min: map-get($sizes, "sm") !default;
-$breakpoint-sm-max: (map-get($sizes, "md") - 0.02) !default;
+$breakpoint-sm-max: (
+    map-get($sizes, "md") - 0.02) !default;
 
 $breakpoint-md-min: map-get($sizes, "md") !default;
-$breakpoint-md-max: (map-get($sizes, "lg") - 0.02) !default;
+$breakpoint-md-max: (
+    map-get($sizes, "lg") - 0.02) !default;
 
 $breakpoint-lg-min: map-get($sizes, "lg") !default;
-$breakpoint-lg-max: (map-get($sizes, "xl") - 0.02) !default;
+$breakpoint-lg-max: (
+    map-get($sizes, "xl") - 0.02) !default;
 
 $breakpoint-xl-min: map-get($sizes, "xl") !default;
 
-$h1:        (size: 6rem,     line-height: 6rem,     letter-spacing: -.01562em, weight: 300) !default;
-$h2:        (size: 3.75rem,  line-height: 3.75rem,  letter-spacing: -.00833em, weight: 300) !default;
-$h3:        (size: 3rem,     line-height: 3.125rem, letter-spacing: normal,    weight: 400) !default;
-$h4:        (size: 2.125rem, line-height: 2.5rem,   letter-spacing: .00735em,  weight: 400) !default;
-$h5:        (size: 1.5rem,   line-height: 2rem,     letter-spacing: normal,    weight: 400) !default;
-$h6:        (size: 1.25rem,  line-height: 2rem,     letter-spacing: .0125em,   weight: 500) !default;
-$subtitle1: (size: 1rem,     line-height: 1.75rem,  letter-spacing: .00937em,  weight: 400) !default;
-$subtitle2: (size: .875rem,  line-height: 1.375rem, letter-spacing: .00714em,  weight: 500) !default;
-$body1:     (size: 1rem,     line-height: 1.5rem,   letter-spacing: .03125em,  weight: 400) !default;
-$body2:     (size: .875rem,  line-height: 1.25rem,  letter-spacing: .01786em,  weight: 400) !default;
-$overline:  (size: .75rem,   line-height: 2rem,     letter-spacing: .16667em,  weight: 500) !default;
-$caption:   (size: .75rem,   line-height: 1.25rem,  letter-spacing: .03333em,  weight: 400) !default;
+$h1: (
+    size: 6rem,
+    line-height: 6rem,
+    letter-spacing: -.01562em,
+    weight: 300) !default;
+$h2: (
+    size: 3.75rem,
+    line-height: 3.75rem,
+    letter-spacing: -.00833em,
+    weight: 300) !default;
+$h3: (
+    size: 3rem,
+    line-height: 3.125rem,
+    letter-spacing: normal,
+    weight: 400) !default;
+$h4: (
+    size: 2.125rem,
+    line-height: 2.5rem,
+    letter-spacing: .00735em,
+    weight: 400) !default;
+$h5: (
+    size: 1.5rem,
+    line-height: 2rem,
+    letter-spacing: normal,
+    weight: 400) !default;
+$h6: (
+    size: 1.25rem,
+    line-height: 2rem,
+    letter-spacing: .0125em,
+    weight: 500) !default;
+$subtitle1: (
+    size: 1rem,
+    line-height: 1.75rem,
+    letter-spacing: .00937em,
+    weight: 400) !default;
+$subtitle2: (
+    size: .875rem,
+    line-height: 1.375rem,
+    letter-spacing: .00714em,
+    weight: 500) !default;
+$body1: (
+    size: 1rem,
+    line-height: 1.5rem,
+    letter-spacing: .03125em,
+    weight: 400) !default;
+$body2: (
+    size: .875rem,
+    line-height: 1.25rem,
+    letter-spacing: .01786em,
+    weight: 400) !default;
+$overline: (
+    size: .75rem,
+    line-height: 2rem,
+    letter-spacing: .16667em,
+    weight: 500) !default;
+$caption: (
+    size: .75rem,
+    line-height: 1.25rem,
+    letter-spacing: .03333em,
+    weight: 400) !default;
 
 // sorry for long line; we need .sass and it doesn't support multi-line list
-$headings: ('h1': $h1, 'h2': $h2, 'h3': $h3, 'h4': $h4, 'h5': $h5, 'h6': $h6, 'subtitle1': $subtitle1, 'subtitle2': $subtitle2, 'body1': $body1, 'body2': $body2, 'overline': $overline, 'caption': $caption) !default;
+$headings: (
+    'h1': $h1,
+    'h2': $h2,
+    'h3': $h3,
+    'h4': $h4,
+    'h5': $h5,
+    'h6': $h6,
+    'subtitle1': $subtitle1,
+    'subtitle2': $subtitle2,
+    'body1': $body1,
+    'body2': $body2,
+    'overline': $overline,
+    'caption': $caption) !default;
 
 // sorry for long line; we need .sass and it doesn't support multi-line list
-$h-tags: (h1: map-get($headings, "h1"), h2: map-get($headings, "h2"), h3: map-get($headings, "h3"), h4: map-get($headings, "h4"), h5: map-get($headings, "h5"), h6: map-get($headings, "h6")) !default;
+$h-tags: (
+    h1: map-get($headings, "h1"),
+    h2: map-get($headings, "h2"),
+    h3: map-get($headings, "h3"),
+    h4: map-get($headings, "h4"),
+    h5: map-get($headings, "h5"),
+    h6: map-get($headings, "h6")) !default;
 
 // sorry for long line; we need .sass and it doesn't support multi-line list
-$text-weights: (thin: 100, light: 300, regular: 400, medium: 500, bold: 700, bolder: 900) !default;
+$text-weights: (
+    thin: 100,
+    light: 300,
+    regular: 400,
+    medium: 500,
+    bold: 700,
+    bolder: 900) !default;
 
-$primary   : #1976D2 !default;
+$primary : #1976D2 !default;
 $secondary : #26A69A !default;
-$accent    : #9C27B0 !default;
+$accent : #9C27B0 !default;
 
 // used by dark mode
 $dark-page : #121212 !default;
-$dark      : #1d1d1d !default;
+$dark : #1d1d1d !default;
 
-$positive  : #21BA45 !default;
-$negative  : #C10015 !default;
-$info      : #31CCEC !default;
-$warning   : #F2C037 !default;
+$positive : #21BA45 !default;
+$negative : #C10015 !default;
+$info : #31CCEC !default;
+$warning : #F2C037 !default;
 
-$dimmed-background       : rgba(0, 0, 0, .4) !default;
+$dimmed-background : rgba(0, 0, 0, .4) !default;
 $light-dimmed-background : rgba(255, 255, 255, .6) !default;
 
-$separator-color         : rgba(0, 0, 0, .12) !default;
-$separator-dark-color    : rgba(255, 255, 255, .28) !default;
+$separator-color : rgba(0, 0, 0, .12) !default;
+$separator-dark-color : rgba(255, 255, 255, .28) !default;
 
 $red : #f44336 !default;
 $red-1 : #ffebee !default;
@@ -414,237 +507,545 @@ $blue-grey-14 : #455a64 !default;
 
 $ios-statusbar-height : 20px !default;
 
-$z-fab                : 990 !default;
-$z-side               : 1000 !default;
-$z-marginals          : 2000 !default;
-$z-fixed-drawer       : 3000 !default;
-$z-fullscreen         : 6000 !default;
-$z-menu               : 6000 !default;
-$z-top                : 7000 !default;
-$z-tooltip            : 9000 !default;
-$z-notify             : 9500 !default;
-$z-max                : 9998 !default;
+$z-fab : 990 !default;
+$z-side : 1000 !default;
+$z-marginals : 2000 !default;
+$z-fixed-drawer : 3000 !default;
+$z-fullscreen : 6000 !default;
+$z-menu : 6000 !default;
+$z-top : 7000 !default;
+$z-tooltip : 9000 !default;
+$z-notify : 9500 !default;
+$z-max : 9998 !default;
 
-$shadow-color         : #000 !default;
-$shadow-transition    : box-shadow .28s cubic-bezier(.4, 0, .2, 1) !default;
-$inset-shadow         : 0 7px 9px -7px rgba($shadow-color, .7) inset !default;
-$inset-shadow-down    : 0 -7px 9px -7px rgba($shadow-color, .7) inset !default;
+$shadow-color : #000 !default;
+$shadow-transition : box-shadow .28s cubic-bezier(.4, 0, .2, 1) !default;
+$inset-shadow : 0 7px 9px -7px rgba($shadow-color, .7) inset !default;
+$inset-shadow-down : 0 -7px 9px -7px rgba($shadow-color, .7) inset !default;
 
-$elevation-umbra      : rgba($shadow-color, .2) !default;
-$elevation-penumbra   : rgba($shadow-color, .14) !default;
-$elevation-ambient    : rgba($shadow-color, .12) !default;
+$elevation-umbra : rgba($shadow-color, .2) !default;
+$elevation-penumbra : rgba($shadow-color, .14) !default;
+$elevation-ambient : rgba($shadow-color, .12) !default;
 
-$shadow-0  : 0 0 0 $elevation-umbra, 0 0 0 $elevation-penumbra, 0 0 0 $elevation-ambient !default;
-$shadow-1  : 0 1px 3px $elevation-umbra, 0 1px 1px $elevation-penumbra, 0 2px 1px -1px $elevation-ambient !default;
-$shadow-2  : 0 1px 5px $elevation-umbra, 0 2px 2px $elevation-penumbra, 0 3px 1px -2px $elevation-ambient !default;
-$shadow-3  : 0 1px 8px $elevation-umbra, 0 3px 4px $elevation-penumbra, 0 3px 3px -2px $elevation-ambient !default;
-$shadow-4  : 0 2px 4px -1px $elevation-umbra, 0 4px 5px $elevation-penumbra, 0 1px 10px $elevation-ambient !default;
-$shadow-5  : 0 3px 5px -1px $elevation-umbra, 0 5px 8px $elevation-penumbra, 0 1px 14px $elevation-ambient !default;
-$shadow-6  : 0 3px 5px -1px $elevation-umbra, 0 6px 10px $elevation-penumbra, 0 1px 18px $elevation-ambient !default;
-$shadow-7  : 0 4px 5px -2px $elevation-umbra, 0 7px 10px 1px $elevation-penumbra, 0 2px 16px 1px $elevation-ambient !default;
-$shadow-8  : 0 5px 5px -3px $elevation-umbra, 0 8px 10px 1px $elevation-penumbra, 0 3px 14px 2px $elevation-ambient !default;
-$shadow-9  : 0 5px 6px -3px $elevation-umbra, 0 9px 12px 1px $elevation-penumbra, 0 3px 16px 2px $elevation-ambient !default;
-$shadow-10 : 0 6px 6px -3px $elevation-umbra, 0 10px 14px 1px $elevation-penumbra, 0 4px 18px 3px $elevation-ambient !default;
-$shadow-11 : 0 6px 7px -4px $elevation-umbra, 0 11px 15px 1px $elevation-penumbra, 0 4px 20px 3px $elevation-ambient !default;
-$shadow-12 : 0 7px 8px -4px $elevation-umbra, 0 12px 17px 2px $elevation-penumbra, 0 5px 22px 4px $elevation-ambient !default;
-$shadow-13 : 0 7px 8px -4px $elevation-umbra, 0 13px 19px 2px $elevation-penumbra, 0 5px 24px 4px $elevation-ambient !default;
-$shadow-14 : 0 7px 9px -4px $elevation-umbra, 0 14px 21px 2px $elevation-penumbra, 0 5px 26px 4px $elevation-ambient !default;
-$shadow-15 : 0 8px 9px -5px $elevation-umbra, 0 15px 22px 2px $elevation-penumbra, 0 6px 28px 5px $elevation-ambient !default;
-$shadow-16 : 0 8px 10px -5px $elevation-umbra, 0 16px 24px 2px $elevation-penumbra, 0 6px 30px 5px $elevation-ambient !default;
-$shadow-17 : 0 8px 11px -5px $elevation-umbra, 0 17px 26px 2px $elevation-penumbra, 0 6px 32px 5px $elevation-ambient !default;
-$shadow-18 : 0 9px 11px -5px $elevation-umbra, 0 18px 28px 2px $elevation-penumbra, 0 7px 34px 6px $elevation-ambient !default;
-$shadow-19 : 0 9px 12px -6px $elevation-umbra, 0 19px 29px 2px $elevation-penumbra, 0 7px 36px 6px $elevation-ambient !default;
-$shadow-20 : 0 10px 13px -6px $elevation-umbra, 0 20px 31px 3px $elevation-penumbra, 0 8px 38px 7px $elevation-ambient !default;
-$shadow-21 : 0 10px 13px -6px $elevation-umbra, 0 21px 33px 3px $elevation-penumbra, 0 8px 40px 7px $elevation-ambient !default;
-$shadow-22 : 0 10px 14px -6px $elevation-umbra, 0 22px 35px 3px $elevation-penumbra, 0 8px 42px 7px $elevation-ambient !default;
-$shadow-23 : 0 11px 14px -7px $elevation-umbra, 0 23px 36px 3px $elevation-penumbra, 0 9px 44px 8px $elevation-ambient !default;
-$shadow-24 : 0 11px 15px -7px $elevation-umbra, 0 24px 38px 3px $elevation-penumbra, 0 9px 46px 8px $elevation-ambient !default;
-
-// sorry for long line; we need .sass and it doesn't support multi-line list
-$shadows: ($shadow-1, $shadow-2, $shadow-3, $shadow-4, $shadow-5, $shadow-6, $shadow-7, $shadow-8, $shadow-9, $shadow-10, $shadow-11, $shadow-12, $shadow-13, $shadow-14, $shadow-15, $shadow-16, $shadow-17, $shadow-18, $shadow-19, $shadow-20, $shadow-21, $shadow-22, $shadow-23, $shadow-24);
-
-$shadow-up-0  : 0 0 0 $elevation-umbra, 0 0 0 $elevation-penumbra, 0 0 0 $elevation-ambient !default;
-$shadow-up-1  : 0 -1px 3px $elevation-umbra, 0 -1px 1px $elevation-penumbra, 0 -2px 1px -1px $elevation-ambient !default;
-$shadow-up-2  : 0 -1px 5px $elevation-umbra, 0 -2px 2px $elevation-penumbra, 0 -3px 1px -2px $elevation-ambient !default;
-$shadow-up-3  : 0 -1px 8px $elevation-umbra, 0 -3px 4px $elevation-penumbra, 0 -3px 3px -2px $elevation-ambient !default;
-$shadow-up-4  : 0 -2px 4px -1px $elevation-umbra, 0 -4px 5px $elevation-penumbra, 0 -1px 10px $elevation-ambient !default;
-$shadow-up-5  : 0 -3px 5px -1px $elevation-umbra, 0 -5px 8px $elevation-penumbra, 0 -1px 14px $elevation-ambient !default;
-$shadow-up-6  : 0 -3px 5px -1px $elevation-umbra, 0 -6px 10px $elevation-penumbra, 0 -1px 18px $elevation-ambient !default;
-$shadow-up-7  : 0 -4px 5px -2px $elevation-umbra, 0 -7px 10px 1px $elevation-penumbra, 0 -2px 16px 1px $elevation-ambient !default;
-$shadow-up-8  : 0 -5px 5px -3px $elevation-umbra, 0 -8px 10px 1px $elevation-penumbra, 0 -3px 14px 2px $elevation-ambient !default;
-$shadow-up-9  : 0 -5px 6px -3px $elevation-umbra, 0 -9px 12px 1px $elevation-penumbra, 0 -3px 16px 2px $elevation-ambient !default;
-$shadow-up-10 : 0 -6px 6px -3px $elevation-umbra, 0 -10px 14px 1px $elevation-penumbra, 0 -4px 18px 3px $elevation-ambient !default;
-$shadow-up-11 : 0 -6px 7px -4px $elevation-umbra, 0 -11px 15px 1px $elevation-penumbra, 0 -4px 20px 3px $elevation-ambient !default;
-$shadow-up-12 : 0 -7px 8px -4px $elevation-umbra, 0 -12px 17px 2px $elevation-penumbra, 0 -5px 22px 4px $elevation-ambient !default;
-$shadow-up-13 : 0 -7px 8px -4px $elevation-umbra, 0 -13px 19px 2px $elevation-penumbra, 0 -5px 24px 4px $elevation-ambient !default;
-$shadow-up-14 : 0 -7px 9px -4px $elevation-umbra, 0 -14px 21px 2px $elevation-penumbra, 0 -5px 26px 4px $elevation-ambient !default;
-$shadow-up-15 : 0 -8px 9px -5px $elevation-umbra, 0 -15px 22px 2px $elevation-penumbra, 0 -6px 28px 5px $elevation-ambient !default;
-$shadow-up-16 : 0 -8px 10px -5px $elevation-umbra, 0 -16px 24px 2px $elevation-penumbra, 0 -6px 30px 5px $elevation-ambient !default;
-$shadow-up-17 : 0 -8px 11px -5px $elevation-umbra, 0 -17px 26px 2px $elevation-penumbra, 0 -6px 32px 5px $elevation-ambient !default;
-$shadow-up-18 : 0 -9px 11px -5px $elevation-umbra, 0 -18px 28px 2px $elevation-penumbra, 0 -7px 34px 6px $elevation-ambient !default;
-$shadow-up-19 : 0 -9px 12px -6px $elevation-umbra, 0 -19px 29px 2px $elevation-penumbra, 0 -7px 36px 6px $elevation-ambient !default;
-$shadow-up-20 : 0 -10px 13px -6px $elevation-umbra, 0 -20px 31px 3px $elevation-penumbra, 0 -8px 38px 7px $elevation-ambient !default;
-$shadow-up-21 : 0 -10px 13px -6px $elevation-umbra, 0 -21px 33px 3px $elevation-penumbra, 0 -8px 40px 7px $elevation-ambient !default;
-$shadow-up-22 : 0 -10px 14px -6px $elevation-umbra, 0 -22px 35px 3px $elevation-penumbra, 0 -8px 42px 7px $elevation-ambient !default;
-$shadow-up-23 : 0 -11px 14px -7px $elevation-umbra, 0 -23px 36px 3px $elevation-penumbra, 0 -9px 44px 8px $elevation-ambient !default;
-$shadow-up-24 : 0 -11px 15px -7px $elevation-umbra, 0 -24px 38px 3px $elevation-penumbra, 0 -9px 46px 8px $elevation-ambient !default;
-
-// sorry for long line; we need .sass and it doesn't support multi-line list
-$shadows-up: ($shadow-up-1, $shadow-up-2, $shadow-up-3, $shadow-up-4, $shadow-up-5, $shadow-up-6, $shadow-up-7, $shadow-up-8, $shadow-up-9, $shadow-up-10, $shadow-up-11, $shadow-up-12, $shadow-up-13, $shadow-up-14, $shadow-up-15, $shadow-up-16, $shadow-up-17, $shadow-up-18, $shadow-up-19, $shadow-up-20, $shadow-up-21, $shadow-up-22, $shadow-up-23, $shadow-up-24);
-
-$dark-shadow-color         : #fff !default;
-$inset-dark-shadow         : 0 7px 9px -7px rgba($dark-shadow-color, .7) inset !default;
-$inset-dark-shadow-down    : 0 -7px 9px -7px rgba($dark-shadow-color, .7) inset !default;
-
-$elevation-dark-umbra      : rgba($dark-shadow-color, .2) !default;
-$elevation-dark-penumbra   : rgba($dark-shadow-color, .14) !default;
-$elevation-dark-ambient    : rgba($dark-shadow-color, .12) !default;
-
-$dark-shadow-0  : 0 0 0 $elevation-dark-umbra, 0 0 0 $elevation-dark-penumbra, 0 0 0 $elevation-dark-ambient !default;
-$dark-shadow-1  : 0 1px 3px $elevation-dark-umbra, 0 1px 1px $elevation-dark-penumbra, 0 2px 1px -1px $elevation-dark-ambient !default;
-$dark-shadow-2  : 0 1px 5px $elevation-dark-umbra, 0 2px 2px $elevation-dark-penumbra, 0 3px 1px -2px $elevation-dark-ambient !default;
-$dark-shadow-3  : 0 1px 8px $elevation-dark-umbra, 0 3px 4px $elevation-dark-penumbra, 0 3px 3px -2px $elevation-dark-ambient !default;
-$dark-shadow-4  : 0 2px 4px -1px $elevation-dark-umbra, 0 4px 5px $elevation-dark-penumbra, 0 1px 10px $elevation-dark-ambient !default;
-$dark-shadow-5  : 0 3px 5px -1px $elevation-dark-umbra, 0 5px 8px $elevation-dark-penumbra, 0 1px 14px $elevation-dark-ambient !default;
-$dark-shadow-6  : 0 3px 5px -1px $elevation-dark-umbra, 0 6px 10px $elevation-dark-penumbra, 0 1px 18px $elevation-dark-ambient !default;
-$dark-shadow-7  : 0 4px 5px -2px $elevation-dark-umbra, 0 7px 10px 1px $elevation-dark-penumbra, 0 2px 16px 1px $elevation-dark-ambient !default;
-$dark-shadow-8  : 0 5px 5px -3px $elevation-dark-umbra, 0 8px 10px 1px $elevation-dark-penumbra, 0 3px 14px 2px $elevation-dark-ambient !default;
-$dark-shadow-9  : 0 5px 6px -3px $elevation-dark-umbra, 0 9px 12px 1px $elevation-dark-penumbra, 0 3px 16px 2px $elevation-dark-ambient !default;
-$dark-shadow-10 : 0 6px 6px -3px $elevation-dark-umbra, 0 10px 14px 1px $elevation-dark-penumbra, 0 4px 18px 3px $elevation-dark-ambient !default;
-$dark-shadow-11 : 0 6px 7px -4px $elevation-dark-umbra, 0 11px 15px 1px $elevation-dark-penumbra, 0 4px 20px 3px $elevation-dark-ambient !default;
-$dark-shadow-12 : 0 7px 8px -4px $elevation-dark-umbra, 0 12px 17px 2px $elevation-dark-penumbra, 0 5px 22px 4px $elevation-dark-ambient !default;
-$dark-shadow-13 : 0 7px 8px -4px $elevation-dark-umbra, 0 13px 19px 2px $elevation-dark-penumbra, 0 5px 24px 4px $elevation-dark-ambient !default;
-$dark-shadow-14 : 0 7px 9px -4px $elevation-dark-umbra, 0 14px 21px 2px $elevation-dark-penumbra, 0 5px 26px 4px $elevation-dark-ambient !default;
-$dark-shadow-15 : 0 8px 9px -5px $elevation-dark-umbra, 0 15px 22px 2px $elevation-dark-penumbra, 0 6px 28px 5px $elevation-dark-ambient !default;
-$dark-shadow-16 : 0 8px 10px -5px $elevation-dark-umbra, 0 16px 24px 2px $elevation-dark-penumbra, 0 6px 30px 5px $elevation-dark-ambient !default;
-$dark-shadow-17 : 0 8px 11px -5px $elevation-dark-umbra, 0 17px 26px 2px $elevation-dark-penumbra, 0 6px 32px 5px $elevation-dark-ambient !default;
-$dark-shadow-18 : 0 9px 11px -5px $elevation-dark-umbra, 0 18px 28px 2px $elevation-dark-penumbra, 0 7px 34px 6px $elevation-dark-ambient !default;
-$dark-shadow-19 : 0 9px 12px -6px $elevation-dark-umbra, 0 19px 29px 2px $elevation-dark-penumbra, 0 7px 36px 6px $elevation-dark-ambient !default;
-$dark-shadow-20 : 0 10px 13px -6px $elevation-dark-umbra, 0 20px 31px 3px $elevation-dark-penumbra, 0 8px 38px 7px $elevation-dark-ambient !default;
-$dark-shadow-21 : 0 10px 13px -6px $elevation-dark-umbra, 0 21px 33px 3px $elevation-dark-penumbra, 0 8px 40px 7px $elevation-dark-ambient !default;
-$dark-shadow-22 : 0 10px 14px -6px $elevation-dark-umbra, 0 22px 35px 3px $elevation-dark-penumbra, 0 8px 42px 7px $elevation-dark-ambient !default;
-$dark-shadow-23 : 0 11px 14px -7px $elevation-dark-umbra, 0 23px 36px 3px $elevation-dark-penumbra, 0 9px 44px 8px $elevation-dark-ambient !default;
-$dark-shadow-24 : 0 11px 15px -7px $elevation-dark-umbra, 0 24px 38px 3px $elevation-dark-penumbra, 0 9px 46px 8px $elevation-dark-ambient !default;
+$shadow-0 : 0 0 0 $elevation-umbra,
+0 0 0 $elevation-penumbra,
+0 0 0 $elevation-ambient !default;
+$shadow-1 : 0 1px 3px $elevation-umbra,
+0 1px 1px $elevation-penumbra,
+0 2px 1px -1px $elevation-ambient !default;
+$shadow-2 : 0 1px 5px $elevation-umbra,
+0 2px 2px $elevation-penumbra,
+0 3px 1px -2px $elevation-ambient !default;
+$shadow-3 : 0 1px 8px $elevation-umbra,
+0 3px 4px $elevation-penumbra,
+0 3px 3px -2px $elevation-ambient !default;
+$shadow-4 : 0 2px 4px -1px $elevation-umbra,
+0 4px 5px $elevation-penumbra,
+0 1px 10px $elevation-ambient !default;
+$shadow-5 : 0 3px 5px -1px $elevation-umbra,
+0 5px 8px $elevation-penumbra,
+0 1px 14px $elevation-ambient !default;
+$shadow-6 : 0 3px 5px -1px $elevation-umbra,
+0 6px 10px $elevation-penumbra,
+0 1px 18px $elevation-ambient !default;
+$shadow-7 : 0 4px 5px -2px $elevation-umbra,
+0 7px 10px 1px $elevation-penumbra,
+0 2px 16px 1px $elevation-ambient !default;
+$shadow-8 : 0 5px 5px -3px $elevation-umbra,
+0 8px 10px 1px $elevation-penumbra,
+0 3px 14px 2px $elevation-ambient !default;
+$shadow-9 : 0 5px 6px -3px $elevation-umbra,
+0 9px 12px 1px $elevation-penumbra,
+0 3px 16px 2px $elevation-ambient !default;
+$shadow-10 : 0 6px 6px -3px $elevation-umbra,
+0 10px 14px 1px $elevation-penumbra,
+0 4px 18px 3px $elevation-ambient !default;
+$shadow-11 : 0 6px 7px -4px $elevation-umbra,
+0 11px 15px 1px $elevation-penumbra,
+0 4px 20px 3px $elevation-ambient !default;
+$shadow-12 : 0 7px 8px -4px $elevation-umbra,
+0 12px 17px 2px $elevation-penumbra,
+0 5px 22px 4px $elevation-ambient !default;
+$shadow-13 : 0 7px 8px -4px $elevation-umbra,
+0 13px 19px 2px $elevation-penumbra,
+0 5px 24px 4px $elevation-ambient !default;
+$shadow-14 : 0 7px 9px -4px $elevation-umbra,
+0 14px 21px 2px $elevation-penumbra,
+0 5px 26px 4px $elevation-ambient !default;
+$shadow-15 : 0 8px 9px -5px $elevation-umbra,
+0 15px 22px 2px $elevation-penumbra,
+0 6px 28px 5px $elevation-ambient !default;
+$shadow-16 : 0 8px 10px -5px $elevation-umbra,
+0 16px 24px 2px $elevation-penumbra,
+0 6px 30px 5px $elevation-ambient !default;
+$shadow-17 : 0 8px 11px -5px $elevation-umbra,
+0 17px 26px 2px $elevation-penumbra,
+0 6px 32px 5px $elevation-ambient !default;
+$shadow-18 : 0 9px 11px -5px $elevation-umbra,
+0 18px 28px 2px $elevation-penumbra,
+0 7px 34px 6px $elevation-ambient !default;
+$shadow-19 : 0 9px 12px -6px $elevation-umbra,
+0 19px 29px 2px $elevation-penumbra,
+0 7px 36px 6px $elevation-ambient !default;
+$shadow-20 : 0 10px 13px -6px $elevation-umbra,
+0 20px 31px 3px $elevation-penumbra,
+0 8px 38px 7px $elevation-ambient !default;
+$shadow-21 : 0 10px 13px -6px $elevation-umbra,
+0 21px 33px 3px $elevation-penumbra,
+0 8px 40px 7px $elevation-ambient !default;
+$shadow-22 : 0 10px 14px -6px $elevation-umbra,
+0 22px 35px 3px $elevation-penumbra,
+0 8px 42px 7px $elevation-ambient !default;
+$shadow-23 : 0 11px 14px -7px $elevation-umbra,
+0 23px 36px 3px $elevation-penumbra,
+0 9px 44px 8px $elevation-ambient !default;
+$shadow-24 : 0 11px 15px -7px $elevation-umbra,
+0 24px 38px 3px $elevation-penumbra,
+0 9px 46px 8px $elevation-ambient !default;
 
 // sorry for long line; we need .sass and it doesn't support multi-line list
-$dark-shadows: ($dark-shadow-1, $dark-shadow-2, $dark-shadow-3, $dark-shadow-4, $dark-shadow-5, $dark-shadow-6, $dark-shadow-7, $dark-shadow-8, $dark-shadow-9, $dark-shadow-10, $dark-shadow-11, $dark-shadow-12, $dark-shadow-13, $dark-shadow-14, $dark-shadow-15, $dark-shadow-16, $dark-shadow-17, $dark-shadow-18, $dark-shadow-19, $dark-shadow-20, $dark-shadow-21, $dark-shadow-22, $dark-shadow-23, $dark-shadow-24);
+$shadows: (
+    $shadow-1,
+    $shadow-2,
+    $shadow-3,
+    $shadow-4,
+    $shadow-5,
+    $shadow-6,
+    $shadow-7,
+    $shadow-8,
+    $shadow-9,
+    $shadow-10,
+    $shadow-11,
+    $shadow-12,
+    $shadow-13,
+    $shadow-14,
+    $shadow-15,
+    $shadow-16,
+    $shadow-17,
+    $shadow-18,
+    $shadow-19,
+    $shadow-20,
+    $shadow-21,
+    $shadow-22,
+    $shadow-23,
+    $shadow-24
+);
 
-$dark-shadow-up-0  : 0 0 0 $elevation-dark-umbra, 0 0 0 $elevation-dark-penumbra, 0 0 0 $elevation-dark-ambient !default;
-$dark-shadow-up-1  : 0 -1px 3px $elevation-dark-umbra, 0 -1px 1px $elevation-dark-penumbra, 0 -2px 1px -1px $elevation-dark-ambient !default;
-$dark-shadow-up-2  : 0 -1px 5px $elevation-dark-umbra, 0 -2px 2px $elevation-dark-penumbra, 0 -3px 1px -2px $elevation-dark-ambient !default;
-$dark-shadow-up-3  : 0 -1px 8px $elevation-dark-umbra, 0 -3px 4px $elevation-dark-penumbra, 0 -3px 3px -2px $elevation-dark-ambient !default;
-$dark-shadow-up-4  : 0 -2px 4px -1px $elevation-dark-umbra, 0 -4px 5px $elevation-dark-penumbra, 0 -1px 10px $elevation-dark-ambient !default;
-$dark-shadow-up-5  : 0 -3px 5px -1px $elevation-dark-umbra, 0 -5px 8px $elevation-dark-penumbra, 0 -1px 14px $elevation-dark-ambient !default;
-$dark-shadow-up-6  : 0 -3px 5px -1px $elevation-dark-umbra, 0 -6px 10px $elevation-dark-penumbra, 0 -1px 18px $elevation-dark-ambient !default;
-$dark-shadow-up-7  : 0 -4px 5px -2px $elevation-dark-umbra, 0 -7px 10px 1px $elevation-dark-penumbra, 0 -2px 16px 1px $elevation-dark-ambient !default;
-$dark-shadow-up-8  : 0 -5px 5px -3px $elevation-dark-umbra, 0 -8px 10px 1px $elevation-dark-penumbra, 0 -3px 14px 2px $elevation-dark-ambient !default;
-$dark-shadow-up-9  : 0 -5px 6px -3px $elevation-dark-umbra, 0 -9px 12px 1px $elevation-dark-penumbra, 0 -3px 16px 2px $elevation-dark-ambient !default;
-$dark-shadow-up-10 : 0 -6px 6px -3px $elevation-dark-umbra, 0 -10px 14px 1px $elevation-dark-penumbra, 0 -4px 18px 3px $elevation-dark-ambient !default;
-$dark-shadow-up-11 : 0 -6px 7px -4px $elevation-dark-umbra, 0 -11px 15px 1px $elevation-dark-penumbra, 0 -4px 20px 3px $elevation-dark-ambient !default;
-$dark-shadow-up-12 : 0 -7px 8px -4px $elevation-dark-umbra, 0 -12px 17px 2px $elevation-dark-penumbra, 0 -5px 22px 4px $elevation-dark-ambient !default;
-$dark-shadow-up-13 : 0 -7px 8px -4px $elevation-dark-umbra, 0 -13px 19px 2px $elevation-dark-penumbra, 0 -5px 24px 4px $elevation-dark-ambient !default;
-$dark-shadow-up-14 : 0 -7px 9px -4px $elevation-dark-umbra, 0 -14px 21px 2px $elevation-dark-penumbra, 0 -5px 26px 4px $elevation-dark-ambient !default;
-$dark-shadow-up-15 : 0 -8px 9px -5px $elevation-dark-umbra, 0 -15px 22px 2px $elevation-dark-penumbra, 0 -6px 28px 5px $elevation-dark-ambient !default;
-$dark-shadow-up-16 : 0 -8px 10px -5px $elevation-dark-umbra, 0 -16px 24px 2px $elevation-dark-penumbra, 0 -6px 30px 5px $elevation-dark-ambient !default;
-$dark-shadow-up-17 : 0 -8px 11px -5px $elevation-dark-umbra, 0 -17px 26px 2px $elevation-dark-penumbra, 0 -6px 32px 5px $elevation-dark-ambient !default;
-$dark-shadow-up-18 : 0 -9px 11px -5px $elevation-dark-umbra, 0 -18px 28px 2px $elevation-dark-penumbra, 0 -7px 34px 6px $elevation-dark-ambient !default;
-$dark-shadow-up-19 : 0 -9px 12px -6px $elevation-dark-umbra, 0 -19px 29px 2px $elevation-dark-penumbra, 0 -7px 36px 6px $elevation-dark-ambient !default;
-$dark-shadow-up-20 : 0 -10px 13px -6px $elevation-dark-umbra, 0 -20px 31px 3px $elevation-dark-penumbra, 0 -8px 38px 7px $elevation-dark-ambient !default;
-$dark-shadow-up-21 : 0 -10px 13px -6px $elevation-dark-umbra, 0 -21px 33px 3px $elevation-dark-penumbra, 0 -8px 40px 7px $elevation-dark-ambient !default;
-$dark-shadow-up-22 : 0 -10px 14px -6px $elevation-dark-umbra, 0 -22px 35px 3px $elevation-dark-penumbra, 0 -8px 42px 7px $elevation-dark-ambient !default;
-$dark-shadow-up-23 : 0 -11px 14px -7px $elevation-dark-umbra, 0 -23px 36px 3px $elevation-dark-penumbra, 0 -9px 44px 8px $elevation-dark-ambient !default;
-$dark-shadow-up-24 : 0 -11px 15px -7px $elevation-dark-umbra, 0 -24px 38px 3px $elevation-dark-penumbra, 0 -9px 46px 8px $elevation-dark-ambient !default;
+$shadow-up-0 : 0 0 0 $elevation-umbra,
+0 0 0 $elevation-penumbra,
+0 0 0 $elevation-ambient !default;
+$shadow-up-1 : 0 -1px 3px $elevation-umbra,
+0 -1px 1px $elevation-penumbra,
+0 -2px 1px -1px $elevation-ambient !default;
+$shadow-up-2 : 0 -1px 5px $elevation-umbra,
+0 -2px 2px $elevation-penumbra,
+0 -3px 1px -2px $elevation-ambient !default;
+$shadow-up-3 : 0 -1px 8px $elevation-umbra,
+0 -3px 4px $elevation-penumbra,
+0 -3px 3px -2px $elevation-ambient !default;
+$shadow-up-4 : 0 -2px 4px -1px $elevation-umbra,
+0 -4px 5px $elevation-penumbra,
+0 -1px 10px $elevation-ambient !default;
+$shadow-up-5 : 0 -3px 5px -1px $elevation-umbra,
+0 -5px 8px $elevation-penumbra,
+0 -1px 14px $elevation-ambient !default;
+$shadow-up-6 : 0 -3px 5px -1px $elevation-umbra,
+0 -6px 10px $elevation-penumbra,
+0 -1px 18px $elevation-ambient !default;
+$shadow-up-7 : 0 -4px 5px -2px $elevation-umbra,
+0 -7px 10px 1px $elevation-penumbra,
+0 -2px 16px 1px $elevation-ambient !default;
+$shadow-up-8 : 0 -5px 5px -3px $elevation-umbra,
+0 -8px 10px 1px $elevation-penumbra,
+0 -3px 14px 2px $elevation-ambient !default;
+$shadow-up-9 : 0 -5px 6px -3px $elevation-umbra,
+0 -9px 12px 1px $elevation-penumbra,
+0 -3px 16px 2px $elevation-ambient !default;
+$shadow-up-10 : 0 -6px 6px -3px $elevation-umbra,
+0 -10px 14px 1px $elevation-penumbra,
+0 -4px 18px 3px $elevation-ambient !default;
+$shadow-up-11 : 0 -6px 7px -4px $elevation-umbra,
+0 -11px 15px 1px $elevation-penumbra,
+0 -4px 20px 3px $elevation-ambient !default;
+$shadow-up-12 : 0 -7px 8px -4px $elevation-umbra,
+0 -12px 17px 2px $elevation-penumbra,
+0 -5px 22px 4px $elevation-ambient !default;
+$shadow-up-13 : 0 -7px 8px -4px $elevation-umbra,
+0 -13px 19px 2px $elevation-penumbra,
+0 -5px 24px 4px $elevation-ambient !default;
+$shadow-up-14 : 0 -7px 9px -4px $elevation-umbra,
+0 -14px 21px 2px $elevation-penumbra,
+0 -5px 26px 4px $elevation-ambient !default;
+$shadow-up-15 : 0 -8px 9px -5px $elevation-umbra,
+0 -15px 22px 2px $elevation-penumbra,
+0 -6px 28px 5px $elevation-ambient !default;
+$shadow-up-16 : 0 -8px 10px -5px $elevation-umbra,
+0 -16px 24px 2px $elevation-penumbra,
+0 -6px 30px 5px $elevation-ambient !default;
+$shadow-up-17 : 0 -8px 11px -5px $elevation-umbra,
+0 -17px 26px 2px $elevation-penumbra,
+0 -6px 32px 5px $elevation-ambient !default;
+$shadow-up-18 : 0 -9px 11px -5px $elevation-umbra,
+0 -18px 28px 2px $elevation-penumbra,
+0 -7px 34px 6px $elevation-ambient !default;
+$shadow-up-19 : 0 -9px 12px -6px $elevation-umbra,
+0 -19px 29px 2px $elevation-penumbra,
+0 -7px 36px 6px $elevation-ambient !default;
+$shadow-up-20 : 0 -10px 13px -6px $elevation-umbra,
+0 -20px 31px 3px $elevation-penumbra,
+0 -8px 38px 7px $elevation-ambient !default;
+$shadow-up-21 : 0 -10px 13px -6px $elevation-umbra,
+0 -21px 33px 3px $elevation-penumbra,
+0 -8px 40px 7px $elevation-ambient !default;
+$shadow-up-22 : 0 -10px 14px -6px $elevation-umbra,
+0 -22px 35px 3px $elevation-penumbra,
+0 -8px 42px 7px $elevation-ambient !default;
+$shadow-up-23 : 0 -11px 14px -7px $elevation-umbra,
+0 -23px 36px 3px $elevation-penumbra,
+0 -9px 44px 8px $elevation-ambient !default;
+$shadow-up-24 : 0 -11px 15px -7px $elevation-umbra,
+0 -24px 38px 3px $elevation-penumbra,
+0 -9px 46px 8px $elevation-ambient !default;
 
 // sorry for long line; we need .sass and it doesn't support multi-line list
-$dark-shadows-up: ($dark-shadow-up-1, $dark-shadow-up-2, $dark-shadow-up-3, $dark-shadow-up-4, $dark-shadow-up-5, $dark-shadow-up-6, $dark-shadow-up-7, $dark-shadow-up-8, $dark-shadow-up-9, $dark-shadow-up-10, $dark-shadow-up-11, $dark-shadow-up-12, $dark-shadow-up-13, $dark-shadow-up-14, $dark-shadow-up-15, $dark-shadow-up-16, $dark-shadow-up-17, $dark-shadow-up-18, $dark-shadow-up-19, $dark-shadow-up-20, $dark-shadow-up-21, $dark-shadow-up-22, $dark-shadow-up-23, $dark-shadow-up-24);
+$shadows-up: (
+    $shadow-up-1,
+    $shadow-up-2,
+    $shadow-up-3,
+    $shadow-up-4,
+    $shadow-up-5,
+    $shadow-up-6,
+    $shadow-up-7,
+    $shadow-up-8,
+    $shadow-up-9,
+    $shadow-up-10,
+    $shadow-up-11,
+    $shadow-up-12,
+    $shadow-up-13,
+    $shadow-up-14,
+    $shadow-up-15,
+    $shadow-up-16,
+    $shadow-up-17,
+    $shadow-up-18,
+    $shadow-up-19,
+    $shadow-up-20,
+    $shadow-up-21,
+    $shadow-up-22,
+    $shadow-up-23,
+    $shadow-up-24
+);
 
-$generic-border-radius          : 10px !default;
-$generic-hover-transition       : .3s cubic-bezier(.25, .8, .5, 1) !default;
-$typography-font-family         : 'Roboto', '-apple-system', 'Helvetica Neue', Helvetica, Arial, sans-serif !default;
-$min-line-height                : 1.12 !default;
+$dark-shadow-color : #fff !default;
+$inset-dark-shadow : 0 7px 9px -7px rgba($dark-shadow-color, .7) inset !default;
+$inset-dark-shadow-down : 0 -7px 9px -7px rgba($dark-shadow-color, .7) inset !default;
 
-$button-border-radius           : 8px !default;
-$button-padding                 : 4px 16px !default;
-$button-dense-padding           : .285em !default;
-$button-transition              : $generic-hover-transition !default;
-$button-font-size               : 14px !default;
-$button-line-height             : 1.715em !default;
-$button-font-weight             : 500 !default;
-$button-shadow                  : $shadow-2 !default;
-$button-shadow-active           : $shadow-5 !default;
-$button-rounded-border-radius   : 28px !default;
-$button-push-border-radius      : 7px !default;
+$elevation-dark-umbra : rgba($dark-shadow-color, .2) !default;
+$elevation-dark-penumbra : rgba($dark-shadow-color, .14) !default;
+$elevation-dark-ambient : rgba($dark-shadow-color, .12) !default;
 
-$chat-message-received-color    : #000 !default;
-$chat-message-received-bg       : $green-4 !default;
-$chat-message-sent-color        : #000 !default;
-$chat-message-sent-bg           : $grey-4 !default;
-$chat-message-avatar-size       : 48px !default;
-$chat-message-border-radius     : $generic-border-radius !default;
-$chat-message-distance          : 8px !default;
-$chat-message-text-padding      : 8px !default;
+$dark-shadow-0 : 0 0 0 $elevation-dark-umbra,
+0 0 0 $elevation-dark-penumbra,
+0 0 0 $elevation-dark-ambient !default;
+$dark-shadow-1 : 0 1px 3px $elevation-dark-umbra,
+0 1px 1px $elevation-dark-penumbra,
+0 2px 1px -1px $elevation-dark-ambient !default;
+$dark-shadow-2 : 0 1px 5px $elevation-dark-umbra,
+0 2px 2px $elevation-dark-penumbra,
+0 3px 1px -2px $elevation-dark-ambient !default;
+$dark-shadow-3 : 0 1px 8px $elevation-dark-umbra,
+0 3px 4px $elevation-dark-penumbra,
+0 3px 3px -2px $elevation-dark-ambient !default;
+$dark-shadow-4 : 0 2px 4px -1px $elevation-dark-umbra,
+0 4px 5px $elevation-dark-penumbra,
+0 1px 10px $elevation-dark-ambient !default;
+$dark-shadow-5 : 0 3px 5px -1px $elevation-dark-umbra,
+0 5px 8px $elevation-dark-penumbra,
+0 1px 14px $elevation-dark-ambient !default;
+$dark-shadow-6 : 0 3px 5px -1px $elevation-dark-umbra,
+0 6px 10px $elevation-dark-penumbra,
+0 1px 18px $elevation-dark-ambient !default;
+$dark-shadow-7 : 0 4px 5px -2px $elevation-dark-umbra,
+0 7px 10px 1px $elevation-dark-penumbra,
+0 2px 16px 1px $elevation-dark-ambient !default;
+$dark-shadow-8 : 0 5px 5px -3px $elevation-dark-umbra,
+0 8px 10px 1px $elevation-dark-penumbra,
+0 3px 14px 2px $elevation-dark-ambient !default;
+$dark-shadow-9 : 0 5px 6px -3px $elevation-dark-umbra,
+0 9px 12px 1px $elevation-dark-penumbra,
+0 3px 16px 2px $elevation-dark-ambient !default;
+$dark-shadow-10 : 0 6px 6px -3px $elevation-dark-umbra,
+0 10px 14px 1px $elevation-dark-penumbra,
+0 4px 18px 3px $elevation-dark-ambient !default;
+$dark-shadow-11 : 0 6px 7px -4px $elevation-dark-umbra,
+0 11px 15px 1px $elevation-dark-penumbra,
+0 4px 20px 3px $elevation-dark-ambient !default;
+$dark-shadow-12 : 0 7px 8px -4px $elevation-dark-umbra,
+0 12px 17px 2px $elevation-dark-penumbra,
+0 5px 22px 4px $elevation-dark-ambient !default;
+$dark-shadow-13 : 0 7px 8px -4px $elevation-dark-umbra,
+0 13px 19px 2px $elevation-dark-penumbra,
+0 5px 24px 4px $elevation-dark-ambient !default;
+$dark-shadow-14 : 0 7px 9px -4px $elevation-dark-umbra,
+0 14px 21px 2px $elevation-dark-penumbra,
+0 5px 26px 4px $elevation-dark-ambient !default;
+$dark-shadow-15 : 0 8px 9px -5px $elevation-dark-umbra,
+0 15px 22px 2px $elevation-dark-penumbra,
+0 6px 28px 5px $elevation-dark-ambient !default;
+$dark-shadow-16 : 0 8px 10px -5px $elevation-dark-umbra,
+0 16px 24px 2px $elevation-dark-penumbra,
+0 6px 30px 5px $elevation-dark-ambient !default;
+$dark-shadow-17 : 0 8px 11px -5px $elevation-dark-umbra,
+0 17px 26px 2px $elevation-dark-penumbra,
+0 6px 32px 5px $elevation-dark-ambient !default;
+$dark-shadow-18 : 0 9px 11px -5px $elevation-dark-umbra,
+0 18px 28px 2px $elevation-dark-penumbra,
+0 7px 34px 6px $elevation-dark-ambient !default;
+$dark-shadow-19 : 0 9px 12px -6px $elevation-dark-umbra,
+0 19px 29px 2px $elevation-dark-penumbra,
+0 7px 36px 6px $elevation-dark-ambient !default;
+$dark-shadow-20 : 0 10px 13px -6px $elevation-dark-umbra,
+0 20px 31px 3px $elevation-dark-penumbra,
+0 8px 38px 7px $elevation-dark-ambient !default;
+$dark-shadow-21 : 0 10px 13px -6px $elevation-dark-umbra,
+0 21px 33px 3px $elevation-dark-penumbra,
+0 8px 40px 7px $elevation-dark-ambient !default;
+$dark-shadow-22 : 0 10px 14px -6px $elevation-dark-umbra,
+0 22px 35px 3px $elevation-dark-penumbra,
+0 8px 42px 7px $elevation-dark-ambient !default;
+$dark-shadow-23 : 0 11px 14px -7px $elevation-dark-umbra,
+0 23px 36px 3px $elevation-dark-penumbra,
+0 9px 44px 8px $elevation-dark-ambient !default;
+$dark-shadow-24 : 0 11px 15px -7px $elevation-dark-umbra,
+0 24px 38px 3px $elevation-dark-penumbra,
+0 9px 46px 8px $elevation-dark-ambient !default;
 
-$item-base-color                : $grey-5 !default;
+// sorry for long line; we need .sass and it doesn't support multi-line list
+$dark-shadows: (
+    $dark-shadow-1,
+    $dark-shadow-2,
+    $dark-shadow-3,
+    $dark-shadow-4,
+    $dark-shadow-5,
+    $dark-shadow-6,
+    $dark-shadow-7,
+    $dark-shadow-8,
+    $dark-shadow-9,
+    $dark-shadow-10,
+    $dark-shadow-11,
+    $dark-shadow-12,
+    $dark-shadow-13,
+    $dark-shadow-14,
+    $dark-shadow-15,
+    $dark-shadow-16,
+    $dark-shadow-17,
+    $dark-shadow-18,
+    $dark-shadow-19,
+    $dark-shadow-20,
+    $dark-shadow-21,
+    $dark-shadow-22,
+    $dark-shadow-23,
+    $dark-shadow-24
+);
 
-$editor-border-color            : $separator-color !default;
-$editor-border-dark-color       : $separator-dark-color !default;
-$editor-content-padding         : 10px !default;
-$editor-content-min-height      : 10em !default;
-$editor-toolbar-padding         : 4px !default;
-$editor-hr-color                : $editor-border-color !default;
-$editor-hr-dark-color           : $editor-border-dark-color !default;
-$editor-button-gutter           : 4px !default;
+$dark-shadow-up-0 : 0 0 0 $elevation-dark-umbra,
+0 0 0 $elevation-dark-penumbra,
+0 0 0 $elevation-dark-ambient !default;
+$dark-shadow-up-1 : 0 -1px 3px $elevation-dark-umbra,
+0 -1px 1px $elevation-dark-penumbra,
+0 -2px 1px -1px $elevation-dark-ambient !default;
+$dark-shadow-up-2 : 0 -1px 5px $elevation-dark-umbra,
+0 -2px 2px $elevation-dark-penumbra,
+0 -3px 1px -2px $elevation-dark-ambient !default;
+$dark-shadow-up-3 : 0 -1px 8px $elevation-dark-umbra,
+0 -3px 4px $elevation-dark-penumbra,
+0 -3px 3px -2px $elevation-dark-ambient !default;
+$dark-shadow-up-4 : 0 -2px 4px -1px $elevation-dark-umbra,
+0 -4px 5px $elevation-dark-penumbra,
+0 -1px 10px $elevation-dark-ambient !default;
+$dark-shadow-up-5 : 0 -3px 5px -1px $elevation-dark-umbra,
+0 -5px 8px $elevation-dark-penumbra,
+0 -1px 14px $elevation-dark-ambient !default;
+$dark-shadow-up-6 : 0 -3px 5px -1px $elevation-dark-umbra,
+0 -6px 10px $elevation-dark-penumbra,
+0 -1px 18px $elevation-dark-ambient !default;
+$dark-shadow-up-7 : 0 -4px 5px -2px $elevation-dark-umbra,
+0 -7px 10px 1px $elevation-dark-penumbra,
+0 -2px 16px 1px $elevation-dark-ambient !default;
+$dark-shadow-up-8 : 0 -5px 5px -3px $elevation-dark-umbra,
+0 -8px 10px 1px $elevation-dark-penumbra,
+0 -3px 14px 2px $elevation-dark-ambient !default;
+$dark-shadow-up-9 : 0 -5px 6px -3px $elevation-dark-umbra,
+0 -9px 12px 1px $elevation-dark-penumbra,
+0 -3px 16px 2px $elevation-dark-ambient !default;
+$dark-shadow-up-10 : 0 -6px 6px -3px $elevation-dark-umbra,
+0 -10px 14px 1px $elevation-dark-penumbra,
+0 -4px 18px 3px $elevation-dark-ambient !default;
+$dark-shadow-up-11 : 0 -6px 7px -4px $elevation-dark-umbra,
+0 -11px 15px 1px $elevation-dark-penumbra,
+0 -4px 20px 3px $elevation-dark-ambient !default;
+$dark-shadow-up-12 : 0 -7px 8px -4px $elevation-dark-umbra,
+0 -12px 17px 2px $elevation-dark-penumbra,
+0 -5px 22px 4px $elevation-dark-ambient !default;
+$dark-shadow-up-13 : 0 -7px 8px -4px $elevation-dark-umbra,
+0 -13px 19px 2px $elevation-dark-penumbra,
+0 -5px 24px 4px $elevation-dark-ambient !default;
+$dark-shadow-up-14 : 0 -7px 9px -4px $elevation-dark-umbra,
+0 -14px 21px 2px $elevation-dark-penumbra,
+0 -5px 26px 4px $elevation-dark-ambient !default;
+$dark-shadow-up-15 : 0 -8px 9px -5px $elevation-dark-umbra,
+0 -15px 22px 2px $elevation-dark-penumbra,
+0 -6px 28px 5px $elevation-dark-ambient !default;
+$dark-shadow-up-16 : 0 -8px 10px -5px $elevation-dark-umbra,
+0 -16px 24px 2px $elevation-dark-penumbra,
+0 -6px 30px 5px $elevation-dark-ambient !default;
+$dark-shadow-up-17 : 0 -8px 11px -5px $elevation-dark-umbra,
+0 -17px 26px 2px $elevation-dark-penumbra,
+0 -6px 32px 5px $elevation-dark-ambient !default;
+$dark-shadow-up-18 : 0 -9px 11px -5px $elevation-dark-umbra,
+0 -18px 28px 2px $elevation-dark-penumbra,
+0 -7px 34px 6px $elevation-dark-ambient !default;
+$dark-shadow-up-19 : 0 -9px 12px -6px $elevation-dark-umbra,
+0 -19px 29px 2px $elevation-dark-penumbra,
+0 -7px 36px 6px $elevation-dark-ambient !default;
+$dark-shadow-up-20 : 0 -10px 13px -6px $elevation-dark-umbra,
+0 -20px 31px 3px $elevation-dark-penumbra,
+0 -8px 38px 7px $elevation-dark-ambient !default;
+$dark-shadow-up-21 : 0 -10px 13px -6px $elevation-dark-umbra,
+0 -21px 33px 3px $elevation-dark-penumbra,
+0 -8px 40px 7px $elevation-dark-ambient !default;
+$dark-shadow-up-22 : 0 -10px 14px -6px $elevation-dark-umbra,
+0 -22px 35px 3px $elevation-dark-penumbra,
+0 -8px 42px 7px $elevation-dark-ambient !default;
+$dark-shadow-up-23 : 0 -11px 14px -7px $elevation-dark-umbra,
+0 -23px 36px 3px $elevation-dark-penumbra,
+0 -9px 44px 8px $elevation-dark-ambient !default;
+$dark-shadow-up-24 : 0 -11px 15px -7px $elevation-dark-umbra,
+0 -24px 38px 3px $elevation-dark-penumbra,
+0 -9px 46px 8px $elevation-dark-ambient !default;
 
-$table-transition               : $generic-hover-transition !default;
-$table-border-radius            : $generic-border-radius !default;
-$table-box-shadow               : $shadow-2 !default;
+// sorry for long line; we need .sass and it doesn't support multi-line list
+$dark-shadows-up: (
+    $dark-shadow-up-1,
+    $dark-shadow-up-2,
+    $dark-shadow-up-3,
+    $dark-shadow-up-4,
+    $dark-shadow-up-5,
+    $dark-shadow-up-6,
+    $dark-shadow-up-7,
+    $dark-shadow-up-8,
+    $dark-shadow-up-9,
+    $dark-shadow-up-10,
+    $dark-shadow-up-11,
+    $dark-shadow-up-12,
+    $dark-shadow-up-13,
+    $dark-shadow-up-14,
+    $dark-shadow-up-15,
+    $dark-shadow-up-16,
+    $dark-shadow-up-17,
+    $dark-shadow-up-18,
+    $dark-shadow-up-19,
+    $dark-shadow-up-20,
+    $dark-shadow-up-21,
+    $dark-shadow-up-22,
+    $dark-shadow-up-23,
+    $dark-shadow-up-24
+);
 
-$table-border-color             : $separator-color !default;
-$table-hover-background         : rgba(0, 0, 0, .03) !default;
-$table-selected-background      : rgba(0, 0, 0, .06) !default;
+$generic-border-radius : 10px !default;
+$generic-hover-transition : .3s cubic-bezier(.25, .8, .5, 1) !default;
+$typography-font-family : 'Roboto',
+'-apple-system',
+'Helvetica Neue',
+Helvetica,
+Arial,
+sans-serif !default;
+$min-line-height : 1.12 !default;
 
-$table-dark-border-color        : $separator-dark-color !default;
-$table-dark-hover-background    : rgba(255, 255, 255, .07) !default;
+$button-border-radius : 8px !default;
+$button-padding : 4px 16px !default;
+$button-dense-padding : .285em !default;
+$button-transition : $generic-hover-transition !default;
+$button-font-size : 14px !default;
+$button-line-height : 1.715em !default;
+$button-font-weight : 500 !default;
+$button-shadow : $shadow-2 !default;
+$button-shadow-active : $shadow-5 !default;
+$button-rounded-border-radius : 28px !default;
+$button-push-border-radius : 7px !default;
+
+$chat-message-received-color : #000 !default;
+$chat-message-received-bg : $green-4 !default;
+$chat-message-sent-color : #000 !default;
+$chat-message-sent-bg : $grey-4 !default;
+$chat-message-avatar-size : 48px !default;
+$chat-message-border-radius : $generic-border-radius !default;
+$chat-message-distance : 8px !default;
+$chat-message-text-padding : 8px !default;
+
+$item-base-color : $grey-5 !default;
+
+$editor-border-color : $separator-color !default;
+$editor-border-dark-color : $separator-dark-color !default;
+$editor-content-padding : 10px !default;
+$editor-content-min-height : 10em !default;
+$editor-toolbar-padding : 4px !default;
+$editor-hr-color : $editor-border-color !default;
+$editor-hr-dark-color : $editor-border-dark-color !default;
+$editor-button-gutter : 4px !default;
+
+$table-transition : $generic-hover-transition !default;
+$table-border-radius : $generic-border-radius !default;
+$table-box-shadow : $shadow-2 !default;
+
+$table-border-color : $separator-color !default;
+$table-hover-background : rgba(0, 0, 0, .03) !default;
+$table-selected-background : rgba(0, 0, 0, .06) !default;
+
+$table-dark-border-color : $separator-dark-color !default;
+$table-dark-hover-background : rgba(255, 255, 255, .07) !default;
 $table-dark-selected-background : rgba(255, 255, 255, .1) !default;
-$table-box-shadow-dark          : $dark-shadow-2 !default;
+$table-box-shadow-dark : $dark-shadow-2 !default;
 
-$toolbar-min-height             : 50px !default;
-$toolbar-padding                : 0 12px !default;
-$toolbar-inset-size             : 58px !default;
-$toolbar-title-font-size        : 21px !default;
-$toolbar-title-font-weight      : normal !default;
-$toolbar-title-letter-spacing   : .01em !default;
-$toolbar-title-padding          : 0 12px !default;
+$toolbar-min-height : 50px !default;
+$toolbar-padding : 0 12px !default;
+$toolbar-inset-size : 58px !default;
+$toolbar-title-font-size : 21px !default;
+$toolbar-title-font-weight : normal !default;
+$toolbar-title-letter-spacing : .01em !default;
+$toolbar-title-padding : 0 12px !default;
 
-$layout-border                  : 1px solid $separator-color !default;
-$layout-shadow                  : 0 0 10px 2px rgba($shadow-color,0.2), 0 0px 10px rgba($shadow-color,0.24) !default;
-$layout-shadow-dark             : 0 0 10px 2px rgba($dark-shadow-color,.2), 0 0px 10px rgba($dark-shadow-color,.24) !default;
+$layout-border : 1px solid $separator-color !default;
+$layout-shadow : 0 0 10px 2px rgba($shadow-color, 0.2),
+0 0px 10px rgba($shadow-color, 0.24) !default;
+$layout-shadow-dark : 0 0 10px 2px rgba($dark-shadow-color, .2),
+0 0px 10px rgba($dark-shadow-color, .24) !default;
 
-$menu-background                : #fff !default;
-$menu-box-shadow                : $shadow-2 !default;
-$menu-box-shadow-dark           : $dark-shadow-2 !default;
-$menu-max-width                 : 95vw !default;
+$menu-background : #fff !default;
+$menu-box-shadow : $shadow-2 !default;
+$menu-box-shadow-dark : $dark-shadow-2 !default;
+$menu-max-width : 95vw !default;
 
-$rating-grade-color             : $yellow !default;
-$rating-shadow                  : 0 1px 3px rgba(0, 0, 0, .12), 0 1px 2px rgba(0, 0, 0, .24) !default;
+$rating-grade-color : $yellow !default;
+$rating-shadow : 0 1px 3px rgba(0, 0, 0, .12),
+0 1px 2px rgba(0, 0, 0, .24) !default;
 
-$tooltip-color                  : #fafafa !default;
-$tooltip-background             : $grey-7 !default;
-$tooltip-padding                : 6px 10px !default;
-$tooltip-border-radius          : $generic-border-radius !default;
-$tooltip-fontsize               : 10px !default;
-$tooltip-mobile-padding         : 8px 16px !default;
-$tooltip-mobile-fontsize        : 14px !default;
+$tooltip-color : #fafafa !default;
+$tooltip-background : $grey-7 !default;
+$tooltip-padding : 6px 10px !default;
+$tooltip-border-radius : $generic-border-radius !default;
+$tooltip-fontsize : 10px !default;
+$tooltip-mobile-padding : 8px 16px !default;
+$tooltip-mobile-fontsize : 14px !default;
 
-$option-focus-transition        : .22s cubic-bezier(0,0,.2,1) !default;
+$option-focus-transition : .22s cubic-bezier(0, 0, .2, 1) !default;
 
-$input-font-size                : 14px !default;
-$input-text-color               : rgba(0,0,0,.87) !default;
-$input-label-color              : rgba(0,0,0,.6) !default;
-$input-autofill-color           : inherit !default;
+$input-font-size : 14px !default;
+$input-text-color : rgba(0, 0, 0, .87) !default;
+$input-label-color : rgba(0, 0, 0, .6) !default;
+$input-autofill-color : inherit !default;
 
-$img-loading-font-size          : 50px !default;
-$img-content-position           : absolute !default;
-$img-content-padding            : 16px !default;
-$img-content-color              : #fff !default;
-$img-content-background         : rgba(0, 0, 0, .47) !default;
+$img-loading-font-size : 50px !default;
+$img-content-position : absolute !default;
+$img-content-padding : 16px !default;
+$img-content-color : #fff !default;
+$img-content-background : rgba(0, 0, 0, .47) !default;
