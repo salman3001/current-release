@@ -21,15 +21,27 @@
     flex-wrap: wrap;
 }
 
-$primary : #7400a6;
-$secondary : #9d70c2;
-$accent : #048a66;
-$dark : #1d1d1d;
+// $primary : #333333;
+// $secondary : #0080ff;
+// $accent : #048a66;
+// $dark : #1d1d1d;
+// $dark-page : #121212;
+// $positive : #21bA45;
+// $negative : #d12438;
+// $info : #bbbad4;
+// $warning : #F2C037;
+
+$primary   : #058654;
+$secondary : #08072c;
+$accent    : #000000;
+
+$dark      : #1d1d1d;
 $dark-page : #121212;
-$positive : #21bA45;
-$negative : #d12438;
-$info : #bbbad4;
-$warning : #F2C037;
+
+$positive  : #21BA45;
+$negative  : #C10015;
+$info      : #31CCEC;
+$warning   : #F2C037;
 
 $space-base : 16px !default;
 $space-x-base : $space-base !default;
@@ -1054,4 +1066,5 @@ $img-content-background : rgba(0, 0, 0, .47) !default;
 
 a{
     color: $primary;
+    text-decoration: none;
 }

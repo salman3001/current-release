@@ -3,11 +3,15 @@ import { Notify } from "quasar";
 import { ref } from "vue";
 
 const authStore = defineStore("Auth", () => {
-  const adminLogin = async (email: string, password: string) => {
+  const login = async (
+    email: string,
+    password: string,
+    userType: "admin" | "vendor" | "customer"
+  ) => {
     try {
-      const res = await $fetch("/api/auth/admin-login", {
+      const res = await $fetch("/api/auth/login", {
         method: "post",
-        body: { email, password },
+        body: { email, password, userType },
       });
       Notify.create({ message: "Login Successfull!", color: "positive" });
       return res;
@@ -17,9 +21,15 @@ const authStore = defineStore("Auth", () => {
     }
   };
 
-  const adminLogout = async (onSuccess?: () => void) => {
+  const logout = async (
+    userType: "admin" | "vendor" | "customer",
+    onSuccess?: () => void
+  ) => {
     try {
-      await $fetch("/api/auth/admin-logout");
+      await $fetch("/api/auth/logout", {
+        method: "post",
+        body: { userType },
+      });
       Notify.create({
         message: "Logout Successfull!",
         color: "positive",
@@ -87,10 +97,10 @@ const authStore = defineStore("Auth", () => {
   };
 
   return {
-    adminLogin,
+    login,
     getOtp,
     verifyOtpAndUpdatePWD,
-    adminLogout,
+    logout,
   };
 });
 

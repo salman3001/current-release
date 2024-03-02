@@ -11,13 +11,15 @@ const $q = useQuasar()
 const form = ref({
   email: '',
   password: '',
+  userType: 'customer'
 });
 
 const login = async () => {
   loading.value = true
-  const res = await auth.adminLogin(
+  const res = await auth.login(
     form.value.email,
     form.value.password,
+    form.value.userType as 'customer'
   );
 
   if (res) {
@@ -44,9 +46,10 @@ const login = async () => {
         authorization,
       },
     })
+
+    navigateTo(routes.home)
   }
 
-  navigateTo(routes.admin.dashboard)
 
   loading.value = false
 }
@@ -56,41 +59,37 @@ const login = async () => {
 <template>
   <div class="row q--col-gutter-md q-pa-md q-pa-md-lg q-pa-md q-pa-lg-lg window-height" style="max-height: 100vh;">
     <div class="col-12 col-md-7 column full-height">
-      <div class="col-1">
-        <h1 class="text-h4 text-weight-bold text-primary">Sign in</h1>
+      <div   class="col-1">
+              <BrandLogo size="200px" :to="routes.home"/>
       </div>
       <div class="col-11 row justify-center items-center">
         
-        <q-card class="my-card q-pa-0 q-pa-sm-md" :class="$q.screen.lt.sm ? 'no-shadow full-width' : ''" :style="{ translate: '0px -50px', width: $q.screen.gt.xs ? '400px' : 'auto' }">
+        <q-card class="my-card q-pa-0 no-shadow" :class="$q.screen.lt.sm ? 'full-width' : ''" :style="{ translate: '0px -50px', width: $q.screen.gt.xs ? '400px' : 'auto' }">
           <q-card-section :class="$q.screen.lt.sm ? 'q-pa-none' : ''">
-            <div class="row justify-center">
-              <BrandLogo />
+
+            <div class="text-h4 text-weight-bold">
+              Sign in
             </div>
-            <div class="text-h5 text-weight-bold text-center">
-              Sign in to your account
-            </div>
+            <p class="text-grey-8">Please enter your credentials</p>
           </q-card-section>
-          <q-card-section class="row justify-center q-py-lg" :class="$q.screen.lt.sm ? 'q-pa-none' : ''">
-            <q-btn outline style="text-transform: none;" color="grey-8" class="full-width"><q-icon left name="img:/images/google-icon.webp"></q-icon> <div>  Sign in with Google</div></q-btn>
-          </q-card-section>
-          <q-separator />
+
           <q-card-section class="q-pt-none q-pt-md" :class="$q.screen.lt.sm ? 'q-pa-none' : ''">
             <form class="q-gutter-y-lg" @submit.prevent="login">
               <div>
-                <label>Email</label>
-                <q-input outlined v-model="form.email" dense />
+                <label>Email adress</label>
+                <q-input outlined v-model="form.email" dense placeholder="name@example.com"/>
               </div>
               <div>
                 <label>Password</label>
-                <q-input dense v-model="form.password" outlined :type="isPwd ? 'password' : 'text'">
+                <q-input dense v-model="form.password" outlined :type="isPwd ? 'password' : 'text'" placeholder="*********">
                   <template v-slot:append>
                     <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer"
                       @click="isPwd = !isPwd" />
                   </template>
                 </q-input>
                 <div class="row items-center justify-end q-pt-sm">
-                  <NuxtLink :to="routes.auth.admin_forgot_password" >Forgot
-                    Password</NuxtLink>
+                  <NuxtLink :to="routes.auth.admin_forgot_password" class="text-grey-7">Forgot
+                    password?</NuxtLink>
                 </div>
               </div>
               <q-btn color="primary" v-if="loading" :disable="true" style="width: 100%">
@@ -100,14 +99,23 @@ const login = async () => {
               <q-btn v-else type="submit" color="primary" style="width: 100%">Sign in</q-btn>
             </form>
 
-              <p class="text-right q-py-sm">Dont have an account? <NuxtLink to="ds">Create</NuxtLink></p>
             
           </q-card-section>
+          <q-card-section>
+          <q-separator />
+
+        </q-card-section>
+
+          <q-card-section class="row justify-center " :class="$q.screen.lt.sm ? 'q-pa-none' : ''">
+            <q-btn outline style="text-transform: none;" color="grey-8" class="full-width"><q-icon left name="img:/images/google-icon.webp"></q-icon> <div>  Sign in with Google</div></q-btn>
+          </q-card-section>
+          <p class="q--sm text-center">Dont have an account? <NuxtLink to="ds">Sign up</NuxtLink></p>
+
         </q-card>
       </div>
     </div>
     <div class="col-12 col-md-5 gt-sm ">
-      <div class="bg-secondary fit rounded-borders"></div>
+      <div class=" fit rounded-borders" :style="{ backgroundImage: 'url(/images/login-art.jpg)' }"></div>
     </div>
   </div>
 </template>
