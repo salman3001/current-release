@@ -1,5 +1,4 @@
 import { defineStore } from "pinia";
-import { useCookie } from "nuxt/app";
 import { Socket, io } from "socket.io-client";
 import { ref } from "vue";
 import { SupportTickeApi } from "@/utils/api/supportTicketApi";

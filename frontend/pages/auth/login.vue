@@ -40,12 +40,13 @@ const login = async () => {
     token.value = res?.data.token.token
     socketToken.value = res?.data?.socketToken
     const authorization = `Bearer ${toRaw(token.value)}`
-    globalThis.$fetch = ofetch.create({
+    createFetch({
       baseURL: config.public.baseApi,
       headers: {
         authorization,
       },
     })
+
 
     navigateTo(routes.home)
   }
@@ -56,15 +57,17 @@ const login = async () => {
 
 
 </script>
+
 <template>
-  <div class="row q--col-gutter-md q-pa-md q-pa-md-lg q-pa-md q-pa-lg-lg window-height" style="max-height: 100vh;">
+  <div class="row q--col-gutter-md q-pa-md q-pa-md-lg q-pa-md q-pa-lg-lg window-height" style="min-height: 100vh;">
     <div class="col-12 col-md-7 column full-height">
-      <div   class="col-1">
-              <BrandLogo size="200px" :to="routes.home"/>
+      <div class="col-1">
+        <BrandLogo size="200px" :to="routes.home" />
       </div>
-      <div class="col-11 row justify-center items-center">
-        
-        <q-card class="my-card q-pa-0 no-shadow" :class="$q.screen.lt.sm ? 'full-width' : ''" :style="{ translate: '0px -50px', width: $q.screen.gt.xs ? '400px' : 'auto' }">
+      <div class="col-11 row justify-center items-center q-pt-md">
+
+        <q-card class="my-card q-pa-0 no-shadow" :class="$q.screen.lt.sm ? 'full-width' : ''"
+          :style="{ translate: $q.screen.gt.md ? '0px -50px' : 'none', width: $q.screen.gt.xs ? '500px' : 'auto' }">
           <q-card-section :class="$q.screen.lt.sm ? 'q-pa-none' : ''">
 
             <div class="text-h4 text-weight-bold">
@@ -77,39 +80,50 @@ const login = async () => {
             <form class="q-gutter-y-lg" @submit.prevent="login">
               <div>
                 <label>Email adress</label>
-                <q-input outlined v-model="form.email" dense placeholder="name@example.com"/>
+                <q-input outlined v-model="form.email" dense placeholder="name@example.com" />
               </div>
               <div>
                 <label>Password</label>
-                <q-input dense v-model="form.password" outlined :type="isPwd ? 'password' : 'text'" placeholder="*********">
+                <q-input dense v-model="form.password" outlined :type="isPwd ? 'password' : 'text'"
+                  placeholder="*********">
                   <template v-slot:append>
                     <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer"
                       @click="isPwd = !isPwd" />
                   </template>
                 </q-input>
                 <div class="row items-center justify-end q-pt-sm">
-                  <NuxtLink :to="routes.auth.admin_forgot_password" class="text-grey-7">Forgot
+                  <NuxtLink :to="routes.auth.forgot_password" class="text-grey-7">Forgot
                     password?</NuxtLink>
                 </div>
               </div>
               <q-btn color="primary" v-if="loading" :disable="true" style="width: 100%">
-                <q-circular-progress indeterminate size="20px" class="q-px-10" :thickness="1" color="grey-8"
-                  track-color="orange-2" style="min-width: 8rem" />
+                <q-circular-progress indeterminate size="20px" class="q-px-10" :thickness="1" color="primary"
+                  track-color="black" style="min-width: 8rem" />
               </q-btn>
               <q-btn v-else type="submit" color="primary" style="width: 100%">Sign in</q-btn>
             </form>
 
-            
+
           </q-card-section>
           <q-card-section>
-          <q-separator />
+            <q-separator />
 
-        </q-card-section>
-
-          <q-card-section class="row justify-center " :class="$q.screen.lt.sm ? 'q-pa-none' : ''">
-            <q-btn outline style="text-transform: none;" color="grey-8" class="full-width"><q-icon left name="img:/images/google-icon.webp"></q-icon> <div>  Sign in with Google</div></q-btn>
           </q-card-section>
-          <p class="q--sm text-center">Dont have an account? <NuxtLink to="ds">Sign up</NuxtLink></p>
+
+          <q-card-section class="row justify-center ">
+            <q-btn outline style="text-transform: none;" color="grey-8" class="full-width"><q-icon left
+                name="img:/images/google-icon.webp"></q-icon>
+              <div> Sign in with Google</div>
+            </q-btn>
+          </q-card-section>
+          <div>
+            <p class="text-center">Dont have an account? <NuxtLink :to="routes.auth.sign_up">Sign up</NuxtLink>
+            <p class="q-pt-none text-center">Need an Vendor's account? <NuxtLink :to="routes.auth.vendor_sign_up">Sign
+                up as Vendor
+              </NuxtLink>
+            </p>
+            </p>
+          </div>
 
         </q-card>
       </div>

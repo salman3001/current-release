@@ -23,11 +23,6 @@ class ServiceApiService extends BaseApiClass {
       loading.value = false;
     } catch (error: any) {
       loading.value = false;
-      Notify.create({
-        message: `Failed to fetch ${this.name}`,
-        color: "negative",
-        icon: "error",
-      });
     }
 
     return { loading, data };

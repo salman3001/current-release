@@ -1,10 +1,10 @@
 <script setup>
-import { ofetch } from 'ofetch'
 const token = useCookie('token')
 const config = useRuntimeConfig()
 
 const authorization = `Bearer ${toRaw(token.value)}`
-globalThis.$fetch = ofetch.create({
+
+createFetch({
   baseURL: config.public.baseApi,
   headers: {
     authorization,
@@ -14,7 +14,7 @@ globalThis.$fetch = ofetch.create({
 </script>
 
 <template>
- <NuxtLayout>
+  <NuxtLayout>
     <NuxtPage />
   </NuxtLayout>
 </template>

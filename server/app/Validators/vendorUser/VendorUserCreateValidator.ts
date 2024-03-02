@@ -26,18 +26,20 @@ export default class VendorUserCreateValidator {
   public schema = schema.create({
     firstName: schema.string({ trim: true }),
     lastName: schema.string({ trim: true }),
-    bussinessName: schema.string({ escape: true }, [
+    businessName: schema.string({ escape: true }, [
       rules.unique({
         table: 'businesses',
         column: 'name',
       }),
     ]),
+
     email: schema.string({ trim: true }, [
       rules.email(),
       rules.normalizeEmail({ allLowercase: true }),
       rules.unique({ table: 'vendor_users', column: 'email' }),
     ]),
     password: schema.string({ trim: true }),
+    passwordConfirmation: schema.string({ trim: true }, [rules.confirmed('password')]),
     phone: schema.string.optional(),
     isActive: schema.boolean.optional(),
   })

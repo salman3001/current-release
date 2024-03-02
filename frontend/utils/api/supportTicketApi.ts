@@ -1,4 +1,3 @@
-import { Notify } from "quasar";
 import { ref } from "vue";
 import { BaseApiClass } from "./BaseApiClass";
 import type { UseFetchOptions } from "#app";
@@ -19,20 +18,9 @@ class SupportTicketApiService extends BaseApiClass {
         });
         loading.value = false;
         cb?.onSuccess && cb?.onSuccess();
-        Notify.create({
-          message: `${this.name} Status Changed`,
-          color: "positive",
-          icon: "done",
-        });
       } catch (error: any) {
         loading.value = false;
         cb?.onError && cb?.onError();
-        Notify.create({
-          message:
-            error?.response?.data?.message ||
-            `Failed to Chnage Status of ${this.name}`,
-          color: "negative",
-        });
       }
     };
 
@@ -54,9 +42,9 @@ class SupportTicketApiService extends BaseApiClass {
       loading.value = true;
       const res = await $fetch(
         this.url +
-          "/messages/" +
-          id +
-          `?page=${page ?? 1}&limit=${limit ?? 20}`,
+        "/messages/" +
+        id +
+        `?page=${page ?? 1}&limit=${limit ?? 20}`,
         {
           headers: { "content-type": "application/x-www-form-urlencoded" },
           ...(opt as any),
@@ -68,11 +56,6 @@ class SupportTicketApiService extends BaseApiClass {
       loading.value = false;
     } catch (error: any) {
       loading.value = false;
-      Notify.create({
-        message:
-          error?.response?.data?.message || `Failed to fetch ${this.name}`,
-        color: "negative",
-      });
     }
 
     return { loading, data };
@@ -97,10 +80,6 @@ class SupportTicketApiService extends BaseApiClass {
       } catch (error: any) {
         loading.value = false;
         cb?.onError && cb?.onError();
-        Notify.create({
-          message: error?.response?.data?.message || "Failed to send Messsage",
-          color: "negative",
-        });
       }
     };
 

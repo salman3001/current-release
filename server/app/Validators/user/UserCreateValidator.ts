@@ -32,8 +32,9 @@ export default class UserCreateValidator {
       rules.unique({ table: 'users', column: 'email' }),
     ]),
     password: schema.string({ trim: true }),
+    passwordConfirmation: schema.string({ trim: true }, [rules.confirmed('password')]),
     phone: schema.string.optional(),
-    isActive: schema.boolean.optional(),
+    // isActive: schema.boolean.optional(),
     isPublic: schema.boolean.optional(),
   })
 

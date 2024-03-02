@@ -1,4 +1,3 @@
-import { Notify } from "quasar";
 import type { AdditionalParams } from "@/types/QueryParamsTypes";
 import type { UseFetchOptions } from "#app";
 import qs from "qs";
@@ -44,18 +43,9 @@ export class BaseApiClass {
         });
         loading.value = false;
         cb?.onSuccess && cb?.onSuccess();
-        Notify.create({
-          message: `${this.name} created successfully`,
-          color: "positive",
-          icon: "done",
-        });
       } catch (error: any) {
         loading.value = false;
         cb?.onError && cb?.onError();
-        Notify.create({
-          message: `Failed to create ${this.name}`,
-          color: "negative",
-        });
       }
     };
 
@@ -80,18 +70,9 @@ export class BaseApiClass {
         });
         loading.value = false;
         cb?.onSuccess && cb?.onSuccess();
-        Notify.create({
-          message: `${this.name} updated successfully`,
-          color: "positive",
-          icon: "done",
-        });
       } catch (error: any) {
         cb?.onError && cb?.onError();
         loading.value = false;
-        Notify.create({
-          message: `Failed to updtae ${this.name}`,
-          color: "negative",
-        });
       }
     };
 
@@ -115,18 +96,9 @@ export class BaseApiClass {
         });
         loading.value = false;
         cb?.onSuccess && cb?.onSuccess();
-        Notify.create({
-          message: `${this.name} deleted successfully`,
-          color: "positive",
-          icon: "done",
-        });
       } catch (error: any) {
         cb?.onError && cb?.onError();
         loading.value = false;
-        Notify.create({
-          message: `Failed to delete ${this.name}`,
-          color: "negative",
-        });
       }
     };
 
@@ -157,10 +129,6 @@ export class BaseApiClass {
       loading.value = false;
     } catch (error: any) {
       loading.value = false;
-      Notify.create({
-        message: `Failed to export ${this.name}`,
-        color: "negative",
-      });
     }
 
     return { loading, data };
@@ -182,19 +150,9 @@ export class BaseApiClass {
         });
         loading.value = false;
         cb?.onSuccess && cb?.onSuccess();
-        Notify.create({
-          message: "Data Uploaded, Refresh the page",
-          color: "positive",
-          icon: "done",
-        });
       } catch (error: any) {
         loading.value = false;
         cb?.onError && cb?.onError();
-        Notify.create({
-          message:
-            JSON.stringify(error?.response?.data) || "Failed to Import Excel",
-          color: "negative",
-        });
       }
     };
 

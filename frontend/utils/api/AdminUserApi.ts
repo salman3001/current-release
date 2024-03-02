@@ -17,18 +17,9 @@ class AdminUserApiService extends BaseApiClass {
         });
         loading.value = false;
         cb?.onSuccess && cb?.onSuccess();
-        Notify.create({
-          message: "password updated successfully",
-          color: "positive",
-          icon: "done",
-        });
       } catch (error: any) {
         loading.value = false;
         cb?.onError && cb?.onError();
-        Notify.create({
-          message: "Failed to update",
-          color: "negative",
-        });
       }
     };
 

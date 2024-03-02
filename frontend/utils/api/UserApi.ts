@@ -1,4 +1,3 @@
-import { Notify } from "quasar";
 import { ref } from "vue";
 import { BaseApiClass } from "./BaseApiClass";
 import type { UseFetchOptions } from "#app";
@@ -40,18 +39,9 @@ class UserApiService extends BaseApiClass {
         });
         loading.value = false;
         cb?.onSuccess && cb?.onSuccess();
-        Notify.create({
-          message: `${this.name} created successfully`,
-          color: "positive",
-          icon: "done",
-        });
       } catch (error: any) {
         loading.value = false;
         cb?.onError && cb?.onError();
-        Notify.create({
-          message: `Failed to create ${this.name}`,
-          color: "negative",
-        });
       }
     };
 

@@ -6,17 +6,20 @@ const auth = authStore();
 const isPwd = ref(true);
 const loading = ref(false)
 const config = useRuntimeConfig()
+const $q = useQuasar()
 
 const form = ref({
   email: '',
   password: '',
+  userType: 'vendor'
 });
 
 const login = async () => {
   loading.value = true
-  const res = await auth.adminLogin(
+  const res = await auth.login(
     form.value.email,
     form.value.password,
+    form.value.userType as 'vendor'
   );
 
   if (res) {
@@ -37,72 +40,93 @@ const login = async () => {
     token.value = res?.data.token.token
     socketToken.value = res?.data?.socketToken
     const authorization = `Bearer ${toRaw(token.value)}`
-    globalThis.$fetch = ofetch.create({
+    createFetch({
       baseURL: config.public.baseApi,
       headers: {
         authorization,
       },
     })
+
+
+    navigateTo(routes.vendor.dashboard)
   }
 
-  navigateTo(routes.admin.dashboard)
 
   loading.value = false
 }
 
 
 </script>
-<template>
-  <q-layout>
-    <q-page-container>
-      <q-page class="row items-center justify-evenly" style="
-          background-image: url('/images/login-bg.png');
-          background-repeat: no-repeat;
-          background-position: center;
-        ">
-        <div class="q-pa-md">
-          <q-card class="my-card q-pa-md" style="min-width: 400px; border-radius: 15px">
-            <q-card-section>
-              <div class="row justify-center">
-                <BrandLogo />
-              </div>
-              <div class="text-h5 text-weight-bold text-center">
-                Welcome Back!
-              </div>
-              <div class="text-body2 text-grey-8 text-center">
-                Please enter your crendtials to login
-              </div>
-            </q-card-section>
 
-            <q-card-section class="q-pt-none">
-              <form class="q-gutter-y-md" @submit.prevent="login">
-                <div>
-                  <label>Email</label>
-                  <q-input outlined v-model="form.email" dense />
+<template>
+  <div class="row q--col-gutter-md q-pa-md q-pa-md-lg q-pa-md q-pa-lg-lg window-height" style="min-height: 100vh;">
+    <div class="col-12 col-md-7 column full-height">
+      <div class="col-1">
+        <BrandLogo size="200px" :to="routes.home" />
+      </div>
+      <div class="col-11 row justify-center items-center q-pt-md">
+
+        <q-card class="my-card q-pa-0 no-shadow" :class="$q.screen.lt.sm ? 'full-width' : ''"
+          :style="{ translate: $q.screen.gt.md ? '0px -50px' : 'none', width: $q.screen.gt.xs ? '500px' : 'auto' }">
+          <q-card-section :class="$q.screen.lt.sm ? 'q-pa-none' : ''">
+
+            <div class="text-h4 text-weight-bold">
+              Sign in as vendor
+            </div>
+            <p class="text-grey-8">Please enter your credentials</p>
+          </q-card-section>
+
+          <q-card-section class="q-pt-none q-pt-md" :class="$q.screen.lt.sm ? 'q-pa-none' : ''">
+            <form class="q-gutter-y-lg" @submit.prevent="login">
+              <div>
+                <label>Email adress</label>
+                <q-input outlined v-model="form.email" dense placeholder="name@example.com" />
+              </div>
+              <div>
+                <label>Password</label>
+                <q-input dense v-model="form.password" outlined :type="isPwd ? 'password' : 'text'"
+                  placeholder="*********">
+                  <template v-slot:append>
+                    <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer"
+                      @click="isPwd = !isPwd" />
+                  </template>
+                </q-input>
+                <div class="row items-center justify-end q-pt-sm">
+                  <NuxtLink :to="routes.auth.vendor_forgot_password" class="text-grey-7">Forgot
+                    password?</NuxtLink>
                 </div>
-                <div>
-                  <label>Password</label>
-                  <q-input dense v-model="form.password" outlined :type="isPwd ? 'password' : 'text'">
-                    <template v-slot:append>
-                      <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer"
-                        @click="isPwd = !isPwd" />
-                    </template>
-                  </q-input>
-                  <div class="row items-center justify-end p-2">
-                    <NuxtLink :to="routes.auth.admin_forgot_password" style="text-decoration: none; color: black">Forgot
-                      Password</NuxtLink>
-                  </div>
-                </div>
-                <q-btn color="primary" v-if="loading" :disable="true" style="width: 100%">
-                  <q-circular-progress indeterminate size="20px" class="q-px-10" :thickness="1" color="grey-8"
-                    track-color="orange-2" style="min-width: 8rem" />
-                </q-btn>
-                <q-btn v-else type="submit" color="primary" style="width: 100%">Submit</q-btn>
-              </form>
-            </q-card-section>
-          </q-card>
-        </div>
-      </q-page>
-    </q-page-container>
-  </q-layout>
+              </div>
+              <q-btn color="primary" v-if="loading" :disable="true" style="width: 100%">
+                <q-circular-progress indeterminate size="20px" class="q-px-10" :thickness="1" color="primary"
+                  track-color="black" style="min-width: 8rem" />
+              </q-btn>
+              <q-btn v-else type="submit" color="primary" style="width: 100%">Sign in</q-btn>
+            </form>
+
+
+          </q-card-section>
+          <q-card-section>
+            <q-separator />
+
+          </q-card-section>
+
+          <!-- <q-card-section class="row justify-center ">
+            <q-btn outline style="text-transform: none;" color="grey-8" class="full-width"><q-icon left
+                name="img:/images/google-icon.webp"></q-icon>
+              <div> Sign in with Google</div>
+            </q-btn>
+          </q-card-section> -->
+          <p class="q--sm text-center">Dont have an vendor's account? <NuxtLink :to="routes.auth.vendor_sign_up">Sign up
+              as
+              vendor
+            </NuxtLink>
+          </p>
+
+        </q-card>
+      </div>
+    </div>
+    <div class="col-12 col-md-5 gt-sm ">
+      <div class=" fit rounded-borders" :style="{ backgroundImage: 'url(/images/login-art.jpg)' }"></div>
+    </div>
+  </div>
 </template>

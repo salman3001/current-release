@@ -1,7 +1,6 @@
-import { Notify } from "quasar";
 import type { AdditionalParams } from "@/types/QueryParamsTypes";
 import { BaseApiClass } from "./BaseApiClass";
-import type { AsyncDataOptions, UseFetchOptions } from "#app";
+import type { UseFetchOptions } from "#app";
 
 class NotificationApiService extends BaseApiClass {
   public deleteAllNotifcations(
@@ -18,18 +17,9 @@ class NotificationApiService extends BaseApiClass {
         });
         loading.value = false;
         cb?.onSuccess && cb?.onSuccess();
-        Notify.create({
-          message: `${this.name} deleted successfully`,
-          color: "positive",
-          icon: "done",
-        });
       } catch (error: any) {
         cb?.onError && cb?.onError();
         loading.value = false;
-        Notify.create({
-          message: `Failed to delete ${this.name}`,
-          color: "negative",
-        });
       }
     };
 
@@ -53,18 +43,9 @@ class NotificationApiService extends BaseApiClass {
         });
         loading.value = false;
         cb?.onSuccess && cb?.onSuccess();
-        Notify.create({
-          message: `${this.name} deleted successfully`,
-          color: "positive",
-          icon: "done",
-        });
       } catch (error: any) {
         cb?.onError && cb?.onError();
         loading.value = false;
-        Notify.create({
-          message: `Failed to delete ${this.name}`,
-          color: "negative",
-        });
       }
     };
 
@@ -99,18 +80,9 @@ class NotificationApiService extends BaseApiClass {
         });
         loading.value = false;
         cb?.onSuccess && cb?.onSuccess();
-        Notify.create({
-          message: `${this.name} marked as read`,
-          color: "positive",
-          icon: "done",
-        });
       } catch (error: any) {
         loading.value = false;
         cb?.onError && cb?.onError();
-        Notify.create({
-          message: `Failed to mark as read ${this.name}`,
-          color: "negative",
-        });
       }
     };
 

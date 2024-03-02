@@ -5,6 +5,8 @@ import Hash from '@ioc:Adonis/Core/Hash'
 import User from 'App/Models/user/User'
 import ForgotPasswordOtpMail from 'App/Mailers/ForgotPasswordOtpMail'
 import VendorUser from 'App/Models/vendorUser/VendorUser'
+import UserCreateValidator from 'App/Validators/user/UserCreateValidator'
+import VendorUserCreateValidator from 'App/Validators/vendorUser/VendorUserCreateValidator'
 
 export default class AuthController {
   public async login({ auth, request, response }: HttpContextContract) {
@@ -82,6 +84,64 @@ export default class AuthController {
     })
   }
 
+  public async signup({ auth, request, response }: HttpContextContract) {
+    const userType = request.body().userType
+
+    if (userType === 'customer') {
+      const { userType, passwordConfirmation, ...payload } = await request.validate(UserCreateValidator)
+
+      const user = await User.create({ ...payload, isActive: true })
+      const token = await auth.use('userApi').attempt(user.email, payload.password, {
+        expiresIn: '1 day',
+      })
+
+      const socketToken = Math.floor(100000 + Math.random() * 900000).toString()
+
+      user.socketToken = socketToken
+
+      await user.save()
+
+      return response.custom({
+        message: 'Signup Successfull',
+        code: 200,
+        data: { user, token, socketToken },
+        success: true,
+      })
+
+
+    } else if (userType === 'vendor') {
+      const { userType, businessName, passwordConfirmation, ...payload } = await request.validate(VendorUserCreateValidator)
+
+      const user = await VendorUser.create({ ...payload, isActive: true })
+      await user.related('business').create({ name: businessName })
+      const token = await auth.use('vendorUserApi').attempt(user.email, payload.password, {
+        expiresIn: '1 day',
+      })
+
+      const socketToken = Math.floor(100000 + Math.random() * 900000).toString()
+
+      user.socketToken = socketToken
+
+      await user.save()
+
+      return response.custom({
+        message: 'Signup Successfull',
+        code: 200,
+        data: { user, token, socketToken },
+        success: true,
+      })
+
+    } else {
+      return response.custom({
+        message: "User type is not defined",
+        code: 400,
+        data: null,
+        success: false
+      })
+    }
+
+  }
+
   public async logout({ auth, response, request }: HttpContextContract) {
     const payloadSchema = schema.create({
       userType: schema.enum(['admin', 'vendor', 'customer'])
@@ -135,7 +195,12 @@ export default class AuthController {
 
     if (user) {
       await new ForgotPasswordOtpMail(user as any).sendLater()
-      return response.json({ message: 'Otp Sent' })
+      return response.custom({
+        message: 'OTP sent',
+        code: 200,
+        data: null,
+        success: true,
+      })
     } else {
       return response.custom({
         message: 'invalid email id',

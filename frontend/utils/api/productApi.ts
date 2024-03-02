@@ -1,4 +1,3 @@
-import { Notify } from "quasar";
 import { ref } from "vue";
 import { BaseApiClass } from "./BaseApiClass";
 import type { UseFetchOptions } from "#app";
@@ -24,11 +23,6 @@ class ProductApiService extends BaseApiClass {
     } catch (error: any) {
       if (error?.response) {
         loading.value = false;
-        Notify.create({
-          message: `Failed to fetch ${this.name}`,
-          color: "negative",
-          icon: "error",
-        });
       }
 
       return { loading, data };
