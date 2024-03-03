@@ -963,7 +963,7 @@ $dark-shadows-up: (
     $dark-shadow-up-24
 );
 
-$generic-border-radius : 10px !default;
+$generic-border-radius : 15px !default;
 $generic-hover-transition : .3s cubic-bezier(.25, .8, .5, 1) !default;
 $typography-font-family : 'Roboto',
 '-apple-system',
@@ -1067,4 +1067,8 @@ $img-content-background : rgba(0, 0, 0, .47) !default;
 a{
     color: $primary;
     text-decoration: none;
+}
+
+.text-muted{
+    color: $grey-7;
 }

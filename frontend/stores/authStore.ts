@@ -19,16 +19,15 @@ const authStore = defineStore("Auth", () => {
   };
 
   const signup = async (form: {
-    firstName: string,
-    lastName: string,
-    email: string,
-    phone: string,
-    password: string,
-    passwordConfirmation: string,
-    bussinessName?: string,
-    userType: "vendor" | "customer"
-  }
-  ) => {
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone: string;
+    password: string;
+    passwordConfirmation: string;
+    bussinessName?: string;
+    userType: "vendor" | "customer";
+  }) => {
     try {
       const res = await $fetch("/api/auth/signup", {
         method: "post",
@@ -40,7 +39,6 @@ const authStore = defineStore("Auth", () => {
     }
   };
 
-
   const logout = async (
     userType: "admin" | "vendor" | "customer",
     onSuccess?: () => void
@@ -50,24 +48,20 @@ const authStore = defineStore("Auth", () => {
         method: "post",
         body: { userType },
       });
-      Notify.create({
-        message: "Logout Successfull!",
-        color: "positive",
-      });
       onSuccess && onSuccess();
-      navigateTo(routes.auth.admin_login);
-    } catch (error: any) {
-    }
+    } catch (error: any) {}
   };
 
   const getOtp = (cb?: { onSuccess?: () => void; onError?: () => void }) => {
     const loading = ref(false);
-    const execute = async (data: { email: string, userType: 'vendor' | 'customer' | 'admin' }) => {
-
+    const execute = async (data: {
+      email: string;
+      userType: "vendor" | "customer" | "admin";
+    }) => {
       try {
         loading.value = true;
         const res = await $fetch("/api/auth/get-otp", {
-          method: 'post',
+          method: "post",
           body: data,
         });
         loading.value = false;
@@ -88,7 +82,10 @@ const authStore = defineStore("Auth", () => {
     const execute = async (data: any) => {
       try {
         loading.value = true;
-        const res = await $fetch("/api/auth/verify-otp-update-password", { method: 'post', body: data });
+        const res = await $fetch("/api/auth/verify-otp-update-password", {
+          method: "post",
+          body: data,
+        });
         loading.value = false;
         cb?.onSuccess && cb?.onSuccess();
       } catch (error: any) {

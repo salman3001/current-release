@@ -19,14 +19,14 @@ function toggleLeftDrawer() {
           <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
 
           <q-toolbar-title>
-            <BrandLogo />
+            <BrandLogo :to="routes.admin.dashboard" size="200px"/>
           </q-toolbar-title>
           <div class="row q-gutter-sm">
             <div class="gt-sm">
               <FormsSearchInput />
             </div>
-            <NotificationMenu />
-            <ProfileMenu />
+            <AdminNotificationMenu />
+            <AdminProfileMenu />
           </div>
         </q-toolbar>
         <q-toolbar v-if="$q.screen.gt.xs" class="bg-white text-black" style="border: 1px solid rgba(0, 0, 0, 0.106)">

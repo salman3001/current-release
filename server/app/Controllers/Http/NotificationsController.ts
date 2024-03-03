@@ -54,8 +54,10 @@ export default class NotificationsController extends BaseController {
       if (user instanceof AdminUser) {
         const query = await Database.query()
           .from('notifications')
-          .count('* as count')
+          .select('id')
           .where('admin_user_id', user.id)
+          .groupBy('id')
+          .count('* as count')
           .first()
 
         count = query.count
@@ -66,6 +68,7 @@ export default class NotificationsController extends BaseController {
           .from('notifications')
           .select('id')
           .where('user_id', user.id)
+          .groupBy('id')
           .count('* as count')
           .first()
 

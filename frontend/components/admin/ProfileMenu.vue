@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { ofetch } from 'ofetch'
 
 
 const auth = authStore()
@@ -10,7 +9,7 @@ const config = useRuntimeConfig()
 
 
 const logout = () => {
-  auth.adminLogout(() => {
+  auth.logout('admin', () => {
     const user = useCookie('user', {
       maxAge: 60 * 60 * 24
     })
@@ -25,7 +24,7 @@ const logout = () => {
     token.value = null
     socketToken.value = null
 
-    globalThis.$fetch = ofetch.create({
+    createFetch({
       baseURL: config.public.baseApi,
       headers: {
         authorization: '',
@@ -39,6 +38,7 @@ onMounted(() => {
   upload.value = process.env.UPLOAD as string;
 })
 </script>
+
 <template>
   <q-btn round class="text-black" unelevated>
     <q-avatar size="36px">

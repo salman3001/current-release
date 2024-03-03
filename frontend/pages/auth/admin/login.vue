@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { ofetch } from 'ofetch'
 
 const auth = authStore();
 const isPwd = ref(true);
@@ -14,9 +13,10 @@ const form = ref({
 
 const login = async () => {
   loading.value = true
-  const res = await auth.adminLogin(
+  const res = await auth.login(
     form.value.email,
     form.value.password,
+    'admin'
   );
 
   if (res) {
@@ -37,7 +37,8 @@ const login = async () => {
     token.value = res?.data.token.token
     socketToken.value = res?.data?.socketToken
     const authorization = `Bearer ${toRaw(token.value)}`
-    globalThis.$fetch = ofetch.create({
+
+    createFetch({
       baseURL: config.public.baseApi,
       headers: {
         authorization,
@@ -52,6 +53,7 @@ const login = async () => {
 
 
 </script>
+
 <template>
   <q-layout>
     <q-page-container>
@@ -87,22 +89,22 @@ const login = async () => {
                       <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer"
                         @click="isPwd = !isPwd" />
                     </template>
-                  </q-input>
-                  <div class="row items-center justify-end p-2">
-                    <NuxtLink :to="routes.auth.admin_forgot_password" style="text-decoration: none; color: black">Forgot
-                      Password</NuxtLink>
-                  </div>
-                </div>
-                <q-btn color="primary" v-if="loading" :disable="true" style="width: 100%">
-                  <q-circular-progress indeterminate size="20px" class="q-px-10" :thickness="1" color="grey-8"
-                    track-color="orange-2" style="min-width: 8rem" />
-                </q-btn>
-                <q-btn v-else type="submit" color="primary" style="width: 100%">Submit</q-btn>
-              </form>
-            </q-card-section>
-          </q-card>
-        </div>
-      </q-page>
-    </q-page-container>
-  </q-layout>
+</q-input>
+<div class="row items-center justify-end p-2">
+  <NuxtLink :to="routes.auth.admin_forgot_password" style="text-decoration: none; color: black">Forgot
+    Password</NuxtLink>
+</div>
+</div>
+<q-btn color="primary" v-if="loading" :disable="true" style="width: 100%">
+  <q-circular-progress indeterminate size="20px" class="q-px-10" :thickness="1" color="grey-8" track-color="orange-2"
+    style="min-width: 8rem" />
+</q-btn>
+<q-btn v-else type="submit" color="primary" style="width: 100%">Submit</q-btn>
+</form>
+</q-card-section>
+</q-card>
+</div>
+</q-page>
+</q-page-container>
+</q-layout>
 </template>
