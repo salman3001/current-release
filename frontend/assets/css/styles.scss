@@ -31,17 +31,17 @@
 // $info : #bbbad4;
 // $warning : #F2C037;
 
-$primary   : #058654;
+$primary : #058654;
 $secondary : #08072c;
-$accent    : #000000;
+$accent : #000000;
 
-$dark      : #1d1d1d;
+$dark : #1d1d1d;
 $dark-page : #121212;
 
-$positive  : #21BA45;
-$negative  : #C10015;
-$info      : #31CCEC;
-$warning   : #F2C037;
+$positive : #21BA45;
+$negative : #C10015;
+$info : #31CCEC;
+$warning : #F2C037;
 
 $space-base : 16px !default;
 $space-x-base : $space-base !default;
@@ -1064,11 +1064,15 @@ $img-content-background : rgba(0, 0, 0, .47) !default;
 
 
 
-a{
+a {
     color: $primary;
     text-decoration: none;
 }
 
-.text-muted{
+.text-muted {
     color: $grey-7;
+}
+
+p {
+    margin: 0;
 }

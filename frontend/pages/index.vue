@@ -28,7 +28,7 @@
       <div>
         <h2 class="text-h6 text-bold q-my-none">Top Rated Services</h2>
         <p class="text-muted">A list of top rated services</p>
-        <div class="row q-col-gutter-lg">
+        <div class="row q-col-gutter-lg q-mt-sm">
           <div v-for="s in 20" class="col-12 col-sm-6 col-md-4 col-lg-3">
             <WebServiceCard />
           </div>

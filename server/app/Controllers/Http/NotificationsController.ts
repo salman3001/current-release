@@ -60,7 +60,13 @@ export default class NotificationsController extends BaseController {
           .count('* as count')
           .first()
 
-        count = query.count
+        if (!query) {
+          count = 0
+        } else {
+
+          count = query.count
+        }
+
       }
 
       if (user instanceof User) {
@@ -72,7 +78,12 @@ export default class NotificationsController extends BaseController {
           .count('* as count')
           .first()
 
-        count = query.count
+        if (!query) {
+          count = 0
+        } else {
+
+          count = query.count
+        }
       }
 
       notifcations = user.notifications

@@ -53,19 +53,9 @@ const confirmLogout = () => {
 
 <template>
   <q-layout view="hHh lpR fFf">
-    <q-header
-      class="bg-white text-white q-py-xs"
-      style="border-bottom: 1px solid lightgray"
-    >
+    <q-header class="bg-white text-white q-py-xs" style="border-bottom: 1px solid lightgray">
       <q-toolbar>
-        <q-btn
-          dense
-          flat
-          round
-          icon="menu"
-          @click="toggleLeftDrawer"
-          class="text-primary lt-sm"
-        />
+        <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" class="text-primary lt-sm" />
         <q-toolbar-title>
           <BrandLogo :to="routes.home" size="170px"></BrandLogo>
         </q-toolbar-title>
@@ -73,86 +63,41 @@ const confirmLogout = () => {
           <div class="gt-xs" style="min-width: 300px">
             <FormsSearchInput />
           </div>
+          <NuxtLink :to="routes.cart">
+            <q-btn round icon="shopping_cart" outline class="text-black" unelevated color="green-10">
+              <q-badge floating rounded color="red">2</q-badge>
+
+            </q-btn>
+          </NuxtLink>
           <WebNotificationMenu v-if="user" />
           <NuxtLink :to="routes.auth.login">
             <q-btn color="primary" v-if="!user">Login</q-btn>
           </NuxtLink>
         </div>
-        <q-btn
-          dense
-          flat
-          round
-          icon="menu"
-          @click="toggleRightDrawer"
-          class="text-primary lt-md"
-        />
+        <q-btn dense flat round icon="menu" @click="toggleRightDrawer" class="text-primary lt-md" />
       </q-toolbar>
       <q-toolbar class="lt-sm">
         <FormsSearchInput class="full-width" />
       </q-toolbar>
     </q-header>
 
-    <q-drawer
-      mini-to-overlay
-      show-if-above
-      v-model="leftDrawerOpen"
-      side="left"
-      bordered
-      :mini="miniState"
-      @mouseover="miniState = false"
-      @mouseout="miniState = true"
-      :width="200"
-      :breakpoint="500"
-    >
+    <q-drawer mini-to-overlay show-if-above v-model="leftDrawerOpen" side="left" bordered :mini="miniState"
+      @mouseover="miniState = false" @mouseout="miniState = true" :width="200" :breakpoint="500">
       <q-scroll-area class="fit" :horizontal-thumb-style="{ opacity: 0 }">
         <q-list padding>
           <div v-if="user">
-            <NuxtLink
-              :to="routes.cart"
-              :class="
-                route.path === routes.cart ? 'text-primary' : 'text-black'
-              "
-            >
+
+            <NuxtLink :to="routes.account" :class="route.path === routes.account ? 'text-primary' : 'text-black'
+          ">
               <q-item clickable v-ripple>
                 <q-item-section avatar>
-                  <q-icon name="shopping_cart" />
+                  <q-icon :name="`img:${user && user?.avatar?.url
+          ? $config.public.baseApi + user?.avatar?.url
+          : '/images/sample-dp.png'
+          }`" />
                 </q-item-section>
 
-                <q-item-section> Cart </q-item-section>
-              </q-item>
-            </NuxtLink>
-            <NuxtLink
-              :to="routes.orders"
-              :class="
-                route.path === routes.orders ? 'text-primary' : 'text-black'
-              "
-            >
-              <q-item clickable v-ripple>
-                <q-item-section avatar>
-                  <q-icon name="shopping_bag" />
-                </q-item-section>
-
-                <q-item-section> My Orders </q-item-section>
-              </q-item>
-            </NuxtLink>
-            <NuxtLink
-              :to="routes.profile"
-              :class="
-                route.path === routes.profile ? 'text-primary' : 'text-black'
-              "
-            >
-              <q-item clickable v-ripple>
-                <q-item-section avatar>
-                  <q-icon
-                    :name="`img:${
-                      user && user?.avatar?.url
-                        ? $config.public.baseApi + user?.avatar?.url
-                        : '/images/sample-dp.png'
-                    }`"
-                  />
-                </q-item-section>
-
-                <q-item-section> Profile </q-item-section>
+                <q-item-section> Account </q-item-section>
               </q-item>
             </NuxtLink>
             <q-item clickable v-ripple @click="confirmLogout">
@@ -165,10 +110,7 @@ const confirmLogout = () => {
             <q-separator />
           </div>
 
-          <NuxtLink
-            :to="routes.home"
-            :class="route.path === routes.home ? 'text-primary' : 'text-black'"
-          >
+          <NuxtLink :to="routes.home" :class="route.path === routes.home ? 'text-primary' : 'text-black'">
             <q-item clickable v-ripple>
               <q-item-section avatar>
                 <q-icon name="home" />
@@ -177,10 +119,7 @@ const confirmLogout = () => {
               <q-item-section> Home </q-item-section>
             </q-item>
           </NuxtLink>
-          <NuxtLink
-            :to="routes.blogs"
-            :class="route.path === routes.blogs ? 'text-primary' : 'text-black'"
-          >
+          <NuxtLink :to="routes.blogs" :class="route.path === routes.blogs ? 'text-primary' : 'text-black'">
             <q-item clickable v-ripple>
               <q-item-section avatar>
                 <q-icon name="rss_feed" />
@@ -188,10 +127,7 @@ const confirmLogout = () => {
               <q-item-section> View Blogs </q-item-section>
             </q-item>
           </NuxtLink>
-          <NuxtLink
-            :to="routes.about"
-            :class="route.path === routes.about ? 'text-primary' : 'text-black'"
-          >
+          <NuxtLink :to="routes.about" :class="route.path === routes.about ? 'text-primary' : 'text-black'">
             <q-item clickable v-ripple>
               <q-item-section avatar>
                 <q-icon name="info" />
@@ -200,12 +136,8 @@ const confirmLogout = () => {
               <q-item-section> About Us </q-item-section>
             </q-item>
           </NuxtLink>
-          <NuxtLink
-            :to="routes.contact"
-            :class="
-              route.path === routes.contact ? 'text-primary' : 'text-black'
-            "
-          >
+          <NuxtLink :to="routes.contact" :class="route.path === routes.contact ? 'text-primary' : 'text-black'
+          ">
             <q-item clickable v-ripple>
               <q-item-section avatar>
                 <q-icon name="call" />
@@ -218,19 +150,12 @@ const confirmLogout = () => {
       <!-- drawer content -->
     </q-drawer>
 
-    <q-drawer show-if-above v-model="rightDrawerOpen" side="right" bordered>
-      <!-- drawer content -->
+    <!-- <q-drawer show-if-above v-model="rightDrawerOpen" side="right" bordered>
       <WebCategoryList />
-    </q-drawer>
+    </q-drawer> -->
 
-    <q-page-container
-      :class="$q.screen.gt.xs ? 'bg-green-1' : ''"
-      style="min-height: 100vh"
-    >
-      <div
-        :class="$q.screen.gt.xs ? 'q-ma-sm rounded-borders bg-white' : ''"
-        style="min-height: 100vh"
-      >
+    <q-page-container :class="$q.screen.gt.xs ? 'bg-green-1' : ''" style="min-height: 100vh">
+      <div :class="$q.screen.gt.xs ? 'q-ma-sm rounded-borders bg-white' : ''" style="min-height: 100vh">
         <slot />
       </div>
     </q-page-container>
