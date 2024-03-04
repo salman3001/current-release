@@ -11,10 +11,10 @@ const slide = ref(1);
     transition-next="slide-left"
     swipeable
     animated
-    control-color="primary"
-    control-type="regular"
+    control-color="grey-6"
+    control-type=""
     arrows
-    height="300px"
+    height="250px"
     class="rounded-borders"
   >
     <q-carousel-slide

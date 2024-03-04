@@ -53,9 +53,19 @@ const confirmLogout = () => {
 
 <template>
   <q-layout view="hHh lpR fFf">
-    <q-header class="bg-white text-white q-py-xs" style="border-bottom: 1px solid lightgray">
+    <q-header
+      class="bg-white text-white q-py-xs"
+      style="border-bottom: 1px solid lightgray"
+    >
       <q-toolbar>
-        <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" class="text-primary lt-sm" />
+        <q-btn
+          dense
+          flat
+          round
+          icon="menu"
+          @click="toggleLeftDrawer"
+          class="text-primary lt-sm"
+        />
         <q-toolbar-title>
           <BrandLogo :to="routes.home" size="170px"></BrandLogo>
         </q-toolbar-title>
@@ -64,9 +74,14 @@ const confirmLogout = () => {
             <FormsSearchInput />
           </div>
           <NuxtLink :to="routes.cart">
-            <q-btn round icon="shopping_cart" outline class="text-black" unelevated color="green-10">
+            <q-btn
+              round
+              icon="shopping_cart"
+              outline
+              class="text-muted"
+              unelevated
+            >
               <q-badge floating rounded color="red">2</q-badge>
-
             </q-btn>
           </NuxtLink>
           <WebNotificationMenu v-if="user" />
@@ -74,33 +89,61 @@ const confirmLogout = () => {
             <q-btn color="primary" v-if="!user">Login</q-btn>
           </NuxtLink>
         </div>
-        <q-btn dense flat round icon="menu" @click="toggleRightDrawer" class="text-primary lt-md" />
+        <q-btn
+          dense
+          flat
+          round
+          icon="menu"
+          @click="toggleRightDrawer"
+          class="text-primary lt-md"
+        />
       </q-toolbar>
       <q-toolbar class="lt-sm">
         <FormsSearchInput class="full-width" />
       </q-toolbar>
     </q-header>
 
-    <q-drawer mini-to-overlay show-if-above v-model="leftDrawerOpen" side="left" bordered :mini="miniState"
-      @mouseover="miniState = false" @mouseout="miniState = true" :width="200" :breakpoint="500">
+    <q-drawer
+      mini-to-overlay
+      show-if-above
+      v-model="leftDrawerOpen"
+      side="left"
+      bordered
+      :mini="miniState"
+      @mouseover="miniState = false"
+      @mouseout="miniState = true"
+      :width="200"
+      :breakpoint="500"
+    >
       <q-scroll-area class="fit" :horizontal-thumb-style="{ opacity: 0 }">
         <q-list padding>
           <div v-if="user">
-
-            <NuxtLink :to="routes.account" :class="route.path === routes.account ? 'text-primary' : 'text-black'
-          ">
+            <NuxtLink
+              :to="routes.account"
+              :class="
+                route.path === routes.account ? 'text-primary' : 'text-muted'
+              "
+            >
               <q-item clickable v-ripple>
                 <q-item-section avatar>
-                  <q-icon :name="`img:${user && user?.avatar?.url
-          ? $config.public.baseApi + user?.avatar?.url
-          : '/images/sample-dp.png'
-          }`" />
+                  <q-icon
+                    :name="`img:${
+                      user && user?.avatar?.url
+                        ? $config.public.baseApi + user?.avatar?.url
+                        : '/images/sample-dp.png'
+                    }`"
+                  />
                 </q-item-section>
 
                 <q-item-section> Account </q-item-section>
               </q-item>
             </NuxtLink>
-            <q-item clickable v-ripple @click="confirmLogout">
+            <q-item
+              clickable
+              v-ripple
+              @click="confirmLogout"
+              class="text-muted"
+            >
               <q-item-section avatar>
                 <q-icon name="logout" />
               </q-item-section>
@@ -110,7 +153,10 @@ const confirmLogout = () => {
             <q-separator />
           </div>
 
-          <NuxtLink :to="routes.home" :class="route.path === routes.home ? 'text-primary' : 'text-black'">
+          <NuxtLink
+            :to="routes.home"
+            :class="route.path === routes.home ? 'text-primary' : 'text-muted'"
+          >
             <q-item clickable v-ripple>
               <q-item-section avatar>
                 <q-icon name="home" />
@@ -119,7 +165,10 @@ const confirmLogout = () => {
               <q-item-section> Home </q-item-section>
             </q-item>
           </NuxtLink>
-          <NuxtLink :to="routes.blogs" :class="route.path === routes.blogs ? 'text-primary' : 'text-black'">
+          <NuxtLink
+            :to="routes.blogs"
+            :class="route.path === routes.blogs ? 'text-primary' : 'text-muted'"
+          >
             <q-item clickable v-ripple>
               <q-item-section avatar>
                 <q-icon name="rss_feed" />
@@ -127,7 +176,10 @@ const confirmLogout = () => {
               <q-item-section> View Blogs </q-item-section>
             </q-item>
           </NuxtLink>
-          <NuxtLink :to="routes.about" :class="route.path === routes.about ? 'text-primary' : 'text-black'">
+          <NuxtLink
+            :to="routes.about"
+            :class="route.path === routes.about ? 'text-primary' : 'text-muted'"
+          >
             <q-item clickable v-ripple>
               <q-item-section avatar>
                 <q-icon name="info" />
@@ -136,8 +188,12 @@ const confirmLogout = () => {
               <q-item-section> About Us </q-item-section>
             </q-item>
           </NuxtLink>
-          <NuxtLink :to="routes.contact" :class="route.path === routes.contact ? 'text-primary' : 'text-black'
-          ">
+          <NuxtLink
+            :to="routes.contact"
+            :class="
+              route.path === routes.contact ? 'text-primary' : 'text-muted'
+            "
+          >
             <q-item clickable v-ripple>
               <q-item-section avatar>
                 <q-icon name="call" />
@@ -154,8 +210,14 @@ const confirmLogout = () => {
       <WebCategoryList />
     </q-drawer> -->
 
-    <q-page-container :class="$q.screen.gt.xs ? 'bg-green-1' : ''" style="min-height: 100vh">
-      <div :class="$q.screen.gt.xs ? 'q-ma-sm rounded-borders bg-white' : ''" style="min-height: 100vh">
+    <q-page-container
+      :class="$q.screen.gt.xs ? 'bg-green-1' : ''"
+      style="min-height: 100vh"
+    >
+      <div
+        :class="$q.screen.gt.xs ? 'q-ma-sm rounded-borders bg-white' : ''"
+        style="min-height: 100vh"
+      >
         <slot />
       </div>
     </q-page-container>

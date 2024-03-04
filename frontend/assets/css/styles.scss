@@ -1076,3 +1076,13 @@ a {
 p {
     margin: 0;
 }
+
+.q-carousel__navigation {
+    .q-icon{
+        font-size: .5rem;
+    }
+    .q-btn{
+        margin: 0px;
+        padding: 0px;
+    } 
+} 
