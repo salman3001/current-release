@@ -49,177 +49,153 @@ const confirmLogout = () => {
     logout();
   }
 };
+
 </script>
 
 <template>
-  <q-layout view="hHh lpR fFf">
-    <q-header
-      class="bg-white text-white q-py-xs"
-      style="border-bottom: 1px solid lightgray"
-    >
-      <q-toolbar>
-        <q-btn
-          dense
-          flat
-          round
-          icon="menu"
-          @click="toggleLeftDrawer"
-          class="text-primary lt-sm"
-        />
-        <q-toolbar-title>
-          <BrandLogo :to="routes.home" size="170px"></BrandLogo>
-        </q-toolbar-title>
-        <div class="row q-gutter-sm justify-center items-center">
-          <div class="gt-xs" style="min-width: 300px">
-            <FormsSearchInput />
+  <ScrollArea height="100vh" width="100%">
+    <q-layout view="hHh lpR fFf">
+      <q-header bordered reveal class="text-white" :class="$q.dark.isActive ? 'bg-dark' : 'bg-white'">
+        <q-toolbar class="q-py-sm q-py-sm-md">
+          <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" class="text-primary lt-sm" />
+          <div>
+            <BrandLogo :to="routes.home" size="170px"></BrandLogo>
           </div>
-          <NuxtLink :to="routes.cart">
-            <q-btn
-              round
-              icon="shopping_cart"
-              outline
-              class="text-muted"
-              unelevated
-            >
-              <q-badge floating rounded color="red">2</q-badge>
-            </q-btn>
-          </NuxtLink>
-          <WebNotificationMenu v-if="user" />
-          <NuxtLink :to="routes.auth.login">
-            <q-btn color="primary" v-if="!user">Login</q-btn>
-          </NuxtLink>
-        </div>
-        <q-btn
-          dense
-          flat
-          round
-          icon="menu"
-          @click="toggleRightDrawer"
-          class="text-primary lt-md"
-        />
-      </q-toolbar>
-      <q-toolbar class="lt-sm">
-        <FormsSearchInput class="full-width" />
-      </q-toolbar>
-    </q-header>
+          <div class="row q-gutter-sm justify-end items-center"
+            :style="{ flexGrow: $q.screen.gt.xs ? 3 : 1, width: 'min-xontent' }">
+            <div class="gt-sm col-0 col-sm-1"></div>
+            <div class="gt-sm col row justify-center">
+              <WebServiceSearch />
+            </div>
+            <div class="gt-sm col-0 col-sm-1"></div>
 
-    <q-drawer
-      mini-to-overlay
-      show-if-above
-      v-model="leftDrawerOpen"
-      side="left"
-      bordered
-      :mini="miniState"
-      @mouseover="miniState = false"
-      @mouseout="miniState = true"
-      :width="200"
-      :breakpoint="500"
-    >
-      <q-scroll-area class="fit" :horizontal-thumb-style="{ opacity: 0 }">
-        <q-list padding>
-          <div v-if="user">
-            <NuxtLink
-              :to="routes.account"
-              :class="
-                route.path === routes.account ? 'text-primary' : 'text-muted'
-              "
-            >
-              <q-item clickable v-ripple>
+            <WebNotificationMenu v-if="user" />
+            <NuxtLink :to="routes.auth.login">
+              <q-btn color="primary" v-if="!user">Login</q-btn>
+            </NuxtLink>
+          </div>
+        </q-toolbar>
+        <q-toolbar class="lt-md q-pb-sm">
+          <WebServiceSearch style="flex-grow: 1;" />
+        </q-toolbar>
+      </q-header>
+
+      <q-drawer mini-to-overlay show-if-above v-model="leftDrawerOpen" side="left" bordered :mini="miniState"
+        @mouseover="miniState = false" @mouseout="miniState = true" :width="250" :breakpoint="500">
+        <q-scroll-area class="fit" :horizontal-thumb-style="{ opacity: 0 }">
+          <q-list padding>
+            <div v-if="user">
+              <NuxtLink :to="routes.account" :class="route.path === routes.account ? 'text-primary' : 'text-muted'
+        ">
+                <q-item clickable v-ripple>
+                  <q-item-section avatar>
+                    <q-icon :name="`img:${user && user?.avatar?.url
+        ? $config.public.baseApi + user?.avatar?.url
+        : '/images/sample-dp.png'
+        }`" />
+                  </q-item-section>
+
+                  <q-item-section> Account </q-item-section>
+                </q-item>
+              </NuxtLink>
+              <q-item clickable v-ripple @click="confirmLogout" class="text-muted">
                 <q-item-section avatar>
-                  <q-icon
-                    :name="`img:${
-                      user && user?.avatar?.url
-                        ? $config.public.baseApi + user?.avatar?.url
-                        : '/images/sample-dp.png'
-                    }`"
-                  />
+                  <q-icon name="logout" />
                 </q-item-section>
 
-                <q-item-section> Account </q-item-section>
+                <q-item-section> Logout </q-item-section>
+              </q-item>
+              <q-separator />
+            </div>
+
+            <NuxtLink :to="routes.home" :class="route.path === routes.home ? 'text-primary' : 'text-muted'">
+              <q-item clickable v-ripple>
+                <q-item-section avatar>
+                  <q-icon name="home" />
+                </q-item-section>
+
+                <q-item-section> Home </q-item-section>
               </q-item>
             </NuxtLink>
-            <q-item
-              clickable
-              v-ripple
-              @click="confirmLogout"
-              class="text-muted"
-            >
-              <q-item-section avatar>
-                <q-icon name="logout" />
-              </q-item-section>
+            <NuxtLink :to="routes.services" :class="route.path === routes.services ? 'text-primary' : 'text-muted'">
+              <q-item clickable v-ripple>
+                <q-item-section avatar>
+                  <q-icon name="electrical_services" />
+                </q-item-section>
 
-              <q-item-section> Logout </q-item-section>
-            </q-item>
-            <q-separator />
-          </div>
+                <q-item-section> Services </q-item-section>
+              </q-item>
+            </NuxtLink>
+            <NuxtLink :to="routes.service_requirement"
+              :class="route.path === routes.service_requirement ? 'text-primary' : 'text-muted'">
+              <q-item clickable v-ripple>
+                <q-item-section avatar>
+                  <q-icon name="dashboard_customize" />
+                </q-item-section>
 
-          <NuxtLink
-            :to="routes.home"
-            :class="route.path === routes.home ? 'text-primary' : 'text-muted'"
-          >
-            <q-item clickable v-ripple>
-              <q-item-section avatar>
-                <q-icon name="home" />
-              </q-item-section>
+                <q-item-section>Customize Services</q-item-section>
+              </q-item>
+            </NuxtLink>
+            <NuxtLink :to="routes.blogs" :class="route.path === routes.blogs ? 'text-primary' : 'text-muted'">
+              <q-item clickable v-ripple>
+                <q-item-section avatar>
+                  <q-icon name="rss_feed" />
+                </q-item-section>
+                <q-item-section> View Blogs </q-item-section>
+              </q-item>
+            </NuxtLink>
+            <NuxtLink :to="routes.about" :class="route.path === routes.about ? 'text-primary' : 'text-muted'">
+              <q-item clickable v-ripple>
+                <q-item-section avatar>
+                  <q-icon name="info" />
+                </q-item-section>
 
-              <q-item-section> Home </q-item-section>
-            </q-item>
-          </NuxtLink>
-          <NuxtLink
-            :to="routes.blogs"
-            :class="route.path === routes.blogs ? 'text-primary' : 'text-muted'"
-          >
-            <q-item clickable v-ripple>
+                <q-item-section> About Us </q-item-section>
+              </q-item>
+            </NuxtLink>
+            <NuxtLink :to="routes.contact" :class="route.path === routes.contact ? 'text-primary' : 'text-muted'
+        ">
+              <q-item clickable v-ripple>
+                <q-item-section avatar>
+                  <q-icon name="support_agent" />
+                </q-item-section>
+                <q-item-section> Contact </q-item-section>
+              </q-item>
+            </NuxtLink>
+            <NuxtLink :to="routes.faqs" :class="route.path === routes.faqs ? 'text-primary' : 'text-muted'
+        ">
+              <q-item clickable v-ripple>
+                <q-item-section avatar>
+                  <q-icon name="help" />
+                </q-item-section>
+                <q-item-section> FAQs </q-item-section>
+              </q-item>
+            </NuxtLink>
+            <q-item clickable v-ripple @click="$q.dark.toggle()">
               <q-item-section avatar>
-                <q-icon name="rss_feed" />
+                <q-icon name="light_mode" :color="$q.dark.isActive ? 'muted' : 'primary'" />
               </q-item-section>
-              <q-item-section> View Blogs </q-item-section>
+              <q-item-section> Dark Mode </q-item-section>
             </q-item>
-          </NuxtLink>
-          <NuxtLink
-            :to="routes.about"
-            :class="route.path === routes.about ? 'text-primary' : 'text-muted'"
-          >
-            <q-item clickable v-ripple>
-              <q-item-section avatar>
-                <q-icon name="info" />
-              </q-item-section>
+          </q-list>
+        </q-scroll-area>
+        <!-- drawer content -->
+      </q-drawer>
 
-              <q-item-section> About Us </q-item-section>
-            </q-item>
-          </NuxtLink>
-          <NuxtLink
-            :to="routes.contact"
-            :class="
-              route.path === routes.contact ? 'text-primary' : 'text-muted'
-            "
-          >
-            <q-item clickable v-ripple>
-              <q-item-section avatar>
-                <q-icon name="call" />
-              </q-item-section>
-              <q-item-section> Contact </q-item-section>
-            </q-item>
-          </NuxtLink>
-        </q-list>
-      </q-scroll-area>
-      <!-- drawer content -->
-    </q-drawer>
-
-    <!-- <q-drawer show-if-above v-model="rightDrawerOpen" side="right" bordered>
+      <!-- <q-drawer show-if-above v-model="rightDrawerOpen" side="right" bordered>
       <WebCategoryList />
     </q-drawer> -->
 
-    <q-page-container
-      :class="$q.screen.gt.xs ? 'bg-green-1' : ''"
-      style="min-height: 100vh"
-    >
-      <div
-        :class="$q.screen.gt.xs ? 'q-ma-sm rounded-borders bg-white' : ''"
-        style="min-height: 100vh"
-      >
+
+      <q-page-container>
+
         <slot />
-      </div>
-    </q-page-container>
-  </q-layout>
+        <q-page-scroller position="bottom-right" :scroll-offset="150" :offset="[18, 18]">
+          <q-btn fab icon="keyboard_arrow_up" color="secondary" />
+        </q-page-scroller>
+      </q-page-container>
+
+    </q-layout>
+  </ScrollArea>
+
 </template>

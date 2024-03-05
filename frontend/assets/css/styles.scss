@@ -21,19 +21,11 @@
     flex-wrap: wrap;
 }
 
-// $primary : #333333;
-// $secondary : #0080ff;
-// $accent : #048a66;
-// $dark : #1d1d1d;
-// $dark-page : #121212;
-// $positive : #21bA45;
-// $negative : #d12438;
-// $info : #bbbad4;
-// $warning : #F2C037;
+// src/css/quasar.variables.sass
 
-$primary : #058654;
-$secondary : #08072c;
-$accent : #000000;
+$primary : #3a887c;
+$secondary : #2c6b96;
+$accent :#b71bd3;
 
 $dark : #1d1d1d;
 $dark-page : #121212;
@@ -42,6 +34,7 @@ $positive : #21BA45;
 $negative : #C10015;
 $info : #31CCEC;
 $warning : #F2C037;
+
 
 $space-base : 16px !default;
 $space-x-base : $space-base !default;
@@ -963,7 +956,7 @@ $dark-shadows-up: (
     $dark-shadow-up-24
 );
 
-$generic-border-radius : 15px !default;
+$generic-border-radius : 28px !default;
 $generic-hover-transition : .3s cubic-bezier(.25, .8, .5, 1) !default;
 $typography-font-family : 'Roboto',
 '-apple-system',
@@ -1065,7 +1058,7 @@ $img-content-background : rgba(0, 0, 0, .47) !default;
 
 
 a {
-    color: $primary;
+    color: $secondary;
     text-decoration: none;
 }
 
@@ -1078,11 +1071,24 @@ p {
 }
 
 .q-carousel__navigation {
-    .q-icon{
+    .q-icon {
         font-size: .5rem;
     }
-    .q-btn{
+
+    .q-btn {
         margin: 0px;
         padding: 0px;
-    } 
-} 
+    }
+}
+
+
+.input-shadow {
+    .q-field__inner {
+        box-shadow: $shadow-1;
+        border-radius: $generic-border-radius;
+    }
+}
+
+.underline {
+    text-decoration: underline;
+}

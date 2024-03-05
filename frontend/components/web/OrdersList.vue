@@ -88,16 +88,15 @@ const pagesNumber = computed(() => Math.ceil(rows.length / pagination.value.rows
             color="green">
             <template v-slot:body-cell-More="props">
                 <q-td :props="props">
-
                     <NuxtLink :to="routes.view_order(props.row.id)">
-                        <q-btn size="sm" color="primary">View Detail</q-btn>
+                        <q-btn size="sm" color="secondary">View Detail</q-btn>
                     </NuxtLink>
                 </q-td>
             </template>
         </q-table>
 
         <div class="row justify-end q-mt-md">
-            <q-pagination v-model="pagination.page" color="primary" :max="pagesNumber" size="sm" />
+            <q-pagination v-model="pagination.page" color="secondary" :max="pagesNumber" size="sm" />
         </div>
     </div>
 </template>

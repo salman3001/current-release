@@ -7,4 +7,8 @@ export default {
   blogs: "/blogs",
   about: "/about",
   contact: "/contact",
+  services: "/services",
+  view_service: (id: string) => `/services/${id}`,
+  service_requirement: "/service-requirement",
+  faqs: "/faqs",
 };
