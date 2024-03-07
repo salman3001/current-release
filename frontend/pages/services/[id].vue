@@ -86,7 +86,7 @@ const items = [
         <div class="q-gutter-md row items-start" style="flex-grow: 1">
           <WebSelectVariant />
         </div>
-        <q-card style="min-width: 300px" class="gt-sm q-pa-md">
+        <q-card flat bordered style="min-width: 300px" class="gt-sm q-pa-md">
           <q-card-section class="text-h5"
             >Lorem ipsum dolor sit amet.</q-card-section
           >

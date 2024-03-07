@@ -30,18 +30,20 @@ function isNumberInRange(
   >
     <template v-if="$q.screen.lt.sm">
       <q-carousel-slide v-for="(c, i) in category" :name="i + 1">
-        <div class="row fit justify-start q-gutter-md no-scroll no-wrap">
-          <q-img
-            class="rounded-borders col-12 full-height"
-            :src="
-              c.thumbnail?.url || '/images/service-category-placeholder.jpg'
-            "
-          >
-            <div class="absolute-bottom text-subtitle1">
-              <p class="q-ma-none">{{ c.name }}</p>
-            </div>
-          </q-img>
-        </div>
+        <NuxtLink :to="routes.services_by_category(c.name)">
+          <div class="row fit justify-start q-gutter-md no-scroll no-wrap">
+            <q-img
+              class="rounded-borders col-12 full-height"
+              :src="
+                c.thumbnail?.url || '/images/service-category-placeholder.jpg'
+              "
+            >
+              <div class="absolute-bottom text-subtitle1">
+                <p class="q-ma-none">{{ c.name }}</p>
+              </div>
+            </q-img>
+          </div>
+        </NuxtLink>
       </q-carousel-slide>
     </template>
     <template
@@ -52,11 +54,12 @@ function isNumberInRange(
         <div class="row fit justify-start q-gutter-md no-scroll no-wrap">
           <template v-for="(c, j) in category">
             <q-img
-              class="rounded-borders col-6 full-height"
+              class="rounded-borders col-6 full-height cursor-pointer"
               v-if="isNumberInRange(j, i * 2, i * 2 + 2)"
               :src="
                 c.thumbnail?.url || '/images/service-category-placeholder.jpg'
               "
+              @click="navigateTo(routes.services_by_category(c.name))"
             >
               <div class="absolute-bottom text-subtitle1">
                 <p class="q-ma-none">{{ c.name }}</p>
@@ -75,11 +78,12 @@ function isNumberInRange(
         <div class="row fit justify-start q-gutter-md no-scroll no-wrap">
           <template v-for="(c, j) in category">
             <q-img
-              class="rounded-borders col-4 full-height"
+              class="rounded-borders col-4 full-height cursor-pointer"
               v-if="isNumberInRange(j, i * 4, i * 4 + 4)"
               :src="
                 c.thumbnail?.url || '/images/service-category-placeholder.jpg'
               "
+              @click="navigateTo(routes.services_by_category(c.name))"
             >
               <div class="absolute-bottom text-subtitle1">
                 <p class="q-ma-none">{{ c.name }}</p>

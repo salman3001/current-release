@@ -1,8 +1,27 @@
 <script setup lang="ts">
-const config = useRuntimeConfig();
+import type { AdditionalParams } from "~/types/QueryParamsTypes";
+const customFetch = useCustomFetch();
 
-const { data: categories } = await useCustomFetch<IResType<IServiceCategory[]>>(
-  apiRoutes.service_categories
+const page = ref(1);
+
+const { data, error } = await useAsyncData("web-home", async () => {
+  const [categories] = await Promise.all([
+    customFetch<IResType<IServiceCategory[]>>(apiRoutes.service_categories),
+  ]);
+
+  return {
+    categories: categories?.data || [],
+  };
+});
+
+const {
+  data: services,
+  refresh,
+  pending: servicesPending,
+} = useAsyncData(() =>
+  customFetch<IPageRes<IService[]>>(apiRoutes.services, {
+    params: { page: page.value } as AdditionalParams,
+  })
 );
 </script>
 
@@ -13,7 +32,8 @@ const { data: categories } = await useCustomFetch<IResType<IServiceCategory[]>>(
   >
     <ScrollArea height="100px" width="100%" class="col">
       <div class="row no-wrap q-py-md q-gutter-x-xl no-scroll">
-        <WebCategoryIcon" v-for="c in categories?.data" :category="c" />
+        <WebCategoryIcon" v-if="!error" v-for="c in data?.categories"
+        :category="c" />
       </div>
     </ScrollArea>
   </div>
@@ -22,7 +42,7 @@ const { data: categories } = await useCustomFetch<IResType<IServiceCategory[]>>(
       <h2 class="text-h6 text-bold q-my-none">Popular Categories</h2>
       <p class="text-muted">A list of most popular categories</p>
       <div>
-        <WebCategoryCrousel :category="categories?.data" />
+        <WebCategoryCrousel v-if="!error" :category="data?.categories" />
       </div>
     </div>
   </div>
@@ -32,10 +52,26 @@ const { data: categories } = await useCustomFetch<IResType<IServiceCategory[]>>(
       <h2 class="text-h6 text-bold q-my-none">Top Rated Services</h2>
       <p class="text-muted">A list of top rated services</p>
       <div class="row q-col-gutter-lg q-mt-sm">
-        <div v-for="s in 20" class="col-12 col-sm-6 col-md-4 col-lg-3">
+        <div
+          v-if="servicesPending"
+          v-for="s in 10"
+          class="col-12 col-sm-6 col-md-4 col-lg-3"
+        >
+          <CardSekeleton />
+        </div>
+        <div
+          v-else
+          v-for="s in services?.data.data"
+          class="col-12 col-sm-6 col-md-4 col-lg-3"
+        >
           <WebServiceCard />
         </div>
       </div>
+      <PaginateComponet
+        :page="page"
+        :meta="services?.data.meta"
+        @update:model-value="(v:number) => {page = v; refresh()}"
+      />
     </div>
   </div>
 </template>

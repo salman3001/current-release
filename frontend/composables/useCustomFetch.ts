@@ -1,12 +1,11 @@
-import type { AsyncData, UseFetchOptions } from "#app";
-import { FetchError } from "ofetch";
 import { Notify } from "quasar";
 
-export default function <T>(
-  url: string,
-  opts?: UseFetchOptions<any> | undefined
-): AsyncData<T, FetchError<any> | null> {
+export default function (): typeof $fetch {
   const config = useRuntimeConfig();
+
+  const token = useCookie("token");
+
+  const authorization = `Bearer ${toRaw(token.value)}`;
 
   const onResponse = (ctx: any) => {
     const success = ctx.response._data?.success;
@@ -29,8 +28,11 @@ export default function <T>(
     }
   };
 
-  return useFetch(config.public.baseApi + url, {
+  return $fetch.create({
+    baseURL: config.public.baseApi,
+    headers: {
+      authorization,
+    },
     onResponse: !process.server ? onResponse : undefined,
-    ...opts,
   });
 }
