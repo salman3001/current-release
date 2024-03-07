@@ -2,7 +2,7 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 import BidOrder from 'App/Models/orders/BidOrder'
 import BaseController from '../BaseController'
-import BidOrderCreateValidator from 'App/Validators/orders/BidOrderCreateValidator'
+import BidOrderCreateValidator from 'App/Validators/Booking/BidBookingCreateValidator'
 import VendorUser from 'App/Models/vendorUser/VendorUser'
 import ServiceRequirement from 'App/Models/bid/ServiceRequirement'
 import Database from '@ioc:Adonis/Lucid/Database'
@@ -66,7 +66,7 @@ export default class BidOrdersController extends BaseController {
         code: 400,
         message: 'No Bid is accepted to place the order',
         data: null,
-        success: false
+        success: false,
       })
     }
 
@@ -74,8 +74,7 @@ export default class BidOrdersController extends BaseController {
 
     let bidOrder: BidOrder | null = null
 
-    await Database.transaction(async trx => {
-
+    await Database.transaction(async (trx) => {
       bidOrder = await BidOrder.create({
         price: acceptedBid.offeredPrice,
         status: OrderStatus.PLACED,
@@ -93,10 +92,9 @@ export default class BidOrdersController extends BaseController {
           acceptedBid: {
             id: acceptedBid.id,
             offeredPrice: acceptedBid.offeredPrice,
-          }
-        }
+          },
+        },
       })
-
     })
 
     if (bidOrder) {
@@ -107,9 +105,8 @@ export default class BidOrdersController extends BaseController {
       code: 201,
       message: 'Bid Order Created',
       data: bidOrder,
-      success: true
+      success: true,
     })
-
   }
 
   public async updateStatus({ response, bouncer, request, params }: HttpContextContract) {
@@ -118,7 +115,7 @@ export default class BidOrdersController extends BaseController {
     await bouncer.with('BidOrderPolicy').authorize('update', bidOrder)
 
     const validationSchema = schema.create({
-      status: schema.enum(Object.values(OrderStatus))
+      status: schema.enum(Object.values(OrderStatus)),
     })
 
     const payload = await request.validate({ schema: validationSchema })
@@ -131,8 +128,7 @@ export default class BidOrdersController extends BaseController {
       code: 201,
       message: 'Bid Order Status Updated',
       data: bidOrder,
-      success: true
+      success: true,
     })
-
   }
 }

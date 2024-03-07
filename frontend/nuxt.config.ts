@@ -4,7 +4,7 @@ export default defineNuxtConfig({
   modules: ["nuxt-icon", "@pinia/nuxt", "nuxt-quasar-ui"],
   runtimeConfig: {
     public: {
-      baseApi: "http://localhost:3333",
+      baseApi: "http://127.0.0.1:3333", // this must be http://127.0.0.1:3333 not localhost
     },
   },
   quasar: {
@@ -12,4 +12,5 @@ export default defineNuxtConfig({
     sassVariables: "./assets/css/styles.scss",
     cssAddon: true,
   },
+  devServer: {},
 });

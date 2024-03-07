@@ -29,7 +29,7 @@ import '../routes/vendorUserRoutes'
 import '../routes/serviceRoutes'
 import '../routes/emailRoutes'
 import '../routes/notificationRoutes'
-import '../routes/orderRoutes'
+import '../routes/bookingRoutes'
 import '../routes/bidRoutes'
 
 Route.get('api', async ({ response }) => {

@@ -15,10 +15,10 @@ Route.group(() => {
   Route.resource('job-departments', 'user/JobDepartmentController').apiOnly()
 
   // cart
-  Route.get('my-cart', 'user/CartsController.show')
-  Route.put('update-my-cart', 'user/CartsController.update')
-  Route.delete('my-cart/:itemId', 'user/CartsController.deleteItem')
-  Route.delete('my-cart', 'user/CartsController.clear')
+  // Route.get('my-cart', 'user/CartsController.show')
+  // Route.put('update-my-cart', 'user/CartsController.update')
+  // Route.delete('my-cart/:itemId', 'user/CartsController.deleteItem')
+  // Route.delete('my-cart', 'user/CartsController.clear')
 
   Route.get('my-wishlist', 'user/WishlistsController.show')
   Route.put('update-my-wishlist', 'user/WishlistsController.update')

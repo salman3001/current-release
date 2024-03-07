@@ -77,9 +77,9 @@ export const { policies } = Bouncer.registerPolicies({
   VendorUserPolicy: () => import('App/Policies/VendorUserPolicy'),
   BussinessPolicy: () => import('App/Policies/BusinessPolicy'),
   WishlistPolicy: () => import('App/Policies/WishlistPolicy'),
-  OrderPolicy: () => import('App/Policies/OrderPolicy'),
+  BookingPolicy: () => import('App/Policies/BookingPolicy'),
   CouponPolicy: () => import('App/Policies/CouponPolicy'),
   ServiceRequirementPolicy: () => import('App/Policies/ServiceRequirmentPolicy'),
   BidPolicy: () => import('App/Policies/BidPolicy'),
-  BidOrderPolicy: () => import('App/Policies/BidOrderPolicy')
+  BidBookingPolicy: () => import('App/Policies/BidBookingPolicy'),
 })

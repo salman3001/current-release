@@ -6,14 +6,52 @@ import Database from '@ioc:Adonis/Lucid/Database'
 import { schema } from '@ioc:Adonis/Core/Validator'
 import { ModelQueryBuilderContract } from '@ioc:Adonis/Lucid/Orm'
 import Bid from 'App/Models/bid/Bid'
+import VendorUser from 'App/Models/vendorUser/VendorUser'
+import User from 'App/Models/user/User'
 
 export default class ServiceRequirementController extends BaseController {
   constructor() {
-    super(ServiceRequirement, ServiceRequirementCreateValidator, ServiceRequirementCreateValidator, 'ServiceRequirementPolicy')
+    super(
+      ServiceRequirement,
+      ServiceRequirementCreateValidator,
+      ServiceRequirementCreateValidator,
+      'ServiceRequirementPolicy'
+    )
   }
 
   public getIndexQuery(ctx: HttpContextContract): ModelQueryBuilderContract<any, any> {
     return ServiceRequirement.query().whereNull('accepted_bid_id')
+  }
+
+  public async myList({ auth, response, bouncer, request }: HttpContextContract) {
+    await bouncer.with('ServiceRequirementPolicy').authorize('myList')
+
+    const user = auth.user!
+
+    let serviceRequirement: ServiceRequirement[] = []
+
+    const serviceRequirementQuery = ServiceRequirement.query().where('user_id', user.id)
+
+    this.indexfilterQuery(request.qs() as any, serviceRequirementQuery)
+    if (request.qs().populate) {
+      await this.populate(request.qs().populate as any, serviceRequirementQuery)
+    }
+
+    if (request.qs().page) {
+      serviceRequirement = await serviceRequirementQuery.paginate(
+        request.qs().page,
+        request.qs().perPage || this.perPage
+      )
+    } else {
+      serviceRequirement = await serviceRequirementQuery.exec()
+    }
+
+    return response.custom({
+      code: 200,
+      success: true,
+      message: null,
+      data: serviceRequirement,
+    })
   }
 
   public async showAcceptedBid({ bouncer, params, response }: HttpContextContract) {
@@ -21,13 +59,16 @@ export default class ServiceRequirementController extends BaseController {
 
     await bouncer.with('ServiceRequirementPolicy').authorize('view', serviceRequirement)
 
-    const bid = await Bid.query().where('id', serviceRequirement.acceptedBidId).preload('vendorUser').exec()
+    const bid = await Bid.query()
+      .where('id', serviceRequirement.acceptedBidId)
+      .preload('vendorUser')
+      .exec()
 
     return response.custom({
       code: 200,
       message: null,
       data: bid,
-      success: true
+      success: true,
     })
   }
 
@@ -38,8 +79,11 @@ export default class ServiceRequirementController extends BaseController {
 
     let serviceRequirement: ServiceRequirement | null = null
 
-    await Database.transaction(async trx => {
-      serviceRequirement = await ServiceRequirement.create({ ...payload, userId: auth.user!.id }, { client: trx })
+    await Database.transaction(async (trx) => {
+      serviceRequirement = await ServiceRequirement.create(
+        { ...payload, userId: auth.user!.id },
+        { client: trx }
+      )
     })
 
     if (serviceRequirement) {
@@ -50,9 +94,8 @@ export default class ServiceRequirementController extends BaseController {
       code: 201,
       message: 'Service requirement created',
       data: serviceRequirement,
-      success: true
+      success: true,
     })
-
   }
 
   public async update({ auth, bouncer, request, response, params }: HttpContextContract) {
@@ -61,9 +104,7 @@ export default class ServiceRequirementController extends BaseController {
 
     const payload = await request.validate(ServiceRequirementCreateValidator)
 
-
-
-    await Database.transaction(async trx => {
+    await Database.transaction(async (trx) => {
       serviceRequirement.useTransaction(trx)
       serviceRequirement.merge({ ...payload, userId: auth.user!.id })
       await serviceRequirement.save()
@@ -75,9 +116,8 @@ export default class ServiceRequirementController extends BaseController {
       code: 200,
       message: 'Service requirement update',
       data: serviceRequirement,
-      success: true
+      success: true,
     })
-
   }
 
   public async acceptBid({ bouncer, request, response, params }: HttpContextContract) {
@@ -85,14 +125,12 @@ export default class ServiceRequirementController extends BaseController {
     await bouncer.with('ServiceRequirementPolicy').authorize('update', serviceRequirement)
 
     const validationSchema = schema.create({
-      bidId: schema.number()
+      bidId: schema.number(),
     })
 
     const payload = await request.validate({ schema: validationSchema })
 
-
-
-    await Database.transaction(async trx => {
+    await Database.transaction(async (trx) => {
       serviceRequirement.useTransaction(trx)
       serviceRequirement.merge({ acceptedBidId: payload.bidId })
       await serviceRequirement.save()
@@ -104,9 +142,7 @@ export default class ServiceRequirementController extends BaseController {
       code: 200,
       message: 'bid Accepted',
       data: serviceRequirement,
-      success: true
+      success: true,
     })
-
   }
-
 }

@@ -1,5 +1,5 @@
 <template>
-    <div class="row justify-center items-center">
-        <h3>Cart Page</h3>
-    </div>
+  <div class="row justify-center items-center">
+    <h3>Blog Page</h3>
+  </div>
 </template>

@@ -1,14 +1,14 @@
 import { BasePolicy } from '@ioc:Adonis/Addons/Bouncer'
 import User from 'App/Models/user/User'
-import Order from 'App/Models/orders/Order'
 import VendorUser from 'App/Models/vendorUser/VendorUser'
 import AdminUser from 'App/Models/adminUser/AdminUser'
 import { hasPermission, isAdmin } from 'App/Helpers/permissionHelpers'
 import { permissions } from 'App/Helpers/enums'
+import Booking from 'App/Models/bookings/Booking'
 
-export default class OrderPolicy extends BasePolicy {
+export default class BookingPolicy extends BasePolicy {
   public async viewList(user: User | VendorUser | AdminUser) {
-    if (isAdmin(user) && (await hasPermission(user as AdminUser, permissions.MANAGE_ORDERS))) {
+    if (isAdmin(user) && (await hasPermission(user as AdminUser, permissions.MANAGE_BOOKINGS))) {
       return true
     } else {
       return false
@@ -31,15 +31,15 @@ export default class OrderPolicy extends BasePolicy {
     }
   }
 
-  public async view(user: User, order: Order) {
+  public async view(user: User, booking: Booking) {
     if (
       isAdmin(user) &&
-      (await hasPermission(user as unknown as AdminUser, permissions.MANAGE_ORDERS))
+      (await hasPermission(user as unknown as AdminUser, permissions.MANAGE_BOOKINGS))
     ) {
       return true
-    } else if (user instanceof User && user.id == order.userId) {
+    } else if (user instanceof User && user.id == booking.userId) {
       return true
-    } else if (user instanceof VendorUser && user.id == order.vendorUserId) {
+    } else if (user instanceof VendorUser && user.id == booking.vendorUserId) {
       return true
     } else {
       return false
@@ -53,13 +53,13 @@ export default class OrderPolicy extends BasePolicy {
       return false
     }
   }
-  public async update(user: User, order: Order) {
+  public async update(user: User, booking: Booking) {
     if (
       isAdmin(user) &&
-      (await hasPermission(user as unknown as AdminUser, permissions.MANAGE_ORDERS))
+      (await hasPermission(user as unknown as AdminUser, permissions.MANAGE_BOOKINGS))
     ) {
       return true
-    } else if (user instanceof VendorUser && user.id == order.vendorUserId) {
+    } else if (user instanceof VendorUser && user.id == booking.vendorUserId) {
       return true
     } else {
       return false
@@ -68,7 +68,7 @@ export default class OrderPolicy extends BasePolicy {
   public async delete(user: User) {
     if (
       isAdmin(user) &&
-      (await hasPermission(user as unknown as AdminUser, permissions.MANAGE_ORDERS))
+      (await hasPermission(user as unknown as AdminUser, permissions.MANAGE_BOOKINGS))
     ) {
       return true
     } else {

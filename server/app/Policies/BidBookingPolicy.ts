@@ -1,12 +1,12 @@
 import { BasePolicy } from '@ioc:Adonis/Addons/Bouncer'
 import User from 'App/Models/user/User'
-import BidOrder from 'App/Models/orders/BidOrder'
 import { hasPermission, isAdmin } from 'App/Helpers/permissionHelpers'
 import { permissions } from 'App/Helpers/enums'
 import AdminUser from 'App/Models/adminUser/AdminUser'
 import VendorUser from 'App/Models/vendorUser/VendorUser'
+import BidBooking from 'App/Models/bookings/BidBooking'
 
-export default class BidOrderPolicy extends BasePolicy {
+export default class BidBookingPolicy extends BasePolicy {
   public async viewList(user: User | AdminUser) {
     if (isAdmin(user) && (await hasPermission(user as AdminUser, permissions.MANAGE_BID_ORDERS))) {
       return true
@@ -23,10 +23,10 @@ export default class BidOrderPolicy extends BasePolicy {
     }
   }
 
-  public async view(user: User, bidOrder: BidOrder) {
-    if (user instanceof User && bidOrder.userId == user.id) {
+  public async view(user: User, bidBooking: BidBooking) {
+    if (user instanceof User && bidBooking.userId == user.id) {
       return true
-    } else if (user instanceof VendorUser && bidOrder.userId == user.id) {
+    } else if (user instanceof VendorUser && bidBooking.userId == user.id) {
       return true
     } else {
       return false
@@ -39,14 +39,14 @@ export default class BidOrderPolicy extends BasePolicy {
       return false
     }
   }
-  public async update(user: User, bidOrder: BidOrder) {
-    if (user instanceof VendorUser && bidOrder.userId == user.id) {
+  public async update(user: User, bidBooking: BidBooking) {
+    if (user instanceof VendorUser && bidBooking.userId == user.id) {
       return true
     } else {
       return false
     }
   }
-  public async delete(user: User, bidOrder: BidOrder) {
+  public async delete(user: User, bidBooking: BidBooking) {
     return false
   }
 }

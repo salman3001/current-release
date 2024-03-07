@@ -11,12 +11,11 @@ import {
   HasMany,
   computed,
 } from '@ioc:Adonis/Lucid/Orm'
-import Cart from './Cart'
 import Notification from '../Notification'
 import UserProfile from '../UserProfile'
 import Wishlist from './Wishlist'
-import BidOrder from '../orders/BidOrder'
-import OrderGroup from '../orders/OrderGroup'
+import Booking from '../bookings/Booking'
+import BidBooking from '../bookings/BidBooking'
 
 export default class User extends BaseModel {
   @column({ isPrimary: true })
@@ -60,17 +59,14 @@ export default class User extends BaseModel {
   @hasMany(() => Notification)
   public notifications: HasMany<typeof Notification>
 
-  @hasMany(() => OrderGroup)
-  public orders: HasMany<typeof OrderGroup>
-
-  @hasOne(() => Cart)
-  public cart: HasOne<typeof Cart>
+  @hasMany(() => Booking)
+  public bookings: HasMany<typeof Booking>
 
   @hasOne(() => Wishlist)
   public wishlist: HasOne<typeof Wishlist>
 
-  @hasMany(() => BidOrder)
-  public bidOrders: HasMany<typeof BidOrder>
+  @hasMany(() => BidBooking)
+  public bidBooking: HasMany<typeof BidBooking>
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
@@ -87,7 +83,7 @@ export default class User extends BaseModel {
 
   @afterCreate()
   public static async createCart(User: User) {
-    await User.related('cart').create({})
+    // await User.related('cart').create({})
     await User.related('profile').create({})
     await User.related('wishlist').create({})
   }

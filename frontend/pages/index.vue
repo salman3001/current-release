@@ -1,21 +1,28 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+const config = useRuntimeConfig();
+
+const { data: categories } = await useCustomFetch<IResType<IServiceCategory[]>>(
+  apiRoutes.service_categories
+);
+</script>
 
 <template>
-
-  <div class="row q-px-sm q-px-sm-md items-center q-gutter-sm" style="border-bottom: 1px solid lightgrey">
+  <div
+    class="row q-px-sm q-px-sm-md items-center q-gutter-sm"
+    style="border-bottom: 1px solid lightgrey"
+  >
     <ScrollArea height="100px" width="100%" class="col">
-      <div class="row no-wrap q-py-md  q-gutter-x-xl no-scroll">
-        <WebCategoryIcon v-for="n in 20" />
+      <div class="row no-wrap q-py-md q-gutter-x-xl no-scroll">
+        <WebCategoryIcon" v-for="c in categories?.data" :category="c" />
       </div>
     </ScrollArea>
   </div>
-
   <div class="q-pa-md">
     <div>
       <h2 class="text-h6 text-bold q-my-none">Popular Categories</h2>
       <p class="text-muted">A list of most popular categories</p>
       <div>
-        <WebCategoryCrousel />
+        <WebCategoryCrousel :category="categories?.data" />
       </div>
     </div>
   </div>
@@ -31,5 +38,4 @@
       </div>
     </div>
   </div>
-
 </template>

@@ -26,15 +26,17 @@ export enum permissions {
   MANAGE_ROLES = 'Manage Roles',
   MANAGE_MEDIA = 'Manage Media',
   MANAGE_BUSINESS = 'Manage Business',
-  MANAGE_ORDERS = 'Manage Orders',
-  MANAGE_BID_ORDERS = 'Manage Bid Orders',
+  MANAGE_BOOKINGS = 'Manage Bookings',
+  MANAGE_BID_BOOKINGS = 'Manage Bid Bookings',
   MANAGE_COUPONS = 'Manage Coupons',
 }
 
 export enum NotificationTypes {
   NEW_SUPPORT_TICKET = 'new-support-ticket',
-  ORDER_CREATED = 'order-created',
-  SERVICE_REQUIREMENT_ADDED = 'service_requirement-added'
+  BOOKING_CREATED = 'booking-created',
+  BOOKING_RECIEVED = 'booking-recieved',
+  SERVICE_REQUIREMENT_ADDED = 'service_requirement-added',
+  BID_RECIEVED = 'bid-recieved',
 }
 
 export enum MediaTypes {

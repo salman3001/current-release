@@ -1,7 +1,8 @@
 import { DateTime } from 'luxon'
-import { BaseModel, BelongsTo, belongsTo, column } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, BelongsTo, afterCreate, belongsTo, column } from '@ioc:Adonis/Lucid/Orm'
 import ServiceRequirement from './ServiceRequirement'
 import VendorUser from '../vendorUser/VendorUser'
+import { NotificationTypes } from 'App/Helpers/enums'
 
 export default class Bid extends BaseModel {
   @column({ isPrimary: true })
@@ -33,4 +34,21 @@ export default class Bid extends BaseModel {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime
+
+  @afterCreate()
+  public static async notifyUser(bid: Bid) {
+    await bid.load('serviceRequirement', (s) => {
+      s.preload('user')
+    })
+
+    await bid.serviceRequirement.user.related('notifications').create({
+      data: {
+        type: NotificationTypes.BID_RECIEVED,
+        message: 'Some one added a bid on your service requirement',
+        meta: {
+          serviceRequirementId: bid.serviceRequirement.id,
+        },
+      },
+    })
+  }
 }
