@@ -14,9 +14,4 @@ export default class Wishlist extends BaseModel {
   })
   public items: ManyToMany<typeof ServiceVariant>
 
-  @column.dateTime({ autoCreate: true })
-  public createdAt: DateTime
-
-  @column.dateTime({ autoCreate: true, autoUpdate: true })
-  public updatedAt: DateTime
 }

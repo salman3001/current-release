@@ -1,12 +1,15 @@
+<script setup lang="ts">
+defineProps<{
+  variant: IServiceVariant
+}>()
+</script>
+
 <template>
-  <q-img
-    v-for="mode in 4"
-    :key="mode"
-    src="https://picsum.photos/500/300"
-    style="max-width: 150px; height: 100px"
-    :fit="mode"
-    class="cols-2 cols-sm-3 cols-md-4 cols-lg-5"
-  >
-    <div class="absolute-bottom text-subtitle1 text-center">Variant</div>
-  </q-img>
+  <div @click="$emit('variant-selection', variant)">
+    <q-img src="/images/service-category-placeholder.jpg" style="width: 150px; height: 100px"
+      class="cols-2 cols-sm-3 cols-md-4 cols-lg-5">
+    </q-img>
+    <div class="">{{ variant?.name }}</div>
+    <div class="">&#x20B9;{{ variant?.price }}</div>
+  </div>
 </template>

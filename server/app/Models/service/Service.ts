@@ -8,6 +8,7 @@ import {
   beforeDelete,
   belongsTo,
   column,
+  computed,
   hasMany,
   hasOne,
   manyToMany,
@@ -110,6 +111,30 @@ export default class Service extends BaseModel {
 
   @hasMany(() => ServiceVariant)
   public variants: HasMany<typeof ServiceVariant>
+
+  @computed()
+  public get starting_from() {
+    if (this.variants && this.variants.length > 0) {
+      const lowestPrice = this.variants.reduce((minPrice, variant) => {
+        return Math.min(minPrice, Number(variant.price))
+      }, Infinity)
+      return lowestPrice.toFixed(2)
+    } else {
+      return null
+    }
+  }
+
+  @computed()
+  public get avg_rating() {
+    if (this.reviews && this.reviews.length > 0) {
+      const totalRating = this.reviews.reduce((sum, review) => sum + review.rating, 0)
+      const avg_rating = totalRating / this.reviews.length
+      return avg_rating
+    }
+    else {
+      return 0
+    }
+  }
 
   @manyToMany(() => Coupon, { pivotTable: 'service_coupons' })
   public coupons: ManyToMany<typeof Coupon>

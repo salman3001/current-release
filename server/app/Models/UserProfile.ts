@@ -17,11 +17,8 @@ import {
 } from '@ioc:Adonis/Addons/ResponsiveAttachment'
 import Social from './Social'
 import Address from './address/Address'
-import Experience from './user/Experience'
-import Education from './user/Education'
 import Language from './Language'
 import Skill from './user/Skill'
-import FavoriteLink from './FavoriteLink'
 import User from './user/User'
 
 export default class UserProfile extends BaseModel {
@@ -60,12 +57,6 @@ export default class UserProfile extends BaseModel {
   @hasMany(() => Address)
   public addresses: HasMany<typeof Address>
 
-  @hasMany(() => Experience)
-  public experiences: HasMany<typeof Experience>
-
-  @hasMany(() => Education)
-  public educations: HasMany<typeof Education>
-
   @manyToMany(() => Language, {
     pivotColumns: ['proficiency'],
     pivotTable: 'user_languages',
@@ -77,13 +68,4 @@ export default class UserProfile extends BaseModel {
   })
   public skills: ManyToMany<typeof Skill>
 
-  @hasMany(() => FavoriteLink)
-  public favoriteLinks: HasMany<typeof FavoriteLink>
-
-
-  @column.dateTime({ autoCreate: true })
-  public createdAt: DateTime
-
-  @column.dateTime({ autoCreate: true, autoUpdate: true })
-  public updatedAt: DateTime
 }

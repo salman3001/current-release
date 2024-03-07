@@ -12,9 +12,7 @@ import ServiceCategoryFactory from 'Database/factories/service/ServiceCategoryFa
 import CampaignTypeFactory from 'Database/factories/email/CampaignTypeFactory'
 import TemplateFactory from 'Database/factories/email/TemplateFactory'
 import VendorUserFactory from 'Database/factories/vendorUser/VendorUserFactory'
-import JobDepartmentFactory from 'Database/factories/user/JobDepartmentFactory'
 import LanguageFactory from 'Database/factories/LanguageFactory'
-import JobIndustryFactory from 'Database/factories/user/JobIndustryFactory'
 import ServiceTagFactory from 'Database/factories/service/ServiceTagFactory'
 
 export default class extends BaseSeeder {
@@ -98,8 +96,6 @@ export default class extends BaseSeeder {
         'Forgot Your Password! Dont Worry. Here is your 6 digts code {{otp}}, Use it to reset the password',
     }).create()
 
-    await JobDepartmentFactory.createMany(10)
-    await JobIndustryFactory.createMany(10)
     await LanguageFactory.createMany(10)
     await ServiceTagFactory.createMany(10)
   }

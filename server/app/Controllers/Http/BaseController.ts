@@ -41,7 +41,7 @@ export default class BaseController {
     private bauncerPolicy?: keyof PoliciesList,
     public perPage?: number,
     public importSelects: string[] = []
-  ) {}
+  ) { }
 
   public async index(ctx: HttpContextContract) {
     if (ctx.bouncer && this.bauncerPolicy) {
