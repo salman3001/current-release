@@ -6,6 +6,7 @@ const isPwd = ref(true);
 const loading = ref(false)
 const config = useRuntimeConfig()
 const $q = useQuasar()
+const next = useRoute().query.next
 
 const form = ref({
   email: '',
@@ -46,8 +47,11 @@ const login = async () => {
       },
     })
 
-
-    navigateTo(routes.home)
+    if (next) {
+      navigateTo(next as string)
+    } else {
+      navigateTo(routes.home)
+    }
   }
 
 
@@ -79,7 +83,8 @@ const login = async () => {
             <q-form class="q-gutter-y-sm" @submit.prevent="login">
               <div>
                 <label>Email adress</label>
-                <q-input outlined v-model="form.email" dense placeholder="name@example.com" :rules="[rules.required('Required'), rules.email('Email is not valid')]" />
+                <q-input outlined v-model="form.email" dense placeholder="name@example.com"
+                  :rules="[rules.required('Required'), rules.email('Email is not valid')]" />
               </div>
               <div>
                 <label>Password</label>
@@ -89,46 +94,46 @@ const login = async () => {
                     <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer"
                       @click="isPwd = !isPwd" />
                   </template>
-</q-input>
-<div class="row items-center justify-end q-pt-sm">
-  <NuxtLink :to="routes.auth.forgot_password" class="text-grey-7">Forgot
-    password?</NuxtLink>
-</div>
-</div>
-<q-btn color="primary" v-if="loading" :disable="true" style="width: 100%">
-  <q-circular-progress indeterminate size="20px" class="q-px-10" :thickness="1" color="primary" track-color="black"
-    style="min-width: 8rem" />
-</q-btn>
-<q-btn v-else type="submit" color="primary" style="width: 100%">Sign in</q-btn>
-</q-form>
+                </q-input>
+                <div class="row items-center justify-end q-pt-sm">
+                  <NuxtLink :to="routes.auth.forgot_password" class="text-grey-7">Forgot
+                    password?</NuxtLink>
+                </div>
+              </div>
+              <q-btn color="primary" v-if="loading" :disable="true" style="width: 100%">
+                <q-circular-progress indeterminate size="20px" class="q-px-10" :thickness="1" color="primary"
+                  track-color="black" style="min-width: 8rem" />
+              </q-btn>
+              <q-btn v-else type="submit" color="primary" style="width: 100%">Sign in</q-btn>
+            </q-form>
 
 
-</q-card-section>
-<q-card-section>
-  <q-separator />
+          </q-card-section>
+          <q-card-section>
+            <q-separator />
 
-</q-card-section>
+          </q-card-section>
 
-<q-card-section class="row justify-center ">
-  <q-btn outline style="text-transform: none;" color="grey-8" class="full-width"><q-icon left
-      name="img:/images/google-icon.webp"></q-icon>
-    <div> Sign in with Google</div>
-  </q-btn>
-</q-card-section>
-<div>
-  <p class="text-center">Dont have an account? <NuxtLink :to="routes.auth.sign_up">Sign up</NuxtLink>
-  <p class="q-pt-none text-center">Need an Vendor's account? <NuxtLink :to="routes.auth.vendor_sign_up">Sign
-      up as Vendor
-    </NuxtLink>
-  </p>
-  </p>
-</div>
+          <q-card-section class="row justify-center ">
+            <q-btn outline style="text-transform: none;" color="grey-8" class="full-width"><q-icon left
+                name="img:/images/google-icon.webp"></q-icon>
+              <div> Sign in with Google</div>
+            </q-btn>
+          </q-card-section>
+          <div>
+            <p class="text-center">Dont have an account? <NuxtLink :to="routes.auth.sign_up">Sign up</NuxtLink>
+            <p class="q-pt-none text-center">Need an Vendor's account? <NuxtLink :to="routes.auth.vendor_sign_up">Sign
+                up as Vendor
+              </NuxtLink>
+            </p>
+            </p>
+          </div>
 
-</q-card>
-</div>
-</div>
-<div class="col-12 col-md-5 gt-sm ">
-  <div class=" fit rounded-borders" :style="{ backgroundImage: 'url(/images/login-art.jpg)' }"></div>
-</div>
-</div>
+        </q-card>
+      </div>
+    </div>
+    <div class="col-12 col-md-5 gt-sm ">
+      <div class=" fit rounded-borders" :style="{ backgroundImage: 'url(/images/login-art.jpg)' }"></div>
+    </div>
+  </div>
 </template>

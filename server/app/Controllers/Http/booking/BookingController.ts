@@ -82,6 +82,7 @@ export default class BookingController extends BaseController {
       couponId: schema.number.optional(),
     })
 
+
     const payload = await request.validate({
       schema: validationSchema,
     })
@@ -106,11 +107,11 @@ export default class BookingController extends BaseController {
 
     const total_after_discount = total_without_discount.minus(vendor_discount)
 
-    const coupon_discount = await this.applyCoupon(
+    const coupon_discount = payload.couponId ? await this.applyCoupon(
       payload.couponId,
       total_after_discount,
       serviceVariant.service.business.vendorUserId
-    )
+    ) : 0
 
     const grand_total = total_after_discount.minus(coupon_discount)
 

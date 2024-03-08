@@ -8,7 +8,7 @@ Route.group(() => {
   Route.resource('service', 'service/ServiceController').apiOnly()
 
   // service variants
-  Route.resource('service/:serviceId/variants', 'service/ServiceVariantController').apiOnly()
+  Route.resource('service-variants', 'service/ServiceVariantController').apiOnly()
 
   // service categories
   Route.get('service-category/export', 'service/ServiceCategoriesController.export')

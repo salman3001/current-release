@@ -22,6 +22,7 @@ const modal = modalStore();
     <ModalBanUser v-if="modal.content === 'changeUserStatus'" />
     <ModalDeleteNotification v-if="modal.content === 'deleteNotification'" />
     <ModalChangeSupportTicketStatus v-if="modal.content === 'changeSupportTicketStatus'" />
+    <ModalWebAddReview v-if="modal.content === 'WebAddReview'" />
     <!-- <ModalContactMessage v-if="modal.content === 'contactMessage'" />
     <ModalAddressContinentAdd v-if="modal.content === 'addContinent'" />
     <ModalAddressContinentEdit v-if="modal.content === 'editContinent'" />

@@ -53,28 +53,14 @@ const confirmLogout = () => {
 <template>
   <ScrollArea height="100vh" width="100%">
     <q-layout view="hHh lpR lFf">
-      <q-header
-        bordered
-        reveal
-        class="text-white"
-        :class="$q.dark.isActive ? 'bg-dark' : 'bg-white'"
-      >
+      <q-header bordered reveal class="text-white" :class="$q.dark.isActive ? 'bg-dark' : 'bg-white'">
         <q-toolbar class="q-py-sm q-py-sm-md">
-          <q-btn
-            dense
-            flat
-            round
-            icon="menu"
-            @click="toggleLeftDrawer"
-            class="text-primary lt-sm"
-          />
+          <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" class="text-primary lt-sm" />
           <div>
             <BrandLogo :to="routes.home" size="170px"></BrandLogo>
           </div>
-          <div
-            class="row q-gutter-sm justify-end items-center"
-            :style="{ flexGrow: $q.screen.gt.xs ? 3 : 1, width: 'min-xontent' }"
-          >
+          <div class="row q-gutter-sm justify-end items-center"
+            :style="{ flexGrow: $q.screen.gt.xs ? 3 : 1, width: 'min-xontent' }">
             <div class="gt-sm col-0 col-sm-1"></div>
             <div class="gt-sm col row justify-center">
               <WebServiceSearch />
@@ -92,47 +78,25 @@ const confirmLogout = () => {
         </q-toolbar>
       </q-header>
 
-      <q-drawer
-        mini-to-overlay
-        show-if-above
-        v-model="leftDrawerOpen"
-        side="left"
-        bordered
-        :mini="miniState"
-        @mouseover="miniState = false"
-        @mouseout="miniState = true"
-        :width="250"
-        :breakpoint="500"
-      >
+      <q-drawer mini-to-overlay show-if-above v-model="leftDrawerOpen" side="left" bordered :mini="miniState"
+        @mouseover="miniState = false" @mouseout="miniState = true" :width="250" :breakpoint="500">
         <q-scroll-area class="fit" :horizontal-thumb-style="{ opacity: 0 }">
           <q-list padding>
             <div v-if="user">
-              <NuxtLink
-                :to="routes.account"
-                :class="
-                  route.path === routes.account ? 'text-primary' : 'text-muted'
-                "
-              >
+              <NuxtLink :to="routes.account" :class="route.path === routes.account ? 'text-primary' : 'text-muted'
+        ">
                 <q-item clickable v-ripple>
                   <q-item-section avatar>
-                    <q-icon
-                      :name="`img:${
-                        user && user?.avatar?.url
-                          ? $config.public.baseApi + user?.avatar?.url
-                          : '/images/sample-dp.png'
-                      }`"
-                    />
+                    <q-icon :name="`img:${user && user?.avatar?.url
+          ? $config.public.baseApi + user?.avatar?.url
+          : '/images/sample-dp.png'
+        }`" />
                   </q-item-section>
 
                   <q-item-section> Account </q-item-section>
                 </q-item>
               </NuxtLink>
-              <q-item
-                clickable
-                v-ripple
-                @click="confirmLogout"
-                class="text-muted"
-              >
+              <q-item clickable v-ripple @click="confirmLogout" class="text-muted">
                 <q-item-section avatar>
                   <q-icon name="logout" />
                 </q-item-section>
@@ -142,12 +106,8 @@ const confirmLogout = () => {
               <q-separator />
             </div>
 
-            <NuxtLink
-              :to="routes.home"
-              :class="
-                route.path === routes.home ? 'text-primary' : 'text-muted'
-              "
-            >
+            <NuxtLink :to="routes.home" :class="route.path === routes.home ? 'text-primary' : 'text-muted'
+        ">
               <q-item clickable v-ripple>
                 <q-item-section avatar>
                   <q-icon name="home" />
@@ -156,12 +116,8 @@ const confirmLogout = () => {
                 <q-item-section> Home </q-item-section>
               </q-item>
             </NuxtLink>
-            <NuxtLink
-              :to="routes.services"
-              :class="
-                route.path === routes.services ? 'text-primary' : 'text-muted'
-              "
-            >
+            <NuxtLink :to="routes.services" :class="route.path === routes.services ? 'text-primary' : 'text-muted'
+        ">
               <q-item clickable v-ripple>
                 <q-item-section avatar>
                   <q-icon name="electrical_services" />
@@ -170,14 +126,10 @@ const confirmLogout = () => {
                 <q-item-section> Services </q-item-section>
               </q-item>
             </NuxtLink>
-            <NuxtLink
-              :to="routes.service_requirement"
-              :class="
-                route.path === routes.service_requirement
-                  ? 'text-primary'
-                  : 'text-muted'
-              "
-            >
+            <NuxtLink :to="routes.service_requirement" :class="route.path === routes.service_requirement
+          ? 'text-primary'
+          : 'text-muted'
+        ">
               <q-item clickable v-ripple>
                 <q-item-section avatar>
                   <q-icon name="dashboard_customize" />
@@ -186,12 +138,8 @@ const confirmLogout = () => {
                 <q-item-section>Customize Services</q-item-section>
               </q-item>
             </NuxtLink>
-            <NuxtLink
-              :to="routes.blogs"
-              :class="
-                route.path === routes.blogs ? 'text-primary' : 'text-muted'
-              "
-            >
+            <NuxtLink :to="routes.blogs" :class="route.path === routes.blogs ? 'text-primary' : 'text-muted'
+        ">
               <q-item clickable v-ripple>
                 <q-item-section avatar>
                   <q-icon name="rss_feed" />
@@ -199,12 +147,8 @@ const confirmLogout = () => {
                 <q-item-section> View Blogs </q-item-section>
               </q-item>
             </NuxtLink>
-            <NuxtLink
-              :to="routes.about"
-              :class="
-                route.path === routes.about ? 'text-primary' : 'text-muted'
-              "
-            >
+            <NuxtLink :to="routes.about" :class="route.path === routes.about ? 'text-primary' : 'text-muted'
+        ">
               <q-item clickable v-ripple>
                 <q-item-section avatar>
                   <q-icon name="info" />
@@ -213,12 +157,8 @@ const confirmLogout = () => {
                 <q-item-section> About Us </q-item-section>
               </q-item>
             </NuxtLink>
-            <NuxtLink
-              :to="routes.contact"
-              :class="
-                route.path === routes.contact ? 'text-primary' : 'text-muted'
-              "
-            >
+            <NuxtLink :to="routes.contact" :class="route.path === routes.contact ? 'text-primary' : 'text-muted'
+        ">
               <q-item clickable v-ripple>
                 <q-item-section avatar>
                   <q-icon name="support_agent" />
@@ -226,12 +166,8 @@ const confirmLogout = () => {
                 <q-item-section> Contact </q-item-section>
               </q-item>
             </NuxtLink>
-            <NuxtLink
-              :to="routes.faqs"
-              :class="
-                route.path === routes.faqs ? 'text-primary' : 'text-muted'
-              "
-            >
+            <NuxtLink :to="routes.faqs" :class="route.path === routes.faqs ? 'text-primary' : 'text-muted'
+        ">
               <q-item clickable v-ripple>
                 <q-item-section avatar>
                   <q-icon name="help" />
@@ -241,10 +177,7 @@ const confirmLogout = () => {
             </NuxtLink>
             <q-item clickable v-ripple @click="$q.dark.toggle()">
               <q-item-section avatar>
-                <q-icon
-                  name="light_mode"
-                  :color="$q.dark.isActive ? 'muted' : 'primary'"
-                />
+                <q-icon name="light_mode" :color="$q.dark.isActive ? 'muted' : 'primary'" />
               </q-item-section>
               <q-item-section> Dark Mode </q-item-section>
             </q-item>
@@ -259,14 +192,11 @@ const confirmLogout = () => {
 
       <q-page-container>
         <slot />
-        <q-page-scroller
-          position="bottom-right"
-          :scroll-offset="150"
-          :offset="[18, 18]"
-        >
+        <q-page-scroller position="bottom-right" :scroll-offset="150" :offset="[18, 18]">
           <q-btn fab icon="keyboard_arrow_up" color="primary" />
         </q-page-scroller>
       </q-page-container>
     </q-layout>
   </ScrollArea>
+  <ModalBase />
 </template>

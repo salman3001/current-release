@@ -21,7 +21,8 @@ type IModalContent =
   | 'editStreet'
   | 'addRole'
   | 'deleteNotification'
-  | 'changeSupportTicketStatus';
+  | 'changeSupportTicketStatus'
+  | 'WebAddReview'
 
 const modalStore = defineStore('modal', () => {
   const show = ref(false);

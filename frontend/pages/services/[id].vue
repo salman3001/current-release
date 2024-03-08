@@ -5,6 +5,8 @@ import qs from 'qs'
 
 const route = useRoute()
 const customFetch = useCustomFetch()
+const modal = modalStore()
+const user = useCookie('user')
 
 const selectedVariant = ref<IServiceVariant | null>(null)
 
@@ -15,7 +17,7 @@ const query = {
       fields: ['*']
     },
     variants: {
-      fields: ['id', 'price', 'name', 'image']
+      fields: ['id', 'price', 'name', 'image', 'included', 'excluded']
     },
     business: {
       fields: ['id', 'vendor_user_id', 'name'],
@@ -24,15 +26,41 @@ const query = {
           fields: ['id', 'first_name', 'last_name']
         },
       }
+    },
+    reviews: {
+      fields: ['rating']
     }
   }
 } as AdditionalParams
 
+const reviewsQuery = {
+  populate: {
+    user: {
+      fields: ['first_name', 'last_name'],
+      populate: {
+        profile: {
+          fields: ['avatar']
+        }
+      }
+    }
+  },
+  page: 1
+} as AdditionalParams
 
 
-const { data: service } = await useAsyncData('service' + route.params.id as string, async () => {
+
+const { data: service, pending: servicePending } = await useAsyncData('service' + route.params.id as string, async () => {
   const data = await customFetch<IResType<IService>>(apiRoutes.services_view(route.params.id as string, qs.stringify(query)))
   return data.data
+})
+
+selectedVariant.value = service.value?.variants[0] || null
+
+const { data: reviews, pending: reviewsPending, refresh: refreshReviews } = useAsyncData('reviews' + route.params.id as string, async () => {
+  const data = await customFetch<IPageRes<IReview[]>>(apiRoutes.reviews(route.params.id as string, qs.stringify(reviewsQuery)))
+  return data.data
+}, {
+  server: false,
 })
 
 
@@ -90,7 +118,7 @@ const items = [
     </div>
     <div class="row q-gutter-x-md items-center">
       <span class="text-h5">{{ service?.avg_rating.toFixed(1) }}</span>
-      <RatingComponent :rating="service?.avg_rating" size="2rem" />
+      <RatingComponent :rating="service?.avg_rating || 0" size="2rem" />
     </div>
     <div>
       <LightBox :items="items" />
@@ -115,12 +143,36 @@ const items = [
     <q-separator></q-separator>
     <div>
       <h6>Select an Options</h6>
+      <br>
       <div class="q-gutter-md row justify-between">
-        <div class="q-gutter-md row items-start" style="flex-grow: 1">
-          <WebSelectVariant v-for="variant in service?.variants" :variant="variant"
-            @variant-selection="variant => selectedVariant = variant" />
+        <div>
+          <div class="q-gutter-md row items-start" style="flex-grow: 1">
+            <WebSelectVariant v-for="variant in service?.variants" :variant="variant"
+              @variant-selection="variant => selectedVariant = variant" :selected-id="selectedVariant?.id || 0" />
+          </div>
+          <br>
+
+          <div :class="$q.screen.gt.xs ? 'row q-col-gutter-md' : 'column q-col-gutter-md'
+          " class="">
+            <div class="col">
+              <h6>What is Included</h6>
+              <ul class="q-pt-sm q-gutter-y-sm list-style-none">
+                <li v-for="i in selectedVariant?.included">
+                  <q-icon name="done" color="green"></q-icon> {{ i }}
+                </li>
+              </ul>
+            </div>
+            <div class="col">
+              <h6>What is Excluded</h6>
+              <ul class="q-pt-sm q-gutter-y-sm list-style-none">
+                <li v-for="i in selectedVariant?.excluded">
+                  <q-icon name="close" color="red"></q-icon> {{ i }}
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
-        <q-card flat bordered style="min-width: 300px" class="gt-sm q-pa-md">
+        <q-card flat bordered style="width: 300px;height: max-content;" class="gt-sm q-pa-sm">
           <div v-if="selectedVariant">
             <q-card-section class="text-h5">{{ selectedVariant?.name }}</q-card-section>
             <q-card-section>
@@ -136,7 +188,7 @@ const items = [
             <q-card-section class="row text-h5 text-bold justify-end"><span>&#x20B9;{{ selectedVariant?.price
                 }}/-</span></q-card-section>
             <q-card-section class="text-h5">
-              <NuxtLink :to="routes.book_Service(1)">
+              <NuxtLink :to="routes.book_Service(selectedVariant.id)">
                 <q-btn class="full-width" color="primary">Book Now</q-btn>
               </NuxtLink>
             </q-card-section>
@@ -147,37 +199,15 @@ const items = [
         </q-card>
       </div>
     </div>
-    <q-separator></q-separator>
-    <div :class="$q.screen.gt.xs ? 'row q-col-gutter-md' : 'column q-col-gutter-md'
-          " class="">
-      <div class="col">
-        <h6>What is Included</h6>
-        <ul class="q-pt-sm q-gutter-y-sm list-style-none">
-          <li v-for="i in 5">
-            <q-icon name="done" color="green"></q-icon> Lorem ipsum dolor sit
-            amet consectetur adipisicing elit.
-          </li>
-        </ul>
-      </div>
-      <div class="col">
-        <h6>What is Excluded</h6>
-        <ul class="q-pt-sm q-gutter-y-sm list-style-none">
-          <li v-for="i in 5">
-            <q-icon name="close" color="red"></q-icon> Lorem ipsum dolor sit
-            amet consectetur adipisicing elit.
-          </li>
-        </ul>
-      </div>
-    </div>
 
     <q-footer elevated class="bg-nutral text-muted lt-md">
       <q-toolbar class="" style="min-height: 80px">
         <div class="column" style="max-width: 50%">
-          <span> Lorem ipsum dolor sit ipsum dolor si</span>
-          <span class="text-h6 text-bold text-nutral"> &#x20B9;200/- </span>
+          <span>{{ selectedVariant?.name }}</span>
+          <span class="text-h6 text-bold text-nutral"> &#x20B9;{{ selectedVariant?.price }} </span>
         </div>
         <q-toolbar-title class="row justify-end">
-          <NuxtLink :to="routes.book_Service(1)">
+          <NuxtLink :to="routes.book_Service(selectedVariant.id)">
             <q-btn color="secondary" :size="$q.screen.gt.xs ? 'md' : 'md'">Book Now</q-btn>
           </NuxtLink>
         </q-toolbar-title>
@@ -188,16 +218,38 @@ const items = [
       <h5>Cutomer Reviews</h5>
       <div class="row gap-100">
         <div class="q-gutter-lg col-12 col-md-4" style="">
-          <RatingComponent :rating="4" /><span class="text-h5">4 out of 5</span>
+          <RatingComponent :rating="service?.avg_rating || 0" /><span class="text-h5">{{ service?.avg_rating || 0 }} out
+            of 5</span>
           <q-separator />
           <div class="q-gutter-y-sm">
             <h6>Rate this service</h6>
             <p>Share your throught about this service</p>
-            <q-btn color="primary">Write a Review</q-btn>
+            <q-btn color="primary" @click="() => {
+          if (user) {
+            modal.togel('WebAddReview', {
+              serviceId: service?.id,
+              onSuccess: refreshReviews
+            })
+          } else {
+            navigateTo(routes.auth.login + `?next=${route.path}`)
+          }
+        }">Write a Review</q-btn>
           </div>
           <q-separator />
         </div>
-        <CustomerReviews />
+        <div style="max-width: 500px" class="q-gutter-xl col-12 col-md-8">
+          <div v-if="reviewsPending">
+            <SkeletonBase type="list" v-for="i in 5" />
+
+          </div>
+          <div v-if="reviews?.data.length! < 1" class="text-subtitle1">
+            <q-icon name="info" class="text-primary" size="20px" /> This Service dont have any reviews yet
+          </div>
+          <div v-for="review in reviews?.data" class="q-gutter-sm">
+            <CustomerReview :review="review" />
+          </div>
+          <q-btn color="primary" v-if="reviews?.meta.next_page_url">View More</q-btn>
+        </div>
       </div>
     </div>
   </div>

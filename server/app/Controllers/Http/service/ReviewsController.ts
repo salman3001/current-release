@@ -23,6 +23,17 @@ export default class ReviewsController extends BaseController {
     const user = auth.user
     const serviceId = params.serviceId
 
+    const reviewExist = await Review.query().where('user_id', user!.id).where('service_id', serviceId).first()
+
+    if (reviewExist) {
+      return response.custom({
+        code: 400,
+        message: 'You have already rated this service',
+        success: false,
+        data: null
+      })
+    }
+
     const payload = await request.validate(CreateReviewValidator)
 
     const review = await Review.create({ ...payload, userId: user?.id, serviceId: serviceId })

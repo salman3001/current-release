@@ -2,7 +2,7 @@
 interface IResType<T> {
   data: T;
   message: string;
-  status: boolean;
+  success: boolean;
 }
 
 interface PageMeta {
@@ -91,6 +91,7 @@ type IService = {
   service_subcategory_id: number;
   serviceSubcategory: IServiceSubcategory;
   variants: IServiceVariant[]
+  reviews: IReview[]
   starting_from: string | null
   avg_rating: number
 } & TimeStamps;
@@ -186,7 +187,7 @@ type IReview = {
   user: IUser
   business_id: number
   service_id: number
-}
+} & TimeStamps
 
 type IVendorUser = {
   id: number

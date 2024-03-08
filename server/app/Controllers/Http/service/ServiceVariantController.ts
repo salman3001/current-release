@@ -42,16 +42,16 @@ export default class ServiceVariantController extends BaseController {
   }
 
   public async update({ request, response, params, bouncer }: HttpContextContract) {
-    const service = await Service.findOrFail(+params.serviceId)
+    let variant = await ServiceVariant.findOrFail(+params.id)
+    await variant.load('service')
 
-    await bouncer.with('ServicePolicy').authorize('update', service)
+    await bouncer.with('ServicePolicy').authorize('update', variant.service)
 
     const payload = await request.validate(VariantCreateValidator)
 
-    let variant: ServiceVariant | null = null
 
     await Database.transaction(async (trx) => {
-      variant = await ServiceVariant.findOrFail(+params.id, { client: trx })
+      variant.useTransaction(trx)
 
       const { image, ...restPayload } = payload
 
