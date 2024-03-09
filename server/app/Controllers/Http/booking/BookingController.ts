@@ -29,7 +29,7 @@ export default class BookingController extends BaseController {
     if (request.qs().page) {
       bookings = await bookingQuery.paginate(
         request.qs().page,
-        request.qs().perPage || this.perPage
+        request.qs().rowsPerPage || this.perPage
       )
     } else {
       bookings = await bookingQuery.exec()
@@ -59,7 +59,7 @@ export default class BookingController extends BaseController {
     if (request.qs().page) {
       bookings = await bookingQuery.paginate(
         request.qs().page,
-        request.qs().perPage || this.perPage
+        request.qs().rowsPerPage || this.perPage
       )
     } else {
       bookings = await bookingQuery.exec()

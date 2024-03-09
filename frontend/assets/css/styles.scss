@@ -1119,6 +1119,18 @@ h6 {
     text-decoration: line-through;
 }
 
+.uppercase {
+    text-transform: uppercase;
+}
+
+.lowercase {
+    text-transform: lowercase;
+}
+
+.normalcase {
+    text-transform: capitalize;
+}
+
 .border {
     border: 1px solid $grey-4;
 

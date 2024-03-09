@@ -1,5 +1,21 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import qs from 'qs'
+import { date } from 'quasar'
+
+
+const customFetch = useCustomFetch()
+const page = ref(1)
+
+const bookingQuery: AdditionalParams = {
+  page: page.value,
+  rowsPerPage: '2'
+
+}
+
+const { data: bookings, pending, refresh } = useAsyncData('bookings', async () => {
+  const data = await customFetch<IPageRes<IBooking>>(apiRoutes.booking_list_customer + "?" + qs.stringify(bookingQuery))
+  return data.data
+})
 
 const columns = [
   {
@@ -7,88 +23,34 @@ const columns = [
     required: true,
     label: "Booking No.",
     align: "left",
-    field: (row) => row.id,
-    format: (val) => `${val}`,
-    sortable: true,
+    field: (row: IBooking) => row.id,
   },
   {
     name: "created_at",
     align: "center",
     label: "Order Date",
-    field: "created_at",
-    sortable: true,
+    field: (row: IBooking) => date.formatDate(row.created_at, 'DD/MM/YYYY hh:mmA'),
   },
   { name: "status", label: "Status", field: "status", sortable: true },
   { name: "More", label: "More", field: "More", align: "center" },
 ];
 
-const rows = [
-  {
-    id: "1",
-    created_at: "12/8/2030 14:30hrs",
-    status: "placed",
-  },
-  {
-    id: "2",
-    created_at: "12/8/2030 14:30hrs",
-    status: "placed",
-  },
-  {
-    id: "3",
-    created_at: "12/8/2030 14:30hrs",
-    status: "placed",
-  },
-  {
-    id: "4",
-    created_at: "12/8/2030 14:30hrs",
-    status: "placed",
-  },
-  {
-    id: "5",
-    created_at: "12/8/2030 14:30hrs",
-    status: "placed",
-  },
-  {
-    id: "6",
-    created_at: "12/8/2030 14:30hrs",
-    status: "placed",
-  },
-  {
-    id: "7",
-    created_at: "12/8/2030 14:30hrs",
-    status: "placed",
-  },
-  {
-    id: "8",
-    created_at: "12/8/2030 14:30hrs",
-    status: "placed",
-  },
-  {
-    id: "9",
-    created_at: "12/8/2030 14:30hrs",
-    status: "placed",
-  },
-  {
-    id: "10",
-    created_at: "12/8/2030 14:30hrs",
-    status: "placed",
-  },
-];
 </script>
 
 <template>
   <div class="">
     <ScrollArea width="100%" height="400px">
-      <q-table
-        flat
-        :rows="rows"
-        :columns="columns"
-        row-key="id"
-        v-model:pagination="pagination"
-        hide-pagination
-        color="green"
-        class="full-hieght"
-      >
+      <div class="q-py-md" v-if="pending">
+        <SkeletonBase type="list" v-for="i in 5" />
+      </div>
+      <q-table flat v-else :rows="bookings!.data" :columns="columns" row-key="id" hide-pagination color="green"
+        class="full-hieght">
+        <template v-slot:body-cell-status="props">
+          <q-td :props="props">
+            <q-badge color="warning" outline class="normalcase">{{ props.row.status }}</q-badge>
+          </q-td>
+        </template>
+
         <template v-slot:body-cell-More="props">
           <q-td :props="props">
             <NuxtLink :to="routes.view_booking(props.row.id)">
@@ -97,7 +59,10 @@ const rows = [
           </q-td>
         </template>
       </q-table>
-      <PaginateComponet />
+      <PaginateComponet :page="page" :meta="bookings?.meta" @update:model-value="(v) => {
+        page = v;
+        refresh()
+      }" />
     </ScrollArea>
   </div>
 </template>

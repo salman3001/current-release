@@ -8,6 +8,8 @@ export default {
   services_view: (id: string | number, qs?: string) => !qs ? `/api/service/${id}` : `/api/service/${id}?${qs}`,
 
   // bookings
+  booking_list: '/api/bookings',
+  booking_list_customer: '/api/bookings/customer-bookings',
   booking_summary: '/api/bookings/summary',
   create_booking: '/api/bookings',
   // coupons
