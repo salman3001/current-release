@@ -1,0 +1,121 @@
+<script setup lang="ts">
+import { ref } from "vue";
+import qs from 'qs'
+
+const variantId = useRoute().params.variantId
+const customFetch = useCustomFetch()
+const step = ref(1);
+const paymentOptions = ref("Net Banking");
+const bookingStore = useBookingStore()
+
+
+const variantQuery = {
+  populate: {
+    service: {
+      fields: ['name']
+    }
+  }
+} as AdditionalParams
+
+const { data: variant } = await useAsyncData('variant' + variantId, async () => {
+  const data = await customFetch<IResType<IServiceVariant>>(apiRoutes.view_service_variant(variantId as string, qs.stringify(variantQuery)))
+
+  return data.data
+})
+
+
+
+</script>
+
+<template>
+  <div>
+    <q-stepper v-model="step" vertical color="primary" flat animated class="q-px-none">
+      <q-step :name="1" title="Book Service" icon="shopping_cart" done-icon="shopping_cart" :done="step > 1">
+        <h6 class="q-ma-none q-mb-md text-bold">Select Quantity</h6>
+
+        <WebBookingSelectQty :variant="variant!" @proceed="step = 2" />
+      </q-step>
+      <q-step :name="2" title="Summary & Coupons" icon="summarize" done-icon="summarize" :done="step > 2">
+        <h6 class="q-ma-none q-mb-md text-bold">Booking Summary</h6>
+        <WebBookingSummary @success="step = 3" />
+
+      </q-step>
+      <q-step :name="3" title="Address" icon="address" :done="step > 3">
+        <h6>Select Your address</h6>
+
+        <div class="row q-gutter-md">
+          <q-btn color="primary" @click="step = 4">Proceed to Payment</q-btn>
+        </div>
+      </q-step>
+
+      <q-step :name="4" title="Payment
+      " icon="payments" :done="step > 4">
+        <div class="">
+          <div class="q-gutter-y-md">
+            <q-option-group v-model="paymentOptions" inline :options="[
+      { label: 'Net Banking', value: 'Net Banking' },
+      { label: 'Credit Card', value: 'Credit Card' },
+      { label: 'UPI', value: 'UPI' },
+      { label: 'Cash on delivery', value: 'Cash on delivery' },
+    ]" />
+
+            <q-tab-panels v-model="paymentOptions" animated class="srounded-borders">
+              <q-tab-panel name="Net Banking">
+                <div class="text-h6">Net Banking</div>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit.
+              </q-tab-panel>
+
+              <q-tab-panel name="Credit Card">
+                <div class="text-h6">Credit Card</div>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit.
+              </q-tab-panel>
+
+              <q-tab-panel name="UPI">
+                <div class="text-h6">UPI</div>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit.
+              </q-tab-panel>
+
+              <q-tab-panel name="Cash on delivery">
+                <div class="text-h6">Cash on delivery</div>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit.
+              </q-tab-panel>
+            </q-tab-panels>
+            <div class="row justify-end q-pt-lg text-bold text-h6 q-gutter-sm">
+              <q-btn color="primary" @click="bookingStore.create_booking({
+      couponId: bookingStore.couponId,
+      paymentdetail: {
+        paymentMode: 'cod',
+        paymentStatus: 'paid'
+      },
+      qty: bookingStore.summary?.qty!,
+      serviceVariantId: variant?.id!,
+
+    }, () => {
+      step = 5
+    })">
+
+                <LoadingIndicator v-if="bookingStore.creatingBooking" /> Pay & Book
+              </q-btn>
+            </div>
+          </div>
+        </div>
+      </q-step>
+
+      <q-step :name="5" title="Order Placed" icon="check_circle" :done="step > 5">
+        <h6>
+          <q-icon name="done" color="primary" size="50px"></q-icon> Thank you!
+          Your order has been placed
+        </h6>
+
+        <div class="row q-gutter-md">
+          <NuxtLink :to="routes.home">
+            <q-btn color="primary">Go Home</q-btn>
+          </NuxtLink>
+          <NuxtLink :to="routes.account + '?tab=Bookings'">
+            <q-btn color="primary">My Orders</q-btn>
+          </NuxtLink>
+        </div>
+      </q-step>
+    </q-stepper>
+  </div>
+</template>

@@ -8,9 +8,11 @@ const addressStore = defineStore("addressStore", () => {
   const states = ref([]);
   const cities = ref([]);
   const streets = ref([]);
+  const customFetch = useCustomFetch()
+
 
   const getCountinents = async () => {
-    const data = await $fetch("/api/address/continents");
+    const data = await customFetch<IResType<any>>("/api/address/continents");
     continents.value = data?.data as any;
     countries.value = [];
     states.value = [];
@@ -35,7 +37,7 @@ const addressStore = defineStore("addressStore", () => {
         },
       },
     });
-    const data = await $fetch("/api/address/countries" + `?${q}`);
+    const data = await customFetch<IResType<any>>("/api/address/countries" + `?${q}`);
 
     countries.value = data?.data as any;
     states.value = [];
@@ -59,7 +61,7 @@ const addressStore = defineStore("addressStore", () => {
         },
       },
     });
-    const data = await $fetch("/api/address/states" + `?${q}`);
+    const data = await customFetch<IResType<any>>("/api/address/states" + `?${q}`);
 
     states.value = data?.data as any;
     cities.value = [];
@@ -81,7 +83,7 @@ const addressStore = defineStore("addressStore", () => {
         },
       },
     });
-    const data = await $fetch("/api/address/cities" + `?${q}`);
+    const data = await customFetch<IResType<any>>("/api/address/cities" + `?${q}`);
     cities.value = data?.data as any;
     streets.value = [];
   };
@@ -100,52 +102,52 @@ const addressStore = defineStore("addressStore", () => {
         },
       },
     });
-    const data = await $fetch("/api/address/streets" + `?${q}`);
+    const data = await customFetch<IResType<any>>("/api/address/streets" + `?${q}`);
     streets.value = data?.data as any;
   };
 
   const selectContinents = computed(() =>
     continents.value
       ? continents.value.map((c: any) => ({
-          label: c.name,
-          value: c.id,
-        }))
+        label: c.name,
+        value: c.id,
+      }))
       : []
   );
 
   const selectContries = computed(() =>
     countries.value
       ? countries.value.map((c: any) => ({
-          label: c.name,
-          value: c.id,
-        }))
+        label: c.name,
+        value: c.id,
+      }))
       : []
   );
 
   const selectStates = computed(() =>
     states.value
       ? states.value.map((c: any) => ({
-          label: c.name,
-          value: c.id,
-        }))
+        label: c.name,
+        value: c.id,
+      }))
       : []
   );
 
   const selectCities = computed(() =>
     cities.value
       ? cities.value.map((c: any) => ({
-          label: c.name,
-          value: c.id,
-        }))
+        label: c.name,
+        value: c.id,
+      }))
       : []
   );
 
   const selectStreets = computed(() =>
     streets.value
       ? streets.value.map((c: any) => ({
-          label: c.name,
-          value: c.id,
-        }))
+        label: c.name,
+        value: c.id,
+      }))
       : []
   );
 

@@ -1,6 +1,6 @@
 export default {
   home: "/",
-  book_Service: (variantId: number) => `/services/${variantId}/book-service`,
+  book_Service: (variantId: number) => `/bookings/${variantId}/book-now`,
   account: "/account",
   view_booking: (id: number) => `/bookings/${id}`,
   view_custom_booking: (id: number) => `/bookings/custom/${id}`,

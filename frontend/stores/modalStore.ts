@@ -23,6 +23,7 @@ type IModalContent =
   | 'deleteNotification'
   | 'changeSupportTicketStatus'
   | 'WebAddReview'
+  | 'webApplyCoupon'
 
 const modalStore = defineStore('modal', () => {
   const show = ref(false);

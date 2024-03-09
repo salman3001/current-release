@@ -4,11 +4,12 @@ import { ref } from 'vue';
 
 const modal = modalStore()
 const loading = ref(false)
+const customFetch = useCustomFetch()
 
 const ban = async () => {
   try {
     loading.value = true
-    await $fetch(modal.meta.url)
+    await customFetch(modal.meta.url)
     loading.value = false
     Notify.create({ message: 'User Banned!', color: 'positive', icon: 'check' });
     modal.meta.tableRef.setPagination({}, true)

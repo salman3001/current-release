@@ -172,47 +172,11 @@ const items = [
             </div>
           </div>
         </div>
-        <q-card flat bordered style="width: 300px;height: max-content;" class="gt-sm q-pa-sm">
-          <div v-if="selectedVariant">
-            <q-card-section class="text-h5">{{ selectedVariant?.name }}</q-card-section>
-            <q-card-section>
-              <div class="row justify-between">
-                <div>Price</div>
-                <div>&#x20B9;{{ selectedVariant?.price }}/-</div>
-              </div>
-              <div class="row justify-between">
-                <div>Discount</div>
-                <div>&#x20B9;0/-</div>
-              </div>
-            </q-card-section>
-            <q-card-section class="row text-h5 text-bold justify-end"><span>&#x20B9;{{ selectedVariant?.price
-                }}/-</span></q-card-section>
-            <q-card-section class="text-h5">
-              <NuxtLink :to="routes.book_Service(selectedVariant.id)">
-                <q-btn class="full-width" color="primary">Book Now</q-btn>
-              </NuxtLink>
-            </q-card-section>
-          </div>
-          <div v-else>
-            Price Upon variant selection
-          </div>
-        </q-card>
+        <WebPriceCard :selected-variant="selectedVariant!" />
       </div>
     </div>
+    <WebPriceCardFooter :selected-variant="selectedVariant!" />
 
-    <q-footer elevated class="bg-nutral text-muted lt-md">
-      <q-toolbar class="" style="min-height: 80px">
-        <div class="column" style="max-width: 50%">
-          <span>{{ selectedVariant?.name }}</span>
-          <span class="text-h6 text-bold text-nutral"> &#x20B9;{{ selectedVariant?.price }} </span>
-        </div>
-        <q-toolbar-title class="row justify-end">
-          <NuxtLink :to="routes.book_Service(selectedVariant.id)">
-            <q-btn color="secondary" :size="$q.screen.gt.xs ? 'md' : 'md'">Book Now</q-btn>
-          </NuxtLink>
-        </q-toolbar-title>
-      </q-toolbar>
-    </q-footer>
     <q-separator />
     <div class="q-gutter-md">
       <h5>Cutomer Reviews</h5>

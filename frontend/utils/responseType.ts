@@ -199,7 +199,7 @@ type IVendorUser = {
   is_public: boolean
   token: string | null
   socket_token: string
-  user_type: 'vendor'
+  userType: 'vendor'
   profile: IProfile
   business: IBusiness
   bookings: IBooking[]
@@ -220,7 +220,7 @@ type IUser = {
   is_public: boolean
   token: string | null
   socket_token: string
-  user_type: 'customer'
+  userType: 'customer'
   profile: IProfile
   wishlist: IWishlist
   bookings: IBooking[]
@@ -239,7 +239,7 @@ type IAdminUser = {
   role_id: number
   token: string | null
   socket_token: string
-  user_type: 'admin'
+  userType: 'admin'
   profile: IProfile
   role: IRole
   activities: IActivity[]
@@ -331,6 +331,16 @@ type IWishlist = {
   id: number
   user_id: number
   items: IServiceVariant[]
+}
+
+type IBookingSummary = {
+  coupon_discount: string
+  grand_total: string
+  qty: number
+  service_variant: IServiceVariant
+  total_after_discount: string
+  total_without_discount: string
+  vendor_discount: string
 }
 
 

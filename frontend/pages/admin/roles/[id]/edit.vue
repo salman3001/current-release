@@ -10,12 +10,14 @@ const role = ref<null | Record<string, any>>(null);
 const permissionId = ref<any>(null);
 const activate = ref(false);
 const permissions = ref<any>(null);
+const customFetch = useCustomFetch()
+
 
 
 const submit = async () => {
   try {
     loading.value = true;
-    const res = await $fetch('/api/roles/' + id, {
+    const res = await customFetch('/api/roles/' + id, {
       body: {
         permissionId: permissionId.value,
         isActive: activate.value
@@ -50,7 +52,7 @@ onMounted(async () => {
   }, { encode: false })
 
   try {
-    const res = await $fetch('/api/roles/' + id + `?${roleQuery}`,);
+    const res = await customFetch('/api/roles/' + id + `?${roleQuery}`,);
     if (res) {
       role.value = res;
       if (res.is_active == 1) {
@@ -69,7 +71,7 @@ onMounted(async () => {
   }
 
   try {
-    const res = await $fetch('/api/permissions');
+    const res = await customFetch('/api/permissions');
     if (res) {
       permissions.value = res;
     }
@@ -109,9 +111,9 @@ onMounted(async () => {
       </div>
       <div class="row justify-end q-gutter-md">
         <q-btn style="background-color: #e6e4d9; color: #aeaca1; min-width: 8rem" @click="() => {
-          navigateTo(routes.admin.roles)
-        }
-          ">Cancle</q-btn>
+        navigateTo(routes.admin.roles)
+      }
+        ">Cancle</q-btn>
         <q-btn color="primary" v-if="loading">
           <q-circular-progress indeterminate size="20px" class="q-px-10" :thickness="1" color="grey-8"
             track-color="orange-2" style="min-width: 8rem" />

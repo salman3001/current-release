@@ -2,13 +2,14 @@ import { defineStore } from "pinia";
 import { ref } from "vue";
 
 const authStore = defineStore("Auth", () => {
+  const customFetch = useCustomFetch()
   const login = async (
     email: string,
     password: string,
     userType: "admin" | "vendor" | "customer"
   ) => {
     try {
-      const res = await $fetch("/api/auth/login", {
+      const res = await customFetch("/api/auth/login", {
         method: "post",
         body: { email, password, userType },
       });
@@ -29,7 +30,7 @@ const authStore = defineStore("Auth", () => {
     userType: "vendor" | "customer";
   }) => {
     try {
-      const res = await $fetch("/api/auth/signup", {
+      const res = await customFetch("/api/auth/signup", {
         method: "post",
         body: form,
       });
@@ -44,12 +45,12 @@ const authStore = defineStore("Auth", () => {
     onSuccess?: () => void
   ) => {
     try {
-      await $fetch("/api/auth/logout", {
+      await customFetch("/api/auth/logout", {
         method: "post",
         body: { userType },
       });
       onSuccess && onSuccess();
-    } catch (error: any) {}
+    } catch (error: any) { }
   };
 
   const getOtp = (cb?: { onSuccess?: () => void; onError?: () => void }) => {
@@ -60,7 +61,7 @@ const authStore = defineStore("Auth", () => {
     }) => {
       try {
         loading.value = true;
-        const res = await $fetch("/api/auth/get-otp", {
+        const res = await customFetch("/api/auth/get-otp", {
           method: "post",
           body: data,
         });
@@ -82,7 +83,7 @@ const authStore = defineStore("Auth", () => {
     const execute = async (data: any) => {
       try {
         loading.value = true;
-        const res = await $fetch("/api/auth/verify-otp-update-password", {
+        const res = await customFetch("/api/auth/verify-otp-update-password", {
           method: "post",
           body: data,
         });

@@ -9,6 +9,9 @@ export default {
 
   // bookings
   booking_summary: '/api/bookings/summary',
+  create_booking: '/api/bookings',
+  // coupons
+  get_coupons: (variantId: number) => `/api/bookings/get-coupons?serviceVariantId=${variantId}`,
 
 
   //reviews

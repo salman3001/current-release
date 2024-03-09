@@ -4,11 +4,12 @@ import { ref } from 'vue';
 
 const modal = modalStore()
 const loading = ref(false)
+const customFetch = useCustomFetch()
 
 const ban = async () => {
   try {
     loading.value = true
-    await $fetch('/api/users/ban/' + modal.meta.id, {
+    await customFetch('/api/users/ban/' + modal.meta.id, {
     })
     loading.value = false
     Notify.create({ message: 'User Banned!', color: 'positive' });

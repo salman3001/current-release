@@ -6,6 +6,8 @@ import { Notify } from 'quasar';
 const isPwd = ref(true);
 const loading = ref(false);
 const address = addressStore();
+const customFetch = useCustomFetch()
+
 
 
 const { data: roles } = await RoleApi.index()
@@ -52,7 +54,7 @@ const submit = async (e: SubmitEvent | Event) => {
 
   try {
     loading.value = true;
-    const res = await $fetch('/api/admin-users', { body: formData, method: 'post' });
+    const res = await customFetch('/api/admin-users', { body: formData, method: 'post' });
     loading.value = false;
     Notify.create({
       message: 'User added',
@@ -100,27 +102,28 @@ onMounted(async () => {
             :rules="[rules.required('required')]" />
           <q-input outlined debounce="500" v-model="form.user.email" type="email" label="Email"
             class="col-12 col-sm-6 col-md-3" :rules="[
-              rules.required('required'),
-              rules.email('Email is not valid'),
-              async (v) =>
-                (await rules.unique('/api/admin-users/unique-field', 'email', v)) ||
-                'Email Already Taken',
-            ]" />
+        rules.required('required'),
+        rules.email('Email is not valid'),
+        async (v) =>
+          (await rules.unique('/api/admin-users/unique-field', 'email', v)) ||
+          'Email Already Taken',
+      ]" />
           <q-input outlined v-model="form.user.password" :type="isPwd ? 'password' : 'text'" label="Password"
             class="col-12 col-sm-6 col-md-3" :rules="[
-              rules.required('required'),
-              rules.minLength(8, 'Minimum 9 charectors required'),
-              rules.alphaNum('Password Must be alpha numeric'),
-            ]">
+        rules.required('required'),
+        rules.minLength(8, 'Minimum 9 charectors required'),
+        rules.alphaNum('Password Must be alpha numeric'),
+      ]">
             <template v-slot:append>
               <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer" @click="isPwd = !isPwd" />
             </template>
           </q-input>
           <q-input outlined v-model="form.user.password_confirmaton" :type="isPwd ? 'password' : 'text'"
             label="Cofirm Password" class="col-12 col-sm-6 col-md-3" :rules="[
-              rules.required('required'),
-              rules.sameAs(form.user.password, 'Password doesnt match'),
-            ]">
+        rules.required('required'),
+        rules.sameAs(form.user.password, 'Password doesnt match'),
+      ]">
+
             <template v-slot:append>
               <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer" @click="isPwd = !isPwd" />
             </template>
@@ -132,8 +135,8 @@ onMounted(async () => {
           <p class="text-subtitle1">Role Information</p>
           <div class="row q-col-gutter-md">
             <q-toggle v-model="form.user.isActive" label="Activate" class="col-12 col-sm-6 col-md-3" />
-            <q-select v-if="roles" outlined map-options emit-value v-model="form.user.roleId" :options="roles?.data" option-label="name" option-value="id"
-              label="Role" class="col-12 col-sm-6 col-md-3" />
+            <q-select v-if="roles" outlined map-options emit-value v-model="form.user.roleId" :options="roles?.data"
+              option-label="name" option-value="id" label="Role" class="col-12 col-sm-6 col-md-3" />
           </div>
         </div>
 
@@ -143,34 +146,34 @@ onMounted(async () => {
             <q-input outlined v-model="form.address.address" class="col-12 col-md-9" label="Address" />
             <q-select outlined emit-value map-options v-model="form.address.continentId"
               :options="address.selectContinents" label="Continet" class="col-12 col-sm-6 col-md-3" @update:model-value="(value) => {
-                form.address.countryId = '';
-                form.address.stateId = '';
-                form.address.cityId = '';
-                form.address.streetId = '';
-                address.getCountries(value);
-              }
-                " />
+        form.address.countryId = '';
+        form.address.stateId = '';
+        form.address.cityId = '';
+        form.address.streetId = '';
+        address.getCountries(value);
+      }
+        " />
             <q-select outlined emit-value map-options v-model="form.address.countryId" label="Country"
               class="col-12 col-sm-6 col-md-3" :options="address.selectContries" @update:model-value="(value) => {
-                form.address.stateId = '';
-                form.address.cityId = '';
-                form.address.streetId = '';
-                address.getstates(value);
-              }
-                " />
+        form.address.stateId = '';
+        form.address.cityId = '';
+        form.address.streetId = '';
+        address.getstates(value);
+      }
+        " />
             <q-select outlined emit-value map-options v-model="form.address.stateId" label="State"
               class="col-12 col-sm-6 col-md-3" :options="address.selectStates" @update:model-value="(value) => {
-                form.address.cityId = '';
-                form.address.streetId = '';
-                address.getCities(value);
-              }
-                " />
+        form.address.cityId = '';
+        form.address.streetId = '';
+        address.getCities(value);
+      }
+        " />
             <q-select outlined emit-value map-options v-model="form.address.cityId" label="City"
               class="col-12 col-sm-6 col-md-3" :options="address.selectCities" @update:model-value="(value) => {
-                form.address.streetId = '';
-                address.getStreets(value);
-              }
-                " />
+        form.address.streetId = '';
+        address.getStreets(value);
+      }
+        " />
             <q-select outlined emit-value map-options v-model="form.address.streetId" label="Street"
               class="col-12 col-sm-6 col-md-3" :options="address.selectStreets" />
             <q-input outlined v-model="form.address.zip" class="col-12 col-sm-6 col-md-3" label="Post Code" />
@@ -194,9 +197,9 @@ onMounted(async () => {
       </div>
       <div class="row justify-end q-gutter-md">
         <q-btn style="background-color: #e6e4d9; color: #aeaca1; min-width: 8rem" @click="() => {
-          navigateTo(routes.admin.admin_users)
-        }
-          ">Cancle</q-btn>
+        navigateTo(routes.admin.admin_users)
+      }
+        ">Cancle</q-btn>
         <q-btn color="primary" v-if="loading">
           <q-circular-progress indeterminate size="20px" class="q-px-10" :thickness="1" color="grey-8"
             track-color="orange-2" style="min-width: 8rem" />

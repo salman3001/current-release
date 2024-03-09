@@ -4,11 +4,12 @@ import { ref } from 'vue';
 
 const modal = modalStore();
 const loading = ref(false);
+const customFetch = useCustomFetch()
 
 const handeler = async () => {
   try {
     loading.value = true;
-    await $fetch(modal?.meta?.url, {
+    await customFetch(modal?.meta?.url, {
       method: 'delete'
     })
     loading.value = false;

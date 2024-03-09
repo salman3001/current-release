@@ -2,6 +2,7 @@
 
 definePageMeta({
     layout: 'empty',
+    middleware: ['is-guest']
 })
 
 </script>

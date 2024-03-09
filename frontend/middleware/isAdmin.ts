@@ -1,11 +1,11 @@
 export default defineNuxtRouteMiddleware((to, from) => {
-  const user = useCookie("user");
+  const user = useCookie("user") as unknown as Ref<IAdminUser>;
 
   if (!user.value) {
-    return abortNavigation();
+    return navigateTo("/auth/admin/login" + `?next=${to.path}`);
   }
 
-  if (!user.value?.is_admin === 1) {
+  if (user.value?.userType !== 'admin') {
     return abortNavigation();
   }
 });

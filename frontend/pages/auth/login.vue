@@ -48,6 +48,8 @@ const login = async () => {
     })
 
     if (next) {
+      console.log('ran');
+
       navigateTo(next as string)
     } else {
       navigateTo(routes.home)
