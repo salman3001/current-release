@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import qs from 'qs'
 
 const variantId = useRoute().params.variantId
 const customFetch = useCustomFetch()
@@ -9,16 +8,16 @@ const paymentOptions = ref("Net Banking");
 const bookingStore = useBookingStore()
 
 
-const variantQuery = {
-  populate: {
-    service: {
-      fields: ['name']
-    }
-  }
-} as AdditionalParams
-
 const { data: variant } = await useAsyncData('variant' + variantId, async () => {
-  const data = await customFetch<IResType<IServiceVariant>>(apiRoutes.view_service_variant(variantId as string, qs.stringify(variantQuery)))
+  const data = await customFetch<IResType<IServiceVariant>>(apiRoutes.view_service_variant(variantId as string), {
+    query: {
+      populate: {
+        service: {
+          fields: ['name']
+        }
+      }
+    } as AdditionalParams
+  })
 
   return data.data
 })

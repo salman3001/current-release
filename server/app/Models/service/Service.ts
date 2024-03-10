@@ -129,7 +129,7 @@ export default class Service extends BaseModel {
     if (this.reviews && this.reviews.length > 0) {
       const totalRating = this.reviews.reduce((sum, review) => sum + review.rating, 0)
       const avg_rating = totalRating / this.reviews.length
-      return avg_rating
+      return avg_rating.toFixed(1)
     }
     else {
       return 0

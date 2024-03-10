@@ -344,5 +344,34 @@ type IBookingSummary = {
 }
 
 
+type IServiceRequirement = {
+  id: number
+  title: string
+  desc: string
+  skillsRequired: string[]
+  budget_type: 'hourly' | 'fixed'
+  budget: string | number
+  expiresAt: string
+  location: string
+  userId: number
+  serviceCategoryId: number
+  acceptedBidId: number
+  user: IUser
+  serviceCategory: IServiceCategory
+  recievedBids: IBid
+} & TimeStamps
+
+type IBid = {
+  id: number
+  offeredPrice: number | string
+  featuresIncluded: string[]
+  featuresExcluded: string[]
+  serviceRequirementId: number
+  vendorUserId: number
+  vendorUser: IVendorUser
+  serviceRequirement: IServiceRequirement
+}
+
+
 
 

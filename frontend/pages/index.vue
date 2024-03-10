@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { AdditionalParams } from "~/types/QueryParamsTypes";
-import qs from 'qs'
 const customFetch = useCustomFetch();
 
 const page = ref(1);
@@ -17,25 +16,25 @@ const { data, error } = await useAsyncData("web-home", async () => {
   };
 });
 
-const query = {
-  populate: {
-    variants: {
-      fields: ['id', 'price']
-    },
-    reviews: {
-      fields: ['rating']
-    },
-
-  }
-} as AdditionalParams
 
 const {
   data: services,
   refresh,
   pending: servicesPending,
 } = await useAsyncData(() =>
-  customFetch<IPageRes<IService[]>>(apiRoutes.services + `?${qs.stringify(query)}`, {
-    params: { page: page.value } as AdditionalParams,
+  customFetch<IPageRes<IService[]>>(apiRoutes.services, {
+    query: {
+      page: page.value,
+      populate: {
+        variants: {
+          fields: ['id', 'price']
+        },
+        reviews: {
+          fields: ['rating']
+        },
+
+      }
+    } as AdditionalParams,
   })
 );
 </script>

@@ -24,6 +24,7 @@ const modal = modalStore();
     <ModalChangeSupportTicketStatus v-if="modal.content === 'changeSupportTicketStatus'" />
     <ModalWebAddReview v-if="modal.content === 'WebAddReview'" />
     <ModalWebApplyCoupon v-if="modal.content === 'webApplyCoupon'" />
+    <ModalWebPostRequirement v-if="modal.content = 'webPostRequirement'" />
     <!-- <ModalContactMessage v-if="modal.content === 'contactMessage'" />
     <ModalAddressContinentAdd v-if="modal.content === 'addContinent'" />
     <ModalAddressContinentEdit v-if="modal.content === 'editContinent'" />

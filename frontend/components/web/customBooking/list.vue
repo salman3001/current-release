@@ -6,14 +6,17 @@ import { date } from 'quasar'
 const customFetch = useCustomFetch()
 const page = ref(1)
 
-const bookingQuery: AdditionalParams = {
-  page: page.value,
-  rowsPerPage: '2'
-
-}
-
 const { data: bookings, pending, refresh } = useAsyncData('bookings', async () => {
-  const data = await customFetch<IPageRes<IBooking>>(apiRoutes.booking_list_customer + "?" + qs.stringify(bookingQuery))
+  const data = await customFetch<IPageRes<IBooking>>(apiRoutes.bid_booking_my_list, {
+    query: {
+      page: page.value,
+      populate: {
+        user: {
+          fields: ['*']
+        }
+      }
+    } as AdditionalParams
+  })
   return data.data
 })
 
@@ -41,7 +44,7 @@ const columns = [
   <div class="">
     <ScrollArea width="100%" height="400px">
       <div class="q-py-md" v-if="pending">
-        <SkeletonBase type="list" v-for="i in 5" />
+        <SkeletonBase type="list" v-for="i in 2" />
       </div>
       <q-table flat v-else :rows="bookings!.data" :columns="columns" row-key="id" hide-pagination color="green"
         class="full-hieght">

@@ -1,4 +1,6 @@
 import { Notify } from "quasar";
+import qs from 'qs'
+import type { FetchContext } from 'ofetch'
 
 export default function (): typeof $fetch {
   const config = useRuntimeConfig();
@@ -28,11 +30,19 @@ export default function (): typeof $fetch {
     }
   };
 
+  const onRequest = (c: FetchContext<any, any>): void => {
+    const queryString = qs.stringify(c.options.query)
+    const newUrl = c.request + "?" + queryString
+    c.options.query = {}
+    c.request = newUrl
+  }
+
   return $fetch.create({
     baseURL: config.public.baseApi,
     headers: {
       authorization,
     },
     onResponse: !process.server ? onResponse : undefined,
+    onRequest: onRequest
   });
 }

@@ -1,37 +1,62 @@
 <script setup lang="ts">
-const pagination = ref({
-  sortBy: "desc",
-  descending: false,
-  page: 1,
-  rowsPerPage: 3,
-  // rowsNumber: xx if getting data from a server
-});
+import { date } from 'quasar'
 
-const rows = [1, 2, 3, 5, 5, 7, 8, 9];
+const props = defineProps<{
+  type?: "active" | "completed" | "expired"
+}>()
 
-const pagesNumber = computed(() =>
-  Math.ceil(rows.length / pagination.value.rowsPerPage)
-);
+const customFetch = useCustomFetch()
+const page = ref(1)
+
+const query = props.type === 'active' ? {
+  whereNull: 'accepted_bid_id'
+} : props.type === "completed" ? {
+  whereNotNull: 'accepted_bid_id'
+} : {}
+
+
+
+const { data: serviceRequirements, pending, refresh } = useAsyncData(async () => {
+  const data = await customFetch<IPageRes<IServiceRequirement[]>>(apiRoutes.service_requirements_my_list, {
+    query: {
+      page: page.value,
+      populate: {
+        serviceCategory: {
+          fields: ['name']
+        }
+      },
+      ...query
+    } as AdditionalParams
+  })
+
+  return data.data
+})
+
 </script>
+
 <template>
   <div class="q-gutter-y-md">
-    <div v-for="n in 5">
+    <div v-if="pending" v-for="n in 5">
+      <SkeletonBase type="list" />
+    </div>
+    <div v-else v-for="requirement in serviceRequirements?.data">
       <q-card flat bordered class="q-gutter-y-none full-width">
         <q-card-section>
           <p class="text-muted flex gap-100">
-            Posted Yesterday
-            <q-badge color="primary" outline>Active</q-badge>
+            Posted on {{ date.formatDate(requirement.created_at, 'DD/MM/YYYY hh:mmA') }}
+            <q-badge :color="requirement.acceptedBidId ? 'success' : 'warning'" outline>{{ requirement.acceptedBidId ?
+      'Complete' : 'Active' }}</q-badge>
           </p>
-          <p class="text-h5">Needed a pest control service</p>
-          <div>Hourly: &#x20B9;50 to &#x20B9;60</div>
-          <p>Category: <NuxtLink class="underline">Pest Control</NuxtLink></p>
+          <p class="text-h5"> {{ requirement.title }}</p>
+          <div class="normalcase text-bold">Budget Type: {{ requirement.budget_type }}</div>
+          <div class="text-bold">Budget: &#x20B9;{{ requirement.budget }}</div>
+          <p>Category: <NuxtLink class="underline">{{ requirement?.serviceCategory?.name }}</NuxtLink>
+          </p>
         </q-card-section>
         <q-separator inset />
         <q-card-section>
           <p class="text-subtitle1 text-muted">
-            Needed a pest control service . Lorem ipsum dolor sit amet
-            consectetur adipisicing elit. Animi illo atque incidunt nesciunt id,
-            eligendi quaerat corrupti quibusdam deserunt accusamus?
+            {{ requirement.desc }}
           </p>
         </q-card-section>
 
@@ -40,8 +65,7 @@ const pagesNumber = computed(() =>
             <div>Avg. Proposal Price : &#x20B9;70</div>
             <div>
               50+ Proposals |
-              <q-icon name="location_on" size="20px" color="primary"></q-icon
-              >Jarkhand, India
+              <q-icon name="location_on" size="20px" color="primary"></q-icon>Jarkhand, India
             </div>
           </div>
           <NuxtLink :to="routes.view_service_requirement(1)">
@@ -50,6 +74,6 @@ const pagesNumber = computed(() =>
         </q-card-section>
       </q-card>
     </div>
+    <PaginateComponet :page="page" :meta="serviceRequirements?.meta" @update:model-value="refresh" />
   </div>
-  <PaginateComponet />
 </template>

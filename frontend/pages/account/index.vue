@@ -18,14 +18,8 @@ watch(
 
 <template>
   <div class="q-pa-md q-pa-md-lg q-pa-lg-xl" style="max-width: 98vw">
-    <q-tabs
-      dense
-      v-model="tab"
-      active-color="white"
-      indicator-color="secondary"
-      active-bg-color="primary"
-      align="start"
-    >
+    <q-tabs dense v-model="tab" active-color="white" indicator-color="secondary" active-bg-color="primary"
+      align="start">
       <q-tab name="Profile" label="Profile" />
       <q-tab name="Bookings" label="Bookings" />
       <q-tab name="Custom Bookings" label="Custom Bookings" />

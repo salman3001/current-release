@@ -11,53 +11,59 @@ const user = useCookie('user')
 const selectedVariant = ref<IServiceVariant | null>(null)
 
 
-const query = {
-  populate: {
-    images: {
-      fields: ['*']
-    },
-    variants: {
-      fields: ['id', 'price', 'name', 'image', 'included', 'excluded']
-    },
-    business: {
-      fields: ['id', 'vendor_user_id', 'name'],
-      populate: {
-        vendor: {
-          fields: ['id', 'first_name', 'last_name']
-        },
-      }
-    },
-    reviews: {
-      fields: ['rating']
-    }
-  }
-} as AdditionalParams
+
 
 const reviewsQuery = {
-  populate: {
-    user: {
-      fields: ['first_name', 'last_name'],
-      populate: {
-        profile: {
-          fields: ['avatar']
-        }
-      }
-    }
-  },
-  page: 1
+
 } as AdditionalParams
 
 
 
 const { data: service, pending: servicePending } = await useAsyncData('service' + route.params.id as string, async () => {
-  const data = await customFetch<IResType<IService>>(apiRoutes.services_view(route.params.id as string, qs.stringify(query)))
+  const data = await customFetch<IResType<IService>>(apiRoutes.services_view(route.params.id as string), {
+    query: {
+      populate: {
+        images: {
+          fields: ['*']
+        },
+        variants: {
+          fields: ['id', 'price', 'name', 'image', 'included', 'excluded']
+        },
+        business: {
+          fields: ['id', 'vendor_user_id', 'name'],
+          populate: {
+            vendor: {
+              fields: ['id', 'first_name', 'last_name']
+            },
+          }
+        },
+        reviews: {
+          fields: ['rating']
+        }
+      } as AdditionalParams
+    }
+  })
   return data.data
 })
 
 selectedVariant.value = service.value?.variants[0] || null
 
 const { data: reviews, pending: reviewsPending, refresh: refreshReviews } = useAsyncData('reviews' + route.params.id as string, async () => {
-  const data = await customFetch<IPageRes<IReview[]>>(apiRoutes.reviews(route.params.id as string, qs.stringify(reviewsQuery)))
+  const data = await customFetch<IPageRes<IReview[]>>(apiRoutes.reviews(route.params.id as string), {
+    query: {
+      populate: {
+        user: {
+          fields: ['first_name', 'last_name'],
+          populate: {
+            profile: {
+              fields: ['avatar']
+            }
+          }
+        }
+      },
+      page: 1
+    } as AdditionalParams
+  })
   return data.data
 }, {
   server: false,
@@ -117,7 +123,7 @@ const items = [
       </div>
     </div>
     <div class="row q-gutter-x-md items-center">
-      <span class="text-h5">{{ service?.avg_rating.toFixed(1) }}</span>
+      <span class="text-h5">{{ service?.avg_rating }}</span>
       <RatingComponent :rating="service?.avg_rating || 0" size="2rem" />
     </div>
     <div>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const tab = ref("All");
+const modal = modalStore()
 </script>
 
 <template>
@@ -7,14 +8,16 @@ const tab = ref("All");
     <div class="q-gutter-y-md">
       <div class="row justify-between q-gutter-md">
         <h1 class="text-h5">Cutsom Service Requirement</h1>
-        <q-btn color="primary">+ Post A Requirement</q-btn>
+        <q-btn color="primary" @click="modal.togel('webPostRequirement', {
+          onSuccess: () => {
+            tab = tab === 'All' ? 'Active' : 'All'
+          }
+        })">+ Post A Requirement</q-btn>
       </div>
       <p class="text-muted text-subtitle1" style="max-width: 500px">
         Post service requirments accroding to your needs and recieve proposals
         from service providers. Please follow the
-        <NuxtLink :to="routes.home" class="underline text-secondary"
-          >guidelines</NuxtLink
-        >
+        <NuxtLink :to="routes.home" class="underline text-secondary">guidelines</NuxtLink>
         when posting a new service requirement.
       </p>
     </div>
@@ -24,14 +27,8 @@ const tab = ref("All");
         <h5 class="text-h5">Service Requirements posted by you</h5>
       </div>
       <div style="max-width: 95vw">
-        <q-tabs
-          dense
-          v-model="tab"
-          active-color="white"
-          indicator-color="secondary"
-          active-bg-color="primary"
-          align="start"
-        >
+        <q-tabs dense v-model="tab" active-color="white" indicator-color="secondary" active-bg-color="primary"
+          align="start">
           <q-tab name="All" label="All" />
           <q-tab name="Active" label="Active" />
           <q-tab name="Completed" label="Completed" />
@@ -45,15 +42,15 @@ const tab = ref("All");
           </q-tab-panel>
 
           <q-tab-panel name="Active">
-            <WebServiceRequirementList />
+            <WebServiceRequirementList type="active" />
           </q-tab-panel>
 
           <q-tab-panel name="Completed">
-            <WebServiceRequirementList />
+            <WebServiceRequirementList type="completed" />
           </q-tab-panel>
 
           <q-tab-panel name="Expired">
-            <WebServiceRequirementList />
+            <WebServiceRequirementList type="expired" />
           </q-tab-panel>
         </q-tab-panels>
       </div>

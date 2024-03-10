@@ -24,6 +24,7 @@ type IModalContent =
   | 'changeSupportTicketStatus'
   | 'WebAddReview'
   | 'webApplyCoupon'
+  | 'webPostRequirement'
 
 const modalStore = defineStore('modal', () => {
   const show = ref(false);

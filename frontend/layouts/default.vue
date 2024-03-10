@@ -78,7 +78,7 @@ const confirmLogout = () => {
         </q-toolbar>
       </q-header>
 
-      <q-drawer mini-to-overlay show-if-above v-model="leftDrawerOpen" side="left" bordered :mini="miniState"
+      <q-drawer show-if-above v-model="leftDrawerOpen" side="left" bordered :mini="miniState"
         @mouseover="miniState = false" @mouseout="miniState = true" :width="250" :breakpoint="500">
         <q-scroll-area class="fit" :horizontal-thumb-style="{ opacity: 0 }">
           <q-list padding>
@@ -88,8 +88,8 @@ const confirmLogout = () => {
                 <q-item clickable v-ripple>
                   <q-item-section avatar>
                     <q-icon :name="`img:${user && user?.avatar?.url
-          ? $config.public.baseApi + user?.avatar?.url
-          : '/images/sample-dp.png'
+        ? $config.public.baseApi + user?.avatar?.url
+        : '/images/sample-dp.png'
         }`" />
                   </q-item-section>
 
@@ -127,8 +127,8 @@ const confirmLogout = () => {
               </q-item>
             </NuxtLink>
             <NuxtLink :to="routes.service_requirement" :class="route.path === routes.service_requirement
-          ? 'text-primary'
-          : 'text-muted'
+        ? 'text-primary'
+        : 'text-muted'
         ">
               <q-item clickable v-ripple>
                 <q-item-section avatar>

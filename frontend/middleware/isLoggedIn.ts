@@ -2,6 +2,6 @@ export default defineNuxtRouteMiddleware((to, from) => {
   const user = useCookie("user");
 
   if (!user.value) {
-    return navigateTo("/auth/admin/login" + `?next=${to.path}`);
+    return navigateTo("/auth/login" + `?next=${to.path}`);
   }
 });
