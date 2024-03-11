@@ -2,6 +2,16 @@
 export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: ["nuxt-icon", "@pinia/nuxt", "nuxt-quasar-ui"],
+  experimental: {
+    defaults: {
+      useAsyncData: {
+        deep: false
+      },
+      useFetch: {
+        // 
+      }
+    }
+  },
   runtimeConfig: {
     public: {
       baseApi: "http://127.0.0.1:3333", // this must be http://127.0.0.1:3333 not localhost

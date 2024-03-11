@@ -105,9 +105,6 @@ const {
   }
 );
 
-watch(page, (n) => {
-  console.log(n);
-});
 </script>
 
 <template>
@@ -124,35 +121,19 @@ watch(page, (n) => {
       <p class="text-muted flex gap-100">
         Posted on
         {{
-          date.formatDate(
-            data?.serviceRequirement?.created_at,
-            "DD/MM/YYYY hh:mmA"
-          )
-        }}
-        <q-badge
-          color="warning"
-          outline
-          v-if="!data?.serviceRequirement?.accepted_bid_id"
-          >Active</q-badge
-        >
-        <q-badge
-          color="green"
-          outline
-          v-else-if="data?.serviceRequirement?.accepted_bid_id"
-          >Completed</q-badge
-        >
-        <q-badge
-          color="negative"
-          outline
-          v-else-if="
-            date.getDateDiff(
-              data?.serviceRequirement?.expires_at,
-              Date.now(),
-              'minutes'
-            ) < 0
-          "
-          >Expired</q-badge
-        >
+        date.formatDate(
+          data?.serviceRequirement?.created_at,
+          "DD/MM/YYYY hh:mmA"
+        )
+      }}
+        <q-badge color="warning" outline v-if="!data?.serviceRequirement?.accepted_bid_id">Active</q-badge>
+        <q-badge color="green" outline v-else-if="data?.serviceRequirement?.accepted_bid_id">Completed</q-badge>
+        <q-badge color="negative" outline v-else-if="date.getDateDiff(
+        data?.serviceRequirement?.expires_at,
+        Date.now(),
+        'minutes'
+      ) < 0
+        ">Expired</q-badge>
       </p>
       <p class="text-h5">{{ data?.serviceRequirement?.title }}</p>
       <div class="normalcase">
@@ -162,10 +143,10 @@ watch(page, (n) => {
       <div class="column">
         <div>
           Avg. Proposal Price : &#x20B9;{{
-            new BigNumber(
-              data?.serviceRequirement?.meta?.avgBidPrice || 0
-            ).toFixed(2)
-          }}
+        new BigNumber(
+          data?.serviceRequirement?.meta?.avgBidPrice || 0
+        ).toFixed(2)
+      }}
         </div>
         <div>
           Proposals Recieved :
@@ -173,36 +154,27 @@ watch(page, (n) => {
         </div>
         <div>
           Location
-          <q-icon name="location_on" size="20px" color="primary"></q-icon
-          >Jarkhand, India
+          <q-icon name="location_on" size="20px" color="primary"></q-icon>Jarkhand, India
         </div>
       </div>
       <p>
         Category:
         <NuxtLink class="underline">{{
-          data?.serviceRequirement?.serviceCategory?.name
-        }}</NuxtLink>
+        data?.serviceRequirement?.serviceCategory?.name
+      }}</NuxtLink>
       </p>
     </div>
     <p>
       {{ data?.serviceRequirement?.desc }}
     </p>
     <div class="" style="max-width: 95vw">
-      <q-tabs
-        dense
-        v-model="tab"
-        class="text-grey q-mt-md"
-        active-color="white"
-        indicator-color="secondary"
-        active-bg-color="primary"
-        align="left"
-      >
+      <q-tabs dense v-model="tab" class="text-grey q-mt-md" active-color="white" indicator-color="secondary"
+        active-bg-color="primary" align="left">
         <q-tab name="Accepted Proposal" label="Accepted Proposal" />
-        <q-tab name="Proposals Recieved" label="Proposals Recieved"
-          ><q-badge color="red" floating style="top: -0px; right: -25px">{{
-            data?.serviceRequirement?.meta?.bidCount || 0
-          }}</q-badge></q-tab
-        >
+        <q-tab name="Proposals Recieved" label="Proposals Recieved"><q-badge color="red" floating
+            style="top: -0px; right: -25px">{{
+        data?.serviceRequirement?.meta?.bidCount || 0
+      }}</q-badge></q-tab>
       </q-tabs>
       <q-separator />
 
@@ -214,9 +186,7 @@ watch(page, (n) => {
                 You haven't accepted any proposal yet. Please accept a proposal
               </p>
               <br />
-              <q-btn outline color="primary" @click="tab = 'Proposals Recieved'"
-                >View Proposals</q-btn
-              >
+              <q-btn outline color="primary" @click="tab = 'Proposals Recieved'">View Proposals</q-btn>
             </div>
             <WebProposalCard v-else :accepted="true" :bid="data?.acceptedBid" />
           </div>
@@ -225,36 +195,19 @@ watch(page, (n) => {
         <q-tab-panel name="Proposals Recieved">
           <div class="q-gutter-y-md">
             <div class="row justify-end q-gutter-sm">
-              <q-btn color="secondary" outline icon="filter_alt" left
-                >Top Ratted</q-btn
-              ><q-btn color="secondary" outline icon="filter_alt" left
-                >Lowest Price</q-btn
-              >
+              <q-btn color="secondary" outline icon="filter_alt" left>Top Ratted</q-btn><q-btn color="secondary" outline
+                icon="filter_alt" left>Lowest Price</q-btn>
             </div>
             <div>
               <div v-if="pending">
-                <SkeletonBase
-                  type="list"
-                  v-for="i in 3"
-                  :key="i"
-                ></SkeletonBase>
+                <SkeletonBase type="list" v-for="i in 3" :key="i"></SkeletonBase>
               </div>
-              <WebProposalCard
-                v-else
-                v-for="bid in recivedBids?.data"
-                :accepted="false"
-                :bid="bid"
-              />
-              <PaginateComponet
-                :page="page"
-                :meta="recivedBids?.meta"
-                @update:model-value="
-                  (v) => {
-                    page = v;
-                    refresh();
-                  }
-                "
-              />
+              <WebProposalCard v-else v-for="bid in recivedBids?.data" :accepted="false" :bid="bid" />
+              <PaginateComponet :page="page" :meta="recivedBids?.meta" @update:model-value="(v) => {
+          page = v;
+          refresh();
+        }
+        " />
             </div>
           </div>
         </q-tab-panel>
