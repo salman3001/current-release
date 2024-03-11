@@ -28,10 +28,6 @@ export default class CartsController extends BaseController {
     const cartQuery = Cart.query().where('user_id', user!.id)
     this.showfilterQuery(ctx.request.qs() as any, cartQuery)
 
-    if (ctx.request.qs().populate) {
-      await this.populate(ctx.request.qs().populate, cartQuery)
-    }
-
     const cart = await cartQuery.first()
     return ctx.response.custom({
       code: 200,

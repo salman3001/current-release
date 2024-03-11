@@ -1,4 +1,3 @@
-
 interface IResType<T> {
   data: T;
   message: string;
@@ -21,7 +20,7 @@ interface IPageRes<T>
   extends IResType<{
     data: T;
     meta: PageMeta;
-  }> { }
+  }> {}
 
 interface ImageType {
   name: string;
@@ -58,6 +57,7 @@ type IServiceCategory = {
   long_desc: string | null;
   status: string | null;
   thumbnail: ImageType | null;
+  meta: any;
 } & TimeStamps;
 
 type IServiceSubcategory = {
@@ -67,6 +67,7 @@ type IServiceSubcategory = {
   long_desc: string | null;
   status: string | null;
   thumbnail: ImageType | null;
+  meta: any;
 } & TimeStamps;
 
 type IService = {
@@ -90,288 +91,293 @@ type IService = {
   serviceCategory: IServiceCategory;
   service_subcategory_id: number;
   serviceSubcategory: IServiceSubcategory;
-  variants: IServiceVariant[]
-  reviews: IReview[]
-  starting_from: string | null
-  avg_rating: number
+  variants: IServiceVariant[];
+  reviews: IReview[];
+  meta: Record<any, any>;
 } & TimeStamps;
-
 
 interface IServiceVariant {
-  id: number
-  name: string
-  price: string | number
-  discount_type: "flat" | "percentage"
-  discount_flat: string | number
-  discount_percentage: string | number
-  features: string[]
-  included: string[]
-  excluded: string[]
-  order: number
-  image: ImageType | null
-  serviceId: number
-  service: IService
-  additionalProperties: string[]
+  id: number;
+  name: string;
+  price: string | number;
+  discount_type: "flat" | "percentage";
+  discount_flat: string | number;
+  discount_percentage: string | number;
+  features: string[];
+  included: string[];
+  excluded: string[];
+  order: number;
+  image: ImageType | null;
+  serviceId: number;
+  service: IService;
+  additionalProperties: string[];
+  meta: any;
 }
 
-
 type IBusiness = {
-  id: number
-  name: string
-  short_desc: string
-  long_desc: string
-  is_active: boolean
-  logo: ImageType
-  cover: ImageType
-  brocher: ImageType
-  video: ImageType
-  vendor_user_id: number
-  images: ImageType[]
-  seo: ISeo
-  social: ISocial
-  faq: IFaq[]
-  addresses: IAddress[]
-  vendor: IVendorUser
-  services: IService[]
-  reviews: IReview[]
+  id: number;
+  name: string;
+  short_desc: string;
+  long_desc: string;
+  is_active: boolean;
+  logo: ImageType;
+  cover: ImageType;
+  brocher: ImageType;
+  video: ImageType;
+  vendor_user_id: number;
+  images: ImageType[];
+  seo: ISeo;
+  social: ISocial;
+  faq: IFaq[];
+  addresses: IAddress[];
+  vendor: IVendorUser;
+  services: IService[];
+  reviews: IReview[];
+  meta: any;
 } & TimeStamps;
 
-
 interface ISeo {
-  id: number
-  meta_title: string
-  meta_keywords: string
-  meta_desc: string
+  id: number;
+  meta_title: string;
+  meta_keywords: string;
+  meta_desc: string;
 }
 
 interface ISocial {
-  id: number
-  website: string
-  facebook: string
-  twitter: string
-  instagram: string
-  pintrest: string
-  linkedin: string
-  vk: string
-  whatsapp: string
-  telegram: string
+  id: number;
+  website: string;
+  facebook: string;
+  twitter: string;
+  instagram: string;
+  pintrest: string;
+  linkedin: string;
+  vk: string;
+  whatsapp: string;
+  telegram: string;
 }
 
 interface IFaq {
-  id: number
-  quest: string
-  ans: string
-  service_subcategory_id: number
-  service_category_id: number
-  service_id: number
-  service_tag_id: number
-  business_id: number
+  id: number;
+  quest: string;
+  ans: string;
+  service_subcategory_id: number;
+  service_category_id: number;
+  service_id: number;
+  service_tag_id: number;
+  business_id: number;
+  meta: any;
 }
 
 interface IAddress {
-  id: number
-  address: string
+  id: number;
+  address: string;
   geo_location: {
     x: number;
     y: number;
   };
-  user_profile_id: number
-  business_id: number
+  user_profile_id: number;
+  business_id: number;
 }
 
 type IReview = {
-  id: number
-  rating: number
-  message: string
-  user_id: number
-  user: IUser
-  business_id: number
-  service_id: number
-} & TimeStamps
+  id: number;
+  rating: number;
+  message: string;
+  user_id: number;
+  user: IUser;
+  business_id: number;
+  service_id: number;
+  meta: any;
+} & TimeStamps;
 
 type IVendorUser = {
-  id: number
-  email: string
-  first_name: string
-  last_name: string
-  phone: string
-  is_active: boolean
-  is_public: boolean
-  token: string | null
-  socket_token: string
-  userType: 'vendor'
-  profile: IProfile
-  business: IBusiness
-  bookings: IBooking[]
-  notifications: INotification[]
-  subscribed_categories: IServiceCategory[]
-  bid_booking: IBidBooking[]
-
-} & TimeStamps
-
+  id: number;
+  email: string;
+  first_name: string;
+  last_name: string;
+  phone: string;
+  is_active: boolean;
+  is_public: boolean;
+  token: string | null;
+  socket_token: string;
+  userType: "vendor";
+  profile: IProfile;
+  business: IBusiness;
+  bookings: IBooking[];
+  notifications: INotification[];
+  subscribed_categories: IServiceCategory[];
+  bid_booking: IBidBooking[];
+  meta: any;
+} & TimeStamps;
 
 type IUser = {
-  id: number
-  email: string
-  first_name: string
-  last_name: string
-  phone: string
-  is_active: boolean
-  is_public: boolean
-  token: string | null
-  socket_token: string
-  userType: 'customer'
-  profile: IProfile
-  wishlist: IWishlist
-  bookings: IBooking[]
-  notifications: INotification[]
-  bid_booking: IBooking[]
-
-} & TimeStamps
+  id: number;
+  email: string;
+  first_name: string;
+  last_name: string;
+  phone: string;
+  is_active: boolean;
+  is_public: boolean;
+  token: string | null;
+  socket_token: string;
+  userType: "customer";
+  profile: IProfile;
+  wishlist: IWishlist;
+  bookings: IBooking[];
+  notifications: INotification[];
+  bid_booking: IBooking[];
+  meta: any;
+} & TimeStamps;
 
 type IAdminUser = {
-  id: number
-  email: string
-  first_name: string
-  last_name: string
-  phone: string
-  is_active: boolean
-  role_id: number
-  token: string | null
-  socket_token: string
-  userType: 'admin'
-  profile: IProfile
-  role: IRole
-  activities: IActivity[]
-  notifications: INotification[]
-} & TimeStamps
+  id: number;
+  email: string;
+  first_name: string;
+  last_name: string;
+  phone: string;
+  is_active: boolean;
+  role_id: number;
+  token: string | null;
+  socket_token: string;
+  userType: "admin";
+  profile: IProfile;
+  role: IRole;
+  activities: IActivity[];
+  notifications: INotification[];
+  meta: any;
+} & TimeStamps;
 
 type IRole = {
-  id: number
-  name: string
-  is_active: boolean
-  admin_user: IAdminUser[]
-  permissions: string[]
-}
+  id: number;
+  name: string;
+  is_active: boolean;
+  admin_user: IAdminUser[];
+  permissions: string[];
+  meta: any;
+};
 
 type IActivity = {
-  id: number
-  name: string
-  admin_user_id: number
-  created_at: string
-}
+  id: number;
+  name: string;
+  admin_user_id: number;
+  created_at: string;
+  meta: any;
+};
 
 type IProfile = {
-  id: number
-  avatar: ImageType
-  user_id: number
-  admin_user_id: number
-  vendor_user_id: number
-  notification_setting: Object
-  user: IUser
-  social: ISocial
-  addresses: IAddress
-  languages: ILanguage[]
-  skills: ISkill[]
-}
+  id: number;
+  avatar: ImageType;
+  user_id: number;
+  admin_user_id: number;
+  vendor_user_id: number;
+  notification_setting: Object;
+  user: IUser;
+  social: ISocial;
+  addresses: IAddress;
+  languages: ILanguage[];
+  skills: ISkill[];
+  meta: any;
+};
 
 type ILanguage = {
-  id: number
-  name: string
-}
+  id: number;
+  name: string;
+  meta: any;
+};
 
 type ISkill = {
-  id: number
-  name: string
-  desc: string
-}
-
+  id: number;
+  name: string;
+  desc: string;
+  meta: any;
+};
 
 type IBooking = {
-  id: number
-  service_variant_id: number
-  user_id: number
-  vendor_user_id: number
-  booking_detail: {}
-  payment_detail: {}
-  status: string
-  vendor_user: IVendorUser
-  user: IUser
-  service_variant: IServiceVariant
-} & TimeStamps
+  id: number;
+  service_variant_id: number;
+  user_id: number;
+  vendor_user_id: number;
+  booking_detail: {};
+  payment_detail: {};
+  status: string;
+  vendor_user: IVendorUser;
+  user: IUser;
+  service_variant: IServiceVariant;
+  meta: any;
+} & TimeStamps;
 
 type IBidBooking = {
-  id: number
-  qty: number
-  price: number
-  user_id: number
-  vendor_user_id: number
-  booking_detail: {}
-  payment_detail: {}
-  status: string
-  vendor_user: IVendorUser
-  user: IUser
-} & TimeStamps
+  id: number;
+  qty: number;
+  price: number;
+  user_id: number;
+  vendor_user_id: number;
+  booking_detail: {};
+  payment_detail: {};
+  status: string;
+  vendor_user: IVendorUser;
+  user: IUser;
+  meta: any;
+} & TimeStamps;
 
 type INotification = {
-  id: number
+  id: number;
   data: {
-    type: string
-    message: string
-    meta: Record<any, any>
-  }
-  user_id: number
-  admin_user_id: number
-  vendor_user_id: number
-  read_at: string
-
-} & TimeStamps
+    type: string;
+    message: string;
+    meta: Record<any, any>;
+  };
+  user_id: number;
+  admin_user_id: number;
+  vendor_user_id: number;
+  read_at: string;
+  meta: any;
+} & TimeStamps;
 
 type IWishlist = {
-  id: number
-  user_id: number
-  items: IServiceVariant[]
-}
+  id: number;
+  user_id: number;
+  items: IServiceVariant[];
+  meta: any;
+};
 
 type IBookingSummary = {
-  coupon_discount: string
-  grand_total: string
-  qty: number
-  service_variant: IServiceVariant
-  total_after_discount: string
-  total_without_discount: string
-  vendor_discount: string
-}
-
+  coupon_discount: string;
+  grand_total: string;
+  qty: number;
+  service_variant: IServiceVariant;
+  total_after_discount: string;
+  total_without_discount: string;
+  vendor_discount: string;
+  meta: any;
+};
 
 type IServiceRequirement = {
-  id: number
-  title: string
-  desc: string
-  skillsRequired: string[]
-  budget_type: 'hourly' | 'fixed'
-  budget: string | number
-  expiresAt: string
-  location: string
-  userId: number
-  serviceCategoryId: number
-  acceptedBidId: number
-  user: IUser
-  serviceCategory: IServiceCategory
-  recievedBids: IBid
-} & TimeStamps
+  id: number;
+  title: string;
+  desc: string;
+  skills_required: string[];
+  budget_type: "hourly" | "fixed";
+  budget: string | number;
+  expires_at: string;
+  location: string;
+  user_id: number;
+  service_category_id: number;
+  accepted_bid_id: number;
+  user: IUser;
+  serviceCategory: IServiceCategory;
+  recievedBids: IBid;
+  meta: Record<any, any>;
+} & TimeStamps;
 
 type IBid = {
-  id: number
-  offeredPrice: number | string
-  featuresIncluded: string[]
-  featuresExcluded: string[]
-  serviceRequirementId: number
-  vendorUserId: number
-  vendorUser: IVendorUser
-  serviceRequirement: IServiceRequirement
-}
-
-
-
-
+  id: number;
+  offered_price: number | string;
+  features_included: string[];
+  features_excluded: string[];
+  service_requirement_id: number;
+  vendor_user_id: number;
+  vendorUser: IVendorUser;
+  serviceRequirement: IServiceRequirement;
+  meta: any;
+} & TimeStamps;

@@ -24,6 +24,7 @@ import Address from '../address/Address'
 import Review from '../service/Review'
 
 export default class Business extends BaseModel {
+  public serializeExtras = true
   @column({ isPrimary: true })
   public id: number
 

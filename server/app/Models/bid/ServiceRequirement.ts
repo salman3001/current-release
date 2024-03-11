@@ -1,5 +1,13 @@
 import { DateTime } from 'luxon'
-import { BaseModel, BelongsTo, HasMany, afterCreate, belongsTo, column, hasMany } from '@ioc:Adonis/Lucid/Orm'
+import {
+  BaseModel,
+  BelongsTo,
+  HasMany,
+  afterCreate,
+  belongsTo,
+  column,
+  hasMany,
+} from '@ioc:Adonis/Lucid/Orm'
 import ServiceCategory from '../service/ServiceCategory'
 import User from '../user/User'
 import Bid from './Bid'
@@ -7,6 +15,8 @@ import { BudgetType, NotificationTypes } from 'App/Helpers/enums'
 import VendorUser from '../vendorUser/VendorUser'
 
 export default class ServiceRequirement extends BaseModel {
+  public serializeExtras = true
+
   @column({ isPrimary: true })
   public id: number
 
@@ -16,7 +26,7 @@ export default class ServiceRequirement extends BaseModel {
   @column()
   public desc: string
 
-  @column({ prepare: v => JSON.stringify(v) })
+  @column({ prepare: (v) => JSON.stringify(v) })
   public skillsRequired: string[]
 
   @column()
@@ -59,7 +69,7 @@ export default class ServiceRequirement extends BaseModel {
   public static async notifyVendor(serviceRequirement: ServiceRequirement) {
     const categoryId = serviceRequirement.serviceCategoryId
 
-    const vendors = await VendorUser.query().whereHas('subscribedCategories', b => {
+    const vendors = await VendorUser.query().whereHas('subscribedCategories', (b) => {
       b.where('service_category_id', categoryId)
     })
 
@@ -71,10 +81,9 @@ export default class ServiceRequirement extends BaseModel {
           meta: {
             id: serviceRequirement.id,
             title: serviceRequirement.title,
-          }
-        }
+          },
+        },
       })
     }
-
   }
 }

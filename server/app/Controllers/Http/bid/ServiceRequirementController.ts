@@ -6,8 +6,6 @@ import Database from '@ioc:Adonis/Lucid/Database'
 import { schema } from '@ioc:Adonis/Core/Validator'
 import { ModelQueryBuilderContract } from '@ioc:Adonis/Lucid/Orm'
 import Bid from 'App/Models/bid/Bid'
-import VendorUser from 'App/Models/vendorUser/VendorUser'
-import User from 'App/Models/user/User'
 
 export default class ServiceRequirementController extends BaseController {
   constructor() {
@@ -33,9 +31,6 @@ export default class ServiceRequirementController extends BaseController {
     const serviceRequirementQuery = ServiceRequirement.query().where('user_id', user.id)
 
     this.indexfilterQuery(request.qs() as any, serviceRequirementQuery)
-    if (request.qs().populate) {
-      await this.populate(request.qs().populate as any, serviceRequirementQuery)
-    }
 
     if (request.qs().page) {
       serviceRequirement = await serviceRequirementQuery.paginate(
@@ -61,13 +56,42 @@ export default class ServiceRequirementController extends BaseController {
 
     const bid = await Bid.query()
       .where('id', serviceRequirement.acceptedBidId)
-      .preload('vendorUser')
-      .exec()
+      .preload('vendorUser', (v) => {
+        v.preload('business', (b) => {
+          b.select('id', 'name')
+        }).select('first_name', 'last_name')
+      })
+      .first()
 
     return response.custom({
       code: 200,
       message: null,
       data: bid,
+      success: true,
+    })
+  }
+
+  public async showBids({ bouncer, params, response, request }: HttpContextContract) {
+    const serviceRequirement = await ServiceRequirement.findOrFail(+params.id)
+
+    await bouncer.with('ServiceRequirementPolicy').authorize('view', serviceRequirement)
+
+    const bidQuery = Bid.query().where('service_requirement_id', serviceRequirement.id)
+
+    this.indexfilterQuery(request.qs() as any, bidQuery)
+
+    let bids: Bid[] | null = null
+
+    if (request.qs().page) {
+      bids = await bidQuery.paginate(request.qs().page, request.qs().rowsPerPage || this.perPage)
+    } else {
+      bids = await bidQuery.exec()
+    }
+
+    return response.custom({
+      code: 200,
+      message: null,
+      data: bids,
       success: true,
     })
   }

@@ -18,12 +18,8 @@ export default class BidController extends BaseController {
 
     this.indexfilterQuery(request.qs() as any, bidsQuery)
 
-    if (request.qs().populate) {
-      await this.populate(request.qs().populate, bidsQuery)
-    }
-
     if (request.qs().page) {
-      bids = await bidsQuery.paginate(request.qs().page, request.qs().perPage || this.perPage)
+      bids = await bidsQuery.paginate(request.qs().page, request.qs().rowsPerPage || this.perPage)
     } else {
       bids = await bidsQuery.exec()
     }

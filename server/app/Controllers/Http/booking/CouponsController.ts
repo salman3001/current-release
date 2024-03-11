@@ -25,12 +25,11 @@ export default class CouponsController extends BaseController {
 
     this.indexfilterQuery(request.qs() as any, couponQuery)
 
-    if (request.qs().populate) {
-      await this.populate(request.qs().populate, couponQuery)
-    }
-
     if (request.qs().page) {
-      coupons = await couponQuery.paginate(request.qs().page, request.qs().perPage || this.perPage)
+      coupons = await couponQuery.paginate(
+        request.qs().page,
+        request.qs().rowsPerPage || this.perPage
+      )
     } else {
       coupons = await couponQuery.exec()
     }
@@ -52,12 +51,11 @@ export default class CouponsController extends BaseController {
 
     this.indexfilterQuery(request.qs() as any, couponQuery)
 
-    if (request.qs().populate) {
-      await this.populate(request.qs().populate, couponQuery)
-    }
-
     if (request.qs().page) {
-      coupons = await couponQuery.paginate(request.qs().page, request.qs().perPage || this.perPage)
+      coupons = await couponQuery.paginate(
+        request.qs().page,
+        request.qs().rowsPerPage || this.perPage
+      )
     } else {
       coupons = await couponQuery.exec()
     }

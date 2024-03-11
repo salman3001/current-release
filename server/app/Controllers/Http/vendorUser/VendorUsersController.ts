@@ -10,16 +10,33 @@ import { ResponsiveAttachment } from '@ioc:Adonis/Addons/ResponsiveAttachment'
 import Database from '@ioc:Adonis/Lucid/Database'
 import BusinesUpdateValidator from 'App/Validators/BusinesUpdateValidator'
 import Image from 'App/Models/Image'
-import { Attachment } from '@ioc:Adonis/Addons/AttachmentLite'
 import Business from 'App/Models/vendorUser/Business'
+import Review from 'App/Models/service/Review'
+import BigNumber from 'bignumber.js'
 
 export default class VendorUsersController extends BaseController {
   constructor() {
     super(VendorUser, VendorUserCreateValidator, VendorUserUpdateValidator, 'VendorUserPolicy')
   }
 
+  public async getVendorRating({ request, response, bouncer, params }: HttpContextContract) {
+    const vendor = await VendorUser.findOrFail(+params.id)
+
+    const rating = await Database.rawQuery(
+      'select avg(reviews.rating) from reviews join services on reviews.service_id = services.id join businesses on services.business_id = businesses.id join vendor_users on businesses.vendor_user_id=vendor_users.id where vendor_users.id = ? group by vendor_users.id',
+      [vendor.id]
+    )
+
+    return response.custom({
+      message: null,
+      code: 200,
+      data: { rating: rating?.rows[0]?.avg || 0 },
+      success: true,
+    })
+  }
+
   public async store({ request, response, bouncer }: HttpContextContract) {
-    const { bussinessName, ...payload } = await request.validate(VendorUserCreateValidator)
+    const { businessName, ...payload } = await request.validate(VendorUserCreateValidator)
 
     await bouncer.with('VendorUserPolicy').authorize('create')
 
@@ -27,7 +44,7 @@ export default class VendorUsersController extends BaseController {
 
     await Database.transaction(async (trx) => {
       user = await VendorUser.create(payload, { client: trx })
-      await user.related('business').create({ name: bussinessName })
+      await user.related('business').create({ name: businessName })
     })
 
     return response.custom({
@@ -296,7 +313,12 @@ export default class VendorUsersController extends BaseController {
     })
   }
 
-  public async updateSubscribedCategories({ response, request, bouncer, auth }: HttpContextContract) {
+  public async updateSubscribedCategories({
+    response,
+    request,
+    bouncer,
+    auth,
+  }: HttpContextContract) {
     const user = auth.user
 
     const isVendorUser = user instanceof VendorUser
@@ -305,14 +327,14 @@ export default class VendorUsersController extends BaseController {
         code: 401,
         data: null,
         message: 'Not Authorized',
-        success: false
+        success: false,
       })
     }
 
     await bouncer.with('VendorUserPolicy').authorize('update', user)
 
     const validationSchema = schema.create({
-      serviceCategoryIds: schema.array().members(schema.number())
+      serviceCategoryIds: schema.array().members(schema.number()),
     })
 
     const payload = await request.validate({
@@ -328,8 +350,6 @@ export default class VendorUsersController extends BaseController {
       success: true,
     })
   }
-
-
 
   public async storeExcelData(data: any, ctx: HttpContextContract): Promise<void> {
     ctx.meta = {

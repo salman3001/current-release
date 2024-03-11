@@ -22,9 +22,6 @@ export default class BookingController extends BaseController {
     let bookings: Booking[] = []
     const bookingQuery = Booking.query().where('user_id', user.id)
     this.indexfilterQuery(request.qs() as any, bookingQuery)
-    if (request.qs().populate) {
-      await this.populate(request.qs().populate as any, bookingQuery)
-    }
 
     if (request.qs().page) {
       bookings = await bookingQuery.paginate(
@@ -52,9 +49,6 @@ export default class BookingController extends BaseController {
 
     const bookingQuery = Booking.query().where('vendor_user_id', user.id)
     this.indexfilterQuery(request.qs() as any, bookingQuery)
-    if (request.qs().populate) {
-      await this.populate(request.qs().populate as any, bookingQuery)
-    }
 
     if (request.qs().page) {
       bookings = await bookingQuery.paginate(
@@ -82,7 +76,6 @@ export default class BookingController extends BaseController {
       couponId: schema.number.optional(),
     })
 
-
     const payload = await request.validate({
       schema: validationSchema,
     })
@@ -107,11 +100,13 @@ export default class BookingController extends BaseController {
 
     const total_after_discount = total_without_discount.minus(vendor_discount)
 
-    const coupon_discount = payload.couponId ? await this.applyCoupon(
-      payload.couponId,
-      total_after_discount,
-      serviceVariant.service.business.vendorUserId
-    ) : 0
+    const coupon_discount = payload.couponId
+      ? await this.applyCoupon(
+          payload.couponId,
+          total_after_discount,
+          serviceVariant.service.business.vendorUserId
+        )
+      : 0
 
     const grand_total = total_after_discount.minus(coupon_discount)
 
@@ -158,11 +153,13 @@ export default class BookingController extends BaseController {
 
     const total_after_discount = total_without_discount.minus(vendor_discount)
 
-    const coupon_discount = payload.couponId ? await this.applyCoupon(
-      payload.couponId,
-      total_after_discount,
-      serviceVariant.service.business.vendorUserId
-    ) : 0
+    const coupon_discount = payload.couponId
+      ? await this.applyCoupon(
+          payload.couponId,
+          total_after_discount,
+          serviceVariant.service.business.vendorUserId
+        )
+      : 0
 
     const grand_total = total_after_discount.minus(coupon_discount)
 

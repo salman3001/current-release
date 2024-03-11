@@ -79,6 +79,10 @@ export default class VendorUser extends BaseModel {
   // @hasMany(() => SupportTicket)
   // public supportTickets: HasMany<typeof SupportTicket>
 
+  // public async getRatting(){
+  //   await this.load('')
+  // }
+
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 

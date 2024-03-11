@@ -29,14 +29,11 @@ export default class OrdersController extends BaseController {
 
     const orderGroupQuery = OrderGroup.query().where('user_id', user.id)
     this.indexfilterQuery(request.qs() as any, orderGroupQuery)
-    if (request.qs().populate) {
-      await this.populate(request.qs().populate as any, orderGroupQuery)
-    }
 
     if (request.qs().page) {
       ordersGroups = await orderGroupQuery.paginate(
         request.qs().page,
-        request.qs().perPage || this.perPage
+        request.qs().rowsPerPage || this.perPage
       )
     } else {
       ordersGroups = await orderGroupQuery.exec()
@@ -59,14 +56,11 @@ export default class OrdersController extends BaseController {
 
     const orderGroupQuery = Order.query().where('vendor_user_id', user.id)
     this.indexfilterQuery(request.qs() as any, orderGroupQuery)
-    if (request.qs().populate) {
-      await this.populate(request.qs().populate as any, orderGroupQuery)
-    }
 
     if (request.qs().page) {
       orders = await orderGroupQuery.paginate(
         request.qs().page,
-        request.qs().perPage || this.perPage
+        request.qs().rowsPerPage || this.perPage
       )
     } else {
       orders = await orderGroupQuery.exec()

@@ -34,14 +34,11 @@ export default class BidBookingController extends BaseController {
     }
 
     this.indexfilterQuery(request.qs() as any, bidBookingQuery)
-    if (request.qs().populate) {
-      await this.populate(request.qs().populate as any, bidBookingQuery)
-    }
 
     if (request.qs().page) {
       bidBooking = await bidBookingQuery.paginate(
         request.qs().page,
-        request.qs().perPage || this.perPage
+        request.qs().rowsPerPage || this.perPage
       )
     } else {
       bidBooking = await bidBookingQuery.exec()

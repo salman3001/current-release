@@ -21,6 +21,8 @@ import {
 import VendorUser from '../vendorUser/VendorUser'
 
 export default class ServiceCategory extends BaseModel {
+  public serializeExtras = true
+
   @column({ isPrimary: true })
   public id: number
 
@@ -58,19 +60,9 @@ export default class ServiceCategory extends BaseModel {
   public seo: HasOne<typeof Seo>
 
   @manyToMany(() => VendorUser, {
-    pivotTable: 'vendor_subscribed_categories'
+    pivotTable: 'vendor_subscribed_categories',
   })
   public subscribedVendors: ManyToMany<typeof VendorUser>
-
-  @computed()
-  public get subCategoryCount() {
-    let count = 0
-    if (this.subCategory) {
-      count = this.subCategory.length
-    }
-
-    return count
-  }
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-
 const modal = modalStore();
 </script>
 
@@ -21,10 +20,12 @@ const modal = modalStore();
     <ModalAddRole v-if="modal.content === 'addRole'" />
     <ModalBanUser v-if="modal.content === 'changeUserStatus'" />
     <ModalDeleteNotification v-if="modal.content === 'deleteNotification'" />
-    <ModalChangeSupportTicketStatus v-if="modal.content === 'changeSupportTicketStatus'" />
+    <ModalChangeSupportTicketStatus
+      v-if="modal.content === 'changeSupportTicketStatus'"
+    />
     <ModalWebAddReview v-if="modal.content === 'WebAddReview'" />
     <ModalWebApplyCoupon v-if="modal.content === 'webApplyCoupon'" />
-    <ModalWebPostRequirement v-if="modal.content = 'webPostRequirement'" />
+    <ModalWebPostRequirement v-if="modal.content === 'webPostRequirement'" />
     <!-- <ModalContactMessage v-if="modal.content === 'contactMessage'" />
     <ModalAddressContinentAdd v-if="modal.content === 'addContinent'" />
     <ModalAddressContinentEdit v-if="modal.content === 'editContinent'" />

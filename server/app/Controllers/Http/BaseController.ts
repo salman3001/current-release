@@ -14,23 +14,46 @@ import { flatten, unflatten } from 'uni-flatten'
 import { schema, validator } from '@ioc:Adonis/Core/Validator'
 import * as qsModule from 'qs'
 
-type Populate = Record<string, { fields: string[]; populate: Populate }>
-type Search = Record<string, string> | null
-type Filter = Record<string, string> | null
-type RelationFilter = Record<string, { field: string; value: string; filter: RelationFilter }>
+type preload = Record<
+  string,
+  {
+    select?: select
+    where?: where
+    preload?: preload[]
+    withAggregate: withAggregate[]
+    withCount: withCount[]
+  }
+>
+type whereLike = Record<string, string> | null
+type whereILike = Record<string, string> | null
+type opt = '>' | '>=' | '>' | '>=' | '='
+type where = Record<string, [opt, string]>
+type select = string[] | null
+type withAggregate = {
+  relation: string
+  aggregator: string
+  field: string
+  as: string
+}
+type withCount = {
+  relation: string
+  as: string
+}
 
 export interface IndexQs {
   page: number | null
   rowsPerPage: string | null
   sortBy: string | null
   descending: 'true' | 'false' | null
-  search: Search | null
-  filter: Filter | null
-  relationFilter: RelationFilter | null
-  populate: Populate | null
+  select: select
+  whereLike: whereLike | null
+  whereILike: whereILike | null
+  where: where
   whereNull: string | null
   whereNotNull: string | null
-  fields: string[] | null
+  preload: preload[] | null
+  withAggregate: withAggregate[]
+  withCount: withCount[]
 }
 
 export default class BaseController {
@@ -41,7 +64,7 @@ export default class BaseController {
     private bauncerPolicy?: keyof PoliciesList,
     public perPage?: number,
     public importSelects: string[] = []
-  ) { }
+  ) {}
 
   public async index(ctx: HttpContextContract) {
     if (ctx.bouncer && this.bauncerPolicy) {
@@ -54,10 +77,6 @@ export default class BaseController {
     const query = this.getIndexQuery(ctx)
 
     const filteredQuery = this.indexfilterQuery(qs, query)
-
-    if (qs.populate) {
-      await this.populate(qs.populate, filteredQuery)
-    }
 
     if (qs.page) {
       records = await filteredQuery.paginate(qs.page, Number(qs?.rowsPerPage) || this.perPage)
@@ -74,16 +93,11 @@ export default class BaseController {
   }
 
   public async show(ctx: HttpContextContract) {
-    // const qs = ctx.request.qs() as unknown as { fields: string[]; populate: Populate }
     const qs = qsModule.parse(ctx.request.parsedUrl.query, { depth: 10 })
 
     const query = this.getShowQuery(ctx)
 
     const filteredQuery = this.showfilterQuery(qs, query)
-
-    if (qs.populate) {
-      await this.populate(qs.populate, filteredQuery)
-    }
 
     const record = await filteredQuery.first()
 
@@ -168,11 +182,11 @@ export default class BaseController {
   }
 
   public indexfilterQuery(qs: IndexQs, query: ModelQueryBuilderContract<any, any>) {
-    if (qs.relationFilter) {
-      this.relationFiler(qs.relationFilter, query)
+    if (qs.preload) {
+      this.preload(qs.preload, query)
     }
 
-    if (qs.sortBy) {
+    if (qs?.sortBy) {
       if (qs.descending === 'true') {
         query.orderBy(qs.sortBy, 'desc')
       } else if (qs.descending === 'false') {
@@ -180,93 +194,102 @@ export default class BaseController {
       }
     }
 
-    if (qs.filter) {
-      for (const key in qs.filter) {
-        const element = qs.filter[key]
-        if (element !== null && element !== '') {
-          query.where(key, element)
-        }
-      }
+    if (qs?.where) {
+      this.where(qs.where, query)
     }
 
-    if (qs.whereNotNull) {
+    if (qs?.whereNotNull) {
       query.whereNotNull(qs.whereNotNull)
     }
 
-    if (qs.whereNull) {
-      query.whereNotNull(qs.whereNull)
+    if (qs?.whereNull) {
+      query.whereNull(qs.whereNull)
     }
 
-    if (qs.search) {
-      let i = 0
+    if (qs?.whereLike) {
+      for (const key in qs.whereLike) {
+        const value = qs.whereLike[key]
 
-      query.where((b) => {
-        for (const key in qs.search) {
-          const element = qs.search[key]
-          if (element !== '') {
-            if (i === 0) {
-              b.whereLike(key, '%' + element + '%')
-            } else {
-              b.orWhereLike(key, '%' + element + '%')
-            }
-            i++
-          }
-        }
-      })
+        query.whereLike(key, value)
+      }
     }
 
-    if (qs.fields) {
-      query.select(qs.fields)
+    if (qs?.whereILike) {
+      for (const key in qs.whereILike) {
+        const value = qs.whereILike[key]
+        query.whereILike(key, value)
+      }
+    }
+
+    if (qs?.select) {
+      query.select(qs.select)
+    }
+
+    if (qs?.withAggregate) {
+      for (const item of qs?.withAggregate) {
+        query.withAggregate(item.relation, (b: any) => {
+          b[item.aggregator](item.field).as(item.as)
+        })
+      }
+    }
+
+    if (qs.withCount) {
+      for (const item of qs?.withCount) {
+        query.withCount(item.relation, (b) => {
+          b.as(item.as)
+        })
+      }
     }
 
     return query
   }
 
   public showfilterQuery(qs: IndexQs, query: ModelQueryBuilderContract<any, any>) {
-    if (qs.fields) {
-      query.select(qs.fields)
-    }
-
-    return query
+    return this.indexfilterQuery(qs, query)
   }
 
-  public async populate(populate: Populate, query: ModelQueryBuilderContract<any>) {
-    for (const key in populate) {
-      const fields = populate[key].fields
+  public preload(preload: preload[], query: ModelQueryBuilderContract<any>) {
+    for (const perloadItem of preload) {
+      for (const key in perloadItem) {
+        const element = perloadItem[key]
 
-      const antoherPopulate = populate[key].populate
-
-      if (fields) {
-        query.preload(key, (q) => {
-          q.select(fields)
-          if (antoherPopulate) {
-            this.populate(antoherPopulate, q)
+        query.preload(key, (builder) => {
+          if (element?.select) {
+            builder.select(element.select)
           }
-        })
-      } else {
-        query.preload(key, (q) => {
-          if (antoherPopulate) {
-            this.populate(antoherPopulate, q)
+
+          if (element?.where) {
+            this.where(element.where, builder)
+          }
+
+          if (element?.withAggregate) {
+            for (const item of element?.withAggregate) {
+              builder.withAggregate(item.relation, (b: any) => {
+                b[item.aggregator](item.field).as(item.as)
+              })
+            }
+          }
+
+          if (element.withCount) {
+            for (const item of element?.withCount) {
+              builder.withCount(item.relation, (b) => {
+                b.as(item.as)
+              })
+            }
+          }
+
+          if (element.preload) {
+            this.preload(element.preload, builder)
           }
         })
       }
     }
-
-    return query
   }
 
-  public relationFiler(filter: RelationFilter, query: ModelQueryBuilderContract<any>) {
-    for (const key in filter) {
-      const element = filter[key]
-
-      if (element.value !== null && element.value !== '' && element.value !== undefined) {
-        query.whereHas(key, (q) => {
-          q.where(element.field, element.value)
-          if (element.filter) {
-            this.relationFiler(element.filter, q)
-          }
-        })
-      }
+  public where(where: where, query: ModelQueryBuilderContract<any>) {
+    for (const key in where) {
+      const element = where[key]
+      query.where(key, element[0], element[1])
     }
   }
 

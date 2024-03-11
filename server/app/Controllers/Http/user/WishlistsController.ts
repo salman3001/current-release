@@ -16,10 +16,6 @@ export default class WishlistsController extends BaseController {
     const wishlistQuery = Wishlist.query().where('user_id', user!.id)
     this.showfilterQuery(ctx.request.qs() as any, wishlistQuery)
 
-    if (ctx.request.qs().populate) {
-      await this.populate(ctx.request.qs().populate, wishlistQuery)
-    }
-
     const wishlist = await wishlistQuery.first()
     return ctx.response.custom({
       code: 200,

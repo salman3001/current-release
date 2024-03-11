@@ -5,6 +5,8 @@ import VendorUser from '../vendorUser/VendorUser'
 import { NotificationTypes } from 'App/Helpers/enums'
 
 export default class Bid extends BaseModel {
+  public serializeExtras = true
+
   @column({ isPrimary: true })
   public id: number
 
