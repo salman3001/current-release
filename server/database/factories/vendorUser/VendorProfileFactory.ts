@@ -1,12 +1,10 @@
-import Business from 'App/Models/vendorUser/Business'
+import VendorProfile from 'App/Models/vendorUser/VendorProfile'
 import Factory from '@ioc:Adonis/Lucid/Factory'
-import ServiceFactory from '../service/ServiceFactory'
 import AddressFactory from '../address/AddressFactory'
 import FaqFactory from '../FaqFactory'
-import ReviewFactory from '../service/ReviewFactory'
 import SocialFactory from '../SocialFactory'
 
-export default Factory.define(Business, ({ faker }) => {
+export default Factory.define(VendorProfile, ({ faker }) => {
   return {
     name: faker.lorem.words(2),
     isActive: true,
@@ -16,7 +14,5 @@ export default Factory.define(Business, ({ faker }) => {
 })
   .relation('addresses', () => AddressFactory)
   .relation('faq', () => FaqFactory)
-  .relation('reviews', () => ReviewFactory)
   .relation('social', () => SocialFactory)
-  .relation('services', () => ServiceFactory)
   .build()

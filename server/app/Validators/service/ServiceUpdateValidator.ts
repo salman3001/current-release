@@ -49,7 +49,7 @@ export default class ServiceUpdateValidator {
       isActive: schema.boolean.optional(),
       locationSpecific: schema.boolean.optional(),
       geoLocation: schema.string.optional(),
-      businessId: schema.number(),
+      vendorUserId: schema.number(),
       serviceCategoryId: schema.number.optional(),
       serviceSubcategoryId: schema.number.optional(),
     }),

@@ -9,19 +9,11 @@ export default class extends BaseSchema {
       table.string('address')
       table.point('geo_location')
       table
-        .integer('user_profile_id', 10)
+        .integer('vendor_profile_id', 10)
         .unsigned()
         .nullable()
         .references('id')
-        .inTable('user_profiles')
-        .onDelete('CASCADE')
-
-      table
-        .integer('business_id', 10)
-        .unsigned()
-        .nullable()
-        .references('id')
-        .inTable('businesses')
+        .inTable('vendor_profiles')
         .onDelete('CASCADE')
     })
   }

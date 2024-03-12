@@ -49,7 +49,7 @@ export default class ServiceCreateValidator {
       isActive: schema.boolean.optional(),
       locationSpecific: schema.boolean.optional(),
       geoLocation: schema.string(),
-      businessId: schema.number(),
+      vendorUserId: schema.number(),
       serviceCategoryId: schema.number.optional(),
       serviceSubcategoryId: schema.number.optional(),
     }),

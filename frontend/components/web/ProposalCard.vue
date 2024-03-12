@@ -1,106 +1,159 @@
 <script setup lang="ts">
-import BigNumber from "bignumber.js";
 import { date } from "quasar";
 const props = defineProps<{
+  anyBidAccepted: boolean
   accepted: boolean;
   bid?: IBid;
 }>();
 
-const customFetch = useCustomFetch();
+const emit = defineEmits<{
+  (e: 'bid-accpted'): void,
+  (e: 'bid-rejected'): void,
 
-const {
-  data: vendorRating,
-  pending,
-  refresh,
-} = useAsyncData(
-  "vendor-rating" + props.bid?.vendorUser?.id,
-  async () => {
-    const data = await customFetch<IResType<{ rating: number }>>(
-      apiRoutes.vendor_user_get_rating(props.bid?.vendorUser?.id as number)
-    );
+}>()
 
-    return data.data.rating;
-  },
-  {
-    server: false,
-    lazy: true,
-    immediate: false,
+const loading = ref(false)
+const modal = modalStore()
+
+const customFetch = useCustomFetch()
+
+const acceptBid = async () => {
+  loading.value = true
+
+  const res = await customFetch<IResType<any>>(apiRoutes.accept_bid(props.bid?.service_requirement_id as number), {
+    method: 'post',
+    body: {
+      bidId: props.bid?.id
+    }
+  })
+
+  if (res.success == true) {
+    emit('bid-accpted')
   }
-);
+  try {
+
+  } catch (error) {
+    console.log(error);
+
+  }
+
+  loading.value = false
+}
+
+const rejectBid = async () => {
+  loading.value = true
+
+  const res = await customFetch<IResType<any>>(apiRoutes.reject_bid(props.bid?.service_requirement_id as number), {
+    method: 'post',
+  })
+
+  if (res.success == true) {
+    emit('bid-rejected')
+  }
+  try {
+
+  } catch (error) {
+    console.log(error);
+
+  }
+
+  loading.value = false
+}
+
+
+
 </script>
 
 <template>
-  <q-card flat bordered class="q-gutter-y-none full-width">
+  <q-card flat bordered class="full-width" :class="accepted ? 'border-primary border-2' : ''">
     <q-card-section>
-      <p class="text-h5" v-if="accepted">Accpted Proposal</p>
-      <div class="row justify-between q-gutter-y-md">
-        <div class="row items-start q-gutter-sm">
-          <q-avatar v-if="accepted">
+      <div class="row q-gutter-y-md wrap justify-between">
+
+        <div class="column col-12 col-sm-4">
+          <p class="text-h5" v-if="accepted">Accpted Proposal</p>
+          <div>
+            <p class="text-muted" style="width: max-content;">
+              {{ date.formatDate(bid?.created_at, "DD/MM/YYYY hh:mmA") }}
+            </p>
+            <div class="text-bold text-subtitle1">
+              Offered Price: &#x20B9;{{ bid?.offered_price }}
+            </div>
+          </div>
+        </div>
+        <div v-if="accepted" class="column  col-12 col-sm-4 gap-50 "
+          :class="$q.screen.lt.sm ? 'items-start' : 'items-center'">
+          <q-avatar>
             <img src="https://cdn.quasar.dev/img/avatar.png" />
           </q-avatar>
           <div class="q-gutter-sm">
-            <span v-if="accepted"
-              >{{ bid?.vendorUser.first_name }}
-              {{ bid?.vendorUser.last_name }} |
-              <NuxtLink :to="routes.home" class="underline">{{
-                bid?.vendorUser?.business?.name
-              }}</NuxtLink></span
-            >
-            <div>
-              <div class="text-bold">Service Providers Rating</div>
-              <div class="row gap-50 items-center">
-                <q-btn
-                  outline
-                  color="primary"
-                  size="sm"
-                  v-if="pending"
-                  @click="refresh()"
-                >
-                  Load Vendors Rating</q-btn
-                >
-                <div v-else>
-                  <RatingComponent :rating="vendorRating || 0" size="1.1rem" />
-                  <span v-if="vendorRating">{{ vendorRating.toFixed(1) }}</span>
-                  <span v-else="vendorRating">0</span>
-                </div>
-              </div>
-            </div>
-            <div v-if="accepted">
-              <q-btn color="primary" size="sm">Chat</q-btn>
-            </div>
+            <span>{{ bid?.vendorUser.first_name }}
+              {{ bid?.vendorUser.last_name }}
+            </span>
+          </div>
+          <div class="q-gutter-sm">
+            <NuxtLink :to="routes.home" class="underline">{{ bid?.vendorUser?.business_name }}</NuxtLink>
+          </div>
+          <div>
+            <q-btn color="primary" size="sm">Chat</q-btn>
+          </div>
+
+          <!-- <div v-if="accepted">
+            <q-btn color="primary" size="sm">Chat</q-btn>
+          </div> -->
+        </div>
+        <div class="column col-12 col-sm-4" :class="$q.screen.lt.sm ? 'items-start' : 'items-end'">
+          <div class="text-bold">Vendor Rating</div>
+          <div class="row gap-25">
+            <RatingComponent :rating="bid?.vendorUser?.avg_rating || 0" size="1.25rem" />
+            <span>{{ bid?.vendorUser?.avg_rating || 0 }}</span>
           </div>
         </div>
-        <div>
-          <p class="text-muted flex gap-100">
-            {{ date.formatDate(bid?.created_at, "DD/MM/YYYY hh:mmA") }}
-          </p>
-          <div class="text-bold text-subtitle1">
-            Offered Price: &#x20B9;{{ bid?.offered_price }}
-          </div>
-        </div>
+
       </div>
+
     </q-card-section>
     <q-separator vertical />
     <q-card-section :horizontal="$q.screen.gt.xs">
-      <q-card-section>
+
+      <q-card-section class="full-width" :class="$q.screen.gt.xs ? ' ' : 'q-pa-none'">
         <div class="text-bold text-subtitle1">Included</div>
         <ul class="list-style-none text-muted">
-          <li v-for="(f, i) in bid?.features_included" :key="i">{{ f }}</li>
+          <li v-for="( f, i ) in  bid?.features_included " :key="i">{{ f }}</li>
         </ul>
       </q-card-section>
-      <q-separator inset :vertical="$q.screen.gt.xs"></q-separator>
-      <q-card-section>
+      <q-card-section class="full-width" :class="$q.screen.gt.xs ? ' ' : 'q-pa-none'">
         <div class="text-bold text-subtitle1">Excluded</div>
         <ul class="list-style-none text-muted">
-          <li v-for="(f, i) in bid?.features_excluded" :key="i">{{ f }}</li>
+          <li v-for="( f, i ) in  bid?.features_excluded " :key="i">{{ f }}</li>
         </ul>
       </q-card-section>
     </q-card-section>
 
-    <q-card-actions class="justify-end q-pa-md q-gutter-sm">
-      <NuxtLink :to="routes.book_Service(1)" v-if="!accepted">
-        <q-btn color="primary"> Acccept</q-btn>
-      </NuxtLink>
+    <q-card-actions class="justify-end q-pt-none q-gutter-sm">
+      <q-btn color="primary" v-if="!anyBidAccepted" :disabled="anyBidAccepted || loading" @click="modal.togel('confirm', {
+    title: 'Accept Bid',
+    message: 'You Are about to accept this bid. After accepting you will be able to intract with vendor. You can reject any time',
+    iconName: 'info',
+    onAccept: () => {
+      acceptBid()
+    },
+  })">
+        <LoadingIndicator v-if="loading" /> Acccept
+      </q-btn>
+
+      <q-btn color="secondary" v-if="accepted" @click="modal.togel('confirm', {
+    title: 'Reject Bid',
+    message: 'You are about to reject this bid, Are you sure?',
+    iconName: 'question_mark',
+    onAccept: () => {
+      rejectBid()
+    },
+  })">
+        Reject
+      </q-btn>
+      <q-btn color="primary" v-if="accepted">
+        Confirm and book
+      </q-btn>
     </q-card-actions>
   </q-card>
 </template>

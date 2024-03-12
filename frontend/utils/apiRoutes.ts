@@ -20,6 +20,8 @@ export default {
     `/api/service-requirements/${requirementId}/show-bids`,
   service_requirement_show_accepted_bid: (requirementId: number) =>
     `/api/service-requirements/${requirementId}/accepted-bid`,
+  accept_bid: (requirementId: number) => `/api/service-requirements/${requirementId}/accept-bid`,
+  reject_bid: (requirementId: number) => `/api/service-requirements/${requirementId}/reject-bid`,
 
   //bids
   bids: "/api/bids",

@@ -1,8 +1,8 @@
 import { schema, CustomMessages, rules } from '@ioc:Adonis/Core/Validator'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
-export default class BusinesUpdateValidator {
-  constructor(protected ctx: HttpContextContract) {}
+export default class VendorProfileUpdateValidator {
+  constructor(protected ctx: HttpContextContract) { }
 
   /*
    * Define schema to validate the "shape", "type", "formatting" and "integrity" of data.
@@ -24,6 +24,10 @@ export default class BusinesUpdateValidator {
    *    ```
    */
   public schema = schema.create({
+    avatar: schema.file.optional({
+      extnames: ['jpg', 'JPG', 'jpeg', 'JPEG', 'png', 'PNG', 'webp', 'WEBP'],
+      size: '5mb',
+    }),
     logo: schema.file.optional({
       extnames: ['jpg', 'JPG', 'jpeg', 'JPEG', 'png', 'PNG', 'webp', 'WEBP'],
       size: '5mb',
@@ -46,13 +50,7 @@ export default class BusinesUpdateValidator {
         size: '5mb',
       })
     ),
-    business: schema.object().members({
-      name: schema.string({ escape: true }, [
-        rules.unique({
-          table: 'businesses',
-          column: 'name',
-        }),
-      ]),
+    profile: schema.object().members({
       shortDesc: schema.string.optional(),
       longDesc: schema.string.optional(),
       isActive: schema.boolean.optional(),
@@ -80,8 +78,8 @@ export default class BusinesUpdateValidator {
         ans: schema.string(),
       })
     ),
-    address: schema.array().members(
-      schema.object.optional().members({
+    address: schema.array.optional().members(
+      schema.object().members({
         address: schema.string({ trim: true }),
         geoLocation: schema.string(),
       })

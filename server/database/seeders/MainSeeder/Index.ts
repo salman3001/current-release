@@ -44,18 +44,9 @@ export default class extends BaseSeeder {
       .createMany(14)
 
     await VendorUserFactory.merge([{ email: 'vendor@gmail.com', isActive: true }])
-      .with('business', 1, (b) => {
-        b.with('services', 7, (p) => {
-          p.with('variants', 2)
-          p.with('faq')
-          b.with('reviews', 10)
-          b.with('social')
-          b.with('addresses')
-        })
-        b.with('faq', 3)
-        b.with('reviews', 10)
-        b.with('social')
-        b.with('addresses')
+      .with('services', 7, (p) => {
+        p.with('variants', 2)
+        p.with('faq')
       })
       .createMany(8)
 

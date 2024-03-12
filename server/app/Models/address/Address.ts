@@ -14,5 +14,5 @@ export default class Address extends BaseModel {
   public userProfileId: number
 
   @column()
-  public businessId: number
+  public vendorProfileId: number
 }

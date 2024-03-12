@@ -49,19 +49,18 @@ export default class ServiceRequirementController extends BaseController {
     })
   }
 
-  public async showAcceptedBid({ bouncer, params, response }: HttpContextContract) {
+  public async showAcceptedBid({ bouncer, params, response, request }: HttpContextContract) {
     const serviceRequirement = await ServiceRequirement.findOrFail(+params.id)
 
     await bouncer.with('ServiceRequirementPolicy').authorize('view', serviceRequirement)
 
-    const bid = await Bid.query()
+    const bidQuery = Bid.query()
       .where('id', serviceRequirement.acceptedBidId)
-      .preload('vendorUser', (v) => {
-        v.preload('business', (b) => {
-          b.select('id', 'name')
-        }).select('first_name', 'last_name')
-      })
-      .first()
+
+    this.indexfilterQuery(request.qs() as any, bidQuery)
+
+    const bid = await bidQuery.first()
+
 
     return response.custom({
       code: 200,
@@ -77,6 +76,10 @@ export default class ServiceRequirementController extends BaseController {
     await bouncer.with('ServiceRequirementPolicy').authorize('view', serviceRequirement)
 
     const bidQuery = Bid.query().where('service_requirement_id', serviceRequirement.id)
+
+    if (serviceRequirement.acceptedBidId) {
+      bidQuery.whereNot('id', serviceRequirement.acceptedBidId)
+    }
 
     this.indexfilterQuery(request.qs() as any, bidQuery)
 
@@ -146,6 +149,15 @@ export default class ServiceRequirementController extends BaseController {
 
   public async acceptBid({ bouncer, request, response, params }: HttpContextContract) {
     const serviceRequirement = await ServiceRequirement.findOrFail(+params.id)
+
+    if (serviceRequirement.acceptedBidId) {
+      return response.custom({
+        code: 400,
+        message: 'You have already accepted a bid',
+        data: null,
+        success: false
+      })
+    }
     await bouncer.with('ServiceRequirementPolicy').authorize('update', serviceRequirement)
 
     const validationSchema = schema.create({
@@ -165,6 +177,36 @@ export default class ServiceRequirementController extends BaseController {
     return response.custom({
       code: 200,
       message: 'bid Accepted',
+      data: serviceRequirement,
+      success: true,
+    })
+  }
+
+  public async rejectBid({ bouncer, request, response, params }: HttpContextContract) {
+    const serviceRequirement = await ServiceRequirement.findOrFail(+params.id)
+
+    if (!serviceRequirement.acceptedBidId) {
+      return response.custom({
+        code: 400,
+        message: 'You have not accepted any bid',
+        data: null,
+        success: false
+      })
+    }
+
+    await bouncer.with('ServiceRequirementPolicy').authorize('update', serviceRequirement)
+
+    await Database.transaction(async (trx) => {
+      serviceRequirement.useTransaction(trx)
+      serviceRequirement.merge({ acceptedBidId: null })
+      await serviceRequirement.save()
+    })
+
+    await serviceRequirement.refresh()
+
+    return response.custom({
+      code: 200,
+      message: 'bid Rejected',
       data: serviceRequirement,
       success: true,
     })

@@ -9,9 +9,11 @@ export default class extends BaseSchema {
       table.string('email', 255).notNullable().unique()
       table.string('password', 180).notNullable()
       table.string('first_name', 50)
-      table.string('last_name')
+      table.string('last_name', 50)
+      table.string('business_name', 100).notNullable()
       table.string('phone', 15)
       table.boolean('is_active').defaultTo(false).notNullable()
+      table.decimal('avg_rating', 2, 1).defaultTo(0)
       table.string('token').nullable()
       table.string('socket_token').nullable()
       /**

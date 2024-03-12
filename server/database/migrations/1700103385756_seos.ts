@@ -36,10 +36,10 @@ export default class extends BaseSchema {
         .onDelete('CASCADE')
 
       table
-        .integer('business_id')
+        .integer('vendor_profile_id')
         .unsigned()
         .references('id')
-        .inTable('businesses')
+        .inTable('vendor_profiles')
         .onDelete('CASCADE')
     })
   }

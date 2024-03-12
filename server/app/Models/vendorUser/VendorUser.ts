@@ -12,13 +12,15 @@ import {
   hasOne,
   manyToMany,
 } from '@ioc:Adonis/Lucid/Orm'
-import Business from './Business'
+import BusinessProfile from './VendorProfile'
 import Notification from '../Notification'
-import UserProfile from '../UserProfile'
 import Hash from '@ioc:Adonis/Core/Hash'
 import ServiceCategory from '../service/ServiceCategory'
 import Booking from '../bookings/Booking'
 import BidBooking from '../bookings/BidBooking'
+import Review from '../Review'
+import Service from '../service/Service'
+import VendorProfile from './VendorProfile'
 
 export default class VendorUser extends BaseModel {
   @column({ isPrimary: true })
@@ -37,13 +39,16 @@ export default class VendorUser extends BaseModel {
   public lastName: string
 
   @column()
+  public businessName: string
+
+  @column()
   public phone: string
 
   @column()
   public isActive: boolean
 
   @column()
-  public isPublic: boolean
+  public avgRating: string | number
 
   @column({ serializeAs: null })
   public token: string | null
@@ -56,11 +61,11 @@ export default class VendorUser extends BaseModel {
     return 'vendor'
   }
 
-  @hasOne(() => UserProfile)
-  public profile: HasOne<typeof UserProfile>
+  @hasOne(() => VendorProfile)
+  public profile: HasOne<typeof VendorProfile>
 
-  @hasOne(() => Business)
-  public business: HasOne<typeof Business>
+  @hasMany(() => Service)
+  public services: HasMany<typeof Service>
 
   @hasMany(() => Booking)
   public bookings: HasMany<typeof Booking>
@@ -75,6 +80,9 @@ export default class VendorUser extends BaseModel {
 
   @hasMany(() => BidBooking)
   public bidBooking: HasMany<typeof BidBooking>
+
+  @hasMany(() => Review)
+  public reviews: HasMany<typeof Review>
 
   // @hasMany(() => SupportTicket)
   // public supportTickets: HasMany<typeof SupportTicket>

@@ -12,15 +12,16 @@ export default class extends BaseSchema {
       table.boolean('is_active').defaultTo(false).notNullable()
       table.boolean('location_specific').defaultTo(true).notNullable()
       table.point('geo_location')
+      table.decimal('avg_rating', 2, 1).defaultTo(0)
       table.json('cover')
       table.json('brocher')
       table.json('video')
       table
-        .integer('business_id')
+        .integer('vendor_user_id')
         .unsigned()
         .notNullable()
         .references('id')
-        .inTable('businesses')
+        .inTable('vendor_users')
         .onDelete('CASCADE')
 
       table

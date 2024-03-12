@@ -23,5 +23,5 @@ export default class Faq extends BaseModel {
   public serviceTagId: number
 
   @column()
-  public businessId: number
+  public vendorProfileId: number
 }

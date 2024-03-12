@@ -7,7 +7,6 @@ export default Factory.define(User, ({ faker }) => {
     firstName: faker.person.firstName(),
     lastName: faker.person.lastName(),
     isActive: false,
-    isPublic: true,
     password: '123456789',
     phone: '9999999999',
   }

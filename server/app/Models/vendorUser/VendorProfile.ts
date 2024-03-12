@@ -17,19 +17,14 @@ import {
   responsiveAttachment,
 } from '@ioc:Adonis/Addons/ResponsiveAttachment'
 import Image from '../Image'
-import Service from '../service/Service'
 import VendorUser from './VendorUser'
 import { AttachmentContract, attachment } from '@ioc:Adonis/Addons/AttachmentLite'
 import Address from '../address/Address'
-import Review from '../service/Review'
 
-export default class Business extends BaseModel {
+export default class VendorProfile extends BaseModel {
   public serializeExtras = true
   @column({ isPrimary: true })
   public id: number
-
-  @column()
-  public name: string
 
   @column()
   public shortDesc: string
@@ -39,6 +34,15 @@ export default class Business extends BaseModel {
 
   @column()
   public isActive: boolean
+
+  @responsiveAttachment({
+    folder: 'vendor',
+    preComputeUrls: true,
+    forceFormat: 'webp',
+    disableThumbnail: true,
+    responsiveDimensions: false,
+  })
+  public avatar: ResponsiveAttachmentContract
 
   @responsiveAttachment({
     folder: 'business/logos',
@@ -92,12 +96,6 @@ export default class Business extends BaseModel {
 
   @belongsTo(() => VendorUser)
   public vendor: BelongsTo<typeof VendorUser>
-
-  @hasMany(() => Service)
-  public services: HasMany<typeof Service>
-
-  @hasMany(() => Review)
-  public reviews: HasMany<typeof Review>
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

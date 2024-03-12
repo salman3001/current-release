@@ -6,7 +6,7 @@ import ServiceSubcategoryFactory from './ServiceSubcategoryFactory'
 import SeoFactory from '../SeoFactory'
 import ServiceTagFactory from './ServiceTagFactory'
 import ServiceVariantFactory from './ServiceVariantFactory'
-import BusinessFactory from '../vendorUser/BusinessFactory'
+import VendorUserFactory from '../vendorUser/VendorUserFactory'
 
 export default Factory.define(Service, ({ faker }) => {
   return {
@@ -18,7 +18,7 @@ export default Factory.define(Service, ({ faker }) => {
     geoLocation: `${faker.location.longitude()},${faker.location.latitude()}`,
   }
 })
-  .relation('business', () => BusinessFactory)
+  .relation('vendorUser', () => VendorUserFactory)
   .relation('faq', () => FaqFactory)
   .relation('serviceCategory', () => ServiceCategoryFactory)
   .relation('serviceSubcategory', () => ServiceSubcategoryFactory)

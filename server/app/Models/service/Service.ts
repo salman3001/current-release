@@ -8,7 +8,6 @@ import {
   beforeDelete,
   belongsTo,
   column,
-  computed,
   hasMany,
   hasOne,
   manyToMany,
@@ -19,15 +18,15 @@ import ServiceTag from './ServiceTag'
 import Seo from '../Seo'
 import Image from '../Image'
 import Faq from '../Faq'
-import Review from './Review'
+import Review from '../Review'
 import ServiceVariant from './ServiceVariant'
-import Business from '../vendorUser/Business'
 import {
   ResponsiveAttachmentContract,
   responsiveAttachment,
 } from '@ioc:Adonis/Addons/ResponsiveAttachment'
 import { AttachmentContract, attachment } from '@ioc:Adonis/Addons/AttachmentLite'
 import Coupon from '../orders/Coupon'
+import VendorUser from '../vendorUser/VendorUser'
 
 export default class Service extends BaseModel {
   public serializeExtras = true
@@ -53,6 +52,9 @@ export default class Service extends BaseModel {
   @column()
   public geoLocation: string
 
+  @column()
+  public avgRating: string | number
+
   @responsiveAttachment({
     folder: 'service/covers',
     preComputeUrls: true,
@@ -77,7 +79,7 @@ export default class Service extends BaseModel {
   public video: AttachmentContract
 
   @column()
-  public businessId: number
+  public vendorUserId: number
 
   @column()
   public serviceCategoryId: number
@@ -85,8 +87,8 @@ export default class Service extends BaseModel {
   @column()
   public serviceSubcategoryId: number
 
-  @belongsTo(() => Business)
-  public business: BelongsTo<typeof Business>
+  @belongsTo(() => VendorUser)
+  public vendorUser: BelongsTo<typeof VendorUser>
 
   @belongsTo(() => ServiceCategory)
   public serviceCategory: BelongsTo<typeof ServiceCategory>

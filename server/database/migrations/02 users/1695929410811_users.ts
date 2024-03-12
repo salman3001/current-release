@@ -12,7 +12,6 @@ export default class extends BaseSchema {
       table.string('last_name')
       table.string('phone', 15)
       table.boolean('is_active').defaultTo(false).notNullable()
-      table.boolean('is_public').defaultTo(true)
       table.string('token').nullable()
       table.string('socket_token').nullable()
       /**

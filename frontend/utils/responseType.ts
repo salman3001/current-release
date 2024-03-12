@@ -20,7 +20,7 @@ interface IPageRes<T>
   extends IResType<{
     data: T;
     meta: PageMeta;
-  }> {}
+  }> { }
 
 interface ImageType {
   name: string;
@@ -81,12 +81,13 @@ type IService = {
     x: number;
     y: number;
   };
+  avgRating: string;
   cover: ImageType | null;
   brocher: ImageType | null;
   video: ImageType | null;
   images: ImageType[] | null;
-  business_id: number;
-  business: IBusiness;
+  vendor_user_id: number;
+  vendorUser: IVendorUser;
   service_category_id: number;
   serviceCategory: IServiceCategory;
   service_subcategory_id: number;
@@ -114,7 +115,7 @@ interface IServiceVariant {
   meta: any;
 }
 
-type IBusiness = {
+type IVendorProfile = {
   id: number;
   name: string;
   short_desc: string;
@@ -131,8 +132,6 @@ type IBusiness = {
   faq: IFaq[];
   addresses: IAddress[];
   vendor: IVendorUser;
-  services: IService[];
-  reviews: IReview[];
   meta: any;
 } & TimeStamps;
 
@@ -164,7 +163,7 @@ interface IFaq {
   service_category_id: number;
   service_id: number;
   service_tag_id: number;
-  business_id: number;
+  vendorProfileId: number;
   meta: any;
 }
 
@@ -176,7 +175,7 @@ interface IAddress {
     y: number;
   };
   user_profile_id: number;
-  business_id: number;
+  vendor_profile_id: number;
 }
 
 type IReview = {
@@ -184,9 +183,11 @@ type IReview = {
   rating: number;
   message: string;
   user_id: number;
-  user: IUser;
-  business_id: number;
+  vendor_user_id: number;
   service_id: number;
+  user: IUser;
+  vendorUser: IVendorUser
+  service: IService
   meta: any;
 } & TimeStamps;
 
@@ -195,18 +196,20 @@ type IVendorUser = {
   email: string;
   first_name: string;
   last_name: string;
+  business_name: string;
   phone: string;
   is_active: boolean;
-  is_public: boolean;
+  avg_rating: string;
   token: string | null;
   socket_token: string;
   userType: "vendor";
-  profile: IProfile;
-  business: IBusiness;
+  profile: IVendorProfile;
   bookings: IBooking[];
   notifications: INotification[];
   subscribed_categories: IServiceCategory[];
   bid_booking: IBidBooking[];
+  reviews: IReview[]
+  services: IService[];
   meta: any;
 } & TimeStamps;
 
@@ -217,7 +220,6 @@ type IUser = {
   last_name: string;
   phone: string;
   is_active: boolean;
-  is_public: boolean;
   token: string | null;
   socket_token: string;
   userType: "customer";
@@ -269,7 +271,6 @@ type IProfile = {
   avatar: ImageType;
   user_id: number;
   admin_user_id: number;
-  vendor_user_id: number;
   notification_setting: Object;
   user: IUser;
   social: ISocial;

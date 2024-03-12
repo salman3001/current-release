@@ -4,6 +4,7 @@ const modal = modalStore();
 
 <template>
   <q-dialog v-model="modal.show">
+    <ModalConfirm v-if="modal.content === 'confirm'" />
     <ModalChangeRole v-if="modal.content === 'changeRole'" />
     <ModalBanAdminUser v-if="modal.content === 'changeAdminStatus'" />
     <ModalDeleteRecord v-if="modal.content === 'deleteRecord'" />
@@ -20,9 +21,7 @@ const modal = modalStore();
     <ModalAddRole v-if="modal.content === 'addRole'" />
     <ModalBanUser v-if="modal.content === 'changeUserStatus'" />
     <ModalDeleteNotification v-if="modal.content === 'deleteNotification'" />
-    <ModalChangeSupportTicketStatus
-      v-if="modal.content === 'changeSupportTicketStatus'"
-    />
+    <ModalChangeSupportTicketStatus v-if="modal.content === 'changeSupportTicketStatus'" />
     <ModalWebAddReview v-if="modal.content === 'WebAddReview'" />
     <ModalWebApplyCoupon v-if="modal.content === 'webApplyCoupon'" />
     <ModalWebPostRequirement v-if="modal.content === 'webPostRequirement'" />

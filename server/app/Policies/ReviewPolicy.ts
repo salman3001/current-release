@@ -1,6 +1,6 @@
 import { action } from '@ioc:Adonis/Addons/Bouncer'
 import { BasePolicy } from '@ioc:Adonis/Addons/Bouncer'
-import Review from 'App/Models/service/Review'
+import Review from 'App/Models/Review'
 import User from 'App/Models/user/User'
 
 export default class ReviewPolicy extends BasePolicy {

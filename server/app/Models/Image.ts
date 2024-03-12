@@ -25,5 +25,5 @@ export default class Image extends BaseModel {
   public serviceId: number
 
   @column()
-  public businessId: number
+  public vendorProfileId: number
 }

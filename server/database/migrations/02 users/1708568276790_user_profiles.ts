@@ -15,13 +15,6 @@ export default class extends BaseSchema {
         .references('id')
         .inTable('admin_users')
         .onDelete('CASCADE')
-
-      table
-        .integer('vendor_user_id')
-        .unsigned()
-        .references('id')
-        .inTable('vendor_users')
-        .onDelete('CASCADE')
     })
   }
 

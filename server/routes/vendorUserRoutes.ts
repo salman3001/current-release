@@ -18,11 +18,7 @@ Route.group(() => {
   // update profile
   Route.put('vendor-users/:id/update-profile', 'vendorUser/VendorUsersController.updateProfile')
 
-  // update business
-  Route.put('vendor-users/:id/update-business', 'vendorUser/VendorUsersController.updateBusiness')
 
   Route.resource('vendor-users', 'vendorUser/VendorUsersController').apiOnly()
 
-  // business list
-  Route.get('businesses', 'vendorUser/BuissnessesController.index')
 }).prefix('api')

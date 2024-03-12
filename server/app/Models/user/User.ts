@@ -39,9 +39,6 @@ export default class User extends BaseModel {
   @column()
   public isActive: boolean
 
-  @column()
-  public isPublic: boolean
-
   @column({ serializeAs: null })
   public token: string | null
 

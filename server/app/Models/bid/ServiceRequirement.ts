@@ -48,7 +48,7 @@ export default class ServiceRequirement extends BaseModel {
   public serviceCategoryId: number
 
   @column()
-  public acceptedBidId: number
+  public acceptedBidId: number | null
 
   @belongsTo(() => User)
   public user: BelongsTo<typeof User>

@@ -2,12 +2,12 @@
 import BigNumber from "bignumber.js";
 import { date } from "quasar";
 
-const tab = ref("Accepted Proposal");
 const route = useRoute();
 const customFetch = useCustomFetch();
 const page = ref(1);
+const sortBy = ref('create_at')
 
-const { data } = await useAsyncData(
+const { data, refresh: refreshRequirement } = await useAsyncData(
   ("service-requirement" + route.params.id) as string,
   async () => {
     const [serviceRequirement, acceptedBid] = await Promise.all([
@@ -50,14 +50,7 @@ const { data } = await useAsyncData(
             preload: [
               {
                 vendorUser: {
-                  select: ["first_name", "last_name", "id"],
-                  preload: [
-                    {
-                      business: {
-                        select: ["name"],
-                      },
-                    },
-                  ],
+                  select: ["first_name", "last_name", "id", 'avg_rating', 'business_name'],
                 },
               },
             ],
@@ -76,7 +69,7 @@ const { data } = await useAsyncData(
 const {
   data: recivedBids,
   pending,
-  refresh,
+  refresh: refreshBids,
 } = await useAsyncData(
   "recieved-bids" + route.params.id + page.value,
   async () => {
@@ -89,13 +82,6 @@ const {
           where: {
             service_requirement_id: ["=", route.params.id as string],
           },
-          preload: [
-            {
-              vendorUser: {
-                select: ["first_name", "last_name", "id"],
-              },
-            },
-          ],
           page: page.value,
         } as AdditionalParams,
       }
@@ -104,6 +90,13 @@ const {
     return data.data;
   }
 );
+
+
+const refreshData = () => {
+  refreshRequirement()
+  refreshBids()
+}
+
 
 </script>
 
@@ -168,50 +161,51 @@ const {
       {{ data?.serviceRequirement?.desc }}
     </p>
     <div class="" style="max-width: 95vw">
-      <q-tabs dense v-model="tab" class="text-grey q-mt-md" active-color="white" indicator-color="secondary"
-        active-bg-color="primary" align="left">
-        <q-tab name="Accepted Proposal" label="Accepted Proposal" />
-        <q-tab name="Proposals Recieved" label="Proposals Recieved"><q-badge color="red" floating
-            style="top: -0px; right: -25px">{{
-        data?.serviceRequirement?.meta?.bidCount || 0
-      }}</q-badge></q-tab>
-      </q-tabs>
       <q-separator />
+      <br>
+      <br>
+      <div class="row">
+        <div v-if="!data?.acceptedBid" class="text-h6 q-py-lg">
+          <p>
+            You haven't accepted any proposal yet. Please accept a proposal
+          </p>
+          <br />
+        </div>
+        <WebProposalCard v-else :accepted="true" :bid="data?.acceptedBid"
+          :any-bid-accepted="data.acceptedBid ? true : false" @bid-rejected="refreshData" />
+      </div>
+      <br>
+      <br>
+      <q-separator />
+      <br>
 
-      <q-tab-panels class="q-pa-0 bg-nutral" v-model="tab" animated>
-        <q-tab-panel name="Accepted Proposal">
-          <div class="row">
-            <div v-if="!data?.acceptedBid" class="text-h6 q-py-lg">
-              <p>
-                You haven't accepted any proposal yet. Please accept a proposal
-              </p>
-              <br />
-              <q-btn outline color="primary" @click="tab = 'Proposals Recieved'">View Proposals</q-btn>
-            </div>
-            <WebProposalCard v-else :accepted="true" :bid="data?.acceptedBid" />
+      <div class="q-gutter-y-md">
+        <div class="row justify-between items-center q-gutter-y-md">
+          <div>
+            <h6>Proposals Recieved</h6>
           </div>
-        </q-tab-panel>
+          <div class="q-gutter-md">
+            <q-btn color="secondary" outline icon="filter_alt" left>Top Ratted</q-btn><q-btn color="secondary" outline
+              icon="filter_alt" left>Lowest Price</q-btn>
+          </div>
+        </div>
+        <br />
 
-        <q-tab-panel name="Proposals Recieved">
-          <div class="q-gutter-y-md">
-            <div class="row justify-end q-gutter-sm">
-              <q-btn color="secondary" outline icon="filter_alt" left>Top Ratted</q-btn><q-btn color="secondary" outline
-                icon="filter_alt" left>Lowest Price</q-btn>
-            </div>
-            <div>
-              <div v-if="pending">
-                <SkeletonBase type="list" v-for="i in 3" :key="i"></SkeletonBase>
-              </div>
-              <WebProposalCard v-else v-for="bid in recivedBids?.data" :accepted="false" :bid="bid" />
-              <PaginateComponet :page="page" :meta="recivedBids?.meta" @update:model-value="(v) => {
-          page = v;
-          refresh();
-        }
+        <div>
+          <div v-if="pending">
+            <SkeletonBase type="list" v-for="i in 3" :key="i"></SkeletonBase>
+          </div>
+          <div v-else class="q-gutter-y-md">
+            <WebProposalCard v-for="bid in recivedBids?.data" :accepted="false" :bid="bid"
+              :any-bid-accepted="data?.acceptedBid ? true : false" @bid-accpted="refreshData" />
+          </div>
+          <PaginateComponet :page="page" :meta="recivedBids?.meta" @update:model-value="(v) => {
+        page = v;
+        refreshBids();
+      }
         " />
-            </div>
-          </div>
-        </q-tab-panel>
-      </q-tab-panels>
+        </div>
+      </div>
     </div>
   </div>
 </template>

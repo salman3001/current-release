@@ -26,5 +26,5 @@ export default class Seo extends BaseModel {
   public serviceId: number
 
   @column()
-  public businessId: number
+  public vendorProfileId: number
 }

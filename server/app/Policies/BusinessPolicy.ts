@@ -2,7 +2,7 @@ import { action } from '@ioc:Adonis/Addons/Bouncer'
 import { BasePolicy } from '@ioc:Adonis/Addons/Bouncer'
 import { permissions } from 'App/Helpers/enums'
 import { hasPermission, isAdmin } from 'App/Helpers/permissionHelpers'
-import Business from 'App/Models/vendorUser/Business'
+import Business from 'App/Models/vendorUser/VendorProfile'
 import VendorUser from 'App/Models/vendorUser/VendorUser'
 
 export default class BusinessPolicy extends BasePolicy {

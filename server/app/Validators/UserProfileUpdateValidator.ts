@@ -29,8 +29,8 @@ export default class UserProfileUpdateValidator {
 
       size: '5mb',
     }),
-    address: schema.array().members(
-      schema.object.optional().members({
+    address: schema.array.optional().members(
+      schema.object().members({
         address: schema.string({ trim: true }),
         geoLocation: schema.string()
       })
@@ -46,35 +46,6 @@ export default class UserProfileUpdateValidator {
       whatsapp: schema.string.optional({ trim: true }),
       telegram: schema.string.optional({ trim: true }),
     }),
-    favoriteLinks: schema.array.optional().members(
-      schema.object().members({
-        link: schema.string({ trim: true }),
-      })
-    ),
-    workExperience: schema.array.optional().members(
-      schema.object().members({
-        jobIndustryId: schema.number.optional(),
-        jobFunction: schema.string.optional({ trim: true }),
-        jobTitle: schema.string.optional({ trim: true }),
-        jobDepartmentId: schema.number.optional(),
-        companyName: schema.string.optional({ trim: true }),
-        companySize: schema.string.optional({ trim: true }),
-        startDate: schema.date.optional({ format: 'dd/MM/yyyy' }),
-        endDate: schema.date.optional({ format: 'dd/MM/yyyy' }),
-        desc: schema.string.optional({ trim: true }),
-        isCurrent: schema.boolean.optional(),
-      })
-    ),
-    education: schema.array.optional().members(
-      schema.object().members({
-        institute: schema.string.optional({ trim: true }),
-        degree: schema.string.optional({ trim: true }),
-        field: schema.string.optional({ trim: true }),
-        startDate: schema.date.optional({ format: 'dd/MM/yyyy' }),
-        endDate: schema.date.optional({ format: 'dd/MM/yyyy' }),
-        desc: schema.string.optional({ trim: true }),
-      })
-    ),
     languages: schema.array.optional().members(schema.number()),
     skills: schema.array.optional().members(
       schema.object().members({
