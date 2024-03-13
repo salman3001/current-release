@@ -134,8 +134,8 @@ const items = [
       </div>
     </div>
     <div class="row q-gutter-x-md items-center">
-      <span class="text-h5">{{ service?.meta?.avg_rating || 0 }}</span>
-      <RatingComponent :rating="service?.meta?.avg_rating || 0" size="2rem" />
+      <span class="text-h5">{{ service?.avg_rating || 0 }}</span>
+      <RatingComponent :rating="service?.avg_rating || 0" size="2rem" />
     </div>
     <div>
       <LightBox :items="items" />
@@ -200,7 +200,7 @@ const items = [
       <h5>Cutomer Reviews</h5>
       <div class="row gap-100">
         <div class="q-gutter-lg col-12 col-md-4" style="">
-          <RatingComponent :rating="service?.meta.avg_rating || 0" /><span class="text-h5">{{ service?.meta?.avg_rating
+          <RatingComponent :rating="service?.meta.avg_rating || 0" /><span class="text-h5">{{ service?.avg_rating
           || 0 }} out of 5</span>
           <q-separator />
           <div class="q-gutter-y-sm">

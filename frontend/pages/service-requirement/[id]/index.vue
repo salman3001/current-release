@@ -5,7 +5,10 @@ import { date } from "quasar";
 const route = useRoute();
 const customFetch = useCustomFetch();
 const page = ref(1);
-const sortBy = ref('create_at')
+const sortBy = ref('created_at')
+const descending = ref('false')
+const join = ref<string[][]>([])
+const select = ref(['*'])
 
 const { data, refresh: refreshRequirement } = await useAsyncData(
   ("service-requirement" + route.params.id) as string,
@@ -83,6 +86,11 @@ const {
             service_requirement_id: ["=", route.params.id as string],
           },
           page: page.value,
+          join: join.value,
+          descending: descending.value,
+          select: select.value,
+          sortBy: sortBy.value,
+
         } as AdditionalParams,
       }
     );
@@ -90,6 +98,23 @@ const {
     return data.data;
   }
 );
+
+const sortByVendorRating = () => {
+  sortBy.value = 'vendor_users.avg_rating'
+  select.value = ['bids.*']
+  descending.value = 'false'
+  join.value = [['vendor_users', 'bids.vendor_user_id', 'vendor_users.id']]
+  refreshBids()
+}
+
+const sortByLowestPrice = () => {
+  sortBy.value = 'offered_price'
+  select.value = ['*']
+  descending.value = 'false'
+  join.value = []
+  refreshBids()
+
+}
 
 
 const refreshData = () => {
@@ -185,8 +210,10 @@ const refreshData = () => {
             <h6>Proposals Recieved</h6>
           </div>
           <div class="q-gutter-md">
-            <q-btn color="secondary" outline icon="filter_alt" left>Top Ratted</q-btn><q-btn color="secondary" outline
-              icon="filter_alt" left>Lowest Price</q-btn>
+            <q-btn color="secondary" :outline="sortBy != 'vendor_users.avg_rating'" icon="filter_alt" left
+              @click="sortByVendorRating">Top Ratted</q-btn>
+            <q-btn color="secondary" :outline="sortBy != 'offered_price'" icon="filter_alt" left
+              @click="sortByLowestPrice">Lowest Price</q-btn>
           </div>
         </div>
         <br />
