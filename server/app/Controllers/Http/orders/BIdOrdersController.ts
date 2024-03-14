@@ -1,28 +1,27 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-
-import BidOrder from 'App/Models/orders/BidOrder'
 import BaseController from '../BaseController'
-import BidOrderCreateValidator from 'App/Validators/Booking/BidBookingCreateValidator'
+import BidBookingCreateValidator from 'App/Validators/Booking/BidBookingCreateValidator'
 import VendorUser from 'App/Models/vendorUser/VendorUser'
 import ServiceRequirement from 'App/Models/bid/ServiceRequirement'
 import Database from '@ioc:Adonis/Lucid/Database'
 import Bid from 'App/Models/bid/Bid'
 import { OrderStatus } from 'App/Helpers/enums'
 import { schema } from '@ioc:Adonis/Core/Validator'
+import BidBooking from 'App/Models/bookings/BidBooking'
 
-export default class BidOrdersController extends BaseController {
+export default class BidBookingsController extends BaseController {
   constructor() {
-    super(BidOrder, BidOrderCreateValidator, BidOrderCreateValidator, 'BidOrderPolicy')
+    super(BidBooking, BidBookingCreateValidator, BidBookingCreateValidator, 'BidBookingPolicy')
   }
 
   public async myList({ auth, response, bouncer, request }: HttpContextContract) {
-    await bouncer.with('OrderPolicy').authorize('customerList')
+    await bouncer.with('BidBookingPolicy').authorize('myList')
 
     const user = auth.user!
 
-    let bidOrders: BidOrder[] = []
+    let bidOrders: BidBooking[] = []
 
-    const bidOrdersQuery = BidOrder.query()
+    const bidOrdersQuery = BidBooking.query()
 
     if (user instanceof VendorUser) {
       bidOrdersQuery.where('vendor_user_id', user.id)
@@ -52,9 +51,9 @@ export default class BidOrdersController extends BaseController {
   }
 
   public async store({ response, bouncer, request, auth }: HttpContextContract) {
-    await bouncer.with('BidOrderPolicy').authorize('create')
+    await bouncer.with('BidBookingPolicy').authorize('create')
 
-    const payload = await request.validate(BidOrderCreateValidator)
+    const payload = await request.validate(BidBookingCreateValidator)
 
     const serviceRequirement = await ServiceRequirement.findOrFail(payload.serviceRequirementId)
 
@@ -69,16 +68,16 @@ export default class BidOrdersController extends BaseController {
 
     const acceptedBid = await Bid.findOrFail(serviceRequirement.acceptedBidId)
 
-    let bidOrder: BidOrder | null = null
+    let bidOrder: BidBooking | null = null
 
     await Database.transaction(async (trx) => {
-      bidOrder = await BidOrder.create({
+      bidOrder = await BidBooking.create({
         price: acceptedBid.offeredPrice,
         status: OrderStatus.PLACED,
         userId: auth.user?.id,
         vendorUserId: acceptedBid.vendorUserId,
         paymentDetail: payload.paymentdetail,
-        orderDetail: {
+        bookingDetail: {
           serviceRequirement: {
             id: serviceRequirement.id,
             title: serviceRequirement.title,
@@ -95,7 +94,7 @@ export default class BidOrdersController extends BaseController {
     })
 
     if (bidOrder) {
-      await (bidOrder as BidOrder).refresh()
+      await (bidOrder as BidBooking).refresh()
     }
 
     return response.custom({
@@ -107,9 +106,9 @@ export default class BidOrdersController extends BaseController {
   }
 
   public async updateStatus({ response, bouncer, request, params }: HttpContextContract) {
-    const bidOrder = await BidOrder.findOrFail(+params.id)
+    const bidOrder = await BidBooking.findOrFail(+params.id)
 
-    await bouncer.with('BidOrderPolicy').authorize('update', bidOrder)
+    await bouncer.with('BidBookingPolicy').authorize('update', bidOrder)
 
     const validationSchema = schema.create({
       status: schema.enum(Object.values(OrderStatus)),

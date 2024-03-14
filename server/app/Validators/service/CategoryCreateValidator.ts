@@ -1,4 +1,4 @@
-import { schema, CustomMessages } from '@ioc:Adonis/Core/Validator'
+import { schema, CustomMessages, rules } from '@ioc:Adonis/Core/Validator'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 export default class CategoryCreateValidator {
@@ -31,6 +31,13 @@ export default class CategoryCreateValidator {
     category: schema.object().members({
       id: schema.number.optional(),
       name: schema.string({ trim: true }),
+      slug: schema.string({ trim: true }, [
+        rules.slug(),
+        rules.unique({
+          table: 'service_categories',
+          column: 'slug',
+        }),
+      ]),
       shortDesc: schema.string.optional(),
       longDesc: schema.string.optional(),
       status: schema.boolean.optional(),

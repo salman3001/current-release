@@ -11,6 +11,7 @@ import VendorUserFactory from '../vendorUser/VendorUserFactory'
 export default Factory.define(Service, ({ faker }) => {
   return {
     name: faker.commerce.productName(),
+    slug: faker.lorem.slug(),
     shortDesc: faker.commerce.productDescription(),
     longDesc: faker.lorem.paragraphs(),
     isActive: false,

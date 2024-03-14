@@ -13,6 +13,24 @@ export default class ServiceController extends BaseController {
     super(Service, ServiceCreateValidator, ServiceUpdateValidator, 'ServicePolicy')
   }
 
+  public async showBySlug({ request, response, bouncer, auth, params }: HttpContextContract) {
+    await bouncer.with('ServicePolicy').authorize('view')
+
+    const slug = params.slug
+    const serviceQuery = Service.query().where('slug', slug)
+
+    this.showfilterQuery(request.qs() as any, serviceQuery)
+
+    const service = await serviceQuery.first()
+
+    return response.custom({
+      code: 200,
+      success: true,
+      message: null,
+      data: service,
+    })
+  }
+
   public async store({ request, response, bouncer }: HttpContextContract) {
     await bouncer.with('ServicePolicy').authorize('create')
 

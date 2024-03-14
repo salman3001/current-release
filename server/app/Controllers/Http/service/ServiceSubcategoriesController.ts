@@ -1,20 +1,43 @@
 import { ResponsiveAttachment } from '@ioc:Adonis/Addons/ResponsiveAttachment'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import ServiceSubcategory from 'App/Models/service/ServiceSubcategory'
-import CategoryCreateValidator from 'App/Validators/service/CategoryCreateValidator'
-import CategoryUpdateValidator from 'App/Validators/service/CategoryUpdateValidator'
 import BaseController from '../BaseController'
 import { validator } from '@ioc:Adonis/Core/Validator'
+import SubcategoryCreateValidator from 'App/Validators/service/SubcategoryCreateValidator'
+import SubcategoryUpdateValidator from 'App/Validators/service/subcategoryUpdateValidator'
 
 export default class ServiceSubcategoriesController extends BaseController {
   constructor() {
-    super(ServiceSubcategory, CategoryCreateValidator, CategoryUpdateValidator, 'ServicePolicy')
+    super(
+      ServiceSubcategory,
+      SubcategoryCreateValidator,
+      SubcategoryUpdateValidator,
+      'ServiceCategoryPolicy'
+    )
+  }
+
+  public async showBySlug({ request, response, bouncer, params }: HttpContextContract) {
+    await bouncer.with('ServiceCategoryPolicy').authorize('view')
+
+    const slug = params.slug
+    const serviceCategoryQuery = ServiceSubcategory.query().where('slug', slug)
+
+    this.showfilterQuery(request.qs() as any, serviceCategoryQuery)
+
+    const category = await serviceCategoryQuery.first()
+
+    return response.custom({
+      code: 200,
+      success: true,
+      message: null,
+      data: category,
+    })
   }
 
   public async store({ request, response, bouncer }: HttpContextContract) {
-    await bouncer.with('ServicePolicy').authorize('create')
+    await bouncer.with('ServiceCategoryPolicy').authorize('create')
 
-    const payload = await request.validate(CategoryCreateValidator)
+    const payload = await request.validate(SubcategoryCreateValidator)
     const category = await ServiceSubcategory.create(payload.category)
 
     if (payload.seo) {
@@ -39,9 +62,9 @@ export default class ServiceSubcategoriesController extends BaseController {
   }
 
   public async update({ request, response, params, bouncer }: HttpContextContract) {
-    await bouncer.with('ServicePolicy').authorize('update')
+    await bouncer.with('ServiceCategoryPolicy').authorize('update')
 
-    const payload = await request.validate(CategoryUpdateValidator)
+    const payload = await request.validate(SubcategoryUpdateValidator)
     const category = await ServiceSubcategory.findOrFail(+params.id)
 
     if (payload.category) {
@@ -92,7 +115,7 @@ export default class ServiceSubcategoriesController extends BaseController {
       currentObjectId: data.id,
     }
     const validatedData = await validator.validate({
-      schema: new CategoryUpdateValidator(ctx).schema,
+      schema: new SubcategoryUpdateValidator(ctx).schema,
       data: {
         category: data,
       },

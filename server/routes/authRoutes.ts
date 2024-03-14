@@ -6,4 +6,5 @@ Route.group(() => {
   Route.post('signup', 'AuthController.signup')
   Route.post('get-otp', 'AuthController.sendForgotPasswordOtp')
   Route.post('verify-otp-update-password', 'AuthController.vaerifyOtpAndUpdatePassword')
+  Route.post('update-password/:id', 'AuthController.updateUserPassword')
 }).prefix('api/auth')

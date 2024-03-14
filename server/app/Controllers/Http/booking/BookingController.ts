@@ -83,9 +83,7 @@ export default class BookingController extends BaseController {
     const serviceVariant = await ServiceVariant.findOrFail(payload.serviceVariantId)
 
     await serviceVariant.load('service', (service) => {
-      service.select('name', 'business_id').preload('business', (business) => {
-        business.select('name', 'id', 'vendor_user_id').preload('vendor')
-      })
+      service.preload('vendorUser')
     })
 
     const total_without_discount = new BigNumber(serviceVariant.price).times(payload.qty)
@@ -104,7 +102,7 @@ export default class BookingController extends BaseController {
       ? await this.applyCoupon(
           payload.couponId,
           total_after_discount,
-          serviceVariant.service.business.vendorUserId
+          serviceVariant.service.vendorUser.id
         )
       : 0
 
@@ -136,9 +134,7 @@ export default class BookingController extends BaseController {
     const serviceVariant = await ServiceVariant.findOrFail(payload.serviceVariantId)
 
     await serviceVariant.load('service', (service) => {
-      service.select('name', 'business_id').preload('business', (business) => {
-        business.select('name', 'id', 'vendor_user_id').preload('vendor')
-      })
+      service.preload('vendorUser')
     })
 
     const total_without_discount = new BigNumber(serviceVariant.price).times(payload.qty)
@@ -157,14 +153,14 @@ export default class BookingController extends BaseController {
       ? await this.applyCoupon(
           payload.couponId,
           total_after_discount,
-          serviceVariant.service.business.vendorUserId
+          serviceVariant.service.vendorUser.id
         )
       : 0
 
     const grand_total = total_after_discount.minus(coupon_discount)
 
     const booking = await Booking.create({
-      vendorUserId: serviceVariant.service.business.vendorUserId,
+      vendorUserId: serviceVariant.service.vendorUser.id,
       userId: auth.user?.id,
       paymentDetail: payload.paymentdetail,
       bookingDetail: {

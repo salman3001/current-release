@@ -26,6 +26,9 @@ export default class ServiceSubcategory extends BaseModel {
   public name: string
 
   @column()
+  public slug: string
+
+  @column()
   public shortDesc: string
 
   @column()

@@ -29,7 +29,7 @@ type whereILike = Record<string, string> | null
 type opt = '>' | '>=' | '>' | '>=' | '='
 type where = Record<string, [opt, string]>
 type select = string[] | null
-type Join = string[];
+type Join = string[]
 type withAggregate = {
   relation: string
   aggregator: string
@@ -66,7 +66,7 @@ export default class BaseController {
     private bauncerPolicy?: keyof PoliciesList,
     public perPage?: number,
     public importSelects: string[] = []
-  ) { }
+  ) {}
 
   public async index(ctx: HttpContextContract) {
     if (ctx.bouncer && this.bauncerPolicy) {
@@ -193,6 +193,8 @@ export default class BaseController {
         query.orderBy(qs.sortBy, 'desc')
       } else if (qs.descending === 'false') {
         query.orderBy(qs.sortBy, 'asc')
+      } else {
+        query.orderBy(qs.sortBy, 'asc')
       }
     }
 
@@ -224,7 +226,7 @@ export default class BaseController {
     }
 
     if (qs.join && qs.join.length > 0) {
-      qs.join.forEach(j => {
+      qs.join.forEach((j) => {
         if (j.length > 0) {
           query.join(j[0], j[1], j[2])
         }

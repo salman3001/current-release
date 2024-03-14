@@ -6,6 +6,7 @@ import SeoFactory from '../SeoFactory'
 export default Factory.define(ServiceTag, ({ faker }) => {
   return {
     name: faker.lorem.word(),
+    slug: faker.lorem.slug(),
     shortDesc: faker.commerce.productDescription(),
     longDesc: faker.lorem.paragraphs(),
   }

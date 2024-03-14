@@ -8,7 +8,10 @@ import BidBooking from 'App/Models/bookings/BidBooking'
 
 export default class BidBookingPolicy extends BasePolicy {
   public async viewList(user: User | AdminUser) {
-    if (isAdmin(user) && (await hasPermission(user as AdminUser, permissions.MANAGE_BID_ORDERS))) {
+    if (
+      isAdmin(user) &&
+      (await hasPermission(user as AdminUser, permissions.MANAGE_BID_BOOKINGS))
+    ) {
       return true
     } else {
       false

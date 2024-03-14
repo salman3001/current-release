@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ref } from "vue";
 
-const user = useCookie("user");
-const config = useRuntimeConfig();
+const user = useCookie("user") as Ref<IUser> | null;
 const auth = authStore();
 const route = useRoute();
+const getImageUrl = useGetImageUrl();
 
 const leftDrawerOpen = ref(false);
 const rightDrawerOpen = ref(false);
@@ -77,7 +77,29 @@ const confirmLogout = () => {
           >
             <div class="gt-sm col-0 col-sm-1"></div>
             <div class="gt-sm col row justify-center">
-              <WebServiceSearch />
+              <WebServiceSearch
+                :initail-value="route.query?.whereILike as string"
+                @search="
+                  (v) => {
+                    if (v !== '') {
+                      navigateTo({
+                        path: routes.home,
+                        query: {
+                          ...route.query,
+                          whereILike: `%${v}%`,
+                        },
+                      });
+                    } else {
+                      navigateTo({
+                        path: routes.home,
+                        query: {
+                          whereILike: '',
+                        },
+                      });
+                    }
+                  }
+                "
+              />
             </div>
             <div class="gt-sm col-0 col-sm-1"></div>
 
@@ -88,7 +110,30 @@ const confirmLogout = () => {
           </div>
         </q-toolbar>
         <q-toolbar class="lt-md q-pb-sm">
-          <WebServiceSearch style="flex-grow: 1" />
+          <WebServiceSearch
+            :initail-value="route.query?.whereILike as string"
+            @search="
+              (v) => {
+                if (v !== '') {
+                  navigateTo({
+                    path: routes.home,
+                    query: {
+                      ...route.query,
+                      whereILike: `%${v}%`,
+                    },
+                  });
+                } else {
+                  navigateTo({
+                    path: routes.home,
+                    query: {
+                      whereILike: '',
+                    },
+                  });
+                }
+              }
+            "
+            style="flex-grow: 1"
+          />
         </q-toolbar>
       </q-header>
 
@@ -115,11 +160,10 @@ const confirmLogout = () => {
                 <q-item clickable v-ripple>
                   <q-item-section avatar>
                     <q-icon
-                      :name="`img:${
-                        user && user?.avatar?.url
-                          ? $config.public.baseApi + user?.avatar?.url
-                          : '/images/sample-dp.png'
-                      }`"
+                      :name="`img:${getImageUrl(
+                        user?.profile?.avatar?.url,
+                        '/images/sample-dp.png'
+                      )}`"
                     />
                   </q-item-section>
 
@@ -153,20 +197,6 @@ const confirmLogout = () => {
                 </q-item-section>
 
                 <q-item-section> Home </q-item-section>
-              </q-item>
-            </NuxtLink>
-            <NuxtLink
-              :to="routes.services"
-              :class="
-                route.path === routes.services ? 'text-primary' : 'text-muted'
-              "
-            >
-              <q-item clickable v-ripple>
-                <q-item-section avatar>
-                  <q-icon name="electrical_services" />
-                </q-item-section>
-
-                <q-item-section> Services </q-item-section>
               </q-item>
             </NuxtLink>
             <NuxtLink

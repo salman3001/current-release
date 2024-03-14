@@ -1,7 +1,21 @@
 <script setup lang="ts">
 import { ref } from "vue";
+import { date } from "quasar";
 
 const tab = ref("Booking Detail");
+const customFetch = useCustomFetch();
+const route = useRoute();
+const getImageUrl = useGetImageUrl();
+
+const { data: booking, pending } = useAsyncData(
+  "booking" + route.params.id,
+  async () => {
+    const data = await customFetch<IResType<IBooking>>(
+      apiRoutes.booking_show(route.params.id as unknown as number)
+    );
+    return data.data;
+  }
+);
 </script>
 
 <template>
@@ -11,99 +25,131 @@ const tab = ref("Booking Detail");
     </NuxtLink>
     <br />
     <br />
+    <div v-if="pending">
+      <SkeletonBase type="page" />
+    </div>
+    <div v-else>
+      <h1 class="text-h6 text-bold q-sm">Booking #{{ booking?.id }}</h1>
+      <div class="q-col-gutter-y-md">
+        <div>
+          <p class="text-bold">Date and time</p>
+          <p>{{ date.formatDate(booking?.created_at, "DD/MM/YYYY hh:mmA") }}</p>
+        </div>
+        <div class="row q-gutter-md">
+          <p class="text-bold">Booking Status</p>
+          <q-badge
+            color="yellow-10"
+            class="normalcase"
+            v-if="booking?.status === OrderStatus.PLACED"
+            >{{ booking?.status }}</q-badge
+          >
+          <q-badge
+            color="red"
+            class="normalcase"
+            v-if="booking?.status === OrderStatus.REJECTED"
+            >{{ booking?.status }}</q-badge
+          >
+          <q-badge
+            color="info"
+            class="normalcase"
+            v-if="booking?.status === OrderStatus.CONFIRMED"
+            >{{ booking?.status }}</q-badge
+          >
+          <q-badge
+            color="green"
+            class="normalcase"
+            v-if="booking?.status === OrderStatus.DELIVERED"
+            >{{ booking?.status }}</q-badge
+          >
+        </div>
+        <div class="row q-gutter-sm">
+          <NuxtLink to="/">
+            <q-icon name="download"></q-icon> Download Invoice</NuxtLink
+          >
+        </div>
+        <div class="q-mt-md">
+          <q-tabs
+            dense
+            v-model="tab"
+            active-color="white"
+            indicator-color="secondary"
+            active-bg-color="primary"
+            align="left"
+          >
+            <q-tab name="Booking Detail" label="Booking Detail" />
+            <q-tab name="Payment Detail" label="Payment Detail" />
+          </q-tabs>
 
-    <h1 class="text-h6 text-bold q-sm">Booking #1234</h1>
-    <div class="q-col-gutter-y-md">
-      <div>
-        <p class="text-bold">Address</p>
-        <p>Lorem ipsum dolor sit amet.</p>
-      </div>
-      <div>
-        <p class="text-bold">Date and time</p>
-        <p>12/03/2024 03:13pm</p>
-      </div>
-      <div class="row q-gutter-md">
-        <p class="text-bold">Booking Status</p>
-        <q-badge color="yellow-10">Placed</q-badge>
-      </div>
-      <div class="row q-gutter-sm">
-        <NuxtLink to="/">
-          <q-icon name="download"></q-icon> Download Invoice</NuxtLink
-        >
-      </div>
-      <div class="q-mt-md">
-        <q-tabs
-          v-model="tab"
-          dense
-          class="text-grey"
-          active-color="primary"
-          indicator-color="primary"
-          align=""
-          narrow-indicator
-        >
-          <q-tab
-            name="Booking Detail"
-            label="Booking Detail"
-            class="q-pl-none"
-          />
-          <q-tab name="Payment Detail" label="Payment Detail" />
-        </q-tabs>
+          <q-separator />
 
-        <q-separator />
-
-        <q-tab-panels v-model="tab" animated>
-          <q-tab-panel name="Booking Detail">
-            <div>
+          <q-tab-panels v-model="tab" animated>
+            <q-tab-panel name="Booking Detail">
               <div>
-                <q-item>
-                  <q-item-section top thumbnail class="q-ml-none">
-                    <img src="https://cdn.quasar.dev/img/mountains.jpg" />
-                  </q-item-section>
+                <div>
+                  <q-item>
+                    <q-item-section top thumbnail class="q-ml-none">
+                      <img
+                        :src="
+                          getImageUrl(
+                            booking?.booking_detail?.service_variant?.image?.url
+                          )
+                        "
+                      />
+                    </q-item-section>
 
-                  <q-item-section>
-                    <q-item-label class="text-bold"
-                      >Single line item</q-item-label
-                    >
-                    <q-item-label caption
-                      >sit amet, consectetur adipiscit elit.</q-item-label
-                    >
-                  </q-item-section>
+                    <q-item-section>
+                      <q-item-label class="text-bold">{{
+                        booking?.booking_detail.service_variant.name
+                      }}</q-item-label>
+                      <q-item-label caption>{{
+                        booking?.booking_detail.service_variant.service_name
+                      }}</q-item-label>
+                    </q-item-section>
 
-                  <div class="column justify-start items-end">
-                    <!-- <p class="q-ma-none">Price</p> -->
-                    <span class="q-ma-none text-muted text-end text-bold"
-                      >&#x20B9;200.00</span
-                    >
-                    <div class="q-mt-xs q-gutter-xs row items-center">
-                      Qty : 2
+                    <div class="column justify-start items-end">
+                      <!-- <p class="q-ma-none">Price</p> -->
+                      <span class="q-ma-none text-muted text-end text-bold"
+                        >&#x20B9;{{
+                          booking?.booking_detail.service_variant.price
+                        }}</span
+                      >
+                      <div class="q-mt-xs q-gutter-xs row items-center">
+                        Qty :{{ booking?.booking_detail.service_variant.qty }}
+                      </div>
                     </div>
-                  </div>
-                </q-item>
+                  </q-item>
+                </div>
+                <q-separator></q-separator>
+                <div class="row justify-end text-bold text-h6">
+                  Total : &#x20B9;{{
+                    booking?.booking_detail.total_without_discount
+                  }}
+                </div>
               </div>
-              <q-separator></q-separator>
-              <div class="row justify-end text-bold text-h6">
-                Total : &#x20B9;800
-              </div>
-            </div>
 
-            <div class="q-pt-md">
-              <div class="row justify-end text-bold text-h6">
-                Disount: &#x20B9;0
+              <div class="q-pt-md">
+                <div class="row justify-end text-bold text-h6">
+                  Disount: &#x20B9;{{ booking?.booking_detail.vendor_discount }}
+                </div>
+                <div class="row justify-end text-bold text-h6">
+                  Coupon Disount : &#x20B9;{{
+                    booking?.booking_detail.coupon_discount
+                  }}
+                </div>
+                <div class="row justify-end text-bold text-h6">
+                  Grand Total : &#x20B9;{{
+                    booking?.booking_detail.grand_total
+                  }}
+                </div>
               </div>
-              <div class="row justify-end text-bold text-h6">
-                Coupon Disount : &#x20B9;20
-              </div>
-              <div class="row justify-end text-bold text-h6">
-                Grand Total : &#x20B9;780
-              </div>
-            </div>
-          </q-tab-panel>
+            </q-tab-panel>
 
-          <q-tab-panel name="Payment Detail">
-            <div class="text-h6">Payment Detail</div>
-            pay
-          </q-tab-panel>
-        </q-tab-panels>
+            <q-tab-panel name="Payment Detail">
+              <div class="text-h6">Payment Detail</div>
+              payment detail here
+            </q-tab-panel>
+          </q-tab-panels>
+        </div>
       </div>
     </div>
   </div>

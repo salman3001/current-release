@@ -5,5 +5,6 @@ declare module '@ioc:Adonis/Core/Validator' {
     numberLessThanField(fieldName: string): Rule
     maxNumber(maxNumber: number): Rule
     minNumber(minNumber: number): Rule
+    slug(): Rule
   }
 }

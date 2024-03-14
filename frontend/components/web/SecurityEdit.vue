@@ -1,17 +1,48 @@
 <script setup lang="ts">
-const form = ref({
+const isPwd = ref(false);
+const customFetch = useCustomFetch();
+const user = useCookie("user") as unknown as Ref<IUser> | null;
+const loading = ref(false);
+
+const initialForm = {
   old_password: "",
   password: "",
   password_confirmation: "",
-});
+  userType: "customer",
+};
 
-const isPwd = ref(false);
+const form = ref(initialForm);
+
+const updatePassword = async () => {
+  loading.value = true;
+  try {
+    const data = await customFetch<IResType<any>>(
+      apiRoutes.updatePassword(user!.value.id),
+      {
+        method: "post",
+        body: form.value,
+      }
+    );
+    if (data.success === true) {
+      form.value.password = "";
+      form.value.password_confirmation = "";
+      form.value.old_password = "";
+    }
+  } catch (error) {
+    console.log(error);
+  }
+  loading.value = false;
+};
 </script>
 
 <template>
   <div class="q-gutter-y-lg">
     <h5>Update Password</h5>
-    <q-form class="q-gutter-y-sm" style="max-width: 300px">
+    <q-form
+      class="q-gutter-y-sm"
+      style="max-width: 300px"
+      @submit="updatePassword"
+    >
       <div>
         <label>Old Password</label>
         <q-input
@@ -59,23 +90,11 @@ const isPwd = ref(false);
         </q-input>
       </div>
       <q-btn
+        type="submit"
         color="primary"
-        v-if="loadingReset"
-        :disable="true"
         style="width: 100%"
-      >
-        <q-circular-progress
-          indeterminate
-          size="20px"
-          class="q-px-10"
-          :thickness="1"
-          color="grey-8"
-          track-color="orange-2"
-          style="min-width: 8rem"
-        />
-      </q-btn>
-      <q-btn v-else type="submit" color="primary" style="width: 100%"
-        >Submit</q-btn
+        :disabled="loading"
+        ><loading-indicator v-if="loading" /> Submit</q-btn
       >
     </q-form>
   </div>

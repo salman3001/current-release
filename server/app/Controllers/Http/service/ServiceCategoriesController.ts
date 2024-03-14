@@ -8,11 +8,34 @@ import { validator } from '@ioc:Adonis/Core/Validator'
 
 export default class ServiceCategoriesController extends BaseController {
   constructor() {
-    super(ServiceCategory, CategoryCreateValidator, CategoryUpdateValidator, 'ServicePolicy')
+    super(
+      ServiceCategory,
+      CategoryCreateValidator,
+      CategoryUpdateValidator,
+      'ServiceCategoryPolicy'
+    )
+  }
+
+  public async showBySlug({ request, response, bouncer, auth, params }: HttpContextContract) {
+    await bouncer.with('ServiceCategoryPolicy').authorize('view')
+
+    const slug = params.slug
+    const serviceCategoryQuery = ServiceCategory.query().where('slug', slug)
+
+    this.showfilterQuery(request.qs() as any, serviceCategoryQuery)
+
+    const category = await serviceCategoryQuery.first()
+
+    return response.custom({
+      code: 200,
+      success: true,
+      message: null,
+      data: category,
+    })
   }
 
   public async store({ request, response, bouncer }: HttpContextContract) {
-    await bouncer.with('ServicePolicy').authorize('create')
+    await bouncer.with('ServiceCategoryPolicy').authorize('create')
     const payload = await request.validate(CategoryCreateValidator)
     const category = await ServiceCategory.create(payload.category)
 
@@ -38,7 +61,7 @@ export default class ServiceCategoriesController extends BaseController {
   }
 
   public async update({ request, response, params, bouncer }: HttpContextContract) {
-    await bouncer.with('ServicePolicy').authorize('update')
+    await bouncer.with('ServiceCategoryPolicy').authorize('update')
 
     const payload = await request.validate(CategoryUpdateValidator)
     const category = await ServiceCategory.findOrFail(+params.id)

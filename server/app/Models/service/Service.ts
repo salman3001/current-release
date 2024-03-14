@@ -27,6 +27,7 @@ import {
 import { AttachmentContract, attachment } from '@ioc:Adonis/Addons/AttachmentLite'
 import Coupon from '../orders/Coupon'
 import VendorUser from '../vendorUser/VendorUser'
+import BigNumber from 'bignumber.js'
 
 export default class Service extends BaseModel {
   public serializeExtras = true
@@ -36,6 +37,9 @@ export default class Service extends BaseModel {
 
   @column()
   public name: string
+
+  @column()
+  public slug: string
 
   @column()
   public shortDesc: string
@@ -52,7 +56,9 @@ export default class Service extends BaseModel {
   @column()
   public geoLocation: string
 
-  @column()
+  @column({
+    serialize: (v) => new BigNumber(v || 0).toFixed(1),
+  })
   public avgRating: string | number
 
   @responsiveAttachment({

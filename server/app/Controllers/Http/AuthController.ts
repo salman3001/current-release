@@ -13,12 +13,11 @@ export default class AuthController {
     const payloadSchema = schema.create({
       email: schema.string({ trim: true }, [
         rules.email(),
-        rules.normalizeEmail({ allLowercase: true }),
+        rules.normalizeEmail({ allLowercase: false, gmailRemoveDots: false }),
       ]),
       password: schema.string({ trim: true }),
-      userType: schema.enum(['admin', 'vendor', 'customer'])
+      userType: schema.enum(['admin', 'vendor', 'customer']),
     })
-
 
     const payload = await request.validate({ schema: payloadSchema })
 
@@ -30,6 +29,7 @@ export default class AuthController {
 
     if (payload.userType === 'vendor') {
       user = await VendorUser.findBy('email', payload.email)
+      console.log(payload.email)
     }
 
     if (payload.userType === 'customer') {
@@ -48,28 +48,28 @@ export default class AuthController {
     // try {
     let token: any = ''
     if (user instanceof AdminUser) {
-
       token = await auth.use('adminUserApi').attempt(payload.email, payload.password, {
         expiresIn: '1 day',
       })
       // console.log(user);
       await user.load('role')
+      await user.load('profile')
     }
 
     if (user instanceof VendorUser) {
-
       token = await auth.use('vendorUserApi').attempt(payload.email, payload.password, {
         expiresIn: '1 day',
       })
-      console.log('ran');
+      await user.load('profile')
     }
-
 
     if (user instanceof User) {
       token = await auth.use('userApi').attempt(payload.email, payload.password, {
         expiresIn: '1 day',
       })
+      await user.load('profile')
     }
+
     const socketToken = Math.floor(100000 + Math.random() * 900000).toString()
 
     user.socketToken = socketToken
@@ -88,7 +88,8 @@ export default class AuthController {
     const userType = request.body().userType
 
     if (userType === 'customer') {
-      const { userType, passwordConfirmation, ...payload } = await request.validate(UserCreateValidator)
+      const { userType, passwordConfirmation, ...payload } =
+        await request.validate(UserCreateValidator)
 
       const user = await User.create({ ...payload, isActive: true })
       const token = await auth.use('userApi').attempt(user.email, payload.password, {
@@ -107,13 +108,11 @@ export default class AuthController {
         data: { user, token, socketToken },
         success: true,
       })
-
-
     } else if (userType === 'vendor') {
-      const { userType, businessName, passwordConfirmation, ...payload } = await request.validate(VendorUserCreateValidator)
+      const { userType, passwordConfirmation, ...payload } =
+        await request.validate(VendorUserCreateValidator)
 
       const user = await VendorUser.create({ ...payload, isActive: true })
-      await user.related('business').create({ name: businessName })
       const token = await auth.use('vendorUserApi').attempt(user.email, payload.password, {
         expiresIn: '1 day',
       })
@@ -130,21 +129,19 @@ export default class AuthController {
         data: { user, token, socketToken },
         success: true,
       })
-
     } else {
       return response.custom({
-        message: "User type is not defined",
+        message: 'User type is not defined',
         code: 400,
         data: null,
-        success: false
+        success: false,
       })
     }
-
   }
 
   public async logout({ auth, response, request }: HttpContextContract) {
     const payloadSchema = schema.create({
-      userType: schema.enum(['admin', 'vendor', 'customer'])
+      userType: schema.enum(['admin', 'vendor', 'customer']),
     })
     const payload = await request.validate({ schema: payloadSchema })
 
@@ -172,7 +169,7 @@ export default class AuthController {
         rules.email(),
         rules.normalizeEmail({ allLowercase: true }),
       ]),
-      userType: schema.enum(['admin', 'vendor', 'customer'])
+      userType: schema.enum(['admin', 'vendor', 'customer']),
     })
 
     const payload = await request.validate({
@@ -220,7 +217,7 @@ export default class AuthController {
       otp: schema.string({ trim: true }),
       password: schema.string({ trim: true }, [rules.minLength(8)]),
       password_confirmation: schema.string({ trim: true }, [rules.confirmed('password')]),
-      userType: schema.enum(['admin', 'vendor', 'customer'])
+      userType: schema.enum(['admin', 'vendor', 'customer']),
     })
 
     const payload = await request.validate({
@@ -276,8 +273,7 @@ export default class AuthController {
       password: schema.string({ trim: true }, [rules.minLength(8)]),
       password_confirmation: schema.string({ trim: true }, [rules.confirmed('password')]),
       old_password: schema.string({ trim: true }),
-      userType: schema.enum(['admin', 'vendor', 'customer'])
-
+      userType: schema.enum(['admin', 'vendor', 'customer']),
     })
 
     const payload = await request.validate({
@@ -298,9 +294,8 @@ export default class AuthController {
       user = await User.findOrFail(+params.id)
     }
 
-    if (user && await Hash.verify(user.password, payload.password)) {
-      const newPassword = await Hash.make(payload.password)
-      user.password = newPassword
+    if (user && (await Hash.verify(user.password, payload.old_password))) {
+      user.password = payload.password
       await user.save()
       return response.custom({
         message: 'Password changed',

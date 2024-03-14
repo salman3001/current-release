@@ -97,3 +97,22 @@ validator.rule('minNumber', (value, [minNumber], options) => {
     )
   }
 })
+
+validator.rule('slug', (value, [opt], options) => {
+  if (typeof value !== 'string') {
+    return
+  }
+
+  const slugRegex = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
+
+  if (value.match(slugRegex)) {
+    return
+  } else {
+    options.errorReporter.report(
+      options.pointer,
+      `The value  must be a valid slug`,
+      `The value  must be a valid slug`,
+      options.arrayExpressionPointer
+    )
+  }
+})

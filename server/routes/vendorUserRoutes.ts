@@ -18,7 +18,9 @@ Route.group(() => {
   // update profile
   Route.put('vendor-users/:id/update-profile', 'vendorUser/VendorUsersController.updateProfile')
 
+  //vendor reviews
+  Route.get('/vendor-users/:id/reviews', 'vendorUser/VendorUsersController.getReviews')
+  Route.post('/vendor-users/:id/reviews', 'vendorUser/VendorUsersController.create_review')
 
   Route.resource('vendor-users', 'vendorUser/VendorUsersController').apiOnly()
-
 }).prefix('api')

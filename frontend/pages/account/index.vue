@@ -26,8 +26,16 @@ const tab = ref(query?.tab || "Profile");
     <q-separator />
 
     <q-tab-panels v-model="tab" animated class="bg-nutral">
-      <q-tab-panel name="Profile">
-        <WebProfileEdit />
+      <q-tab-panel name="Profile" class="q-gutter-y-md">
+        <div class="column gap-50">
+          <h6 class="text-bold q-pb-none">Account Information</h6>
+          <WebAccountEdit />
+        </div>
+        <q-separator />
+        <div class="column gap-50">
+          <h6 class="text-bold q-pb-none">Profile Information</h6>
+          <WebProfileEdit />
+        </div>
       </q-tab-panel>
 
       <q-tab-panel name="Bookings">

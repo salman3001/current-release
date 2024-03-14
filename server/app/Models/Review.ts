@@ -9,7 +9,9 @@ export default class Review extends BaseModel {
   @column({ isPrimary: true })
   public id: number
 
-  @column()
+  @column({
+    serialize: (v) => new BigNumber(v || 0).toFixed(1),
+  })
   public rating: number
 
   @column()
@@ -41,48 +43,57 @@ export default class Review extends BaseModel {
 
   @afterCreate()
   public static async setAvgRating(review: Review) {
-    console.log('ran');
-
-
     if (review.serviceId) {
-      const service = await Service.query().where('id', review.serviceId).withAggregate('reviews', b => {
-        b.avg('rating').as('avg_rating')
-      }).first()
-
-      console.log(service?.$extras);
+      const service = await Service.query()
+        .where('id', review.serviceId)
+        .preload('reviews')
+        .withAggregate('reviews', (b) => {
+          b.avg('rating').as('avg_vendor_rating')
+        })
+        .first()
 
       if (service) {
-        service.avgRating = service.$extras?.avg_rating || 0
+        const avg_rating = new BigNumber(service.$extras?.service_avg_rating || 0).toFixed(1)
+        service.avgRating = avg_rating
         await service.save()
 
-        const vendor = await VendorUser.query().where('id', service.vendorUserId).withAggregate('services', s => {
-          s.avg('avg_rating').as('service_avg_rating')
-        }).withAggregate('reviews', b => {
-          b.avg('rating').as('vendor_avg_rating')
-        }).first()
-
-        console.log(vendor?.$extras);
-
+        const vendor = await VendorUser.query()
+          .where('id', service.vendorUserId)
+          .withAggregate('services', (s) => {
+            s.avg('avg_rating').as('service_avg_rating')
+          })
+          .withAggregate('reviews', (b) => {
+            b.avg('rating').as('vendor_avg_rating')
+          })
+          .first()
 
         if (vendor) {
-          vendor.avgRating = new BigNumber(vendor.$extras?.service_avg_rating || 0).plus(vendor.$extras?.vendor_avg_rating || 0).dividedBy(0).toFixed(1)
+          const avg_rating = new BigNumber(vendor.$extras?.service_avg_rating || 0).toFixed(1)
+
+          vendor.avgRating = avg_rating
           await vendor.save()
         }
       }
-
-
     }
 
     if (review.vendorUserId) {
-      const vendor = await VendorUser.query().where('id', review.vendorUserId).withAggregate('services', s => {
-        s.avg('avg_rating').as('service_avg_rating')
-      }).withAggregate('reviews', b => {
-        b.avg('rating').as('vendor_avg_rating')
-      }).first()
-      console.log(vendor?.$extras);
+      const vendor = await VendorUser.query()
+        .where('id', review.vendorUserId)
+        .withAggregate('services', (s) => {
+          s.avg('avg_rating').as('service_avg_rating')
+        })
+        .withAggregate('reviews', (b) => {
+          b.avg('rating').as('vendor_avg_rating')
+        })
+        .first()
 
       if (vendor) {
-        vendor.avgRating = new BigNumber(vendor.$extras?.service_avg_rating || 0).plus(vendor.$extras?.vendor_avg_rating || 0).dividedBy(0).toFixed(1)
+        const avg_rating = new BigNumber(vendor.$extras?.service_avg_rating || 0)
+          .plus(vendor.$extras?.vendor_avg_rating || 0)
+          .dividedBy(2)
+          .toFixed(1)
+
+        vendor.avgRating = avg_rating
         await vendor.save()
       }
     }

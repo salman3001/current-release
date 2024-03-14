@@ -1,8 +1,9 @@
 import { schema, CustomMessages, rules } from '@ioc:Adonis/Core/Validator'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import { userTypes } from 'App/Helpers/enums'
 
 export default class UserCreateValidator {
-  constructor(protected ctx: HttpContextContract) { }
+  constructor(protected ctx: HttpContextContract) {}
 
   /*
    * Define schema to validate the "shape", "type", "formatting" and "integrity" of data.
@@ -26,6 +27,7 @@ export default class UserCreateValidator {
   public schema = schema.create({
     firstName: schema.string({ trim: true }),
     lastName: schema.string({ trim: true }),
+    userType: schema.enum(Object.values(userTypes)),
     email: schema.string({ trim: true }, [
       rules.email(),
       rules.normalizeEmail({ allLowercase: true }),
@@ -34,8 +36,6 @@ export default class UserCreateValidator {
     password: schema.string({ trim: true }),
     passwordConfirmation: schema.string({ trim: true }, [rules.confirmed('password')]),
     phone: schema.string.optional(),
-    // isActive: schema.boolean.optional(),
-    isPublic: schema.boolean.optional(),
   })
 
   /**

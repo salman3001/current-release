@@ -2,7 +2,7 @@ import { schema, CustomMessages, rules } from '@ioc:Adonis/Core/Validator'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 export default class ServiceUpdateValidator {
-  constructor(protected ctx: HttpContextContract) { }
+  constructor(protected ctx: HttpContextContract) {}
 
   /*
    * Define schema to validate the "shape", "type", "formatting" and "integrity" of data.
@@ -44,6 +44,14 @@ export default class ServiceUpdateValidator {
     ),
     service: schema.object().members({
       name: schema.string({ trim: true }),
+      slug: schema.string({ trim: true }, [
+        rules.slug(),
+        rules.unique({
+          table: 'services',
+          column: 'slug',
+          whereNot: { id: this.ctx.params.id },
+        }),
+      ]),
       shortDesc: schema.string.optional(),
       longDesc: schema.string.optional(),
       isActive: schema.boolean.optional(),

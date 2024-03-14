@@ -10,10 +10,6 @@ Route.group(() => {
   Route.put('users/:id/update-profile', 'user/UsersController.updateProfile')
   Route.resource('users', 'user/UsersController').apiOnly()
 
-  Route.resource('job-industry', 'user/JobIndustryController').apiOnly()
-
-  Route.resource('job-departments', 'user/JobDepartmentController').apiOnly()
-
   // cart
   // Route.get('my-cart', 'user/CartsController.show')
   // Route.put('update-my-cart', 'user/CartsController.update')

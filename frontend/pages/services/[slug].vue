@@ -3,14 +3,15 @@ const route = useRoute();
 const customFetch = useCustomFetch();
 const modal = modalStore();
 const user = useCookie("user");
+const getImageUrl = useGetImageUrl();
 
 const selectedVariant = ref<IServiceVariant | null>(null);
 
 const { data: service, pending: servicePending } = await useAsyncData(
-  ("service" + route.params.id) as string,
+  ("service-" + route.params.slug) as string,
   async () => {
     const data = await customFetch<IResType<IService>>(
-      apiRoutes.services_view(route.params.id as string),
+      apiRoutes.services_view_by_slug(route.params.slug as string),
       {
         query: {
           preload: [
@@ -29,7 +30,7 @@ const { data: service, pending: servicePending } = await useAsyncData(
                 ],
               },
               vendorUser: {
-                select: ["id", "first_name", "last_name", 'businessName'],
+                select: ["id", "first_name", "last_name", "businessName"],
               },
               reviews: {
                 select: ["rating"],
@@ -50,10 +51,10 @@ const {
   pending: reviewsPending,
   refresh: refreshReviews,
 } = useAsyncData(
-  ("reviews" + route.params.id) as string,
+  ("reviews" + route.params.slug) as string,
   async () => {
     const data = await customFetch<IPageRes<IReview[]>>(
-      apiRoutes.reviews(route.params.id as string),
+      apiRoutes.reviews(service.value!.id),
       {
         query: {
           preload: [
@@ -128,8 +129,11 @@ const items = [
       </h1>
 
       <div class="row items-center q-gutter-sm text-h5 text-muted">
-        <NuxtLink class="text-muted underline" to="/"><q-btn left flat icon="share"> Share</q-btn></NuxtLink>
-        <NuxtLink class="text-muted underline" to="/"><q-btn left flat icon="favorite"> Add to Wishlist</q-btn>
+        <NuxtLink class="text-muted underline" to="/"
+          ><q-btn left flat icon="share"> Share</q-btn></NuxtLink
+        >
+        <NuxtLink class="text-muted underline" to="/"
+          ><q-btn left flat icon="favorite"> Add to Wishlist</q-btn>
         </NuxtLink>
       </div>
     </div>
@@ -148,13 +152,24 @@ const items = [
     </p>
     <div class="row jjustify-between full-width">
       <div class="row items-center q-gutter-md">
-        <ProfileAvatar image="https://cdn.quasar.dev/img/avatar.png" />
+        <ProfileAvatar
+          :image="
+            getImageUrl(
+              service?.vendorUser?.profile?.avatar?.url,
+              '/images/sample-dp.png'
+            )
+          "
+        />
         <div>
           Listed by {{ service?.vendorUser?.first_name }}
           {{ service?.vendorUser?.last_name }}
           <br />
-          <NuxtLink :to="routes.home" class="underline">
-            {{ service?.vendorUser?.business_name }}</NuxtLink>
+          <NuxtLink
+            :to="routes.view_business(service?.vendorUser.id!)"
+            class="underline"
+          >
+            {{ service?.vendorUser?.business_name }}</NuxtLink
+          >
         </div>
       </div>
     </div>
@@ -165,13 +180,21 @@ const items = [
       <div class="q-gutter-md row justify-between">
         <div>
           <div class="q-gutter-md row items-start" style="flex-grow: 1">
-            <WebSelectVariant v-for="variant in service?.variants" :variant="variant"
-              @variant-selection="(variant) => (selectedVariant = variant)" :selected-id="selectedVariant?.id || 0" />
+            <WebSelectVariant
+              v-for="variant in service?.variants"
+              :variant="variant"
+              @variant-selection="(variant) => (selectedVariant = variant)"
+              :selected-id="selectedVariant?.id || 0"
+            />
           </div>
           <br />
 
-          <div :class="$q.screen.gt.xs ? 'row q-col-gutter-md' : 'column q-col-gutter-md'
-          " class="">
+          <div
+            :class="
+              $q.screen.gt.xs ? 'row q-col-gutter-md' : 'column q-col-gutter-md'
+            "
+            class=""
+          >
             <div class="col">
               <h6>What is Included</h6>
               <ul class="q-pt-sm q-gutter-y-sm list-style-none">
@@ -200,23 +223,31 @@ const items = [
       <h5>Cutomer Reviews</h5>
       <div class="row gap-100">
         <div class="q-gutter-lg col-12 col-md-4" style="">
-          <RatingComponent :rating="service?.meta.avg_rating || 0" /><span class="text-h5">{{ service?.avg_rating
-          || 0 }} out of 5</span>
+          <RatingComponent :rating="service!.avg_rating || 0" /><span
+            class="text-h5"
+            >{{ service?.avg_rating || 0 }} out of 5</span
+          >
           <q-separator />
           <div class="q-gutter-y-sm">
             <h6>Rate this service</h6>
             <p>Share your throught about this service</p>
-            <q-btn color="primary" @click="() => {
-          if (user) {
-            modal.togel('WebAddReview', {
-              serviceId: service?.id,
-              onSuccess: refreshReviews,
-            });
-          } else {
-            navigateTo(routes.auth.login + `?next=${route.path}`);
-          }
-        }
-          ">Write a Review</q-btn>
+            <q-btn
+              color="primary"
+              @click="
+                () => {
+                  if (user) {
+                    modal.togel('WebAddReview', {
+                      type: 'service',
+                      serviceId: service?.id,
+                      onSuccess: refreshReviews,
+                    });
+                  } else {
+                    navigateTo(routes.auth.login + `?next=${route.path}`);
+                  }
+                }
+              "
+              >Write a Review</q-btn
+            >
           </div>
           <q-separator />
         </div>
@@ -231,7 +262,9 @@ const items = [
           <div v-for="review in reviews?.data" class="q-gutter-sm">
             <CustomerReview :review="review" />
           </div>
-          <q-btn color="primary" v-if="reviews?.meta.next_page_url">View More</q-btn>
+          <q-btn color="primary" v-if="reviews?.meta.next_page_url"
+            >View More</q-btn
+          >
         </div>
       </div>
     </div>

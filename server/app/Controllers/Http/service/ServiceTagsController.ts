@@ -1,20 +1,38 @@
 import { ResponsiveAttachment } from '@ioc:Adonis/Addons/ResponsiveAttachment'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import ServiceTag from 'App/Models/service/ServiceTag'
-import CategoryCreateValidator from 'App/Validators/service/CategoryCreateValidator'
-import CategoryUpdateValidator from 'App/Validators/service/CategoryUpdateValidator'
 import BaseController from '../BaseController'
 import { validator } from '@ioc:Adonis/Core/Validator'
+import TagsCreateValidator from 'App/Validators/service/TagsCreateValidator'
+import TagsUpdateValidator from 'App/Validators/service/TagsUpdateValidator'
 
 export default class ServiceTagsController extends BaseController {
   constructor() {
-    super(ServiceTag, CategoryCreateValidator, CategoryUpdateValidator, 'ServicePolicy')
+    super(ServiceTag, TagsCreateValidator, TagsUpdateValidator, 'ServiceCategoryPolicy')
+  }
+
+  public async showBySlug({ request, response, bouncer, params }: HttpContextContract) {
+    await bouncer.with('ServiceCategoryPolicy').authorize('view')
+
+    const slug = params.slug
+    const tagQuery = ServiceTag.query().where('slug', slug)
+
+    this.showfilterQuery(request.qs() as any, tagQuery)
+
+    const tag = await tagQuery.first()
+
+    return response.custom({
+      code: 200,
+      success: true,
+      message: null,
+      data: tag,
+    })
   }
 
   public async store({ request, response, bouncer }: HttpContextContract) {
-    await bouncer.with('ServicePolicy').authorize('create')
+    await bouncer.with('ServiceCategoryPolicy').authorize('create')
 
-    const payload = await request.validate(CategoryCreateValidator)
+    const payload = await request.validate(TagsCreateValidator)
     const tag = await ServiceTag.create(payload.category)
 
     if (payload.seo) {
@@ -39,9 +57,9 @@ export default class ServiceTagsController extends BaseController {
   }
 
   public async update({ request, response, params, bouncer }: HttpContextContract) {
-    await bouncer.with('ServicePolicy').authorize('update')
+    await bouncer.with('ServiceCategoryPolicy').authorize('update')
 
-    const payload = await request.validate(CategoryUpdateValidator)
+    const payload = await request.validate(TagsUpdateValidator)
     const tag = await ServiceTag.findOrFail(+params.id)
 
     if (payload.category) {
@@ -92,7 +110,7 @@ export default class ServiceTagsController extends BaseController {
       currentObjectId: data.id,
     }
     const validatedData = await validator.validate({
-      schema: new CategoryUpdateValidator(ctx).schema,
+      schema: new TagsUpdateValidator(ctx).schema,
       data: {
         category: data,
       },

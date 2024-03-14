@@ -21,17 +21,16 @@ export default class ServicePolicy extends BasePolicy {
       return true
     }
 
-    if (isAdmin(user) && (await hasPermission(user, permissions.MANAGE_SERVICE))) {
-      return true
-    } else {
-      return false
-    }
+    // if (isAdmin(user) && (await hasPermission(user, permissions.MANAGE_SERVICE))) {
+    //   return true
+    // } else {
+    //   return false
+    // }
   }
 
   public async update(user: any, service: Service) {
     if (user instanceof VendorUser) {
-      await user.load('business')
-      if (user.business.id == service.businessId) {
+      if (user.id == service.vendorUserId) {
         return true
       }
     }
@@ -45,8 +44,7 @@ export default class ServicePolicy extends BasePolicy {
 
   public async delete(user: any, service: Service) {
     if (user instanceof VendorUser) {
-      await user.load('business')
-      if (user.business.id == service.businessId) {
+      if (user.id == service.vendorUserId) {
         return true
       }
     }

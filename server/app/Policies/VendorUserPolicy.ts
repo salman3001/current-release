@@ -13,15 +13,9 @@ export default class VendorUserPolicy extends BasePolicy {
     }
   }
 
+  @action({ allowGuest: true })
   public async view(user: any, userModel: VendorUser) {
-    if (user.id == userModel.id) {
-      return true
-    }
-    if (isAdmin(user) && (await hasPermission(user, permissions.MANAGE_USER))) {
-      return true
-    } else {
-      return false
-    }
+    return true
   }
 
   @action({ allowGuest: true })

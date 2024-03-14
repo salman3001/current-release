@@ -4,11 +4,6 @@ import { date } from "quasar";
 
 const route = useRoute();
 const customFetch = useCustomFetch();
-const page = ref(1);
-const sortBy = ref('created_at')
-const descending = ref('false')
-const join = ref<string[][]>([])
-const select = ref(['*'])
 
 const { data, refresh: refreshRequirement } = await useAsyncData(
   ("service-requirement" + route.params.id) as string,
@@ -53,7 +48,13 @@ const { data, refresh: refreshRequirement } = await useAsyncData(
             preload: [
               {
                 vendorUser: {
-                  select: ["first_name", "last_name", "id", 'avg_rating', 'business_name'],
+                  select: [
+                    "first_name",
+                    "last_name",
+                    "id",
+                    "avg_rating",
+                    "business_name",
+                  ],
                 },
               },
             ],
@@ -69,12 +70,23 @@ const { data, refresh: refreshRequirement } = await useAsyncData(
   }
 );
 
+const bidQuery = reactive({
+  page: 1,
+  sortBy: "created_at",
+  descending: "false",
+  join: [] as string[][],
+  select: ["*"],
+  where: {
+    id: ["!=", (data.value?.acceptedBid?.id as unknown as string) || 0],
+  },
+});
+
 const {
   data: recivedBids,
   pending,
   refresh: refreshBids,
 } = await useAsyncData(
-  "recieved-bids" + route.params.id + page.value,
+  "recieved-bids" + route.params.id + bidQuery.page,
   async () => {
     const data = await customFetch<IPageRes<IBid>>(
       apiRoutes.service_requirement_show_bids(
@@ -82,15 +94,19 @@ const {
       ),
       {
         query: {
-          where: {
-            service_requirement_id: ["=", route.params.id as string],
-          },
-          page: page.value,
-          join: join.value,
-          descending: descending.value,
-          select: select.value,
-          sortBy: sortBy.value,
-
+          preload: [
+            {
+              vendorUser: {
+                select: ["avg_rating"],
+              },
+            },
+          ],
+          page: bidQuery.page,
+          join: bidQuery.join,
+          descending: bidQuery.descending,
+          select: bidQuery.select,
+          sortBy: bidQuery.sortBy,
+          where: bidQuery.where as any,
         } as AdditionalParams,
       }
     );
@@ -100,29 +116,38 @@ const {
 );
 
 const sortByVendorRating = () => {
-  sortBy.value = 'vendor_users.avg_rating'
-  select.value = ['bids.*']
-  descending.value = 'false'
-  join.value = [['vendor_users', 'bids.vendor_user_id', 'vendor_users.id']]
-  refreshBids()
-}
+  bidQuery.sortBy = "vendor_users.avg_rating";
+  bidQuery.select = ["bids.*"];
+  bidQuery.descending = "true";
+  bidQuery.join = [["vendor_users", "bids.vendor_user_id", "vendor_users.id"]];
+  bidQuery.where = {
+    "bids.id": ["!=", (data.value?.acceptedBid?.id as unknown as string) || 0],
+  };
+  refreshBids();
+};
 
 const sortByLowestPrice = () => {
-  sortBy.value = 'offered_price'
-  select.value = ['*']
-  descending.value = 'false'
-  join.value = []
-  refreshBids()
+  bidQuery.sortBy = "offered_price";
+  bidQuery.select = ["*"];
+  bidQuery.descending = "false";
+  bidQuery.join = [];
+  bidQuery.where = {
+    id: ["!=", (data.value?.acceptedBid?.id as unknown as string) || 0],
+  };
+  refreshBids();
+};
 
-}
-
-
-const refreshData = () => {
-  refreshRequirement()
-  refreshBids()
-}
-
-
+const refreshData = async () => {
+  await refreshRequirement();
+  bidQuery.sortBy = "created_at";
+  bidQuery.select = ["*"];
+  bidQuery.descending = "false";
+  bidQuery.join = [];
+  bidQuery.where = {
+    id: ["!=", (data.value?.acceptedBid?.id as unknown as string) || 0],
+  };
+  await refreshBids();
+};
 </script>
 
 <template>
@@ -139,19 +164,35 @@ const refreshData = () => {
       <p class="text-muted flex gap-100">
         Posted on
         {{
-        date.formatDate(
-          data?.serviceRequirement?.created_at,
-          "DD/MM/YYYY hh:mmA"
-        )
-      }}
-        <q-badge color="warning" outline v-if="!data?.serviceRequirement?.accepted_bid_id">Active</q-badge>
-        <q-badge color="green" outline v-else-if="data?.serviceRequirement?.accepted_bid_id">Completed</q-badge>
-        <q-badge color="negative" outline v-else-if="date.getDateDiff(
-        data?.serviceRequirement?.expires_at,
-        Date.now(),
-        'minutes'
-      ) < 0
-        ">Expired</q-badge>
+          date.formatDate(
+            data?.serviceRequirement?.created_at,
+            "DD/MM/YYYY hh:mmA"
+          )
+        }}
+        <q-badge
+          color="warning"
+          outline
+          v-if="!data?.serviceRequirement?.accepted_bid_id"
+          >Active</q-badge
+        >
+        <q-badge
+          color="green"
+          outline
+          v-else-if="data?.serviceRequirement?.accepted_bid_id"
+          >Completed</q-badge
+        >
+        <q-badge
+          color="negative"
+          outline
+          v-else-if="
+            date.getDateDiff(
+              data?.serviceRequirement?.expires_at,
+              Date.now(),
+              'minutes'
+            ) < 0
+          "
+          >Expired</q-badge
+        >
       </p>
       <p class="text-h5">{{ data?.serviceRequirement?.title }}</p>
       <div class="normalcase">
@@ -161,10 +202,10 @@ const refreshData = () => {
       <div class="column">
         <div>
           Avg. Proposal Price : &#x20B9;{{
-        new BigNumber(
-          data?.serviceRequirement?.meta?.avgBidPrice || 0
-        ).toFixed(2)
-      }}
+            new BigNumber(
+              data?.serviceRequirement?.meta?.avgBidPrice || 0
+            ).toFixed(2)
+          }}
         </div>
         <div>
           Proposals Recieved :
@@ -172,14 +213,15 @@ const refreshData = () => {
         </div>
         <div>
           Location
-          <q-icon name="location_on" size="20px" color="primary"></q-icon>Jarkhand, India
+          <q-icon name="location_on" size="20px" color="primary"></q-icon
+          >Jarkhand, India
         </div>
       </div>
       <p>
         Category:
         <NuxtLink class="underline">{{
-        data?.serviceRequirement?.serviceCategory?.name
-      }}</NuxtLink>
+          data?.serviceRequirement?.serviceCategory?.name
+        }}</NuxtLink>
       </p>
     </div>
     <p>
@@ -187,22 +229,26 @@ const refreshData = () => {
     </p>
     <div class="" style="max-width: 95vw">
       <q-separator />
-      <br>
-      <br>
+      <br />
+      <br />
       <div class="row">
         <div v-if="!data?.acceptedBid" class="text-h6 q-py-lg">
-          <p>
-            You haven't accepted any proposal yet. Please accept a proposal
-          </p>
+          <p>You haven't accepted any proposal yet. Please accept a proposal</p>
           <br />
         </div>
-        <WebProposalCard v-else :accepted="true" :bid="data?.acceptedBid"
-          :any-bid-accepted="data.acceptedBid ? true : false" @bid-rejected="refreshData" />
+        <WebProposalCard
+          v-else
+          :accepted="true"
+          :bid="data?.acceptedBid"
+          :any-bid-accepted="data.acceptedBid ? true : false"
+          :requirement-id="data.serviceRequirement.id"
+          @bid-rejected="refreshData"
+        />
       </div>
-      <br>
-      <br>
+      <br />
+      <br />
       <q-separator />
-      <br>
+      <br />
 
       <div class="q-gutter-y-md">
         <div class="row justify-between items-center q-gutter-y-md">
@@ -210,10 +256,22 @@ const refreshData = () => {
             <h6>Proposals Recieved</h6>
           </div>
           <div class="q-gutter-md">
-            <q-btn color="secondary" :outline="sortBy != 'vendor_users.avg_rating'" icon="filter_alt" left
-              @click="sortByVendorRating">Top Ratted</q-btn>
-            <q-btn color="secondary" :outline="sortBy != 'offered_price'" icon="filter_alt" left
-              @click="sortByLowestPrice">Lowest Price</q-btn>
+            <q-btn
+              color="secondary"
+              :outline="bidQuery.sortBy != 'vendor_users.avg_rating'"
+              icon="filter_alt"
+              left
+              @click="sortByVendorRating"
+              >Top Ratted</q-btn
+            >
+            <q-btn
+              color="secondary"
+              :outline="bidQuery.sortBy != 'offered_price'"
+              icon="filter_alt"
+              left
+              @click="sortByLowestPrice"
+              >Lowest Price</q-btn
+            >
           </div>
         </div>
         <br />
@@ -223,14 +281,24 @@ const refreshData = () => {
             <SkeletonBase type="list" v-for="i in 3" :key="i"></SkeletonBase>
           </div>
           <div v-else class="q-gutter-y-md">
-            <WebProposalCard v-for="bid in recivedBids?.data" :accepted="false" :bid="bid"
-              :any-bid-accepted="data?.acceptedBid ? true : false" @bid-accpted="refreshData" />
+            <WebProposalCard
+              v-for="bid in recivedBids?.data"
+              :accepted="false"
+              :bid="bid"
+              :any-bid-accepted="data?.acceptedBid ? true : false"
+              @bid-accpted="refreshData"
+            />
           </div>
-          <PaginateComponet :page="page" :meta="recivedBids?.meta" @update:model-value="(v) => {
-        page = v;
-        refreshBids();
-      }
-        " />
+          <PaginateComponet
+            :page="bidQuery.page"
+            :meta="recivedBids?.meta"
+            @update:model-value="
+              (v) => {
+                bidQuery.page = v;
+                refreshBids();
+              }
+            "
+          />
         </div>
       </div>
     </div>

@@ -9,14 +9,71 @@ import Database from '@ioc:Adonis/Lucid/Database'
 import VendorProfileUpdateValidator from 'App/Validators/VendorProfileUpdateValidator'
 import Image from 'App/Models/Image'
 import VendorProfile from 'App/Models/vendorUser/VendorProfile'
+import Review from 'App/Models/Review'
+import CreateReviewValidator from 'App/Validators/CreateReviewValidator'
 
 export default class VendorUsersController extends BaseController {
   constructor() {
     super(VendorUser, VendorUserCreateValidator, VendorUserUpdateValidator, 'VendorUserPolicy')
   }
 
+  public async getReviews({ response, params, request }: HttpContextContract) {
+    const reviewsQuery = Review.query().where('vendor_user_id', params.id)
+
+    this.indexfilterQuery(request.qs() as any, reviewsQuery)
+
+    let reviews: Review[] | null = null
+
+    if (request.qs().page) {
+      reviews = await reviewsQuery.paginate(
+        request.qs().page,
+        request.qs().rowsPerPage || this.perPage
+      )
+    } else {
+      reviews = await reviewsQuery.exec()
+    }
+
+    return response.custom({
+      code: 200,
+      success: true,
+      message: null,
+      data: reviews,
+    })
+  }
+
+  public async create_review({ request, response, bouncer, auth, params }: HttpContextContract) {
+    await bouncer.with('ReviewPolicy').authorize('create')
+
+    const user = auth.user
+    const vendorId = params.id
+
+    const reviewExist = await Review.query()
+      .where('user_id', user!.id)
+      .where('vendor_user_id', vendorId)
+      .first()
+
+    if (reviewExist) {
+      return response.custom({
+        code: 400,
+        message: 'You have already rated this vendor',
+        success: false,
+        data: null,
+      })
+    }
+
+    const payload = await request.validate(CreateReviewValidator)
+
+    const review = await Review.create({ ...payload, userId: user?.id, vendorUserId: vendorId })
+    return response.custom({
+      message: 'Review added',
+      code: 201,
+      data: review,
+      success: true,
+    })
+  }
+
   public async store({ request, response, bouncer }: HttpContextContract) {
-    const payload = await request.validate(VendorUserCreateValidator)
+    const { userType, ...payload } = await request.validate(VendorUserCreateValidator)
 
     await bouncer.with('VendorUserPolicy').authorize('create')
 
@@ -24,7 +81,6 @@ export default class VendorUsersController extends BaseController {
 
     await Database.transaction(async (trx) => {
       user = await VendorUser.create(payload, { client: trx })
-
     })
 
     return response.custom({
@@ -51,7 +107,6 @@ export default class VendorUsersController extends BaseController {
       success: true,
     })
   }
-
 
   public async updateProfile({ request, response, params, bouncer }: HttpContextContract) {
     const user = await VendorUser.findOrFail(+params.id)

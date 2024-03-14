@@ -1,33 +1,34 @@
-import { defineStore } from 'pinia';
-import { ref } from 'vue';
+import { defineStore } from "pinia";
+import { ref } from "vue";
 
 type IModalContent =
   | null
-  | 'confirm'
-  | 'deleteRecord'
-  | 'changeRole'
-  | 'changeAdminStatus'
-  | 'changeUserStatus'
-  | 'delete'
-  | 'contactMessage'
-  | 'addContinent'
-  | 'editContinent'
-  | 'addCountry'
-  | 'editCountry'
-  | 'addState'
-  | 'editState'
-  | 'addCity'
-  | 'editCity'
-  | 'addStreet'
-  | 'editStreet'
-  | 'addRole'
-  | 'deleteNotification'
-  | 'changeSupportTicketStatus'
-  | 'WebAddReview'
-  | 'webApplyCoupon'
-  | 'webPostRequirement'
+  | "confirm"
+  | "deleteRecord"
+  | "changeRole"
+  | "changeAdminStatus"
+  | "changeUserStatus"
+  | "delete"
+  | "contactMessage"
+  | "addContinent"
+  | "editContinent"
+  | "addCountry"
+  | "editCountry"
+  | "addState"
+  | "editState"
+  | "addCity"
+  | "editCity"
+  | "addStreet"
+  | "editStreet"
+  | "addRole"
+  | "deleteNotification"
+  | "changeSupportTicketStatus"
+  | "WebAddReview"
+  | "webApplyCoupon"
+  | "webPostRequirement"
+  | "WebSearchFilter";
 
-const modalStore = defineStore('modal', () => {
+const modalStore = defineStore("modal", () => {
   const show = ref(false);
   const meta = ref<any>(null);
   const content = ref<IModalContent>(null);

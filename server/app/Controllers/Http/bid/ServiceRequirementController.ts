@@ -6,6 +6,7 @@ import Database from '@ioc:Adonis/Lucid/Database'
 import { schema } from '@ioc:Adonis/Core/Validator'
 import { ModelQueryBuilderContract } from '@ioc:Adonis/Lucid/Orm'
 import Bid from 'App/Models/bid/Bid'
+import Service from 'App/Models/service/Service'
 
 export default class ServiceRequirementController extends BaseController {
   constructor() {
@@ -54,13 +55,11 @@ export default class ServiceRequirementController extends BaseController {
 
     await bouncer.with('ServiceRequirementPolicy').authorize('view', serviceRequirement)
 
-    const bidQuery = Bid.query()
-      .where('id', serviceRequirement.acceptedBidId)
+    const bidQuery = Bid.query().where('id', serviceRequirement.acceptedBidId)
 
     this.indexfilterQuery(request.qs() as any, bidQuery)
 
     const bid = await bidQuery.first()
-
 
     return response.custom({
       code: 200,
@@ -76,10 +75,6 @@ export default class ServiceRequirementController extends BaseController {
     await bouncer.with('ServiceRequirementPolicy').authorize('view', serviceRequirement)
 
     const bidQuery = Bid.query().where('service_requirement_id', serviceRequirement.id)
-
-    if (serviceRequirement.acceptedBidId) {
-      bidQuery.whereNot('id', serviceRequirement.acceptedBidId)
-    }
 
     this.indexfilterQuery(request.qs() as any, bidQuery)
 
@@ -155,7 +150,7 @@ export default class ServiceRequirementController extends BaseController {
         code: 400,
         message: 'You have already accepted a bid',
         data: null,
-        success: false
+        success: false,
       })
     }
     await bouncer.with('ServiceRequirementPolicy').authorize('update', serviceRequirement)
@@ -190,7 +185,7 @@ export default class ServiceRequirementController extends BaseController {
         code: 400,
         message: 'You have not accepted any bid',
         data: null,
-        success: false
+        success: false,
       })
     }
 

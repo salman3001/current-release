@@ -14,7 +14,7 @@ export default class UsersController extends BaseController {
   }
 
   public async store({ request, response, bouncer }: HttpContextContract) {
-    const payload = await request.validate(UserCreateValidator)
+    const { userType, ...payload } = await request.validate(UserCreateValidator)
     const user = new User()
     await bouncer.with('userPolicy').authorize('create')
 
@@ -38,6 +38,9 @@ export default class UsersController extends BaseController {
     user.merge(payload)
     await user.save()
 
+    await user.refresh()
+    await user.load('profile')
+
     return response.custom({
       message: 'User updated Successfully',
       code: 201,
@@ -49,7 +52,6 @@ export default class UsersController extends BaseController {
   public async updateProfile({ request, response, params, bouncer }: HttpContextContract) {
     const user = await User.findOrFail(+params.id)
     await bouncer.with('userPolicy').authorize('update', user)
-    user.load('profile')
     const profile = await UserProfile.findByOrFail('user_id', user.id)
 
     const payload = await request.validate(UserProfileUpdateValidator)
@@ -74,44 +76,6 @@ export default class UsersController extends BaseController {
       } else {
         await profile.related('social').create(payload.social)
       }
-    }
-
-    if (payload.favoriteLinks) {
-      await profile?.load('favoriteLinks')
-
-      if (profile?.favoriteLinks) {
-        profile.favoriteLinks.forEach((l) => {
-          l.delete()
-        })
-      }
-
-      await profile.related('favoriteLinks').createMany(payload.favoriteLinks)
-    }
-
-    if (payload.workExperience) {
-      await profile?.load('experiences')
-
-      if (profile?.experiences) {
-        if (profile?.experiences) {
-          for (const e of profile.experiences) {
-            await e.delete()
-          }
-        }
-      }
-      await profile.related('experiences').createMany(payload.workExperience)
-    }
-
-    if (payload.education) {
-      await profile?.load('educations')
-
-      if (profile?.educations) {
-        if (profile?.educations) {
-          for (const e of profile.educations) {
-            await e.delete()
-          }
-        }
-      }
-      await profile.related('educations').createMany(payload.education)
     }
 
     if (payload.image) {
@@ -142,7 +106,7 @@ export default class UsersController extends BaseController {
       profile.notificationSetting = payload.NotificationSettings
     }
 
-    await user.save()
+    await profile.save()
 
     return response.custom({
       message: 'User Profile Updated!',

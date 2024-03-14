@@ -14,20 +14,38 @@ const form = ref({
 
 const creatReview = async () => {
   loading.value = true;
-  try {
-    const data = await customFetch<IPageRes<any>>(
-      apiRoutes.create_review(modal.meta.serviceId),
-      {
-        method: "post",
-        body: form.value,
+  if (modal.meta.type == "vendor") {
+    try {
+      const data = await customFetch<IPageRes<any>>(
+        apiRoutes.vendor_reviews(modal.meta.vendorId),
+        {
+          method: "post",
+          body: form.value,
+        }
+      );
+      if (data.success === true) {
+        modal.meta.onSuccess();
+        modal.show = !modal.show;
       }
-    );
-    if (data.success === true) {
-      modal.meta.onSuccess();
-      modal.show = !modal.show;
+    } catch (error) {
+      console.log(error);
     }
-  } catch (error) {
-    console.log(error);
+  } else if (modal.meta.type == "service") {
+    try {
+      const data = await customFetch<IPageRes<any>>(
+        apiRoutes.create_review(modal.meta.serviceId),
+        {
+          method: "post",
+          body: form.value,
+        }
+      );
+      if (data.success === true) {
+        modal.meta.onSuccess();
+        modal.show = !modal.show;
+      }
+    } catch (error) {
+      console.log(error);
+    }
   }
   loading.value = false;
 };

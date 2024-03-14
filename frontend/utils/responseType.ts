@@ -20,7 +20,7 @@ interface IPageRes<T>
   extends IResType<{
     data: T;
     meta: PageMeta;
-  }> { }
+  }> {}
 
 interface ImageType {
   name: string;
@@ -53,6 +53,7 @@ interface TimeStamps {
 type IServiceCategory = {
   id: number;
   name: string;
+  slug: string;
   short_desc: string | null;
   long_desc: string | null;
   status: string | null;
@@ -63,6 +64,7 @@ type IServiceCategory = {
 type IServiceSubcategory = {
   id: number;
   name: string;
+  slug: string;
   short_desc: string | null;
   long_desc: string | null;
   status: string | null;
@@ -73,6 +75,7 @@ type IServiceSubcategory = {
 type IService = {
   id: number;
   name: string;
+  slug: string;
   short_desc: string | null;
   long_desc: string | null;
   is_active: boolean;
@@ -81,7 +84,7 @@ type IService = {
     x: number;
     y: number;
   };
-  avgRating: string;
+  avg_rating: string;
   cover: ImageType | null;
   brocher: ImageType | null;
   video: ImageType | null;
@@ -115,12 +118,25 @@ interface IServiceVariant {
   meta: any;
 }
 
+type IServiceTag = {
+  id: number;
+  name: string;
+  slug: string;
+  shortDesc: string;
+  longDesc: string;
+  status: boolean;
+  thumbnail: ImageType;
+  faqs: IFaq[];
+  seo: ISeo;
+} & TimeStamps;
+
 type IVendorProfile = {
   id: number;
   name: string;
   short_desc: string;
   long_desc: string;
   is_active: boolean;
+  avatar: ImageType;
   logo: ImageType;
   cover: ImageType;
   brocher: ImageType;
@@ -186,8 +202,8 @@ type IReview = {
   vendor_user_id: number;
   service_id: number;
   user: IUser;
-  vendorUser: IVendorUser
-  service: IService
+  vendorUser: IVendorUser;
+  service: IService;
   meta: any;
 } & TimeStamps;
 
@@ -208,7 +224,7 @@ type IVendorUser = {
   notifications: INotification[];
   subscribed_categories: IServiceCategory[];
   bid_booking: IBidBooking[];
-  reviews: IReview[]
+  reviews: IReview[];
   services: IService[];
   meta: any;
 } & TimeStamps;
@@ -298,7 +314,22 @@ type IBooking = {
   service_variant_id: number;
   user_id: number;
   vendor_user_id: number;
-  booking_detail: {};
+  booking_detail: {
+    service_variant: {
+      id: number;
+      qty: number;
+      name: string;
+      price: string;
+      image: ImageType;
+      service_id: number;
+      service_name: string;
+    };
+    total_without_discount: string;
+    vendor_discount: string;
+    total_after_discount: string;
+    coupon_discount: string;
+    grand_total: string;
+  };
   payment_detail: {};
   status: string;
   vendor_user: IVendorUser;
@@ -313,7 +344,19 @@ type IBidBooking = {
   price: number;
   user_id: number;
   vendor_user_id: number;
-  booking_detail: {};
+  booking_detail: {
+    serviceRequirement: {
+      id: number;
+      title: string;
+      desc: string;
+      budgetType: string;
+      budget: string;
+    };
+    acceptedBid: {
+      id: number;
+      offeredPrice: string;
+    };
+  };
   payment_detail: {};
   status: string;
   vendor_user: IVendorUser;

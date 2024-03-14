@@ -30,7 +30,7 @@ function isNumberInRange(
   >
     <template v-if="$q.screen.lt.sm">
       <q-carousel-slide v-for="(c, i) in category" :name="i + 1">
-        <NuxtLink :to="routes.services_by_category(c.name)">
+        <NuxtLink :to="routes.services_by_category(c.slug)">
           <div class="row fit justify-start q-gutter-md no-scroll no-wrap">
             <q-img
               class="rounded-borders col-12 full-height"
@@ -59,7 +59,7 @@ function isNumberInRange(
               :src="
                 c.thumbnail?.url || '/images/service-category-placeholder.jpg'
               "
-              @click="navigateTo(routes.services_by_category(c.name))"
+              @click="navigateTo(routes.services_by_category(c.slug))"
             >
               <div class="absolute-bottom text-subtitle1">
                 <p class="q-ma-none">{{ c.name }}</p>
@@ -83,7 +83,7 @@ function isNumberInRange(
               :src="
                 c.thumbnail?.url || '/images/service-category-placeholder.jpg'
               "
-              @click="navigateTo(routes.services_by_category(c.name))"
+              @click="navigateTo(routes.services_by_category(c.slug))"
             >
               <div class="absolute-bottom text-subtitle1">
                 <p class="q-ma-none">{{ c.name }}</p>

@@ -21,6 +21,7 @@ import BidBooking from '../bookings/BidBooking'
 import Review from '../Review'
 import Service from '../service/Service'
 import VendorProfile from './VendorProfile'
+import BigNumber from 'bignumber.js'
 
 export default class VendorUser extends BaseModel {
   @column({ isPrimary: true })
@@ -47,7 +48,9 @@ export default class VendorUser extends BaseModel {
   @column()
   public isActive: boolean
 
-  @column()
+  @column({
+    serialize: (v) => new BigNumber(v || 0).toFixed(1),
+  })
   public avgRating: string | number
 
   @column({ serializeAs: null })

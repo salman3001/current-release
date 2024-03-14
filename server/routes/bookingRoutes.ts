@@ -7,7 +7,7 @@ Route.group(() => {
   Route.get('bookings/customer-bookings', 'booking/BookingController.customerBookingList')
   Route.get('bookings/vendor-bookings', 'booking/BookingController.venodrBookingList')
   Route.put('bookings/:id/update-status', 'booking/BookingController.updateStatus')
-  Route.resource('bookings', 'booking/BookingController').only(['index', 'store'])
+  Route.resource('bookings', 'booking/BookingController').only(['index', 'store', 'show'])
 
   Route.get('bid-bookings/my-list', 'booking/BidBookingController.myList')
   Route.post('bid-bookings/:id/update-status', 'booking/BidBookingController.updateStatus')

@@ -67,7 +67,7 @@ const columns = [
 
         <template v-slot:body-cell-More="props">
           <q-td :props="props">
-            <NuxtLink :to="routes.view_booking(props.row.id)">
+            <NuxtLink :to="routes.view_custom_booking(props.row.id)">
               <q-btn size="sm" color="primary">View Detail</q-btn>
             </NuxtLink>
           </q-td>
