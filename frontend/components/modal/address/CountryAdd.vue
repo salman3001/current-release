@@ -25,7 +25,7 @@ const { execute, loading } = CountriesApi.post();
 
 <template>
   <q-card style="width: 100%">
-    <q-toolbar style="background-color: #ebeae4">
+    <q-toolbar color="primary">
       <q-toolbar-title><span class="text-weight-bold">Add Country</span></q-toolbar-title>
       <q-btn flat dense icon="close" v-close-popup />
     </q-toolbar>
@@ -38,12 +38,12 @@ const { execute, loading } = CountriesApi.post();
       }
         ">
         <q-select v-if="continents" outlined options-dense emit-value map-options v-model="form.continentId" :options="[
-          { label: 'All', value: '' },
-          ...continents.map((c) => ({
-            label: c?.name,
-            value: c?.id,
-          })),
-        ]" :rules="[rules.required('required')]" label="Continent" class="col-auto" style="min-width: 8rem" />
+        { label: 'All', value: '' },
+        ...continents.map((c) => ({
+          label: c?.name,
+          value: c?.id,
+        })),
+      ]" :rules="[rules.required('required')]" label="Continent" class="col-auto" style="min-width: 8rem" />
         <q-input outlined v-model="form.name" label="Name" :rules="[rules.required('required')]" />
         <q-toggle v-model="form.isActive" label="Activate" class="col-12 col-sm-6 col-md-3" />
         <div class="row q-gutter-sm justify-end q-pt-lg">

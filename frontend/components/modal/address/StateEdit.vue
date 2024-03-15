@@ -22,7 +22,7 @@ const { execute, loading } = StateApi.put(modal.meta?.id);
 
 <template>
   <q-card style="width: 100%">
-    <q-toolbar style="background-color: #ebeae4">
+    <q-toolbar color="primary">
       <q-toolbar-title><span class="text-weight-bold">Edit State</span></q-toolbar-title>
       <q-btn flat dense icon="close" v-close-popup />
     </q-toolbar>

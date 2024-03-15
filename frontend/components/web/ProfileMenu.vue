@@ -1,10 +1,8 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
 
 const auth = authStore();
-const { user } = useAuth();
-const upload = ref("");
-const config = useRuntimeConfig();
+const user = useCookie('user') as Ref<IUser> | null
+const getImageUrl = useGetImageUrl()
 
 const logout = () => {
   auth.logout("customer", () => {
@@ -23,41 +21,43 @@ const logout = () => {
     socketToken.value = null;
 
     createFetch({
-      baseURL: config.public.baseApi,
       headers: {
         authorization: "",
       },
     });
-    navigateTo(routes.auth.admin_login);
+    navigateTo(routes.home);
   });
 };
 
-onMounted(() => {
-  upload.value = process.env.UPLOAD as string;
-});
+const confirmLogout = () => {
+  if (confirm("Are you sure you want to logout?")) {
+    logout();
+  }
+};
+
 </script>
 
 <template>
-  <q-btn round class="text-black" unelevated outline color="green-10">
+  <q-btn round class="text-black">
     <q-avatar size="36px">
-      <img
-        :src="
-          user && user?.avatar?.url
-            ? $config.public.baseApi + user?.avatar?.url
-            : '/images/sample-dp.png'
-        "
-      />
+      <img :src="getImageUrl(user?.profile?.avatar?.url, '/images/sample-dp.png')" />
     </q-avatar>
 
-    <q-menu anchor="bottom left">
-      <q-list dense style="min-width: 100px">
-        <q-item clickable v-close-popup>
-          <q-item-section @click="logout">Sign Out</q-item-section>
+    <q-menu anchor="bottom left" style="border-radius: 10px;">
+      <q-list dense style="min-width: 180px;" class="">
+        <q-item clickable v-close-popup :to="routes.account">
+          <q-item-section avatar><q-icon name="manage_accounts" color="primary"></q-icon></q-item-section>
+          <q-item-section>
+            My Account
+          </q-item-section>
         </q-item>
-        <!-- <q-item clickable v-close-popup>
-          <q-item-section>New incognito tab</q-item-section>
+        <q-separator />
+        <q-item clickable v-close-popup @click="confirmLogout">
+          <q-item-section avatar><q-icon name="logout" color="primary"></q-icon></q-item-section>
+          <q-item-section>Sign Out</q-item-section>
         </q-item>
-        <q-separator /> -->
+
+        <!-- <q-separator /> -->
         <!-- <q-item clickable v-close-popup>
           <q-item-section>Recent tabs</q-item-section>
         </q-item>

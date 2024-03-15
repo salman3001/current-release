@@ -8,10 +8,10 @@ defineProps<{
 
 RouterLink
 </script>
+
 <template>
   <span>
-    <RouterLink class="text-h6 text-weight-bold text-black"  style="text-decoration: none;"
-      :to="to">
+    <RouterLink class="text-h6 text-weight-bold text-black" style="text-decoration: none;" :to="{ path: to, query: {} }">
       <div :style="{ width: size, }">
         <q-img src="/images/logo.png"></q-img>
       </div>

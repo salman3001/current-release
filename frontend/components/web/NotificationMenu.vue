@@ -16,11 +16,11 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <q-btn round icon="mail" outline class="text-primary" unelevated>
+  <q-btn round icon="mail" class="text-primary">
     <q-badge floating rounded color="red">{{
       notify.notificationCount
     }}</q-badge>
-    <q-menu anchor="bottom left">
+    <q-menu anchor="bottom left" style="border-radius: 10px;">
       <q-list dense style="min-width: 300px; font-size: small">
         <q-item clickable v-close-popup v-for="(n, i) in notify.notifcations" :key="i" :style="{
       backgroundColor: n?.read_at ? 'none' : 'rgb(237, 233, 228)',

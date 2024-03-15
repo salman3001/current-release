@@ -14,7 +14,7 @@ const { execute, loading } = ContinentsApi.post();
 
 <template>
   <q-card style="width: 100%">
-    <q-toolbar style="background-color: #ebeae4">
+    <q-toolbar color="primary">
       <q-toolbar-title><span class="text-weight-bold">Add Continent</span></q-toolbar-title>
       <q-btn flat dense icon="close" v-close-popup />
     </q-toolbar>

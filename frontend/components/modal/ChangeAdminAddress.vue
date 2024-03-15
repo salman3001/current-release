@@ -39,7 +39,7 @@ const update = async () => {
 
 <template>
   <q-card>
-    <q-toolbar style="background-color: #ebeae4">
+    <q-toolbar color="primary">
       <q-toolbar-title><span class="text-weight-bold">Change Role</span></q-toolbar-title>
       <q-btn flat dense icon="close" v-close-popup />
     </q-toolbar>
@@ -49,26 +49,26 @@ const update = async () => {
         <p class="text-subtitle1">Location Information</p>
         <div class="row q-col-gutter-md">
           <q-input outlined v-model="form.address.address" class="col-12 col-md-9" label="Address" />
-          <q-select outlined emit-value map-options v-model="form.address.continentId" :options="address.selectContinents"
-            label="Continet" class="col-12 col-sm-6 col-md-3" @update:model-value="(value) => {
-              address.getCountries(value);
-            }
-              " />
+          <q-select outlined emit-value map-options v-model="form.address.continentId"
+            :options="address.selectContinents" label="Continet" class="col-12 col-sm-6 col-md-3" @update:model-value="(value) => {
+            address.getCountries(value);
+          }
+            " />
           <q-select outlined emit-value map-options v-model="form.address.countryId" label="Country"
             class="col-12 col-sm-6 col-md-3" :options="address.selectContries" @update:model-value="(value) => {
-              address.getstates(value);
-            }
-              " />
+            address.getstates(value);
+          }
+            " />
           <q-select outlined emit-value map-options v-model="form.address.stateId" label="State"
             class="col-12 col-sm-6 col-md-3" :options="address.selectStates" @update:model-value="(value) => {
-              address.getCities(value);
-            }
-              " />
+            address.getCities(value);
+          }
+            " />
           <q-select outlined emit-value map-options v-model="form.address.cityId" label="City"
             class="col-12 col-sm-6 col-md-3" :options="address.selectCities" @update:model-value="(value) => {
-              address.getStreets(value);
-            }
-              " />
+            address.getStreets(value);
+          }
+            " />
           <q-select outlined emit-value map-options v-model="form.address.streetId" label="Street"
             class="col-12 col-sm-6 col-md-3" :options="address.selectStreets" />
           <q-input outlined v-model="form.address.zip" class="col-12 col-sm-6 col-md-3" label="Post Code" />

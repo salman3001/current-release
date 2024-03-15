@@ -22,7 +22,7 @@ const { execute, loading } = StreetApi.post();
 
 <template>
   <q-card style="width: 100%">
-    <q-toolbar style="background-color: #ebeae4">
+    <q-toolbar color="primary">
       <q-toolbar-title><span class="text-weight-bold">Add Street</span></q-toolbar-title>
       <q-btn flat dense icon="close" v-close-popup />
     </q-toolbar>
@@ -36,24 +36,24 @@ const { execute, loading } = StreetApi.post();
         ">
         <q-select outlined emit-value map-options :options="address.selectContinents" label="Continet"
           class="col-12 col-sm-6 col-md-3" v-model="form.continentId" @update:model-value="(value) => {
-            form.countryId = '';
-            form.stateId = ''
-            form.cityId = ''
-            address.getCountries(value);
-          }
-            " :rules="[rules.required('required')]" />
+        form.countryId = '';
+        form.stateId = ''
+        form.cityId = ''
+        address.getCountries(value);
+      }
+        " :rules="[rules.required('required')]" />
         <q-select outlined emit-value map-options v-model="form.countryId" label="Country"
           class="col-12 col-sm-6 col-md-3" :options="address.selectContries" @update:model-value="(value) => {
-            form.stateId = ''
-            form.cityId = ''
-            address.getstates(value);
-          }
-            " :rules="[rules.required('required')]" />
+        form.stateId = ''
+        form.cityId = ''
+        address.getstates(value);
+      }
+        " :rules="[rules.required('required')]" />
         <q-select outlined emit-value map-options v-model="form.stateId" label="State" class="col-12 col-sm-6 col-md-3"
           :options="address.selectStates" :rules="[rules.required('required')]" @update:model-value="(value) => {
-            form.cityId = ''
-            address.getCities(value);
-          }" />
+        form.cityId = ''
+        address.getCities(value);
+      }" />
         <q-select outlined emit-value map-options v-model="form.cityId" label="City" class="col-12 col-sm-6 col-md-3"
           :options="address.selectCities" :rules="[rules.required('required')]" />
         <q-input outlined v-model="form.name" label="Name" :rules="[rules.required('required')]" />

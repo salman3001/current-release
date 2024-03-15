@@ -21,7 +21,7 @@ const { execute, loading } = StateApi.post();
 
 <template>
   <q-card style="width: 100%">
-    <q-toolbar style="background-color: #ebeae4">
+    <q-toolbar color="primary">
       <q-toolbar-title><span class="text-weight-bold">Add State</span></q-toolbar-title>
       <q-btn flat dense icon="close" v-close-popup />
     </q-toolbar>
@@ -35,10 +35,10 @@ const { execute, loading } = StateApi.post();
         ">
         <q-select outlined emit-value map-options :options="address.selectContinents" label="Continet"
           class="col-12 col-sm-6 col-md-3" v-model="form.continentId" @update:model-value="(value) => {
-            form.countryId = '';
-            address.getCountries(value);
-          }
-            " :rules="[rules.required('required')]" />
+        form.countryId = '';
+        address.getCountries(value);
+      }
+        " :rules="[rules.required('required')]" />
         <q-select outlined emit-value map-options v-model="form.countryId" label="Country"
           class="col-12 col-sm-6 col-md-3" :options="address.selectContries" :rules="[rules.required('required')]" />
         <q-input outlined v-model="form.name" label="Name" :rules="[rules.required('required')]" />

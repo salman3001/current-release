@@ -3,9 +3,10 @@ const customFetch = useCustomFetch();
 
 const page = ref(1);
 const route = useRoute();
-const tab = ref(route.query?.tab ? Number(route.query?.tab) : null);
+// const tab = ref(route.query?.tab ? Number(route.query?.tab) : null);
 const sortBy = ref(route.query?.sortBy || null);
 const modal = modalStore();
+const scrollPosition = ref(0)
 
 const isFilterEmpty = () => {
   if (
@@ -20,7 +21,6 @@ const isFilterEmpty = () => {
 };
 
 const resetFilters = () => {
-  tab.value = null;
   navigateTo(routes.home);
 };
 
@@ -62,10 +62,10 @@ const {
           as: "starting_from",
         },
       ],
-      where: tab.value
+      where: route.query.tab
         ? {
-            service_category_id: tab.value,
-          }
+          service_category_id: route.query.tab,
+        }
         : {},
       sortBy: sortBy.value || "created_at",
       whereILike: route.query.whereILike
@@ -91,38 +91,30 @@ watch(
 </script>
 
 <template>
-  <div class="" style="max-width: 90vw">
-    <q-tabs
-      dense
-      v-model="tab"
-      active-color="primary"
-      indicator-color="primary"
-      align="left"
-      @update:model-value="(v:number)=>navigateTo({
-        path:routes.home,
-        query:{
-          ...route.query,
-          tab:v
-        }
-      })"
-    >
-      <q-tab
-        class="normalcase"
-        v-for="c in data?.categories"
-        :name="c.id"
-        :label="c.name"
-        icon="mail"
-        style="font-size: 0.1rem"
-      ></q-tab>
-    </q-tabs>
-  </div>
-  <q-separator />
-  <div class="q-pa-md q-pa-md-lg q-pa-lg-xl q-gutter-y-lg">
-    <div class="row justify-end gap-50">
-      <q-btn
-        icon="tune"
-        rounded
-        @click="
+  <br>
+  <div class="row justify-between items-center q-col-gutter-md">
+    <div class=" row gap-50 col-12 col-sm-1 gt-sm" style="flex-wrap: nowrap;">
+      <q-btn round icon="arrow_back_ios" size="sm" class="bg-grey-3" flat color="grey-9" rounded
+        @click="scrollPosition -= 300" />
+      <q-btn round icon="arrow_forward_ios" size="sm" class="bg-grey-3" flat color="grey-9" rounded
+        @click="scrollPosition += 300" />
+    </div>
+    <ScrollArea height="70px" class="col-12 col-sm-10 " :scroll-position="scrollPosition" :duration="300">
+      <div class="row gap-50 justify-center " style="width: max-content;flex-wrap: nowrap;">
+        <WebCategoryIcon v-for="c in   data?.categories  " :category="c"
+          :selected="(route.query.tab as number) == c.id ? true : false" @select="(v: number) => {
+          navigateTo({
+            path: routes.home,
+            query: { ...route.query, tab: v }
+          })
+
+        }" />
+
+      </div>
+    </ScrollArea>
+
+    <div class="row justify-end gap-50 col-12 col-sm-1" style="flex-wrap: nowrap;">
+      <q-btn round icon="tune" size="sm" class="shadow-3" rounded @click="
           modal.togel('WebSearchFilter', {
             sortBy: sortBy,
             atApply: (v: any) => {
@@ -132,43 +124,34 @@ watch(
               });
             },
           })
-        "
-        color="primary"
-        label="Filters"
-      />
-      <q-btn
-        color="secondary"
-        icon="close"
-        @click="resetFilters"
-        v-if="isFilterApplied"
-        >Clear Filters</q-btn
-      >
-    </div>
+          ">
+        <q-tooltip class="bg-primary">
+          Fliters
+        </q-tooltip>
+      </q-btn>
 
+      <q-btn round icon="close" class="shadow-3" size="sm" @click="resetFilters" v-if="isFilterApplied">
+        <q-tooltip class="bg-primary">
+          Clear Filters
+        </q-tooltip>
+      </q-btn>
+    </div>
+  </div>
+  <div class="q-gutter-y-lg q-pt-nonex">
     <div>
       <!-- <h2 class="text-h6 text-bold q-my-none">Top Rated Services</h2>
       <p class="text-muted">A list of top rated services</p> -->
-      <div class="row q-col-gutter-lg q-mt-sm">
-        <div
-          v-if="servicesPending"
-          v-for="s in 10"
-          class="col-12 col-sm-6 col-md-4 col-lg-3"
-        >
+      <div class="row q-col-gutter-lg">
+        <div v-if="servicesPending" v-for="  s   in   10  " class="col-12 col-sm-6 col-md-4 col-lg-3">
           <SkeletonBase type="card" />
         </div>
-        <div
-          v-else
-          v-for="s in services?.data.data"
-          class="col-12 col-sm-6 col-md-4 col-lg-3"
-        >
+        <div v-else v-for="  s   in   services?.data.data  " class="col-12 col-sm-6 col-md-4 col-lg-3">
           <WebServiceCard :service="s" />
         </div>
       </div>
-      <PaginateComponet
-        :page="page"
-        :meta="services?.data.meta"
-        @update:model-value="(v: number) => { page = v; refresh() }"
-      />
+      <PaginateComponet :page="page" :meta="services?.data.meta"
+        @update:model-value="(v: number) => { page = v; refresh() }" />
     </div>
   </div>
 </template>
+wizreck
