@@ -91,32 +91,33 @@ watch(
 </script>
 
 <template>
+  <div class="" style="max-width: 90vw">
+    <q-tabs
+      dense
+      v-model="tab"
+      active-color="primary"
+      indicator-color="primary"
+      align="left"
+      @update:model-value="(v:number)=>navigateTo({
+        path:routes.home,
+        query:{
+          ...route.query,
+          tab:v
+        }
+      })"
+    >
+      <q-tab
+        class="normalcase"
+        v-for="c in data?.categories"
+        :name="c.id"
+        :label="c.name"
+        icon="mail"
+        style="font-size: 0.1rem"
+      ></q-tab>
+    </q-tabs>
+  </div>
+  <q-separator />
   <div class="q-pa-md q-pa-md-lg q-pa-lg-xl q-gutter-y-lg">
-    <div class="" style="max-width: 90vw">
-      <q-tabs
-        dense
-        v-model="tab"
-        active-color="primary"
-        indicator-color="primary"
-        align="left"
-        @update:model-value="(v:number)=>navigateTo({
-          path:routes.home,
-          query:{
-            ...route.query,
-            tab:v
-          }
-        })"
-      >
-        <q-tab
-          class="normalcase"
-          v-for="c in data?.categories"
-          :name="c.id"
-          :label="c.name"
-          icon="mail"
-          style="font-size: 0.1rem"
-        ></q-tab>
-      </q-tabs>
-    </div>
     <div class="row justify-end gap-50">
       <q-btn
         icon="tune"

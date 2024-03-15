@@ -172,16 +172,16 @@ const {
       </div>
       <div class="q-gutter-md">
         <h5>Cutomer Reviews</h5>
-        <div class="row gap-100">
-          <div class="q-gutter-lg col-12 col-md-4" style="">
+        <div class="row gap-200">
+          <div class="q-gutter-lg col-12 col-md-5" style="">
             <RatingComponent :rating="vendor!.avg_rating || 0" /><span
               class="text-h5"
               >{{ vendor?.avg_rating || 0 }} out of 5</span
             >
             <q-separator />
             <div class="q-gutter-y-sm">
-              <h6>Rate this service</h6>
-              <p>Share your throught about this service</p>
+              <h6>Rate this vendor</h6>
+              <p>Share your throught about this vendor</p>
               <q-btn
                 color="primary"
                 @click="
@@ -202,13 +202,13 @@ const {
             </div>
             <q-separator />
           </div>
-          <div style="max-width: 500px" class="q-gutter-xl col-12 col-md-8">
+          <div class="q-gutter-xl col-12 col-md-7">
             <div v-if="reviewsPending">
               <SkeletonBase type="list" v-for="i in 5" />
             </div>
             <div v-if="reviews?.data.length! < 1" class="text-subtitle1">
               <q-icon name="info" class="text-primary" size="20px" /> This
-              Service dont have any reviews yet
+              vendor dont have any reviews yet
             </div>
             <div v-for="review in reviews?.data" class="q-gutter-sm">
               <CustomerReview :review="review" />
