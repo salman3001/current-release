@@ -1,47 +1,9 @@
 <script setup lang="ts">
-
-const auth = authStore();
-const user = useCookie('user') as Ref<IUser> | null
-const getImageUrl = useGetImageUrl()
-
-const logout = () => {
-  auth.logout("customer", () => {
-    const user = useCookie("user", {
-      maxAge: 60 * 60 * 24,
-    });
-
-    const token = useCookie("token", {
-      maxAge: 60 * 60 * 24,
-    });
-
-    const socketToken = useCookie("socketToken");
-
-    user.value = null;
-    token.value = null;
-    socketToken.value = null;
-
-    createFetch({
-      headers: {
-        authorization: "",
-      },
-    });
-    navigateTo(routes.home);
-  });
-};
-
-const confirmLogout = () => {
-  if (confirm("Are you sure you want to logout?")) {
-    logout();
-  }
-};
-
+const color = ref("primary");
 </script>
-
 <template>
-  <q-btn-dropdown icon="menu" class="normalcase" label="Menu" color="primary">
-
-    <q-list style="min-width: 180px;">
-
+  <q-btn-dropdown icon="menu" flat class="btn-grey" label="Menu">
+    <q-list style="">
       <q-item clickable v-ripple :to="routes.home">
         <q-item-section avatar>
           <q-icon color="primary" name="home" />
@@ -57,13 +19,13 @@ const confirmLogout = () => {
         <q-item-section>Customize Services</q-item-section>
       </q-item>
 
-      <q-item clickable v-ripple>
+      <q-item clickable v-ripple :to="routes.blogs">
         <q-item-section avatar>
           <q-icon color="primary" name="rss_feed" />
         </q-item-section>
         <q-item-section> View Blogs </q-item-section>
       </q-item>
-      <q-item clickable v-ripple>
+      <q-item clickable v-ripple :to="routes.about">
         <q-item-section avatar>
           <q-icon color="primary" name="info" />
         </q-item-section>
@@ -71,13 +33,13 @@ const confirmLogout = () => {
         <q-item-section> About Us </q-item-section>
       </q-item>
 
-      <q-item clickable v-ripple>
+      <q-item clickable v-ripple :to="routes.contact">
         <q-item-section avatar>
           <q-icon color="primary" name="support_agent" />
         </q-item-section>
         <q-item-section> Contact </q-item-section>
       </q-item>
-      <q-item clickable v-ripple>
+      <q-item clickable v-ripple :to="routes.faqs">
         <q-item-section avatar>
           <q-icon color="primary" name="help" />
         </q-item-section>
@@ -85,7 +47,10 @@ const confirmLogout = () => {
       </q-item>
       <q-item clickable v-ripple @click="$q.dark.toggle()">
         <q-item-section avatar>
-          <q-icon color="primary" name="light_mode" :color="$q.dark.isActive ? 'muted' : 'primary'" />
+          <q-icon
+            name="light_mode"
+            :color="$q.dark.isActive ? 'muted' : 'primary'"
+          />
         </q-item-section>
         <q-item-section> Dark Mode </q-item-section>
       </q-item>
@@ -109,6 +74,5 @@ const confirmLogout = () => {
           <q-item-section>Help &amp; Feedback</q-item-section>
         </q-item> -->
     </q-list>
-
   </q-btn-dropdown>
 </template>

@@ -12,19 +12,33 @@ const text = ref(
 </script>
 
 <template>
-  <q-input type="text" outlined rounded :dense="$q.screen.lt.md" v-model="text" placeholder="Search Services"
-    :debounce="500" :style="{ minWidth: $q.screen.lt.sm ? '300px' : '500px' }" @keyup.enter="$emit('search', text)"
-    class="input-shadow">
+  <q-input
+    type="text"
+    outlined
+    rounded
+    :dense="$q.screen.lt.md"
+    v-model="text"
+    placeholder="Search Services"
+    :debounce="500"
+    :style="{ minWidth: $q.screen.lt.sm ? '300px' : '500px' }"
+    @keyup.enter="$emit('search', text)"
+    class=""
+  >
     <template v-slot:append>
-      <q-btn rounded color="primary" round :size="$q.screen.lt.md ? 'sm' : 'md'" @click="() => {
-    $emit('search', text);
-  }
-    ">
+      <q-btn
+        rounded
+        flat
+        class="btn-grey"
+        round
+        :size="$q.screen.lt.md ? 'sm' : 'md'"
+        @click="
+          () => {
+            $emit('search', text);
+          }
+        "
+      >
         <q-icon name="search" />
-        <!-- <span v-if="expand">Search </span> -->
       </q-btn>
     </template>
-
-    <template v-slot:after> </template>
   </q-input>
 </template>

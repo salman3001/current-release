@@ -1,8 +1,7 @@
 <script setup lang="ts">
-
 const auth = authStore();
-const user = useCookie('user') as Ref<IUser> | null
-const getImageUrl = useGetImageUrl()
+const user = useCookie("user") as Ref<IUser> | null;
+const getImageUrl = useGetImageUrl();
 
 const logout = () => {
   auth.logout("customer", () => {
@@ -34,26 +33,29 @@ const confirmLogout = () => {
     logout();
   }
 };
-
 </script>
 
 <template>
-  <q-btn round class="text-black">
+  <q-btn round flat class="btn-grey">
     <q-avatar size="36px">
-      <img :src="getImageUrl(user?.profile?.avatar?.url, '/images/sample-dp.png')" />
+      <img
+        :src="getImageUrl(user?.profile?.avatar?.url, '/images/sample-dp.png')"
+      />
     </q-avatar>
 
-    <q-menu anchor="bottom left" style="border-radius: 10px;">
-      <q-list dense style="min-width: 180px;" class="">
+    <q-menu anchor="bottom left" style="border-radius: 10px">
+      <q-list dense style="min-width: 180px" class="">
         <q-item clickable v-close-popup :to="routes.account">
-          <q-item-section avatar><q-icon name="manage_accounts" color="primary"></q-icon></q-item-section>
-          <q-item-section>
-            My Account
-          </q-item-section>
+          <q-item-section avatar
+            ><q-icon name="manage_accounts" color="primary"></q-icon
+          ></q-item-section>
+          <q-item-section> My Account </q-item-section>
         </q-item>
         <q-separator />
         <q-item clickable v-close-popup @click="confirmLogout">
-          <q-item-section avatar><q-icon name="logout" color="primary"></q-icon></q-item-section>
+          <q-item-section avatar
+            ><q-icon name="logout" color="primary"></q-icon
+          ></q-item-section>
           <q-item-section>Sign Out</q-item-section>
         </q-item>
 

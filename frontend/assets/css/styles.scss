@@ -513,7 +513,7 @@ $z-tooltip : 9000 !default;
 $z-notify : 9500 !default;
 $z-max : 9998 !default;
 
-$shadow-color : #000 !default;
+$shadow-color : #afafaf !default;
 $shadow-transition : box-shadow .28s cubic-bezier(.4, 0, .2, 1) !default;
 $inset-shadow : 0 7px 9px -7px rgba($shadow-color, .7) inset !default;
 $inset-shadow-down : 0 -7px 9px -7px rgba($shadow-color, .7) inset !default;
@@ -730,7 +730,7 @@ $shadows-up: (
     $shadow-up-24
 );
 
-$dark-shadow-color : #fff !default;
+$dark-shadow-color : #3d3d3d !default;
 $inset-dark-shadow : 0 7px 9px -7px rgba($dark-shadow-color, .7) inset !default;
 $inset-dark-shadow-down : 0 -7px 9px -7px rgba($dark-shadow-color, .7) inset !default;
 
@@ -1146,6 +1146,26 @@ h6 {
 
 .border-2 {
     border-width: 3px;
+}
+
+.btn-grey{
+    background-color: $grey-3;
+    color: $grey-9;
+    box-shadow: $shadow-4;
+}
+
+
+.body--dark{
+    .btn-grey{
+        background-color: $grey-9;
+        color: $grey-3;
+    }
+}
+
+.icon-pink{
+    .q-icon{
+        color:$pink
+    }
 }
 
 

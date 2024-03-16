@@ -16,6 +16,11 @@ const { data: service, pending: servicePending } = await useAsyncData(
         query: {
           preload: [
             {
+              serviceCategory: {
+                select: ["name"],
+              },
+            },
+            {
               images: {
                 select: ["*"],
               },
@@ -81,45 +86,89 @@ const {
     server: false,
   }
 );
-
-
 </script>
 
 <template>
-  <br>
+  <br />
   <div class="q-gutter-y-lg">
-    <q-card>
-      <q-card-section horizontal>
-        <q-card-section>
-          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Culpa pariatur alias hic nemo
-          quae neque
-          corrupti consequuntur unde quisquam voluptate.
+    <q-card class="shadow-18 q-py-lg">
+      <q-card-section
+        :horizontal="$q.screen.gt.sm"
+        class=""
+        style="min-width;: 400px"
+      >
+        <q-card-section
+          class="col q-pb-md justify-center items-center"
+          :style="{
+            scale: $q.screen.lt.md ? '125%' : '100%',
+            translate: $q.screen.lt.md ? '0% -10%' : '',
+          }"
+        >
+          <WebCrousel
+            height="100%"
+            :rounded="$q.screen.gt.sm"
+            :duration="2500"
+          />
         </q-card-section>
-        <q-card-section>
-          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Culpa pariatur alias hic nemo
-          quae neque
-          corrupti consequuntur unde quisquam voluptate.
+        <q-card-section class="col q-col-gutter-md">
+          <div class="row justify-between items-center">
+            <NuxtLink
+              :to="{
+                path: routes.home,
+                query: { tab: service?.serviceCategory?.id },
+              }"
+              ><q-btn
+                flat
+                icon="mail"
+                class="q-px-xs normalcase"
+                :label="service?.serviceCategory?.name"
+                v-if="service?.serviceCategory"
+              >
+              </q-btn>
+            </NuxtLink>
+
+            <div class="row items-center q-gutter-sm text-h5 text-muted">
+              <NuxtLink class="text-muted underline" to="/"
+                ><q-btn left flat icon="share" label="Share"></q-btn
+              ></NuxtLink>
+              <NuxtLink class="text-muted underline" to="/"
+                ><q-btn
+                  left
+                  outline
+                  icon="favorite"
+                  color="muted"
+                  label="Add to Wishlist"
+                  class="icon-pink"
+                >
+                </q-btn>
+              </NuxtLink>
+            </div>
+          </div>
+          <div class="row justify-between items-center">
+            <h1 class="text-h4" style="max-width: 700px">
+              {{ service?.name }}
+            </h1>
+          </div>
+          <div class="row q-gutter-x-sm items-center">
+            <q-icon name="star" color="yellow-9" size="36px"></q-icon>
+            <span class="text-h6">{{ service?.avg_rating || 0 }}</span>
+            <span class="text-muted"> (14 Reviews) </span>
+          </div>
+          <div class="q-gutter-md row items-start">
+            <WebSelectVariant
+              v-for="variant in service?.variants"
+              :variant="variant"
+              @variant-selection="(variant) => (selectedVariant = variant)"
+              :selected-id="selectedVariant?.id || 0"
+            />
+          </div>
+          <div>
+            <WebPriceCard :selected-variant="selectedVariant!" />
+          </div>
         </q-card-section>
       </q-card-section>
     </q-card>
-    <div class="row justify-between items-center">
-      <h1 class="text-h4" style="max-width: 700px">
-        {{ service?.name }}
-      </h1>
 
-      <div class="row items-center q-gutter-sm text-h5 text-muted">
-        <NuxtLink class="text-muted underline" to="/"><q-btn left flat icon="share"> Share</q-btn></NuxtLink>
-        <NuxtLink class="text-muted underline" to="/"><q-btn left flat icon="favorite"> Add to Wishlist</q-btn>
-        </NuxtLink>
-      </div>
-    </div>
-    <div class="row q-gutter-x-md items-center">
-      <span class="text-h5">{{ service?.avg_rating || 0 }}</span>
-      <RatingComponent :rating="service?.avg_rating || 0" size="2rem" />
-    </div>
-    <div>
-
-    </div>
     <p class="text-h6">
       {{ service?.short_desc }}
     </p>
@@ -128,53 +177,25 @@ const {
     </p>
     <div class="row jjustify-between full-width">
       <div class="row items-center q-gutter-md">
-        <ProfileAvatar :image="getImageUrl(
-          service?.vendorUser?.profile?.avatar?.url,
-          '/images/sample-dp.png'
-        )
-          " />
+        <ProfileAvatar
+          :image="
+            getImageUrl(
+              service?.vendorUser?.profile?.avatar?.url,
+              '/images/sample-dp.png'
+            )
+          "
+        />
         <div>
           Listed by {{ service?.vendorUser?.first_name }}
           {{ service?.vendorUser?.last_name }}
           <br />
-          <NuxtLink :to="routes.view_business(service?.vendorUser.id!)" class="underline">
-            {{ service?.vendorUser?.business_name }}</NuxtLink>
+          <NuxtLink
+            :to="routes.view_business(service?.vendorUser.id!)"
+            class="underline"
+          >
+            {{ service?.vendorUser?.business_name }}</NuxtLink
+          >
         </div>
-      </div>
-    </div>
-    <q-separator></q-separator>
-    <div>
-      <h6>Select an Options</h6>
-      <br />
-      <div class="q-gutter-md row justify-between">
-        <div>
-          <div class="q-gutter-md row items-start" style="flex-grow: 1">
-            <WebSelectVariant v-for="variant in service?.variants" :variant="variant"
-              @variant-selection="(variant) => (selectedVariant = variant)" :selected-id="selectedVariant?.id || 0" />
-          </div>
-          <br />
-
-          <div :class="$q.screen.gt.xs ? 'row q-col-gutter-md' : 'column q-col-gutter-md'
-          " class="">
-            <div class="col">
-              <h6>What is Included</h6>
-              <ul class="q-pt-sm q-gutter-y-sm list-style-none">
-                <li v-for="i in selectedVariant?.included">
-                  <q-icon name="done" color="green"></q-icon> {{ i }}
-                </li>
-              </ul>
-            </div>
-            <div class="col">
-              <h6>What is Excluded</h6>
-              <ul class="q-pt-sm q-gutter-y-sm list-style-none">
-                <li v-for="i in selectedVariant?.excluded">
-                  <q-icon name="close" color="red"></q-icon> {{ i }}
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <WebPriceCard :selected-variant="selectedVariant!" />
       </div>
     </div>
     <WebPriceCardFooter :selected-variant="selectedVariant!" />
@@ -184,24 +205,31 @@ const {
       <h5>Cutomer Reviews</h5>
       <div class="row gap-100">
         <div class="q-gutter-lg col-12 col-md-4" style="">
-          <RatingComponent :rating="service!.avg_rating || 0" /><span class="text-h5">{{ service?.avg_rating || 0 }} out
-            of 5</span>
+          <RatingComponent :rating="service?.avg_rating || 0" /><span
+            class="text-h5"
+            >{{ service?.avg_rating || 0 }} out of 5</span
+          >
           <q-separator />
           <div class="q-gutter-y-sm">
             <h6>Rate this service</h6>
             <p>Share your throught about this service</p>
-            <q-btn color="primary" @click="() => {
-          if (user) {
-            modal.togel('WebAddReview', {
-              type: 'service',
-              serviceId: service?.id,
-              onSuccess: refreshReviews,
-            });
-          } else {
-            navigateTo(routes.auth.login + `?next=${route.path}`);
-          }
-        }
-          ">Write a Review</q-btn>
+            <q-btn
+              color="primary"
+              @click="
+                () => {
+                  if (user) {
+                    modal.togel('WebAddReview', {
+                      type: 'service',
+                      serviceId: service?.id,
+                      onSuccess: refreshReviews,
+                    });
+                  } else {
+                    navigateTo(routes.auth.login + `?next=${route.path}`);
+                  }
+                }
+              "
+              >Write a Review</q-btn
+            >
           </div>
           <q-separator />
         </div>
@@ -216,7 +244,9 @@ const {
           <div v-for="review in reviews?.data" class="q-gutter-sm">
             <CustomerReview :review="review" />
           </div>
-          <q-btn color="primary" v-if="reviews?.meta.next_page_url">View More</q-btn>
+          <q-btn color="primary" v-if="reviews?.meta.next_page_url"
+            >View More</q-btn
+          >
         </div>
       </div>
     </div>

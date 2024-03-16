@@ -1,46 +1,68 @@
 <script setup lang="ts">
-import BigNumber from 'bignumber.js';
+import BigNumber from "bignumber.js";
+const qty = ref(1);
 
+const incrementQty = () => {
+  qty.value += 1;
+};
+
+const decrementQty = () => {
+  if (qty.value > 1) {
+    qty.value -= 1;
+  }
+};
 
 const props = defineProps<{
-    selectedVariant: IServiceVariant
-}>()
+  selectedVariant: IServiceVariant;
+}>();
 
+let discount = new BigNumber(0);
 
-let discount = new BigNumber(0)
-
-if (props.selectedVariant.discount_type === DiscountType.FLAT) {
-    discount = discount.plus(props.selectedVariant.discount_flat)
-} else if (props.selectedVariant.discount_type === DiscountType.PERCENATAGE) {
-    discount = new BigNumber(props.selectedVariant.discount_percentage).div(100).times(props.selectedVariant.price)
+if (props.selectedVariant?.discount_type === DiscountType.FLAT) {
+  discount = discount.plus(props.selectedVariant?.discount_flat || 0);
+} else if (props.selectedVariant?.discount_type === DiscountType.PERCENATAGE) {
+  discount = new BigNumber(props.selectedVariant?.discount_percentage || 0)
+    .div(100)
+    .times(props.selectedVariant.price);
 }
 </script>
 
 <template>
-    <q-card flat bordered style="width: 300px;height: max-content;" class="gt-sm q-pa-sm">
-        <div v-if="selectedVariant">
-            <q-card-section class="text-h5">{{ selectedVariant?.name }}</q-card-section>
-            <q-card-section>
-                <div class="row justify-between">
-                    <div>Price</div>
-                    <div>&#x20B9;{{ selectedVariant?.price }}</div>
-                </div>
-                <div class="row justify-between">
-                    <div>Discount</div>
-                    <div>&#x20B9;{{ discount.toFixed(2) }}</div>
-                </div>
-            </q-card-section>
-            <q-card-section class="row text-h5 text-bold justify-end"><span>&#x20B9;{{ new
-            BigNumber(selectedVariant?.price).minus(discount)
-                    }}</span></q-card-section>
-            <q-card-section class="text-h5">
-                <NuxtLink :to="routes.book_Service(selectedVariant.id)">
-                    <q-btn class="full-width" color="primary">Book Now</q-btn>
-                </NuxtLink>
-            </q-card-section>
+  <div>
+    <div v-if="selectedVariant" class="column q-col-gutter-md">
+      <div class="q-mt-xs q-gutter-x-lg row items-center">
+        <div class="text-bold text-h4">
+          &#x20B9;{{
+            new BigNumber(selectedVariant?.price).minus(discount).times(qty)
+          }}
         </div>
-        <div v-else>
-            Price Upon variant selection
+        <div class="text-h6 row items-center q-gutter-xs">
+          <span> Qty. </span>
+          <q-btn
+            size="xs"
+            outline
+            icon="remove"
+            round
+            color="primary"
+            @click="decrementQty"
+          />
+          <span>{{ qty }}</span>
+          <q-btn
+            size="xs"
+            outline
+            icon="add"
+            round
+            color="primary"
+            @click="incrementQty"
+          />
         </div>
-    </q-card>
+      </div>
+      <div class="text-h5">
+        <NuxtLink :to="routes.book_Service(selectedVariant.id)">
+          <q-btn class="full-width" color="primary" size="lg">Book Now</q-btn>
+        </NuxtLink>
+      </div>
+    </div>
+    <div v-else>Price Upon variant selection</div>
+  </div>
 </template>
