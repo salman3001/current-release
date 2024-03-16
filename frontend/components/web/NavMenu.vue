@@ -1,8 +1,9 @@
 <script setup lang="ts">
 const color = ref("primary");
 </script>
+
 <template>
-  <q-btn-dropdown icon="menu" flat class="btn-grey" label="Menu">
+  <q-btn-dropdown icon="menu" color="primary" label="Menu">
     <q-list style="">
       <q-item clickable v-ripple :to="routes.home">
         <q-item-section avatar>
@@ -47,10 +48,7 @@ const color = ref("primary");
       </q-item>
       <q-item clickable v-ripple @click="$q.dark.toggle()">
         <q-item-section avatar>
-          <q-icon
-            name="light_mode"
-            :color="$q.dark.isActive ? 'muted' : 'primary'"
-          />
+          <q-icon name="light_mode" :color="$q.dark.isActive ? 'muted' : 'primary'" />
         </q-item-section>
         <q-item-section> Dark Mode </q-item-section>
       </q-item>

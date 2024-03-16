@@ -946,7 +946,7 @@ $dark-shadows-up: (
     $dark-shadow-up-24
 );
 
-$generic-border-radius : 28px !default;
+$generic-border-radius : 18px !default;
 $generic-hover-transition : .3s cubic-bezier(.25, .8, .5, 1) !default;
 $typography-font-family : 'Roboto',
 '-apple-system',
@@ -1148,23 +1148,35 @@ h6 {
     border-width: 3px;
 }
 
-.btn-grey{
+.btn-grey {
     background-color: $grey-3;
     color: $grey-9;
     box-shadow: $shadow-4;
 }
 
 
-.body--dark{
-    .btn-grey{
+.body--dark {
+    .btn-grey {
         background-color: $grey-9;
         color: $grey-3;
     }
 }
 
-.icon-pink{
-    .q-icon{
-        color:$pink
+.icon-pink {
+    .q-icon {
+        color: $pink
+    }
+}
+
+.chip-primary {
+    .q-chip {
+        background: $primary;
+        opacity: 0.8;
+        color: white;
+
+        .q-icon {
+            color: black
+        }
     }
 }
 

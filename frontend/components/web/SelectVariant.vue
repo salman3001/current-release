@@ -18,35 +18,20 @@ if (props.variant.discount_type === DiscountType.FLAT) {
 </script>
 
 <template>
-  <div
-    @click="$emit('variant-selection', variant)"
-    class="row q-pa-xs q-col-gutter-x-sm cursor-pointer shadow-16"
+  <div @click="$emit('variant-selection', variant)" class="row q-pa-xs q-col-gutter-x-sm cursor-pointer shadow-16"
     :class="selectedId == variant.id ? 'border-primary border-2' : 'border'"
-    style="width: 250px; height: 100px; border-radius: 10px"
-  >
-    <q-img
-      src="/images/service-category-placeholder.jpg"
-      class="col-4 border"
-      style="height: 100%"
-    >
+    style="width: 250px; height: 100px; border-radius: 10px">
+    <q-img src="/images/service-category-placeholder.jpg" class="col-4" style="height: 100%">
     </q-img>
 
     <div class="col-8">
       <div>
-        <q-badge
-          color="negative"
-          v-if="discount.gt(0) && variant.discount_type === DiscountType.FLAT"
-          >&#x20B9;{{ variant.discount_flat }} off</q-badge
-        >
+        <q-badge color="negative" v-if="discount.gt(0) && variant.discount_type === DiscountType.FLAT">&#x20B9;{{
+      variant.discount_flat }} off</q-badge>
       </div>
       <div>
-        <q-badge
-          color="negative"
-          v-if="
-            discount.gt(0) && variant.discount_type === DiscountType.PERCENATAGE
-          "
-          >{{ variant.discount_percentage }}% off</q-badge
-        >
+        <q-badge color="negative" v-if="discount.gt(0) && variant.discount_type === DiscountType.PERCENATAGE
+      ">{{ variant.discount_percentage }}% off</q-badge>
       </div>
       <div class="ellipsis-2-lines">
         {{ variant?.name }} Lorem ipsum dolor sit amet consectetur adipisicing

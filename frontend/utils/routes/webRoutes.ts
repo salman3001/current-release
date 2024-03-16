@@ -14,6 +14,7 @@ export default {
   services_by_category: (slug: string) => `/service-category/${slug}`,
   view_service: (slug: string) => `/services/${slug}`,
   service_requirement: "/service-requirement",
+  service_requirement_post: "/service-requirement/post",
   view_service_requirement: (id: number) => `/service-requirement/${id}`,
   faqs: "/faqs",
 };

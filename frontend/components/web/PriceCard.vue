@@ -29,32 +29,21 @@ if (props.selectedVariant?.discount_type === DiscountType.FLAT) {
 
 <template>
   <div>
-    <div v-if="selectedVariant" class="column q-col-gutter-md">
+    <div v-if="selectedVariant" class="column q-col-gutter-lg">
       <div class="q-mt-xs q-gutter-x-lg row items-center">
+        <div class="line-through text-subtitle2" v-if="discount.gt(0)">
+          &#x20B9;{{ selectedVariant.price }}
+        </div>
         <div class="text-bold text-h4">
           &#x20B9;{{
-            new BigNumber(selectedVariant?.price).minus(discount).times(qty)
-          }}
+      new BigNumber(selectedVariant?.price).minus(discount).times(qty).toFixed(2)
+    }}
         </div>
         <div class="text-h6 row items-center q-gutter-xs">
           <span> Qty. </span>
-          <q-btn
-            size="xs"
-            outline
-            icon="remove"
-            round
-            color="primary"
-            @click="decrementQty"
-          />
+          <q-btn size="xs" outline icon="remove" round color="primary" @click="decrementQty" />
           <span>{{ qty }}</span>
-          <q-btn
-            size="xs"
-            outline
-            icon="add"
-            round
-            color="primary"
-            @click="incrementQty"
-          />
+          <q-btn size="xs" outline icon="add" round color="primary" @click="incrementQty" />
         </div>
       </div>
       <div class="text-h5">
