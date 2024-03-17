@@ -38,24 +38,18 @@ const confirmLogout = () => {
 <template>
   <q-btn round flat class="btn-grey">
     <q-avatar size="36px">
-      <img
-        :src="getImageUrl(user?.profile?.avatar?.url, '/images/sample-dp.png')"
-      />
+      <img :src="getImageUrl(user?.profile?.avatar?.url, '/images/sample-dp.png')" />
     </q-avatar>
 
     <q-menu anchor="bottom left" style="border-radius: 10px">
       <q-list dense style="min-width: 180px" class="">
         <q-item clickable v-close-popup :to="routes.account">
-          <q-item-section avatar
-            ><q-icon name="manage_accounts" color="primary"></q-icon
-          ></q-item-section>
+          <q-item-section avatar><q-icon name="manage_accounts" color="primary"></q-icon></q-item-section>
           <q-item-section> My Account </q-item-section>
         </q-item>
-        <q-separator />
+        <q-separator inset />
         <q-item clickable v-close-popup @click="confirmLogout">
-          <q-item-section avatar
-            ><q-icon name="logout" color="primary"></q-icon
-          ></q-item-section>
+          <q-item-section avatar><q-icon name="logout" color="primary"></q-icon></q-item-section>
           <q-item-section>Sign Out</q-item-section>
         </q-item>
 

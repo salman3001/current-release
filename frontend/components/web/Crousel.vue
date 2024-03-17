@@ -10,6 +10,7 @@ const props = defineProps<{
   height?: string;
   rounded?: boolean;
   duration?: number;
+  reactOnMouse?: boolean
 }>();
 
 const atMouseOver = () => {

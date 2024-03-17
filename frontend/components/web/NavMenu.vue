@@ -4,7 +4,7 @@ const color = ref("primary");
 
 <template>
   <q-btn-dropdown icon="menu" color="primary" label="Menu">
-    <q-list style="">
+    <q-list style="" dense>
       <q-item clickable v-ripple :to="routes.home">
         <q-item-section avatar>
           <q-icon color="primary" name="home" />
@@ -12,6 +12,7 @@ const color = ref("primary");
 
         <q-item-section> Home </q-item-section>
       </q-item>
+      <q-separator inset />
       <q-item clickable v-ripple :to="routes.service_requirement">
         <q-item-section avatar>
           <q-icon color="primary" name="dashboard_customize" />
@@ -19,6 +20,7 @@ const color = ref("primary");
 
         <q-item-section>Customize Services</q-item-section>
       </q-item>
+      <q-separator inset />
 
       <q-item clickable v-ripple :to="routes.blogs">
         <q-item-section avatar>
@@ -26,6 +28,7 @@ const color = ref("primary");
         </q-item-section>
         <q-item-section> View Blogs </q-item-section>
       </q-item>
+      <q-separator inset />
       <q-item clickable v-ripple :to="routes.about">
         <q-item-section avatar>
           <q-icon color="primary" name="info" />
@@ -33,6 +36,7 @@ const color = ref("primary");
 
         <q-item-section> About Us </q-item-section>
       </q-item>
+      <q-separator inset />
 
       <q-item clickable v-ripple :to="routes.contact">
         <q-item-section avatar>
@@ -40,12 +44,14 @@ const color = ref("primary");
         </q-item-section>
         <q-item-section> Contact </q-item-section>
       </q-item>
+      <q-separator inset />
       <q-item clickable v-ripple :to="routes.faqs">
         <q-item-section avatar>
           <q-icon color="primary" name="help" />
         </q-item-section>
         <q-item-section> FAQs </q-item-section>
       </q-item>
+      <q-separator inset />
       <q-item clickable v-ripple @click="$q.dark.toggle()">
         <q-item-section avatar>
           <q-icon name="light_mode" :color="$q.dark.isActive ? 'muted' : 'primary'" />
@@ -57,20 +63,25 @@ const color = ref("primary");
       <!-- <q-item clickable v-close-popup>
           <q-item-section>Recent tabs</q-item-section>
         </q-item>
+        <q-separatorinset/>
         <q-item clickable v-close-popup>
           <q-item-section>History</q-item-section>
         </q-item>
+        <q-separatorinset/>
         <q-item clickable v-close-popup>
           <q-item-section>Downloads</q-item-section>
         </q-item>
+        <q-separatorinset/>
         <q-separator />
         <q-item clickable v-close-popup>
           <q-item-section>Settings</q-item-section>
         </q-item>
+        <q-separatorinset/>
         <q-separator />
         <q-item clickable v-close-popup>
           <q-item-section>Help &amp; Feedback</q-item-section>
-        </q-item> -->
+        </q-item>
+      <q-separatorinset/> -->
     </q-list>
   </q-btn-dropdown>
 </template>

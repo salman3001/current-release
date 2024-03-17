@@ -1151,7 +1151,6 @@ h6 {
 .btn-grey {
     background-color: $grey-3;
     color: $grey-9;
-    box-shadow: $shadow-4;
 }
 
 
@@ -1180,6 +1179,68 @@ h6 {
     }
 }
 
+// badges
+
+.q-badge-primary {
+    background-color: rgba($primary, 0.15);
+    color: darken($color: $primary, $amount: 20);
+
+}
+
+.q-badge-secondary {
+    background-color: rgba($secondary, 0.15);
+    color: darken($color: $secondary, $amount: 20);
+
+}
+
+.q-badge-accent {
+    background-color: rgba($accent, 0.15);
+    color: darken($color: $accent, $amount: 20);
+}
+
+.q-badge-positive {
+    background-color: rgba($positive, 0.15);
+    color: darken($color: $positive, $amount: 20);
+}
+
+.q-badge-negative {
+    background-color: rgba($negative, 0.15);
+    color: darken($color: $negative, $amount: 20);
+}
+
+.q-badge-info {
+    background-color: rgba($info, 0.15);
+    color: darken($color: $info, $amount: 20);
+}
+
+.q-badge-warning {
+    background-color: rgba($warning, 0.15);
+    color: darken($color: $warning, $amount: 20);
+}
+
+// tables
+
+.table-zebra {
+    th {
+        background-color: $grey-2;
+    }
+
+    tr:nth-child(even) {
+        background-color: $grey-2;
+    }
+}
+
+.body--dark {
+    th {
+        background-color: $dark-page;
+    }
+
+    tr:nth-child(even) {
+        background-color: $dark-page;
+    }
+}
+
+
 
 
 
@@ -1196,6 +1257,10 @@ $gaps: 25, 50, 75, 100, 125, 150, 175, 200, 225, 250, 275, 300;
 
 //componets modification
 
+.q-btn {
+    @extend .normalcase;
+}
+
 .ck-editor__editable {
     min-height: 500px;
     min-width: 100%;
@@ -1211,6 +1276,10 @@ $gaps: 25, 50, 75, 100, 125, 150, 175, 200, 225, 250, 275, 300;
     padding-top: 1rem;
 }
 
+.q-tab {
+    @extend .normalcase;
+
+}
 
 .q-carousel__navigation {
     .q-icon {
@@ -1220,6 +1289,7 @@ $gaps: 25, 50, 75, 100, 125, 150, 175, 200, 225, 250, 275, 300;
     .q-btn {
         margin: 0px;
         padding: 0px;
+
     }
 }
 

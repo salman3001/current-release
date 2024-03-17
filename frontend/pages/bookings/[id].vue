@@ -19,138 +19,178 @@ const { data: booking, pending } = useAsyncData(
 </script>
 
 <template>
-  <div class="q-pa-md q-pa-md-lg q-pa-lg-xl">
-    <NuxtLink :to="routes.account + '?tab=Bookings'">
-      <q-icon name="keyboard_backspace" size="30px"></q-icon> Go Back
-    </NuxtLink>
-    <br />
-    <br />
-    <div v-if="pending">
-      <SkeletonBase type="page" />
-    </div>
-    <div v-else>
-      <h1 class="text-h6 text-bold q-sm">Booking #{{ booking?.id }}</h1>
-      <div class="q-col-gutter-y-md">
+
+  <br />
+  <br />
+  <div v-if="pending">
+    <SkeletonBase type="page" />
+  </div>
+  <div v-else>
+    <div class="row q-gutter-md justify-between">
+      <div>
+        <h1 class="text-h6 text-bold q-sm">Booking ID: {{ booking?.id }}</h1>
         <div>
-          <p class="text-bold">Date and time</p>
-          <p>{{ date.formatDate(booking?.created_at, "DD/MM/YYYY hh:mmA") }}</p>
-        </div>
-        <div class="row q-gutter-md">
-          <p class="text-bold">Booking Status</p>
-          <q-badge
-            color="yellow-10"
-            class="normalcase"
-            v-if="booking?.status === OrderStatus.PLACED"
-            >{{ booking?.status }}</q-badge
-          >
-          <q-badge
-            color="red"
-            class="normalcase"
-            v-if="booking?.status === OrderStatus.REJECTED"
-            >{{ booking?.status }}</q-badge
-          >
-          <q-badge
-            color="info"
-            class="normalcase"
-            v-if="booking?.status === OrderStatus.CONFIRMED"
-            >{{ booking?.status }}</q-badge
-          >
-          <q-badge
-            color="green"
-            class="normalcase"
-            v-if="booking?.status === OrderStatus.DELIVERED"
-            >{{ booking?.status }}</q-badge
-          >
-        </div>
-        <div class="row q-gutter-sm">
-          <NuxtLink to="/">
-            <q-icon name="download"></q-icon> Download Invoice</NuxtLink
-          >
-        </div>
-        <div class="q-mt-md">
-          <q-tabs
-            dense
-            v-model="tab"
-            active-color="white"
-            indicator-color="secondary"
-            active-bg-color="primary"
-            align="left"
-          >
-            <q-tab name="Booking Detail" label="Booking Detail" />
-            <q-tab name="Payment Detail" label="Payment Detail" />
-          </q-tabs>
 
-          <q-separator />
-
-          <q-tab-panels v-model="tab" animated>
-            <q-tab-panel name="Booking Detail">
-              <div>
-                <div>
-                  <q-item>
-                    <q-item-section top thumbnail class="q-ml-none">
-                      <img
-                        :src="
-                          getImageUrl(
-                            booking?.booking_detail?.service_variant?.image?.url
-                          )
-                        "
-                      />
-                    </q-item-section>
-
-                    <q-item-section>
-                      <q-item-label class="text-bold">{{
-                        booking?.booking_detail.service_variant.name
-                      }}</q-item-label>
-                      <q-item-label caption>{{
-                        booking?.booking_detail.service_variant.service_name
-                      }}</q-item-label>
-                    </q-item-section>
-
-                    <div class="column justify-start items-end">
-                      <!-- <p class="q-ma-none">Price</p> -->
-                      <span class="q-ma-none text-muted text-end text-bold"
-                        >&#x20B9;{{
-                          booking?.booking_detail.service_variant.price
-                        }}</span
-                      >
-                      <div class="q-mt-xs q-gutter-xs row items-center">
-                        Qty :{{ booking?.booking_detail.service_variant.qty }}
-                      </div>
-                    </div>
-                  </q-item>
-                </div>
-                <q-separator></q-separator>
-                <div class="row justify-end text-bold text-h6">
-                  Total : &#x20B9;{{
-                    booking?.booking_detail.total_without_discount
-                  }}
-                </div>
-              </div>
-
-              <div class="q-pt-md">
-                <div class="row justify-end text-bold text-h6">
-                  Disount: &#x20B9;{{ booking?.booking_detail.vendor_discount }}
-                </div>
-                <div class="row justify-end text-bold text-h6">
-                  Coupon Disount : &#x20B9;{{
-                    booking?.booking_detail.coupon_discount
-                  }}
-                </div>
-                <div class="row justify-end text-bold text-h6">
-                  Grand Total : &#x20B9;{{
-                    booking?.booking_detail.grand_total
-                  }}
-                </div>
-              </div>
-            </q-tab-panel>
-
-            <q-tab-panel name="Payment Detail">
-              <div class="text-h6">Payment Detail</div>
-              payment detail here
-            </q-tab-panel>
-          </q-tab-panels>
+          <q-badge class="normalcase  q-badge-warning" v-if="booking?.status === 'placed'"><q-icon name="done"></q-icon>
+            &nbsp;{{
+    booking?.status
+  }}</q-badge>
+          <q-badge class="normalcase  q-badge-info" v-if="booking?.status === 'confirmed'"><q-icon name="done"></q-icon>
+            &nbsp;{{
+    booking?.status
+  }}</q-badge>
+          <q-badge class="normalcase  q-badge-positive" v-if="booking?.status === 'completed'"><q-icon
+              name="done"></q-icon>
+            &nbsp;{{
+    booking?.status
+  }}</q-badge>
+          <q-badge class="normalcase  q-badge-negative" v-if="booking?.status === 'cancled'"><q-icon
+              name="done"></q-icon>
+            &nbsp;{{
+    booking?.status
+  }}</q-badge>
         </div>
       </div>
+      <div>
+        <q-btn-dropdown color="primary" label="Quick Actions">
+          <q-list dense style="">
+            <q-item clickable v-ripple>
+              <q-item-section avatar>
+                <q-icon color="primary" name="download" />
+              </q-item-section>
+
+              <q-item-section> Download Invoice</q-item-section>
+            </q-item>
+            <q-separator inset />
+            <q-item clickable v-ripple>
+              <q-item-section avatar>
+                <q-icon color="primary" name="payment" />
+              </q-item-section>
+
+              <q-item-section>Make Payment</q-item-section>
+            </q-item>
+          </q-list>
+        </q-btn-dropdown>
+      </div>
+
     </div>
+    <br>
+
+
+    <q-img width="150px" height="150px" class="rounded-borders shadow-12 border" :src="getImageUrl(
+      booking?.booking_detail?.service_variant?.image?.url, '/images/sample-cover.jpg'
+    )
+    " />
+    <br>
+    <br>
+    <q-card class="shadow-12">
+      <q-card-section>
+        <h6 class="text-subtitle1 text-bold">Order Detail</h6>
+        <br>
+        <div class="" :class="$q.screen.gt.sm ? 'row' : 'column'">
+          <div style="flex-wrap: nowrap;" :class="$q.screen.gt.sm ? 'col' : 'row justify-between'">
+            <div class="q-pl-sm q-py-sm" :class="$q.screen.gt.sm ? 'bg-grey-2' : ''">
+              Booking date
+            </div>
+            <div class="q-pl-sm q-py-sm">
+              {{ date.formatDate(booking?.created_at, "DD/MM/YYYY hh:mmA") }}
+            </div>
+          </div>
+          <div style="flex-wrap: nowrap;" :class="$q.screen.gt.sm ? 'col' : 'row justify-between'">
+            <div class="q-pl-sm q-py-sm" :class="$q.screen.gt.sm ? 'bg-grey-2' : ''">
+              Service Name
+            </div>
+            <div class="q-pl-sm q-py-sm">
+              {{ booking?.booking_detail.service_variant.name }}
+            </div>
+          </div>
+          <div style="flex-wrap: nowrap;" :class="$q.screen.gt.sm ? 'col' : 'row justify-between'">
+            <div class="q-pl-sm q-py-sm" :class="$q.screen.gt.sm ? 'bg-grey-2' : ''">
+              Service Price
+            </div>
+            <div class="q-pl-sm q-py-sm">
+              &#x20B9;{{ booking?.booking_detail.service_variant.price }}
+            </div>
+          </div>
+          <div style="flex-wrap: nowrap;" :class="$q.screen.gt.sm ? 'col' : 'row justify-between'">
+            <div class="q-pl-sm q-py-sm" :class="$q.screen.gt.sm ? 'bg-grey-2' : ''">
+              Qty
+            </div>
+            <div class="q-pl-sm q-py-sm">
+              {{ booking?.booking_detail.service_variant.qty }}
+            </div>
+          </div>
+          <div style="flex-wrap: nowrap;" :class="$q.screen.gt.sm ? 'col' : 'row justify-between'">
+            <div class="q-pl-sm q-py-sm" :class="$q.screen.gt.sm ? 'bg-grey-2' : ''">
+              dsocunt
+            </div>
+            <div class="q-pl-sm q-py-sm">
+              {{ booking?.booking_detail.vendor_discount }}
+            </div>
+          </div>
+          <div style="flex-wrap: nowrap;" :class="$q.screen.gt.sm ? 'col' : 'row justify-between'">
+            <div class="q-pl-sm q-py-sm" :class="$q.screen.gt.sm ? 'bg-grey-2' : ''">
+              Coupon Discount
+            </div>
+            <div class="q-pl-sm q-py-sm">
+              {{ booking?.booking_detail.coupon_discount }}
+
+            </div>
+          </div>
+          <div style="flex-wrap: nowrap;" :class="$q.screen.gt.sm ? 'col' : 'row justify-between'">
+            <div class="q-pl-sm q-py-sm" :class="$q.screen.gt.sm ? 'bg-grey-2' : ''">
+              Grand Total
+            </div>
+            <div class="q-pl-sm q-py-sm">
+              {{ booking?.booking_detail.grand_total }}
+            </div>
+          </div>
+        </div>
+      </q-card-section>
+      <q-card-section class="text-muted">
+      </q-card-section>
+    </q-card>
+    <br>
+    <br>
+    <q-card class="shadow-12">
+      <q-card-section>
+        <h6 class="text-subtitle1 text-bold">Payment Detail</h6>
+        <br>
+        <div class="" :class="$q.screen.gt.sm ? 'row' : 'column'">
+          <div style="flex-wrap: nowrap;" :class="$q.screen.gt.sm ? 'col' : 'row justify-between'">
+            <div class="q-pl-sm q-py-sm" :class="$q.screen.gt.sm ? 'bg-grey-2' : ''">
+              Payment Mode
+            </div>
+            <div class="q-pl-sm q-py-sm">
+              Card
+            </div>
+          </div>
+          <div style="flex-wrap: nowrap;" :class="$q.screen.gt.sm ? 'col' : 'row justify-between'">
+            <div class="q-pl-sm q-py-sm" :class="$q.screen.gt.sm ? 'bg-grey-2' : ''">
+              Payment Status
+            </div>
+            <div class="q-pl-sm q-py-sm">
+              <q-badge class="normalcase  q-badge-positive"><q-icon name="done"></q-icon>
+                &nbsp;Paid</q-badge>
+            </div>
+          </div>
+          <div style="flex-wrap: nowrap;" :class="$q.screen.gt.sm ? 'col' : 'row justify-between'">
+            <div class="q-pl-sm q-py-sm" :class="$q.screen.gt.sm ? 'bg-grey-2' : ''">
+              Options
+            </div>
+            <div class="q-pl-sm q-py-sm">
+              <q-badge class="normalcase  q-badge-primary"><q-icon name="download"></q-icon>
+                &nbsp;Download Reciept</q-badge>
+            </div>
+          </div>
+        </div>
+      </q-card-section>
+      <q-card-section class="text-muted">
+      </q-card-section>
+    </q-card>
+    <br>
+    <br>
+    <br>
   </div>
+
 </template>

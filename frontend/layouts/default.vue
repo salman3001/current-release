@@ -23,7 +23,7 @@ function toggleLeftDrawer() {
       <q-header bordered reveal elevated class="text-white shadow-16"
         :class="$q.dark.isActive ? 'bg-dark' : 'bg-white'">
         <q-toolbar class="q-py-sm q-py-sm-md">
-          <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" class="text-primary lt-sm" />
+          <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" class="text-primary lt-md" />
           <div>
             <BrandLogo :to="routes.home" size="170px"></BrandLogo>
           </div>
