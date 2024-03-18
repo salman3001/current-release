@@ -98,90 +98,114 @@ const {
 </script>
 
 <template>
-
-  <br>
+  <br />
 
   <div class="q-gutter-y-lg">
     <div class="row q-gutter-md">
-      <q-avatar size="156px" text-color="white" class="shadow-2 rounded-borders shadow-12" square>
+      <q-avatar
+        size="156px"
+        text-color="white"
+        class="shadow-2 rounded-borders shadow-12"
+        square
+      >
         <img :src="getImageUrl(undefined, '/images/sample-dp.png')" />
       </q-avatar>
       <div>
         <p class="text-h6 text-primary text-bold">
           {{ vendor?.first_name + " " + vendor?.last_name }}
         </p>
-        <p class="text-subtitle1   text-bold">
+        <p class="text-subtitle1 text-bold">
           {{ vendor?.business_name }}
         </p>
         <div class="row items-center gap-100 text-h6">
-          <RatingComponent :rating="vendor?.avg_rating ? Number(vendor?.avg_rating) : 0" size="2rem" />
+          <RatingComponent
+            :rating="vendor?.avg_rating ? Number(vendor?.avg_rating) : 0"
+            size="2rem"
+          />
           {{ vendor?.avg_rating || 0 }}
         </div>
         <p>43 Reviews</p>
       </div>
     </div>
 
-    <q-card class="column border shadow-9">
+    <q-card bordered class="column shadow-9">
       <q-card-section>
-        <p class="text-bold text-subtitle1">About {{ vendor?.first_name + " " + vendor?.last_name }}</p>
-        <br>
-        <p class="" style="max-width: 500px">
+        <p class="text-bold text-subtitle1">
+          About {{ vendor?.first_name + " " + vendor?.last_name }}
+        </p>
+        <br />
+        <p class="text-body1" style="max-width: 500px">
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Accusamus
           dolore sint tenetur, in aliquid debitis consectetur facilis ipsa
           doloribus sit.
         </p>
       </q-card-section>
-
     </q-card>
 
     <h6 class="text-bold">
       Services Listed By {{ vendor?.first_name + " " + vendor?.last_name }}
     </h6>
     <div class="row q-col-gutter-lg q-mt-sm">
-      <div v-if="servicesPending" v-for="s in 10" class="col-12 col-sm-6 col-md-4 col-lg-3">
+      <div
+        v-if="servicesPending"
+        v-for="s in 10"
+        class="col-12 col-sm-6 col-md-4 col-lg-3"
+      >
         <SkeletonBase type="card" />
       </div>
-      <div v-else v-for="s in services?.data.data" class="col-12 col-sm-6 col-md-4 col-lg-3">
+      <div
+        v-else
+        v-for="s in services?.data.data"
+        class="col-12 col-sm-6 col-md-4 col-lg-3"
+      >
         <WebServiceCard :service="s" />
       </div>
     </div>
     <div class="row col-12">
-      <PaginateComponet :page="page" :meta="services?.data.meta"
-        @update:model-value="(v: number) => { page = v; refresh() }" />
+      <PaginateComponet
+        :page="page"
+        :meta="services?.data.meta"
+        @update:model-value="(v: number) => { page = v; refresh() }"
+      />
     </div>
     <div class="q-gutter-md">
-      <div style="max-width: 700px;">
+      <div style="max-width: 700px">
         <h5>Reviews & Rating</h5>
-        <br>
 
         <div>
-          <RatingComponent :rating="vendor?.avg_rating || 0" /><span class="text-h5">{{ vendor?.avg_rating || 0 }}
-            out
-            of 5 | 28 Reviews</span>
+          <RatingComponent :rating="vendor?.avg_rating || 0" /><span
+            class="text-h5"
+            >{{ vendor?.avg_rating || 0 }} out of 5 | 28 Reviews</span
+          >
         </div>
-        <br>
-        <q-btn color="primary" @click="() => {
-          if (user) {
-            modal.togel('WebAddReview', {
-              type: 'vendor',
-              vendorId: vendor?.id,
-              onSuccess: refreshReviews,
-            });
-          } else {
-            navigateTo(routes.auth.login + `?next=${route.path}`);
-          }
-        }
-          ">Write a Review</q-btn>
-
+        <br />
+        <q-btn
+          color="primary"
+          @click="
+            () => {
+              if (user) {
+                modal.togel('WebAddReview', {
+                  type: 'vendor',
+                  vendorId: vendor?.id,
+                  onSuccess: refreshReviews,
+                });
+              } else {
+                navigateTo(routes.auth.login + `?next=${route.path}`);
+              }
+            }
+          "
+          >Write a Review</q-btn
+        >
       </div>
-
+      <br />
 
       <div class="row justify-start">
-        <q-btn right flat color="primary" class="normalcase text-h6">View all Reviews</q-btn>
+        <q-btn right flat color="primary" class="normalcase text-h6"
+          >View all Reviews</q-btn
+        >
       </div>
-
     </div>
-    <div class=" col-12 col-md-8">
+    <div class="col-12 col-md-8">
       <div v-if="reviewsPending">
         <SkeletonBase type="list" v-for="i in 5" />
       </div>
@@ -191,18 +215,10 @@ const {
       </div>
       <div v-for="review in reviews?.data" class="row q-gutter-md">
         <CustomerReview :review="review" />
-        <CustomerReview :review="review" />
-        <CustomerReview :review="review" />
-        <CustomerReview :review="review" />
-        <CustomerReview :review="review" />
-        <CustomerReview :review="review" />
-        <CustomerReview :review="review" />
-        <CustomerReview :review="review" />
       </div>
-      <br>
-      <br>
-      <br>
+      <br />
+      <br />
+      <br />
     </div>
   </div>
-
 </template>

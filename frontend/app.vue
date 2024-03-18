@@ -1,5 +1,4 @@
 <script setup>
-import { ofetch } from "ofetch";
 const token = useCookie("token");
 const config = useRuntimeConfig();
 
@@ -16,6 +15,8 @@ createFetch({
 <template>
   <NuxtLoadingIndicator></NuxtLoadingIndicator>
   <NuxtLayout>
-    <NuxtPage />
+    <div>
+      <NuxtPage />
+    </div>
   </NuxtLayout>
 </template>

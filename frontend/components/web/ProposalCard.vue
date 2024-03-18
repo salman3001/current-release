@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import BigNumber from "bignumber.js";
 import { date } from "quasar";
 const props = defineProps<{
   anyBidAccepted: boolean;
@@ -67,125 +68,75 @@ const rejectBid = async () => {
   <q-card
     flat
     bordered
-    class="full-width"
     :class="accepted ? 'border-primary border-2' : ''"
+    style="max-width: 400px; height: max-content"
   >
     <q-card-section>
       <div class="row q-gutter-y-md wrap justify-between">
-        <div class="column col-12 col-sm-4">
-          <p class="text-h5" v-if="accepted">Accpted Proposal</p>
+        <div class="row gap-50">
+          <q-avatar size="72px">
+            <img src="https://cdn.quasar.dev/img/avatar.png" />
+          </q-avatar>
           <div>
-            <p class="text-muted" style="width: max-content">
-              {{ date.formatDate(bid?.created_at, "DD/MM/YYYY hh:mmA") }}
+            <p v-if="accepted" class="text-bold text-subtitle1">
+              {{ bid?.vendorUser.first_name }}
+              {{ bid?.vendorUser.last_name }}
             </p>
-            <div class="text-bold text-subtitle1">
-              Offered Price: &#x20B9;{{ bid?.offered_price }}
+            <p v-else class="text-bold text-subtitle1">Anonymous</p>
+            <div>
+              <NuxtLink :to="routes.home" class="underline">{{
+                bid?.vendorUser?.business_name
+              }}</NuxtLink>
+            </div>
+            <div>
+              <RatingComponent
+                :rating="bid?.vendorUser?.avg_rating || 0"
+                size="1.25rem"
+              />
             </div>
           </div>
         </div>
-        <div
-          v-if="accepted"
-          class="column col-12 col-sm-4 gap-50"
-          :class="$q.screen.lt.sm ? 'items-start' : 'items-center'"
-        >
-          <q-avatar>
-            <img src="https://cdn.quasar.dev/img/avatar.png" />
-          </q-avatar>
-          <div class="q-gutter-sm">
-            <span
-              >{{ bid?.vendorUser.first_name }}
-              {{ bid?.vendorUser.last_name }}
-            </span>
-          </div>
-          <div class="q-gutter-sm">
-            <NuxtLink :to="routes.home" class="underline">{{
-              bid?.vendorUser?.business_name
-            }}</NuxtLink>
-          </div>
-          <div>
-            <q-btn color="primary" size="sm">Chat</q-btn>
-          </div>
-
-          <!-- <div v-if="accepted">
-            <q-btn color="primary" size="sm">Chat</q-btn>
-          </div> -->
-        </div>
-        <div
-          class="column col-12 col-sm-4"
-          :class="$q.screen.lt.sm ? 'items-start' : 'items-end'"
-        >
-          <div class="text-bold">Vendor Rating</div>
-          <div class="row gap-25">
-            <RatingComponent
-              :rating="bid?.vendorUser?.avg_rating || 0"
-              size="1.25rem"
-            />
-            <span>{{ bid?.vendorUser?.avg_rating || 0 }}</span>
-          </div>
+        <div>
+          <p class="text-muted" style="width: max-content">
+            {{ date.formatDate(bid?.created_at, "DD/MM/YYYY hh:mmA") }}
+          </p>
+          <q-badge
+            v-if="accepted"
+            outline
+            class="q-badge-primary justify-center"
+          >
+            Accepted</q-badge
+          >
         </div>
       </div>
+      <br />
+      <div class="q-gutter-sm">
+        <q-badge class="q-badge-primary justify-center" style="width: 120px">
+          <span class="text-bold text-body1"
+            >&#x20B9;{{
+              new BigNumber(bid?.offered_price || 0).toFixed(2)
+            }}</span
+          >
+          / Qty</q-badge
+        >
+        <q-badge class="q-badge-primary justify-center" style="width: 120px">
+          <span class="text-bold text-body1">3</span>
+          Hrs</q-badge
+        >
+      </div>
+      <br />
+      <div>
+        <p class="text-body-1 ellipsis-3-lines">
+          Lorem ipsum, dolor sit amet consectetur adipisicing elit. Iste
+          laboriosam incidunt eum maxime architecto beatae illum repellendus at
+          tempore expedita? Lorem ipsum dolor sit amet consectetur, adipisicing
+          elit. Exercitationem, distinctio.
+        </p>
+      </div>
     </q-card-section>
-    <q-separator vertical />
-    <q-card-section :horizontal="$q.screen.gt.xs">
-      <q-card-section
-        class="full-width"
-        :class="$q.screen.gt.xs ? ' ' : 'q-pa-none'"
-      >
-        <div class="text-bold text-subtitle1">Included</div>
-        <ul class="list-style-none text-muted">
-          <li v-for="(f, i) in bid?.features_included" :key="i">{{ f }}</li>
-        </ul>
-      </q-card-section>
-      <q-card-section
-        class="full-width"
-        :class="$q.screen.gt.xs ? ' ' : 'q-pa-none'"
-      >
-        <div class="text-bold text-subtitle1">Excluded</div>
-        <ul class="list-style-none text-muted">
-          <li v-for="(f, i) in bid?.features_excluded" :key="i">{{ f }}</li>
-        </ul>
-      </q-card-section>
-    </q-card-section>
-
-    <q-card-actions class="justify-end q-pt-none q-gutter-sm">
-      <q-btn
-        color="primary"
-        v-if="!anyBidAccepted"
-        :disabled="anyBidAccepted || loading"
-        @click="
-          modal.togel('confirm', {
-            title: 'Accept Bid',
-            message:
-              'You Are about to accept this bid. After accepting you will be able to intract with vendor. You can reject any time',
-            iconName: 'info',
-            onAccept: () => {
-              acceptBid();
-            },
-          })
-        "
-      >
-        <LoadingIndicator v-if="loading" /> Acccept
-      </q-btn>
-
-      <q-btn
-        color="secondary"
-        v-if="accepted"
-        @click="
-          modal.togel('confirm', {
-            title: 'Reject Bid',
-            message: 'You are about to reject this bid, Are you sure?',
-            iconName: 'question_mark',
-            onAccept: () => {
-              rejectBid();
-            },
-          })
-        "
-      >
-        Reject
-      </q-btn>
-      <NuxtLink :to="routes.book_custom_Service(requirementId)">
-        <q-btn color="primary" v-if="accepted"> Confirm and book </q-btn>
-      </NuxtLink>
-    </q-card-actions>
+    <q-card-action class="row q-px-sm justify-end">
+      <q-btn color="primary">Review</q-btn>
+    </q-card-action>
+    <br />
   </q-card>
 </template>

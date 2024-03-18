@@ -36,18 +36,40 @@ if (props.selectedVariant?.discount_type === DiscountType.FLAT) {
         </div>
         <div class="text-bold text-h4">
           &#x20B9;{{
-      new BigNumber(selectedVariant?.price).minus(discount).times(qty).toFixed(2)
-    }}
+            new BigNumber(selectedVariant?.price)
+              .minus(discount)
+              .times(qty)
+              .toFixed(2)
+          }}
         </div>
         <div class="text-h6 row items-center q-gutter-xs">
           <span> Qty. </span>
-          <q-btn size="xs" outline icon="remove" round color="primary" @click="decrementQty" />
+          <q-btn
+            size="xs"
+            outline
+            icon="remove"
+            round
+            color="primary"
+            @click="decrementQty"
+          />
           <span>{{ qty }}</span>
-          <q-btn size="xs" outline icon="add" round color="primary" @click="incrementQty" />
+          <q-btn
+            size="xs"
+            outline
+            icon="add"
+            round
+            color="primary"
+            @click="incrementQty"
+          />
         </div>
       </div>
       <div class="text-h5">
-        <NuxtLink :to="routes.book_Service(selectedVariant.id)">
+        <NuxtLink
+          :to="{
+            path: routes.book_Service(selectedVariant.id),
+            query: { qty: qty },
+          }"
+        >
           <q-btn class="full-width" color="primary" size="lg">Book Now</q-btn>
         </NuxtLink>
       </div>

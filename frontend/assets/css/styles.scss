@@ -13,7 +13,8 @@
 // Tip: Use the "Theme Builder" on Quasar's documentation website.
 // src/css/quasar.variables.sass
 
-$primary : #3a887c;
+// $primary : #3a887c;
+$primary : #0f6ecc;
 $secondary : #2c6b96;
 $accent :#b71bd3;
 
@@ -946,7 +947,7 @@ $dark-shadows-up: (
     $dark-shadow-up-24
 );
 
-$generic-border-radius : 18px !default;
+$generic-border-radius : 8px !default;
 $generic-hover-transition : .3s cubic-bezier(.25, .8, .5, 1) !default;
 $typography-font-family : 'Roboto',
 '-apple-system',
@@ -956,7 +957,7 @@ Arial,
 sans-serif !default;
 $min-line-height : 1.12 !default;
 
-$button-border-radius : 14px !default;
+$button-border-radius : 6px !default;
 $button-padding : 4px 16px !default;
 $button-dense-padding : .285em !default;
 $button-transition : $generic-hover-transition !default;
@@ -1047,6 +1048,28 @@ $img-content-background : rgba(0, 0, 0, .47) !default;
 
 
 // global css
+
+// <uniquifier>: Use a unique and descriptive class name
+// <weight>: Use a value from 100 to 700
+
+
+  @font-face {
+    font-family: cardo-regular;
+    src: url(./fonts/Cardo-Regular.ttf);
+  }
+
+
+  @font-face {
+    font-family: cardo-bold;
+    src: url(./fonts/Cardo-Bold.ttf);
+  }
+  
+  
+  body{
+    font-family: cardo-bold;
+    font-weight: 400;
+  }
+
 a {
     color: $primary;
     text-decoration: none;
@@ -1054,6 +1077,7 @@ a {
 
 .text-muted {
     color: $grey-7;
+    // font-family: cardo-bold;
 }
 
 .body--dark {
@@ -1184,38 +1208,46 @@ h6 {
 .q-badge-primary {
     background-color: rgba($primary, 0.15);
     color: darken($color: $primary, $amount: 20);
+   border-radius: $generic-border-radius;
+    
 
 }
 
 .q-badge-secondary {
     background-color: rgba($secondary, 0.15);
     color: darken($color: $secondary, $amount: 20);
+   border-radius: $generic-border-radius; 
 
 }
 
 .q-badge-accent {
     background-color: rgba($accent, 0.15);
     color: darken($color: $accent, $amount: 20);
+border-radius: $generic-border-radius;
 }
 
 .q-badge-positive {
     background-color: rgba($positive, 0.15);
     color: darken($color: $positive, $amount: 20);
+border-radius: $generic-border-radius;
 }
 
 .q-badge-negative {
     background-color: rgba($negative, 0.15);
     color: darken($color: $negative, $amount: 20);
+border-radius: $generic-border-radius;
 }
 
 .q-badge-info {
     background-color: rgba($info, 0.15);
     color: darken($color: $info, $amount: 20);
+border-radius: $generic-border-radius;
 }
 
 .q-badge-warning {
     background-color: rgba($warning, 0.15);
     color: darken($color: $warning, $amount: 20);
+border-radius: $generic-border-radius;
 }
 
 // tables

@@ -6,7 +6,8 @@ defineProps<{ service: IService }>();
 
 <template>
   <q-card
-    class="my-card relative-position shadow-10 border"
+    bordered
+    class="my-card relative-position shadow-10"
     style="height: 25rem"
   >
     <div class="">
