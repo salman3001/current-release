@@ -2,7 +2,7 @@ import { isAdmin } from 'App/Helpers/permissionHelpers'
 import { Namespace, Socket } from 'socket.io'
 import { DefaultEventsMap } from 'socket.io/dist/typed-events'
 
-export default class NotificationController {
+export default class NotificationSocketController {
   constructor(
     private socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>,
     private io: Namespace<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>

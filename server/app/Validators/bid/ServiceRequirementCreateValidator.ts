@@ -3,7 +3,7 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { BudgetType } from 'App/Helpers/enums'
 
 export default class ServiceRequirementCreateValidator {
-  constructor(protected ctx: HttpContextContract) { }
+  constructor(protected ctx: HttpContextContract) {}
 
   /*
    * Define schema to validate the "shape", "type", "formatting" and "integrity" of data.
@@ -26,7 +26,7 @@ export default class ServiceRequirementCreateValidator {
    */
   public schema = schema.create({
     title: schema.string({ escape: true }, [rules.maxLength(50)]),
-    desc: schema.string.optional({ escape: true }, [rules.maxLength(250)]),
+    desc: schema.string.optional({ escape: true }, [rules.maxLength(1500)]),
     skillsRequired: schema.array.optional().members(schema.string()),
     budgetType: schema.enum(Object.values(BudgetType)),
     budget: schema.number([rules.minNumber(1)]),

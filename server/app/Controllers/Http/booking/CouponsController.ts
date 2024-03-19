@@ -73,6 +73,8 @@ export default class CouponsController extends BaseController {
 
     const payload = await request.validate(CouponCreateValidator)
 
+    console.log('ran')
+
     const user = auth.user
     let couponType: CouponType | null = null
     let vendorUserId: number | null = null

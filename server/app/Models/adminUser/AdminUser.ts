@@ -12,11 +12,14 @@ import {
   hasMany,
   HasMany,
   computed,
+  manyToMany,
+  ManyToMany,
 } from '@ioc:Adonis/Lucid/Orm'
 import Role from './Role'
 import UserProfile from '../UserProfile'
 import Activity from '../Activity'
 import Notification from '../Notification'
+import Conversation from '../chat/Conversation'
 
 export default class AdminUser extends BaseModel {
   @column({ isPrimary: true })
@@ -65,6 +68,11 @@ export default class AdminUser extends BaseModel {
 
   @hasMany(() => Notification)
   public notifications: HasMany<typeof Notification>
+
+  @manyToMany(() => Conversation, {
+    pivotTable: 'conversation_participants',
+  })
+  public conversations: ManyToMany<typeof Conversation>
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

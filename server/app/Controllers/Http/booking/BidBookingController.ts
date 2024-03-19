@@ -9,6 +9,7 @@ import { schema } from '@ioc:Adonis/Core/Validator'
 import BidBooking from 'App/Models/bookings/BidBooking'
 import BigNumber from 'bignumber.js'
 import User from 'App/Models/user/User'
+import Database from '@ioc:Adonis/Lucid/Database'
 
 export default class BidBookingController extends BaseController {
   constructor() {
@@ -58,39 +59,41 @@ export default class BidBookingController extends BaseController {
 
     const serviceRequirement = await ServiceRequirement.findOrFail(payload.serviceRequirementId)
 
-    if (!serviceRequirement.acceptedBidId) {
-      return response.custom({
-        code: 400,
-        message: 'No Bid is accepted to place the order',
-        data: null,
-        success: false,
-      })
-    }
+    const bid = await Bid.findOrFail(payload.acceptedBidId)
 
-    const acceptedBid = await Bid.findOrFail(serviceRequirement.acceptedBidId)
+    const price = new BigNumber(bid.offeredPrice).times(payload.qty)
 
-    const price = new BigNumber(acceptedBid.offeredPrice).times(payload.qty)
+    let bidBooking: BidBooking | null = null
 
-    const bidBooking = await BidBooking.create({
-      price: price.toFixed(2),
-      qty: payload.qty,
-      status: OrderStatus.PLACED,
-      userId: auth.user?.id,
-      vendorUserId: acceptedBid.vendorUserId,
-      paymentDetail: payload.paymentdetail,
-      bookingDetail: {
-        serviceRequirement: {
-          id: serviceRequirement.id,
-          title: serviceRequirement.title,
-          desc: serviceRequirement.desc,
-          budgetType: serviceRequirement.budgetType,
-          budget: serviceRequirement.budget,
+    await Database.transaction(async (trx) => {
+      bidBooking = await BidBooking.create(
+        {
+          price: price.toFixed(2),
+          qty: payload.qty,
+          status: OrderStatus.PLACED,
+          userId: auth.user?.id,
+          vendorUserId: bid.vendorUserId,
+          paymentDetail: payload.paymentdetail,
+          bookingDetail: {
+            serviceRequirement: {
+              id: serviceRequirement.id,
+              title: serviceRequirement.title,
+              desc: serviceRequirement.desc,
+              budgetType: serviceRequirement.budgetType,
+              budget: serviceRequirement.budget,
+            },
+            acceptedBid: {
+              id: bid.id,
+              offeredPrice: bid.offeredPrice,
+            },
+          },
         },
-        acceptedBid: {
-          id: acceptedBid.id,
-          offeredPrice: acceptedBid.offeredPrice,
-        },
-      },
+        { client: trx }
+      )
+
+      serviceRequirement.useTransaction(trx)
+      serviceRequirement.acceptedBidId = bid.id
+      await serviceRequirement.save()
     })
 
     return response.custom({

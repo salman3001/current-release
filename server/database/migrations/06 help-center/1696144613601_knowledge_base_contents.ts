@@ -20,7 +20,7 @@ export default class extends BaseSchema {
       table.integer('language_id').unsigned().references('id').inTable('languages')
       table.text('content')
       table.string('meta_title')
-      table.string('meta_desc')
+      table.string('meta_desc', 256)
       table.string('meta_keywords')
     })
   }

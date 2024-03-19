@@ -12,7 +12,7 @@ const { data: service, pending: servicePending } = await useAsyncData(
   ("service-" + route.params.slug) as string,
   async () => {
     const data = await customFetch<IResType<IService>>(
-      apiRoutes.services_view_by_slug(route.params.slug as string),
+      apiRoutes.services.view_by_slug(route.params.slug as string),
       {
         query: {
           preload: [
@@ -55,7 +55,7 @@ const {
   refresh,
   pending: similarServicesPending,
 } = await useAsyncData(() =>
-  customFetch<IPageRes<IService[]>>(apiRoutes.services, {
+  customFetch<IPageRes<IService[]>>(apiRoutes.services.list, {
     query: {
       page: 1,
       rowsPerPage: 5,
@@ -91,7 +91,7 @@ const {
   ("reviews" + route.params.slug) as string,
   async () => {
     const data = await customFetch<IPageRes<IReview[]>>(
-      apiRoutes.reviews(service.value!.id),
+      apiRoutes.services.reviews(service.value!.id),
       {
         query: {
           preload: [

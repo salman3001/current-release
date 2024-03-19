@@ -24,17 +24,9 @@ export default class ServiceCreateValidator {
    *    ```
    */
   public schema = schema.create({
-    cover: schema.file.optional({
-      extnames: ['jpg', 'JPG', 'jpeg', 'JPEG', 'png', 'PNG', 'webp', 'WEBP'],
-      size: '5mb',
-    }),
     video: schema.file.optional({
       extnames: ['mp4'],
       size: '25mb',
-    }),
-    brocher: schema.file.optional({
-      extnames: ['jpg', 'JPG', 'jpeg', 'JPEG', 'png', 'PNG', 'webp', 'WEBP'],
-      size: '5mb',
     }),
     images: schema.array.optional().members(
       schema.file({

@@ -17,7 +17,7 @@ const updateProfile = async () => {
 
   try {
     const data = await custmFetch<IResType<any>>(
-      apiRoutes.user_update_profile(user.value.id),
+      apiRoutes.users.update_profile(user.value.id),
       {
         method: "put",
         body: formData,
@@ -40,9 +40,13 @@ const updateProfile = async () => {
   <div class="q-gutter-y-md" v-if="mode == 'read'">
     <div class="column q-gutter-sm">
       <label for="">Profile Picture</label>
-      <q-img :src="getImageUrl(user.profile?.avatar?.url, '/images/sample-dp.png')" spinner-color="white"
-        style="height: 100px; max-width: 100px; border: 1px solid grey" img-class="my-custom-image"
-        class="rounded-borders">
+      <q-img
+        :src="getImageUrl(user.profile?.avatar?.url, '/images/sample-dp.png')"
+        spinner-color="white"
+        style="height: 100px; max-width: 100px; border: 1px solid grey"
+        img-class="my-custom-image"
+        class="rounded-borders"
+      >
       </q-img>
     </div>
     <div class="row q-gutter-md items-center">
@@ -66,8 +70,13 @@ const updateProfile = async () => {
   <q-form class="q-gutter-y-md" v-if="mode == 'write'" @submit="updateProfile">
     <div class="q-gutter-y-sm" style="width: max-content">
       <label for="">Profile Picture</label>
-      <FormsImageInput height="100px" width="100px" name="image"
-        :url="getImageUrl(user.profile?.avatar?.url, '/images/sample-dp.png')" @image="(v) => (form.image = v)" />
+      <FormsImageInput
+        height="100px"
+        width="100px"
+        name="image"
+        :url="getImageUrl(user.profile?.avatar?.url, '/images/sample-dp.png')"
+        @image="(v) => (form.image = v)"
+      />
     </div>
 
     <div class="row q-gutter-sm items-center">
@@ -117,7 +126,9 @@ const updateProfile = async () => {
       </div> -->
     </div>
     <div class="q-gutter-sm">
-      <q-btn color="secondary" @click="mode = 'read'" :disabled="loading">Cancle</q-btn>
+      <q-btn color="secondary" @click="mode = 'read'" :disabled="loading"
+        >Cancle</q-btn
+      >
       <q-btn color="primary" type="submit" :disabled="loading">
         <LoadingIndicator v-if="loading" /> Update
       </q-btn>

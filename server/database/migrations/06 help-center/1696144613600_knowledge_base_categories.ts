@@ -17,7 +17,7 @@ export default class extends BaseSchema {
       table.integer('order').unsigned().unique()
       table.boolean('is_active').defaultTo(false)
       table.string('meta_title')
-      table.string('meta_desc')
+      table.string('meta_desc', 512)
       table.string('meta_keywords')
 
       table.index(['slug'])

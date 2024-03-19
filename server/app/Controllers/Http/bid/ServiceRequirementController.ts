@@ -3,10 +3,8 @@ import BaseController from '../BaseController'
 import ServiceRequirement from 'App/Models/bid/ServiceRequirement'
 import ServiceRequirementCreateValidator from 'App/Validators/bid/ServiceRequirementCreateValidator'
 import Database from '@ioc:Adonis/Lucid/Database'
-import { schema } from '@ioc:Adonis/Core/Validator'
 import { ModelQueryBuilderContract } from '@ioc:Adonis/Lucid/Orm'
 import Bid from 'App/Models/bid/Bid'
-import Service from 'App/Models/service/Service'
 
 export default class ServiceRequirementController extends BaseController {
   constructor() {
@@ -55,7 +53,7 @@ export default class ServiceRequirementController extends BaseController {
 
     await bouncer.with('ServiceRequirementPolicy').authorize('view', serviceRequirement)
 
-    const bidQuery = Bid.query().where('id', serviceRequirement.acceptedBidId)
+    const bidQuery = Bid.query().where('id', serviceRequirement.acceptedBidId || 0)
 
     this.indexfilterQuery(request.qs() as any, bidQuery)
 
@@ -142,68 +140,68 @@ export default class ServiceRequirementController extends BaseController {
     })
   }
 
-  public async acceptBid({ bouncer, request, response, params }: HttpContextContract) {
-    const serviceRequirement = await ServiceRequirement.findOrFail(+params.id)
+  // public async acceptBid({ bouncer, request, response, params }: HttpContextContract) {
+  //   const serviceRequirement = await ServiceRequirement.findOrFail(+params.id)
 
-    if (serviceRequirement.acceptedBidId) {
-      return response.custom({
-        code: 400,
-        message: 'You have already accepted a bid',
-        data: null,
-        success: false,
-      })
-    }
-    await bouncer.with('ServiceRequirementPolicy').authorize('update', serviceRequirement)
+  //   if (serviceRequirement.acceptedBidId) {
+  //     return response.custom({
+  //       code: 400,
+  //       message: 'You have already accepted a bid',
+  //       data: null,
+  //       success: false,
+  //     })
+  //   }
+  //   await bouncer.with('ServiceRequirementPolicy').authorize('update', serviceRequirement)
 
-    const validationSchema = schema.create({
-      bidId: schema.number(),
-    })
+  //   const validationSchema = schema.create({
+  //     bidId: schema.number(),
+  //   })
 
-    const payload = await request.validate({ schema: validationSchema })
+  //   const payload = await request.validate({ schema: validationSchema })
 
-    await Database.transaction(async (trx) => {
-      serviceRequirement.useTransaction(trx)
-      serviceRequirement.merge({ acceptedBidId: payload.bidId })
-      await serviceRequirement.save()
-    })
+  //   await Database.transaction(async (trx) => {
+  //     serviceRequirement.useTransaction(trx)
+  //     serviceRequirement.merge({ acceptedBidId: payload.bidId })
+  //     await serviceRequirement.save()
+  //   })
 
-    await serviceRequirement.refresh()
+  //   await serviceRequirement.refresh()
 
-    return response.custom({
-      code: 200,
-      message: 'bid Accepted',
-      data: serviceRequirement,
-      success: true,
-    })
-  }
+  //   return response.custom({
+  //     code: 200,
+  //     message: 'bid Accepted',
+  //     data: serviceRequirement,
+  //     success: true,
+  //   })
+  // }
 
-  public async rejectBid({ bouncer, request, response, params }: HttpContextContract) {
-    const serviceRequirement = await ServiceRequirement.findOrFail(+params.id)
+  // public async rejectBid({ bouncer, request, response, params }: HttpContextContract) {
+  //   const serviceRequirement = await ServiceRequirement.findOrFail(+params.id)
 
-    if (!serviceRequirement.acceptedBidId) {
-      return response.custom({
-        code: 400,
-        message: 'You have not accepted any bid',
-        data: null,
-        success: false,
-      })
-    }
+  //   if (!serviceRequirement.acceptedBidId) {
+  //     return response.custom({
+  //       code: 400,
+  //       message: 'You have not accepted any bid',
+  //       data: null,
+  //       success: false,
+  //     })
+  //   }
 
-    await bouncer.with('ServiceRequirementPolicy').authorize('update', serviceRequirement)
+  //   await bouncer.with('ServiceRequirementPolicy').authorize('update', serviceRequirement)
 
-    await Database.transaction(async (trx) => {
-      serviceRequirement.useTransaction(trx)
-      serviceRequirement.merge({ acceptedBidId: null })
-      await serviceRequirement.save()
-    })
+  //   await Database.transaction(async (trx) => {
+  //     serviceRequirement.useTransaction(trx)
+  //     serviceRequirement.merge({ acceptedBidId: null })
+  //     await serviceRequirement.save()
+  //   })
 
-    await serviceRequirement.refresh()
+  //   await serviceRequirement.refresh()
 
-    return response.custom({
-      code: 200,
-      message: 'bid Rejected',
-      data: serviceRequirement,
-      success: true,
-    })
-  }
+  //   return response.custom({
+  //     code: 200,
+  //     message: 'bid Rejected',
+  //     data: serviceRequirement,
+  //     success: true,
+  //   })
+  // }
 }

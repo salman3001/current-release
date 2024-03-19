@@ -61,24 +61,6 @@ export default class Service extends BaseModel {
   })
   public avgRating: string | number
 
-  @responsiveAttachment({
-    folder: 'service/covers',
-    preComputeUrls: true,
-    forceFormat: 'webp',
-    disableThumbnail: true,
-    responsiveDimensions: false,
-  })
-  public cover: ResponsiveAttachmentContract
-
-  @responsiveAttachment({
-    folder: 'service/brochers',
-    preComputeUrls: true,
-    forceFormat: 'webp',
-    disableThumbnail: true,
-    responsiveDimensions: false,
-  })
-  public brocher: ResponsiveAttachmentContract
-
   @attachment({
     folder: 'service/videos',
   })

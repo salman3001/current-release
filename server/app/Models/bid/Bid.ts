@@ -13,11 +13,8 @@ export default class Bid extends BaseModel {
   @column()
   public offeredPrice: number | string
 
-  @column({ prepare: (v) => JSON.stringify(v) })
-  public featuresIncluded: string[]
-
-  @column({ prepare: (v) => JSON.stringify(v) })
-  public featuresExcluded: string[]
+  @column()
+  public message: string
 
   @column()
   public serviceRequirementId: number

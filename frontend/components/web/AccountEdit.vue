@@ -18,7 +18,7 @@ const updateAccount = async () => {
 
   try {
     const data = await custmFetch<IResType<any>>(
-      apiRoutes.users + "/" + user.value.id,
+      apiRoutes.users.view(user.value.id),
       {
         method: "put",
         body: form,
@@ -61,29 +61,53 @@ const updateAccount = async () => {
     <div class="row q-gutter-sm items-center">
       <div>
         <div class="text-subtitle1 text-bold">Name</div>
-        <q-input outlined v-model="form.email" dense placeholder="name@example.com" :rules="[
-    rules.required('Required'),
-    rules.email('Email is not valid'),
-  ]" />
+        <q-input
+          outlined
+          v-model="form.email"
+          dense
+          placeholder="name@example.com"
+          :rules="[
+            rules.required('Required'),
+            rules.email('Email is not valid'),
+          ]"
+        />
       </div>
       <div>
         <div class="text-subtitle1 text-bold">First Name</div>
-        <q-input outlined v-model="form.firstName" dense :rules="[rules.required('Required')]" />
+        <q-input
+          outlined
+          v-model="form.firstName"
+          dense
+          :rules="[rules.required('Required')]"
+        />
       </div>
       <div>
         <div class="text-subtitle1 text-bold">Last Name</div>
-        <q-input outlined v-model="form.lastName" dense :rules="[rules.required('Required')]" />
+        <q-input
+          outlined
+          v-model="form.lastName"
+          dense
+          :rules="[rules.required('Required')]"
+        />
       </div>
       <div>
         <div class="text-subtitle1 text-bold">Phone</div>
-        <q-input outlined type="number" v-model="form.phone" dense :rules="[
-    rules.required('Required'),
-    rules.minLength(8, 'Phone number is not valid'),
-  ]" />
+        <q-input
+          outlined
+          type="number"
+          v-model="form.phone"
+          dense
+          :rules="[
+            rules.required('Required'),
+            rules.minLength(8, 'Phone number is not valid'),
+          ]"
+        />
       </div>
     </div>
     <div class="q-gutter-sm">
-      <q-btn color="secondary" @click="mode = 'read'" :disabled="loading">Cancle</q-btn>
+      <q-btn color="secondary" @click="mode = 'read'" :disabled="loading"
+        >Cancle</q-btn
+      >
       <q-btn color="primary" :disabled="loading" type="submit">
         <LoadingIndicator v-if="loading" /> Update
       </q-btn>

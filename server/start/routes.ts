@@ -31,6 +31,7 @@ import '../routes/emailRoutes'
 import '../routes/notificationRoutes'
 import '../routes/bookingRoutes'
 import '../routes/bidRoutes'
+import '../routes/chatRoutes'
 
 Route.get('api', async ({ response }) => {
   console.log('api ran')

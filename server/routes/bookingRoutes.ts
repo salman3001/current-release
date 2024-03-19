@@ -17,5 +17,5 @@ Route.group(() => {
   Route.get('coupons/vendor-coupons', 'booking/CouponsController.vendorCoupons')
   // Route.post('coupons/:id/apply-to-services', 'CouponsController.applyToServices')
   Route.put('coupons/:id/update-services', 'booking/CouponsController.updateServices')
-  Route.resource('coupons', 'CouponsController')
+  Route.resource('coupons', 'booking/CouponsController')
 }).prefix('api')

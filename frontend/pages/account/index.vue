@@ -7,9 +7,16 @@ const tab = ref(query?.tab || "Profile");
 </script>
 
 <template>
-  <br>
+  <br />
   <div>
-    <q-tabs dense v-model="tab" active-color="white" indicator-color="secondary" active-bg-color="primary" align="left">
+    <q-tabs
+      dense
+      v-model="tab"
+      active-color="white"
+      indicator-color="secondary"
+      active-bg-color="primary"
+      align="left"
+    >
       <q-tab name="Profile" label="Profile" />
       <q-tab name="Bookings" label="Bookings" />
       <q-tab name="Custom Bookings" label="Custom Bookings" />
@@ -34,13 +41,13 @@ const tab = ref(query?.tab || "Profile");
 
       <q-tab-panel name="Bookings">
         <div class="text-h6">Booking History</div>
-        <br>
+        <br />
         <WebBookingList />
       </q-tab-panel>
 
       <q-tab-panel name="Custom Bookings">
         <div class="text-h6">Custom Bookings</div>
-        <br>
+        <br />
         <WebCustomBookingList />
       </q-tab-panel>
 

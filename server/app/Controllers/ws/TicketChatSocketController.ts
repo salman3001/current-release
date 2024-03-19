@@ -5,7 +5,7 @@ import SupportTicket from 'App/Models/helpcenter/SupportTicket'
 import { Namespace, Socket } from 'socket.io'
 import { DefaultEventsMap } from 'socket.io/dist/typed-events'
 
-export default class TicketChatController {
+export default class TicketChatSocketController {
   constructor(
     private socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>,
     private io: Namespace<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>

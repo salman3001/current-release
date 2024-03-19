@@ -17,7 +17,7 @@ const updatePassword = async () => {
   loading.value = true;
   try {
     const data = await customFetch<IResType<any>>(
-      apiRoutes.updatePassword(user!.value.id),
+      apiRoutes.auth.updatePassword(user!.value.id),
       {
         method: "post",
         body: form.value,

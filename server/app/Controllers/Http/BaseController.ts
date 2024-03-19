@@ -78,6 +78,15 @@ export default class BaseController {
     let records: ModelPaginatorContract<LucidRow> | LucidRow[] | [] = []
     const query = this.getIndexQuery(ctx)
 
+    if (!query) {
+      return ctx.response.custom({
+        message: null,
+        code: 200,
+        data: records,
+        success: true,
+      })
+    }
+
     const filteredQuery = this.indexfilterQuery(qs, query)
 
     if (qs.page) {
@@ -98,6 +107,15 @@ export default class BaseController {
     const qs = qsModule.parse(ctx.request.parsedUrl.query, { depth: 10 })
 
     const query = this.getShowQuery(ctx)
+
+    if (!query) {
+      return ctx.response.custom({
+        message: null,
+        code: 200,
+        data: null,
+        success: true,
+      })
+    }
 
     const filteredQuery = this.showfilterQuery(qs, query)
 
@@ -383,11 +401,11 @@ export default class BaseController {
     return record
   }
 
-  public getIndexQuery(ctx: HttpContextContract): ModelQueryBuilderContract<any, any> {
+  public getIndexQuery(ctx: HttpContextContract): ModelQueryBuilderContract<any, any> | null {
     return this.model.query()
   }
 
-  public getShowQuery(ctx: HttpContextContract): ModelQueryBuilderContract<any, any> {
+  public getShowQuery(ctx: HttpContextContract): ModelQueryBuilderContract<any, any> | null {
     const id = ctx.params.id
     return this.model.query().where('id', id)
   }

@@ -5,19 +5,11 @@ import VendorUser from 'App/Models/vendorUser/VendorUser'
 
 export default class BidPolicy extends BasePolicy {
   public async viewList(user: User) {
-    if (user instanceof VendorUser) {
-      return true
-    } else {
-      return false
-    }
+    return true
   }
 
   public async view(user: User, bid: Bid) {
-    if (user instanceof VendorUser && bid.vendorUserId == user.id) {
-      return true
-    } else {
-      return false
-    }
+    return true
   }
   public async create(user: User) {
     if (user instanceof VendorUser) {

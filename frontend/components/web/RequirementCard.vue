@@ -26,19 +26,19 @@ defineProps<{
             :class="$q.screen.xs ? 'justify-end' : 'justify-end'"
           >
             <q-badge
-              class="q-badge-warning text-body2"
+              class="q-badge-warning text-body2 q-px-md"
               outline
               v-if="!requirement.accepted_bid_id"
               >Active</q-badge
             >
             <q-badge
-              class="q-badge-positive text-body2"
+              class="q-badge-positive text-body2 q-px-md"
               outline
               v-else-if="requirement.accepted_bid_id != null"
               >Accepted</q-badge
             >
             <q-badge
-              class="q-badge-negative text-body2"
+              class="q-badge-negative text-body2 q-px-md"
               outline
               v-else-if="
                 date.getDateDiff(

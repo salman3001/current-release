@@ -8,7 +8,7 @@ const { data: category } = await useAsyncData(
   "service-category-" + categroySlug,
   async () => {
     const data = await customFetch<IResType<IServiceCategory>>(
-      apiRoutes.service_category_view_by_slug(categroySlug)
+      apiRoutes.service_categories.view_by_slug(categroySlug)
     );
 
     return data.data;
@@ -20,7 +20,7 @@ const {
   refresh,
   pending: servicesPending,
 } = await useAsyncData(() =>
-  customFetch<IPageRes<IService[]>>(apiRoutes.services, {
+  customFetch<IPageRes<IService[]>>(apiRoutes.services.list, {
     query: {
       page: page.value,
       where: {

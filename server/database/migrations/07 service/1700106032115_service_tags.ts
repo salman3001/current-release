@@ -8,7 +8,7 @@ export default class extends BaseSchema {
       table.increments('id')
       table.string('name').notNullable()
       table.string('slug').notNullable().unique()
-      table.string('short_desc')
+      table.string('short_desc', 1024)
       table.text('long_desc')
       table.json('thumbnail')
       /**

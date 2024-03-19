@@ -127,6 +127,11 @@ export const http: ServerConfig = {
   |
   */
   forceContentNegotiationTo: 'application/json',
+
+  /*
+  |use async local storage
+  */
+  useAsyncLocalStorage: true,
 }
 
 /*

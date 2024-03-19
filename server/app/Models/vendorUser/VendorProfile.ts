@@ -18,7 +18,6 @@ import {
 } from '@ioc:Adonis/Addons/ResponsiveAttachment'
 import Image from '../Image'
 import VendorUser from './VendorUser'
-import { AttachmentContract, attachment } from '@ioc:Adonis/Addons/AttachmentLite'
 import Address from '../address/Address'
 
 export default class VendorProfile extends BaseModel {
@@ -52,29 +51,6 @@ export default class VendorProfile extends BaseModel {
     responsiveDimensions: false,
   })
   public logo: ResponsiveAttachmentContract
-
-  @responsiveAttachment({
-    folder: 'business/covers',
-    preComputeUrls: true,
-    forceFormat: 'webp',
-    disableThumbnail: true,
-    responsiveDimensions: false,
-  })
-  public cover: ResponsiveAttachmentContract
-
-  @responsiveAttachment({
-    folder: 'business/brochers',
-    preComputeUrls: true,
-    forceFormat: 'webp',
-    disableThumbnail: true,
-    responsiveDimensions: false,
-  })
-  public brocher: ResponsiveAttachmentContract
-
-  @attachment({
-    folder: 'business/videos',
-  })
-  public video: AttachmentContract
 
   @column()
   public vendorUserId: number

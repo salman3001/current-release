@@ -11,7 +11,7 @@ const { data: variant } = await useAsyncData(
   "variant" + variantId,
   async () => {
     const data = await customFetch<IResType<IServiceVariant>>(
-      apiRoutes.view_service_variant(variantId as string),
+      apiRoutes.service_variants.view(variantId as unknown as number),
       {
         query: {
           preload: [

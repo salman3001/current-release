@@ -7,8 +7,7 @@ export default class extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id').primary()
       table.decimal('offered_price', 8, 2)
-      table.json('features_included')
-      table.json('features_excluded')
+      table.string('message', 1500)
       table
         .integer('service_requirement_id')
         .unsigned()

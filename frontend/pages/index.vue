@@ -28,7 +28,10 @@ const isFilterApplied = ref(isFilterEmpty() ? false : true);
 
 const { data, error } = await useAsyncData("web-home", async () => {
   const [categories] = await Promise.all([
-    customFetch<IResType<IServiceCategory[]>>(apiRoutes.service_categories, {}),
+    customFetch<IResType<IServiceCategory[]>>(
+      apiRoutes.service_categories.list,
+      {}
+    ),
   ]);
 
   return {
@@ -41,7 +44,7 @@ const {
   refresh,
   pending: servicesPending,
 } = await useAsyncData(() =>
-  customFetch<IPageRes<IService[]>>(apiRoutes.services, {
+  customFetch<IPageRes<IService[]>>(apiRoutes.services.list, {
     query: {
       page: page.value,
       preload: [

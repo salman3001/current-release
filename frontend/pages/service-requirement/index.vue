@@ -32,7 +32,7 @@ const {
   refresh,
 } = await useAsyncData(async () => {
   const data = await customFetch<IPageRes<IServiceRequirement[]>>(
-    apiRoutes.service_requirements_my_list,
+    apiRoutes.service_requirements.my_list,
     {
       query: {
         page: page.value,

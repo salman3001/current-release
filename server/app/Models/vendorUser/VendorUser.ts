@@ -22,6 +22,7 @@ import Review from '../Review'
 import Service from '../service/Service'
 import VendorProfile from './VendorProfile'
 import BigNumber from 'bignumber.js'
+import Conversation from '../chat/Conversation'
 
 export default class VendorUser extends BaseModel {
   @column({ isPrimary: true })
@@ -93,6 +94,11 @@ export default class VendorUser extends BaseModel {
   // public async getRatting(){
   //   await this.load('')
   // }
+
+  @manyToMany(() => Conversation, {
+    pivotTable: 'conversation_participants',
+  })
+  public conversations: ManyToMany<typeof Conversation>
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

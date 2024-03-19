@@ -11,9 +11,6 @@ export default class extends BaseSchema {
       table.boolean('is_active')
       table.json('avatar')
       table.json('logo')
-      table.json('cover')
-      table.json('brocher')
-      table.json('video')
       table
         .integer('vendor_user_id')
         .unsigned()

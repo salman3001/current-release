@@ -25,6 +25,7 @@ export default class BidBookingCreateValidator {
    */
   public schema = schema.create({
     serviceRequirementId: schema.number(),
+    acceptedBidId: schema.number(),
     qty: schema.number(),
     paymentdetail: schema.object().members({
       paymentMode: schema.enum(['cod', 'online']),

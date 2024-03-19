@@ -32,6 +32,7 @@ export default class CouponCreateValidator {
     discountPercentage: schema.number.optional([rules.maxNumber(99), rules.minNumber(0)]),
     maxUsers: schema.number(),
     minPurchaseAmount: schema.number([rules.minNumber(0)]),
+    // serviceIds: schema.array().members(schema.number()),
     validFrom: schema.date({ format: 'dd/MM/yyyy HH:mm' }, [rules.after(1, 'minute')]),
     expiredAt: schema.date({ format: 'dd/MM/yyyy HH:mm' }, [rules.afterField('validFrom')]),
   })

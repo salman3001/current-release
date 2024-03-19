@@ -7,8 +7,8 @@ export default class extends BaseSchema {
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id').primary()
-      table.string('title', 50).notNullable()
-      table.string('desc')
+      table.string('title', 256).notNullable()
+      table.string('desc', 1500)
       table.json('skills_required')
       table.enum('budget_type', Object.values(BudgetType))
       table.decimal('budget', 10, 2).notNullable()

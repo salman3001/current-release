@@ -1,67 +1,17 @@
 <script setup lang="ts">
 import BigNumber from "bignumber.js";
 import { date } from "quasar";
+
 const props = defineProps<{
-  anyBidAccepted: boolean;
   accepted: boolean;
-  bid?: IBid;
-  requirementId: number;
+  bid: IBid;
 }>();
 
 const emit = defineEmits<{
-  (e: "bid-accpted"): void;
-  (e: "bid-rejected"): void;
+  (e: "review", bid: IBid): void;
 }>();
 
-const loading = ref(false);
-const modal = modalStore();
-
-const customFetch = useCustomFetch();
-
-const acceptBid = async () => {
-  loading.value = true;
-
-  const res = await customFetch<IResType<any>>(
-    apiRoutes.accept_bid(props.bid?.service_requirement_id as number),
-    {
-      method: "post",
-      body: {
-        bidId: props.bid?.id,
-      },
-    }
-  );
-
-  if (res.success == true) {
-    emit("bid-accpted");
-  }
-  try {
-  } catch (error) {
-    console.log(error);
-  }
-
-  loading.value = false;
-};
-
-const rejectBid = async () => {
-  loading.value = true;
-
-  const res = await customFetch<IResType<any>>(
-    apiRoutes.reject_bid(props.bid?.service_requirement_id as number),
-    {
-      method: "post",
-    }
-  );
-
-  if (res.success == true) {
-    emit("bid-rejected");
-  }
-  try {
-  } catch (error) {
-    console.log(error);
-  }
-
-  loading.value = false;
-};
+const getImageUrl = useGetImageUrl();
 </script>
 
 <template>
@@ -75,7 +25,14 @@ const rejectBid = async () => {
       <div class="row q-gutter-y-md wrap justify-between">
         <div class="row gap-50">
           <q-avatar size="72px">
-            <img src="https://cdn.quasar.dev/img/avatar.png" />
+            <img
+              :src="
+                getImageUrl(
+                  bid?.vendorUser?.profile?.avatar?.url,
+                  '/images/sample-dp.png'
+                )
+              "
+            />
           </q-avatar>
           <div>
             <p v-if="accepted" class="text-bold text-subtitle1">
@@ -84,9 +41,11 @@ const rejectBid = async () => {
             </p>
             <p v-else class="text-bold text-subtitle1">Anonymous</p>
             <div>
-              <NuxtLink :to="routes.home" class="underline">{{
-                bid?.vendorUser?.business_name
-              }}</NuxtLink>
+              <NuxtLink
+                :to="routes.view_business(bid.vendorUser.id)"
+                class="underline"
+                >{{ bid?.vendorUser?.business_name }}</NuxtLink
+              >
             </div>
             <div>
               <RatingComponent
@@ -127,15 +86,12 @@ const rejectBid = async () => {
       <br />
       <div>
         <p class="text-body-1 ellipsis-3-lines">
-          Lorem ipsum, dolor sit amet consectetur adipisicing elit. Iste
-          laboriosam incidunt eum maxime architecto beatae illum repellendus at
-          tempore expedita? Lorem ipsum dolor sit amet consectetur, adipisicing
-          elit. Exercitationem, distinctio.
+          {{ bid?.message }}
         </p>
       </div>
     </q-card-section>
     <q-card-action class="row q-px-sm justify-end">
-      <q-btn color="primary">Review</q-btn>
+      <q-btn color="primary" @click="emit('review', bid)">Review</q-btn>
     </q-card-action>
     <br />
   </q-card>

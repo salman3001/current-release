@@ -10,7 +10,7 @@ const { data: vendor } = await useAsyncData(
   "vendor-profile-" + route.params.id,
   async () => {
     const data = await customFetch<IResType<IVendorUser>>(
-      apiRoutes.vendor_users + "/" + route.params.id,
+      apiRoutes.vendor_user.view(route.params.id as any),
       {
         query: {
           preload: [
@@ -32,7 +32,7 @@ const {
   refresh,
   pending: servicesPending,
 } = await useAsyncData(() =>
-  customFetch<IPageRes<IService[]>>(apiRoutes.services, {
+  customFetch<IPageRes<IService[]>>(apiRoutes.services.list, {
     query: {
       page: page.value,
       preload: [
@@ -68,7 +68,7 @@ const {
   ("reviews" + route.params.slug) as string,
   async () => {
     const data = await customFetch<IPageRes<IReview[]>>(
-      apiRoutes.vendor_reviews(vendor.value!.id),
+      apiRoutes.vendor_user.reviews(vendor.value!.id),
       {
         query: {
           preload: [

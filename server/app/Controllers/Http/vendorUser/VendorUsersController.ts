@@ -155,16 +155,8 @@ export default class VendorUsersController extends BaseController {
       profile.avatar = await ResponsiveAttachment.fromFile(payload.avatar)
     }
 
-    if (payload.cover) {
-      profile.cover = await ResponsiveAttachment.fromFile(payload.cover)
-    }
-
     if (payload.logo) {
       profile.logo = await ResponsiveAttachment.fromFile(payload.logo)
-    }
-
-    if (payload.brocher) {
-      profile.brocher = await ResponsiveAttachment.fromFile(payload.brocher)
     }
 
     if (payload.images) {
@@ -195,14 +187,6 @@ export default class VendorUsersController extends BaseController {
       const validImages = images.filter((img) => img !== null)
       await profile.related('images').saveMany(validImages as Image[])
     }
-
-    // if (payload.video) {
-    //   if (profile.video) {
-    //     await profile.video.delete()
-    //   }
-
-    //   profile.video = Attachment.fromFile(payload.video)
-    // }
 
     await profile.save()
 

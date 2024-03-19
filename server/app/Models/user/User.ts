@@ -10,12 +10,15 @@ import {
   hasMany,
   HasMany,
   computed,
+  manyToMany,
+  ManyToMany,
 } from '@ioc:Adonis/Lucid/Orm'
 import Notification from '../Notification'
 import UserProfile from '../UserProfile'
 import Wishlist from './Wishlist'
 import Booking from '../bookings/Booking'
 import BidBooking from '../bookings/BidBooking'
+import Conversation from '../chat/Conversation'
 
 export default class User extends BaseModel {
   @column({ isPrimary: true })
@@ -64,6 +67,11 @@ export default class User extends BaseModel {
 
   @hasMany(() => BidBooking)
   public bidBooking: HasMany<typeof BidBooking>
+
+  @manyToMany(() => Conversation, {
+    pivotTable: 'conversation_participants',
+  })
+  public conversations: ManyToMany<typeof Conversation>
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

@@ -10,7 +10,7 @@ const { data: booking, pending } = useAsyncData(
   "booking" + route.params.id,
   async () => {
     const data = await customFetch<IResType<IBidBooking>>(
-      apiRoutes.bid_booking_show(route.params.id as unknown as number)
+      apiRoutes.bid_booking.view(route.params.id as unknown as number)
     );
     return data.data;
   }

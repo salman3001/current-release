@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 
+const route = useRoute();
 const requirementId = useRoute().params.requirementId;
 const customFetch = useCustomFetch();
 const step = ref(1);
@@ -10,7 +11,7 @@ const customBookingStore = useCustomBookingStore();
 const { data } = await useAsyncData(async () => {
   const [requirement, acceptedBid] = await Promise.all([
     customFetch<IResType<IServiceRequirement>>(
-      apiRoutes.service_requirements_view(requirementId as unknown as number),
+      apiRoutes.service_requirements.view(requirementId as unknown as number),
       {
         query: {
           preload: [
@@ -24,9 +25,7 @@ const { data } = await useAsyncData(async () => {
       }
     ),
     customFetch<IResType<IBid>>(
-      apiRoutes.service_requirement_show_accepted_bid(
-        requirementId as unknown as number
-      ),
+      apiRoutes.bids.view(route.query.acceptedBidId as unknown as number),
       {
         query: {
           select: ["id", "offered_price"],
@@ -127,6 +126,7 @@ const { data } = await useAsyncData(async () => {
                         paymentMode: 'cod',
                         paymentStatus: 'paid',
                       },
+                      acceptedBidId: data!.acceptedBid.id,
                       qty: customBookingStore.qty!,
                       serviceRequirementId: requirementId as unknown as number,
                     },
@@ -159,7 +159,14 @@ const { data } = await useAsyncData(async () => {
           <NuxtLink :to="routes.home">
             <q-btn color="primary">Go Home</q-btn>
           </NuxtLink>
-          <NuxtLink :to="routes.account + '?tab=Custom Bookings'">
+          <NuxtLink
+            :to="{
+              path: routes.account,
+              query: {
+                tab: 'Custom Bookings',
+              },
+            }"
+          >
             <q-btn color="primary">My Orders</q-btn>
           </NuxtLink>
         </div>

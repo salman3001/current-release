@@ -10,6 +10,7 @@ const useBookingStore = defineStore("useCustomBookingStore", () => {
     body: {
       serviceRequirementId: number;
       qty: number;
+      acceptedBidId: number;
       paymentdetail: {
         paymentMode: string;
         paymentStatus: string;
@@ -20,7 +21,7 @@ const useBookingStore = defineStore("useCustomBookingStore", () => {
     creatingBooking.value = true;
     try {
       const data = await customFetch<IResType<IBookingSummary>>(
-        apiRoutes.bid_bookings,
+        apiRoutes.bid_booking.create,
         {
           method: "post",
           body,

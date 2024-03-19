@@ -9,7 +9,7 @@ export default class extends BaseSchema {
       table.string('name').notNullable()
       table.string('title').notNullable()
       table.string('email').notNullable()
-      table.string('message').notNullable()
+      table.string('message', 1500).notNullable()
 
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL

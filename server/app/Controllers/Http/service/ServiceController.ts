@@ -53,14 +53,6 @@ export default class ServiceController extends BaseController {
         await service.related('faq').createMany(payload.faq)
       }
 
-      if (payload.cover) {
-        service.cover = await ResponsiveAttachment.fromFile(payload.cover)
-      }
-
-      if (payload.brocher) {
-        service.brocher = await ResponsiveAttachment.fromFile(payload.brocher)
-      }
-
       if (payload.images) {
         const images = await Promise.all(
           payload.images.map(async (img) => {
@@ -133,14 +125,6 @@ export default class ServiceController extends BaseController {
           }
         }
         await service.related('faq').createMany(payload.faq)
-      }
-
-      if (payload.cover) {
-        service.cover = await ResponsiveAttachment.fromFile(payload.cover)
-      }
-
-      if (payload.brocher) {
-        service.brocher = await ResponsiveAttachment.fromFile(payload.brocher)
       }
 
       if (payload.images) {

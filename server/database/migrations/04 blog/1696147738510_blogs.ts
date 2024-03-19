@@ -16,7 +16,7 @@ export default class extends BaseSchema {
         .references('id')
         .inTable('languages')
         .onDelete('SET NULL')
-      table.string('short_desc')
+      table.string('short_desc', 512)
       table.text('long_desc')
       table.string('meta_title')
       table.string('meta_keywords')

@@ -16,7 +16,7 @@ const useBookingStore = defineStore("useBookingStore", () => {
     loadingSummary.value = true;
     try {
       const data = await customFetch<IResType<IBookingSummary>>(
-        apiRoutes.booking_summary,
+        apiRoutes.bookings.summary,
         {
           method: "post",
           body: {
@@ -52,7 +52,7 @@ const useBookingStore = defineStore("useBookingStore", () => {
     creatingBooking.value = true;
     try {
       const data = await customFetch<IResType<IBookingSummary>>(
-        apiRoutes.create_booking,
+        apiRoutes.bookings.create,
         {
           method: "post",
           body,

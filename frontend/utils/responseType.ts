@@ -85,8 +85,6 @@ type IService = {
     y: number;
   };
   avg_rating: string;
-  cover: ImageType | null;
-  brocher: ImageType | null;
   video: ImageType | null;
   images: ImageType[] | null;
   vendor_user_id: number;
@@ -138,8 +136,6 @@ type IVendorProfile = {
   is_active: boolean;
   avatar: ImageType;
   logo: ImageType;
-  cover: ImageType;
-  brocher: ImageType;
   video: ImageType;
   vendor_user_id: number;
   images: ImageType[];
@@ -417,8 +413,7 @@ type IServiceRequirement = {
 type IBid = {
   id: number;
   offered_price: number | string;
-  features_included: string[];
-  features_excluded: string[];
+  message: string;
   service_requirement_id: number;
   vendor_user_id: number;
   vendorUser: IVendorUser;

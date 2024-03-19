@@ -2,7 +2,7 @@ import { schema, CustomMessages, rules } from '@ioc:Adonis/Core/Validator'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 export default class VendorProfileUpdateValidator {
-  constructor(protected ctx: HttpContextContract) { }
+  constructor(protected ctx: HttpContextContract) {}
 
   /*
    * Define schema to validate the "shape", "type", "formatting" and "integrity" of data.
@@ -29,18 +29,6 @@ export default class VendorProfileUpdateValidator {
       size: '5mb',
     }),
     logo: schema.file.optional({
-      extnames: ['jpg', 'JPG', 'jpeg', 'JPEG', 'png', 'PNG', 'webp', 'WEBP'],
-      size: '5mb',
-    }),
-    cover: schema.file.optional({
-      extnames: ['jpg', 'JPG', 'jpeg', 'JPEG', 'png', 'PNG', 'webp', 'WEBP'],
-      size: '5mb',
-    }),
-    video: schema.file.optional({
-      extnames: ['mp4'],
-      size: '25mb',
-    }),
-    brocher: schema.file.optional({
       extnames: ['jpg', 'JPG', 'jpeg', 'JPEG', 'png', 'PNG', 'webp', 'WEBP'],
       size: '5mb',
     }),
