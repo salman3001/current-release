@@ -171,20 +171,13 @@ const refreshData = async () => {
           <p>You haven't accepted any bid yet. Please accept a bid</p>
           <br />
         </div>
-        <WebProposalCard
-          v-else
-          :accepted="true"
-          :bid="data?.acceptedBid"
-          :any-bid-accepted="data.acceptedBid ? true : false"
-          :requirement-id="data.serviceRequirement.id"
-          @bid-rejected="refreshData"
-          @review="
-            (v) => {
-              selectedBid = v;
-              bidDetailModal = true;
-            }
-          "
-        />
+        <WebProposalCard v-else :accepted="true" :bid="data?.acceptedBid"
+          :any-bid-accepted="data.acceptedBid ? true : false" :requirement-id="data.serviceRequirement.id"
+          @bid-rejected="refreshData" @review="(v) => {
+        selectedBid = v;
+        bidDetailModal = true;
+      }
+      " />
       </div>
       <br />
       <br />
@@ -194,23 +187,12 @@ const refreshData = async () => {
             <h6 class="text-bold">Bids Recieved</h6>
           </div>
           <div class="row items-center q-gutter-sm">
-            <q-badge
-              class="q-badge-primary text-subtitle1"
-              v-if="bidQuery.sortBy == 'vendor_users.avg_rating'"
-              >Sorting by Top Rating</q-badge
-            >
-            <q-badge
-              class="q-badge-primary text-subtitle1"
-              v-if="bidQuery.sortBy == 'offered_price'"
-              >Sorting by Lowest Price</q-badge
-            >
+            <q-badge class="q-badge-primary text-subtitle1" v-if="bidQuery.sortBy == 'vendor_users.avg_rating'">Sorting
+              by Top Rating</q-badge>
+            <q-badge class="q-badge-primary text-subtitle1" v-if="bidQuery.sortBy == 'offered_price'">Sorting by Lowest
+              Price</q-badge>
 
-            <q-btn-dropdown
-              outline
-              icon="filter_alt"
-              color="primary"
-              label="Filter"
-            >
+            <q-btn-dropdown outline icon="filter_alt" color="primary" label="Filter">
               <q-list style="" dense>
                 <q-item clickable v-ripple @click="sortByVendorRating">
                   <q-item-section> Highest Rating </q-item-section>
@@ -230,39 +212,25 @@ const refreshData = async () => {
             <SkeletonBase type="list" v-for="i in 3" :key="i"></SkeletonBase>
           </div>
           <div v-else class="row q-gutter-md">
-            <WebProposalCard
-              v-for="bid in recivedBids?.data"
-              :accepted="data?.acceptedBid ? true : false"
-              :bid="bid"
-              :any-bid-accepted="data?.acceptedBid ? true : false"
-              @bid-accpted="refreshData"
-              @review="
-                (v) => {
-                  selectedBid = v;
-                  bidDetailModal = true;
-                }
-              "
-            />
+            <WebProposalCard v-for="bid in recivedBids?.data" :accepted="false" :bid="bid"
+              :any-bid-accepted="data?.acceptedBid ? true : false" @bid-accpted="refreshData" @review="(v) => {
+        selectedBid = v;
+        bidDetailModal = true;
+      }
+      " />
           </div>
-          <PaginateComponet
-            :page="bidQuery.page"
-            :meta="recivedBids?.meta"
-            @update:model-value="
-              (v) => {
-                bidQuery.page = v;
-                refreshBids();
-              }
-            "
-          />
+          <PaginateComponet :page="bidQuery.page" :meta="recivedBids?.meta" @update:model-value="(v) => {
+        bidQuery.page = v;
+        refreshBids();
+      }
+      " />
         </div>
       </div>
     </div>
     <q-dialog v-model="bidDetailModal">
       <q-card style="width: 100%">
         <q-toolbar color="primary">
-          <q-toolbar-title
-            ><span class="text-weight-bold">Bid Detail</span></q-toolbar-title
-          >
+          <q-toolbar-title><span class="text-weight-bold">Bid Detail</span></q-toolbar-title>
           <q-btn flat dense icon="close" v-close-popup />
         </q-toolbar>
 
@@ -270,72 +238,48 @@ const refreshData = async () => {
           <div class="row q-gutter-y-md wrap justify-between">
             <div class="row gap-50">
               <q-avatar size="72px">
-                <img
-                  :src="
-                    getImageUrl(
-                      selectedBid?.vendorUser?.profile?.avatar?.url,
-                      '/images/sample-dp.png'
-                    )
-                  "
-                />
+                <img :src="getImageUrl(
+      selectedBid?.vendorUser?.profile?.avatar?.url,
+      '/images/sample-dp.png'
+    )
+      " />
               </q-avatar>
               <div>
-                <p
-                  v-if="data?.acceptedBid?.id === selectedBid?.id"
-                  class="text-bold text-subtitle1"
-                >
+                <p v-if="data?.acceptedBid?.id === selectedBid?.id" class="text-bold text-subtitle1">
                   {{ selectedBid?.vendorUser.first_name }}
                   {{ selectedBid?.vendorUser.last_name }}
                 </p>
                 <p v-else class="text-bold text-subtitle1">Anonymous</p>
                 <div>
                   <NuxtLink :to="routes.home" class="underline">{{
-                    selectedBid?.vendorUser?.business_name
-                  }}</NuxtLink>
+      selectedBid?.vendorUser?.business_name
+    }}</NuxtLink>
                 </div>
                 <div>
-                  <RatingComponent
-                    :rating="selectedBid?.vendorUser?.avg_rating || 0"
-                    size="1.25rem"
-                  />
+                  <RatingComponent :rating="selectedBid?.vendorUser?.avg_rating || 0" size="1.25rem" />
                 </div>
               </div>
             </div>
             <div>
               <p class="text-muted" style="width: max-content">
                 {{
-                  date.formatDate(selectedBid?.created_at, "DD/MM/YYYY hh:mmA")
-                }}
+      date.formatDate(selectedBid?.created_at, "DD/MM/YYYY hh:mmA")
+    }}
               </p>
-              <q-badge
-                v-if="data?.acceptedBid?.id === selectedBid?.id"
-                outline
-                class="q-badge-primary justify-center"
-              >
-                Accepted</q-badge
-              >
+              <q-badge v-if="data?.acceptedBid?.id === selectedBid?.id" outline class="q-badge-primary justify-center">
+                Accepted</q-badge>
             </div>
           </div>
           <br />
           <div class="q-gutter-sm">
-            <q-badge
-              class="q-badge-primary justify-center"
-              style="width: 120px"
-            >
-              <span class="text-bold text-body1"
-                >&#x20B9;{{
-                  new BigNumber(selectedBid?.offered_price || 0).toFixed(2)
-                }}</span
-              >
-              / Qty</q-badge
-            >
-            <q-badge
-              class="q-badge-primary justify-center"
-              style="width: 120px"
-            >
+            <q-badge class="q-badge-primary justify-center" style="width: 120px">
+              <span class="text-bold text-body1">&#x20B9;{{
+      new BigNumber(selectedBid?.offered_price || 0).toFixed(2)
+    }}</span>
+              / Qty</q-badge>
+            <q-badge class="q-badge-primary justify-center" style="width: 120px">
               <span class="text-bold text-body1">3</span>
-              Hrs</q-badge
-            >
+              Hrs</q-badge>
           </div>
           <br />
           <div>
@@ -345,15 +289,12 @@ const refreshData = async () => {
           </div>
         </q-card-section>
         <q-card-acetion class="row justify-end q-pa-lg" v-if="selectedBid">
-          <NuxtLink
-            :to="{
-              path: routes.book_custom_Service(data!?.serviceRequirement.id),
-              query: {
-                acceptedBidId: selectedBid.id,
-              },
-            }"
-            v-if="!data?.serviceRequirement.accepted_bid_id"
-          >
+          <NuxtLink :to="{
+      path: routes.book_custom_Service(data!?.serviceRequirement.id),
+      query: {
+        acceptedBidId: selectedBid.id,
+      },
+    }" v-if="!data?.serviceRequirement.accepted_bid_id">
             <q-btn color="primary">Accept and Book</q-btn>
           </NuxtLink>
         </q-card-acetion>

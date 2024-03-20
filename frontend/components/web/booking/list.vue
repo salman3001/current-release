@@ -58,65 +58,39 @@ const columns = [
       <div class="" v-if="pending">
         <SkeletonBase type="list" v-for="i in 2" />
       </div>
-      <q-table
-        bordered
-        v-else
-        :rows="bookings!.data"
-        :columns="columns"
-        row-key="id"
-        hide-pagination
-        color="green"
-        class="table-zebra full-hieght shadow-6 q-ma-sm"
-      >
+      <q-table bordered v-else :rows="bookings!.data" :columns="columns" row-key="id" hide-pagination
+        class="table-zebra full-hieght shadow-6 q-ma-sm">
         <template v-slot:body-cell-payment="props">
           <q-td :props="props">
-            <q-badge
-              class="normalcase q-badge-positive"
-              v-if="props.row?.payment_detail?.paymentStatus === 'paid'"
-              ><q-icon name="done"></q-icon> &nbsp;{{
-                props.row?.payment_detail?.paymentStatus
-              }}</q-badge
-            >
-            <q-badge
-              class="normalcase q-badge-warning"
-              v-if="props.row?.payment_detail?.paymentStatus === 'pending'"
-              ><q-icon name="done"></q-icon> &nbsp;{{
-                props.row?.payment_detail?.paymentStatus
-              }}</q-badge
-            >
+            <q-badge class="normalcase q-badge-positive"
+              v-if="props.row?.payment_detail?.paymentStatus === 'paid'"><q-icon name="done"></q-icon> &nbsp;{{
+        props.row?.payment_detail?.paymentStatus
+      }}</q-badge>
+            <q-badge class="normalcase q-badge-warning"
+              v-if="props.row?.payment_detail?.paymentStatus === 'pending'"><q-icon name="done"></q-icon> &nbsp;{{
+        props.row?.payment_detail?.paymentStatus
+      }}</q-badge>
           </q-td>
         </template>
 
         <template v-slot:body-cell-status="props">
           <q-td :props="props">
-            <q-badge
-              class="normalcase q-badge-warning"
-              v-if="props.row.status === 'placed'"
-              ><q-icon name="done"></q-icon> &nbsp;{{
-                props.row.status
-              }}</q-badge
-            >
-            <q-badge
-              class="normalcase q-badge-info"
-              v-if="props.row.status === 'confirmed'"
-              ><q-icon name="done"></q-icon> &nbsp;{{
-                props.row.status
-              }}</q-badge
-            >
-            <q-badge
-              class="normalcase q-badge-positive"
-              v-if="props.row.status === 'completed'"
-              ><q-icon name="done"></q-icon> &nbsp;{{
-                props.row.status
-              }}</q-badge
-            >
-            <q-badge
-              class="normalcase q-badge-negative"
-              v-if="props.row.status === 'cancled'"
-              ><q-icon name="done"></q-icon> &nbsp;{{
-                props.row.status
-              }}</q-badge
-            >
+            <q-badge class="normalcase q-badge-warning" v-if="props.row.status === 'placed'"><q-icon
+                name="done"></q-icon> &nbsp;{{
+        props.row.status
+      }}</q-badge>
+            <q-badge class="normalcase q-badge-info" v-if="props.row.status === 'confirmed'"><q-icon
+                name="done"></q-icon> &nbsp;{{
+        props.row.status
+      }}</q-badge>
+            <q-badge class="normalcase q-badge-positive" v-if="props.row.status === 'completed'"><q-icon
+                name="done"></q-icon> &nbsp;{{
+        props.row.status
+      }}</q-badge>
+            <q-badge class="normalcase q-badge-negative" v-if="props.row.status === 'cancled'"><q-icon
+                name="done"></q-icon> &nbsp;{{
+        props.row.status
+      }}</q-badge>
           </q-td>
         </template>
 
@@ -128,16 +102,11 @@ const columns = [
           </q-td>
         </template>
       </q-table>
-      <PaginateComponet
-        :page="page"
-        :meta="bookings?.meta"
-        @update:model-value="
-          (v) => {
-            page = v;
-            refresh();
-          }
-        "
-      />
+      <PaginateComponet :page="page" :meta="bookings?.meta" @update:model-value="(v) => {
+          page = v;
+          refresh();
+        }
+        " />
     </ScrollArea>
   </div>
 </template>

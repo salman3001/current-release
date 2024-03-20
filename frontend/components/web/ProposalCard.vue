@@ -15,24 +15,17 @@ const getImageUrl = useGetImageUrl();
 </script>
 
 <template>
-  <q-card
-    flat
-    bordered
-    :class="accepted ? 'border-primary border-2' : ''"
-    style="max-width: 400px; height: max-content"
-  >
+  <q-card bordered class="shadow-16 full-width" :class="accepted ? 'border-primary border-2' : ''"
+    style="max-width: 450px; height: max-content">
     <q-card-section>
-      <div class="row q-gutter-y-md wrap justify-between">
+      <div class="row q-gutter-md wrap justify-between">
         <div class="row gap-50">
           <q-avatar size="72px">
-            <img
-              :src="
-                getImageUrl(
-                  bid?.vendorUser?.profile?.avatar?.url,
-                  '/images/sample-dp.png'
-                )
-              "
-            />
+            <img :src="getImageUrl(
+    bid?.vendorUser?.profile?.avatar?.url,
+    '/images/sample-dp.png'
+  )
+    " />
           </q-avatar>
           <div>
             <p v-if="accepted" class="text-bold text-subtitle1">
@@ -41,17 +34,11 @@ const getImageUrl = useGetImageUrl();
             </p>
             <p v-else class="text-bold text-subtitle1">Anonymous</p>
             <div>
-              <NuxtLink
-                :to="routes.view_business(bid.vendorUser.id)"
-                class="underline"
-                >{{ bid?.vendorUser?.business_name }}</NuxtLink
-              >
+              <NuxtLink :to="routes.view_business(bid.vendorUser.id)" class="underline">{{
+    bid?.vendorUser?.business_name }}</NuxtLink>
             </div>
             <div>
-              <RatingComponent
-                :rating="bid?.vendorUser?.avg_rating || 0"
-                size="1.25rem"
-              />
+              <RatingComponent :rating="bid?.vendorUser?.avg_rating || 0" size="1.25rem" />
             </div>
           </div>
         </div>
@@ -59,29 +46,20 @@ const getImageUrl = useGetImageUrl();
           <p class="text-muted" style="width: max-content">
             {{ date.formatDate(bid?.created_at, "DD/MM/YYYY hh:mmA") }}
           </p>
-          <q-badge
-            v-if="accepted"
-            outline
-            class="q-badge-primary justify-center"
-          >
-            Accepted</q-badge
-          >
+          <q-badge v-if="accepted" outline class="q-badge-positive q-py-sm q-px-md justify-center">
+            Accepted</q-badge>
         </div>
       </div>
       <br />
       <div class="q-gutter-sm">
         <q-badge class="q-badge-primary justify-center" style="width: 120px">
-          <span class="text-bold text-body1"
-            >&#x20B9;{{
-              new BigNumber(bid?.offered_price || 0).toFixed(2)
-            }}</span
-          >
-          / Qty</q-badge
-        >
+          <span class="text-bold text-body1">&#x20B9;{{
+    new BigNumber(bid?.offered_price || 0).toFixed(2)
+  }}</span>
+          / Qty</q-badge>
         <q-badge class="q-badge-primary justify-center" style="width: 120px">
           <span class="text-bold text-body1">3</span>
-          Hrs</q-badge
-        >
+          Hrs</q-badge>
       </div>
       <br />
       <div>

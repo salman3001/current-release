@@ -20,8 +20,7 @@ function toggleLeftDrawer() {
 <template>
   <ScrollArea height="100vh" width="100%">
     <q-layout view="lHh lpR lFf">
-      <q-header bordered reveal elevated class="text-white shadow-16"
-        :class="$q.dark.isActive ? 'bg-dark' : 'bg-white'">
+      <q-header bordered reveal class="text-white " :class="$q.dark.isActive ? 'bg-dark' : 'bg-white'">
         <q-toolbar class="q-py-sm q-py-sm-md">
           <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" class="text-primary lt-md" />
           <div>
@@ -32,27 +31,32 @@ function toggleLeftDrawer() {
             <div class="gt-sm col-0 col-sm-1"></div>
             <div class="gt-sm col row justify-center">
               <WebServiceSearch :initail-value="route.query?.whereILike as string" @search="(v) => {
-          if (v !== '') {
-            navigateTo({
-              path: routes.home,
-              query: {
-                ...route.query,
-                whereILike: `%${v}%`,
-              },
-            });
-          } else {
-            navigateTo({
-              path: routes.home,
-              query: {
-                whereILike: '',
-              },
-            });
-          }
+        if (v !== '') {
+          navigateTo({
+            path: routes.home,
+            query: {
+              ...route.query,
+              whereILike: `%${v}%`,
+            },
+          });
+        } else {
+          navigateTo({
+            path: routes.home,
+            query: {
+              whereILike: '',
+            },
+          });
         }
-          " />
+      }
+        " />
             </div>
             <WebNavMenu class="gt-sm" />
             <WebNotificationMenu v-if="user" />
+            <NuxtLink :to="routes.chats">
+              <q-btn round flat class="btn-grey">
+                <q-icon name="mail" color="nutral"> </q-icon>
+              </q-btn>
+            </NuxtLink>
             <WebProfileMenu v-if="user" />
             <NuxtLink :to="routes.auth.login">
               <q-btn color="primary" v-if="!user">Login</q-btn>
@@ -61,24 +65,24 @@ function toggleLeftDrawer() {
         </q-toolbar>
         <q-toolbar class="lt-md q-pb-sm">
           <WebServiceSearch :initail-value="route.query?.whereILike as string" @search="(v) => {
-          if (v !== '') {
-            navigateTo({
-              path: routes.home,
-              query: {
-                ...route.query,
-                whereILike: `%${v}%`,
-              },
-            });
-          } else {
-            navigateTo({
-              path: routes.home,
-              query: {
-                whereILike: '',
-              },
-            });
-          }
+        if (v !== '') {
+          navigateTo({
+            path: routes.home,
+            query: {
+              ...route.query,
+              whereILike: `%${v}%`,
+            },
+          });
+        } else {
+          navigateTo({
+            path: routes.home,
+            query: {
+              whereILike: '',
+            },
+          });
         }
-          " style="flex-grow: 1" />
+      }
+        " style="flex-grow: 1" />
         </q-toolbar>
       </q-header>
 
@@ -87,7 +91,7 @@ function toggleLeftDrawer() {
         <q-scroll-area class="fit" :horizontal-thumb-style="{ opacity: 0 }">
           <q-list padding>
             <NuxtLink :to="routes.home" :class="route.path === routes.home ? 'text-primary' : 'text-muted'
-          ">
+        ">
               <q-item clickable v-ripple>
                 <q-item-section avatar>
                   <q-icon name="home" />
@@ -97,9 +101,9 @@ function toggleLeftDrawer() {
               </q-item>
             </NuxtLink>
             <NuxtLink :to="routes.service_requirement" :class="route.path === routes.service_requirement
-          ? 'text-primary'
-          : 'text-muted'
-          ">
+        ? 'text-primary'
+        : 'text-muted'
+        ">
               <q-item clickable v-ripple>
                 <q-item-section avatar>
                   <q-icon name="dashboard_customize" />
@@ -109,7 +113,7 @@ function toggleLeftDrawer() {
               </q-item>
             </NuxtLink>
             <NuxtLink :to="routes.blogs" :class="route.path === routes.blogs ? 'text-primary' : 'text-muted'
-          ">
+        ">
               <q-item clickable v-ripple>
                 <q-item-section avatar>
                   <q-icon name="rss_feed" />
@@ -118,7 +122,7 @@ function toggleLeftDrawer() {
               </q-item>
             </NuxtLink>
             <NuxtLink :to="routes.about" :class="route.path === routes.about ? 'text-primary' : 'text-muted'
-          ">
+        ">
               <q-item clickable v-ripple>
                 <q-item-section avatar>
                   <q-icon name="info" />
@@ -128,7 +132,7 @@ function toggleLeftDrawer() {
               </q-item>
             </NuxtLink>
             <NuxtLink :to="routes.contact" :class="route.path === routes.contact ? 'text-primary' : 'text-muted'
-          ">
+        ">
               <q-item clickable v-ripple>
                 <q-item-section avatar>
                   <q-icon name="support_agent" />
@@ -137,7 +141,7 @@ function toggleLeftDrawer() {
               </q-item>
             </NuxtLink>
             <NuxtLink :to="routes.faqs" :class="route.path === routes.faqs ? 'text-primary' : 'text-muted'
-          ">
+        ">
               <q-item clickable v-ripple>
                 <q-item-section avatar>
                   <q-icon name="help" />

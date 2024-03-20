@@ -32,7 +32,12 @@ export default function (): typeof $fetch {
 
   const onRequest = (c: FetchContext<any, any>): void => {
     const queryString = qs.stringify(c.options.query)
-    const newUrl = c.request + "?" + queryString
+    let newUrl: RequestInfo = ''
+    if (queryString) {
+      newUrl = c.request + "?" + queryString
+    } else {
+      newUrl = c.request
+    }
     c.options.query = {}
     c.request = newUrl
   }

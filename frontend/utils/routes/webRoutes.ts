@@ -17,4 +17,5 @@ export default {
   service_requirement_post: "/service-requirement/post",
   view_service_requirement: (id: number) => `/service-requirement/${id}`,
   faqs: "/faqs",
+  chats: '/chats'
 };

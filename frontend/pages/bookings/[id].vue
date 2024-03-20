@@ -29,26 +29,16 @@ const { data: booking, pending } = useAsyncData(
       <div>
         <h1 class="text-h6 text-bold q-sm">Booking ID: {{ booking?.id }}</h1>
         <div>
-          <q-badge
-            class="normalcase q-badge-warning"
-            v-if="booking?.status === 'placed'"
-            ><q-icon name="done"></q-icon> &nbsp;{{ booking?.status }}</q-badge
-          >
-          <q-badge
-            class="normalcase q-badge-info"
-            v-if="booking?.status === 'confirmed'"
-            ><q-icon name="done"></q-icon> &nbsp;{{ booking?.status }}</q-badge
-          >
-          <q-badge
-            class="normalcase q-badge-positive"
-            v-if="booking?.status === 'completed'"
-            ><q-icon name="done"></q-icon> &nbsp;{{ booking?.status }}</q-badge
-          >
-          <q-badge
-            class="normalcase q-badge-negative"
-            v-if="booking?.status === 'cancled'"
-            ><q-icon name="done"></q-icon> &nbsp;{{ booking?.status }}</q-badge
-          >
+          <q-badge class="normalcase q-badge-warning q-py-sm  q-px-md" v-if="booking?.status === 'placed'"><q-icon
+              name="done"></q-icon>
+            &nbsp;{{ booking?.status }}</q-badge>
+          <q-badge class="normalcase q-badge-info q-py-sm  q-px-md" v-if="booking?.status === 'confirmed'"><q-icon
+              name="done"></q-icon>
+            &nbsp;{{ booking?.status }}</q-badge>
+          <q-badge class="normalcase q-badge-positive q-py-sm  q-px-md" v-if="booking?.status === 'completed'"><q-icon
+              name="done"></q-icon> &nbsp;{{ booking?.status }}</q-badge>
+          <q-badge class="normalcase q-badge-negative q-py-sm  q-px-md" v-if="booking?.status === 'cancled'"><q-icon
+              name="done"></q-icon> &nbsp;{{ booking?.status }}</q-badge>
         </div>
       </div>
       <div>
@@ -75,17 +65,11 @@ const { data: booking, pending } = useAsyncData(
     </div>
     <br />
 
-    <q-img
-      width="150px"
-      height="150px"
-      class="rounded-borders shadow-12 border"
-      :src="
-        getImageUrl(
-          booking?.booking_detail?.service_variant?.image?.url,
-          '/images/sample-cover.jpg'
-        )
-      "
-    />
+    <q-img width="150px" height="150px" class="rounded-borders shadow-12 border" :src="getImageUrl(
+    booking?.booking_detail?.service_variant?.image?.url,
+    '/images/sample-cover.jpg'
+  )
+    " />
     <br />
     <br />
     <q-card class="shadow-12">
@@ -93,98 +77,56 @@ const { data: booking, pending } = useAsyncData(
         <h6 class="text-subtitle1 text-bold">Order Detail</h6>
         <br />
         <div class="" :class="$q.screen.gt.sm ? 'row' : 'column'">
-          <div
-            style="flex-wrap: nowrap"
-            :class="$q.screen.gt.sm ? 'col' : 'row justify-between'"
-          >
-            <div
-              class="q-pl-sm q-py-sm"
-              :class="$q.screen.gt.sm ? 'bg-grey-2' : ''"
-            >
+          <div style="flex-wrap: nowrap" :class="$q.screen.gt.sm ? 'col' : 'row justify-between'">
+            <div class="q-pl-sm q-py-sm">
               Booking date
             </div>
             <div class="q-pl-sm q-py-sm">
               {{ date.formatDate(booking?.created_at, "DD/MM/YYYY hh:mmA") }}
             </div>
           </div>
-          <div
-            style="flex-wrap: nowrap"
-            :class="$q.screen.gt.sm ? 'col' : 'row justify-between'"
-          >
-            <div
-              class="q-pl-sm q-py-sm"
-              :class="$q.screen.gt.sm ? 'bg-grey-2' : ''"
-            >
+          <div style="flex-wrap: nowrap" :class="$q.screen.gt.sm ? 'col' : 'row justify-between'">
+            <div class="q-pl-sm q-py-sm">
               Service Name
             </div>
             <div class="q-pl-sm q-py-sm">
               {{ booking?.booking_detail.service_variant.name }}
             </div>
           </div>
-          <div
-            style="flex-wrap: nowrap"
-            :class="$q.screen.gt.sm ? 'col' : 'row justify-between'"
-          >
-            <div
-              class="q-pl-sm q-py-sm"
-              :class="$q.screen.gt.sm ? 'bg-grey-2' : ''"
-            >
+          <div style="flex-wrap: nowrap" :class="$q.screen.gt.sm ? 'col' : 'row justify-between'">
+            <div class="q-pl-sm q-py-sm">
               Service Price
             </div>
             <div class="q-pl-sm q-py-sm">
               &#x20B9;{{ booking?.booking_detail.service_variant.price }}
             </div>
           </div>
-          <div
-            style="flex-wrap: nowrap"
-            :class="$q.screen.gt.sm ? 'col' : 'row justify-between'"
-          >
-            <div
-              class="q-pl-sm q-py-sm"
-              :class="$q.screen.gt.sm ? 'bg-grey-2' : ''"
-            >
+          <div style="flex-wrap: nowrap" :class="$q.screen.gt.sm ? 'col' : 'row justify-between'">
+            <div class="q-pl-sm q-py-sm">
               Qty
             </div>
             <div class="q-pl-sm q-py-sm">
               {{ booking?.booking_detail.service_variant.qty }}
             </div>
           </div>
-          <div
-            style="flex-wrap: nowrap"
-            :class="$q.screen.gt.sm ? 'col' : 'row justify-between'"
-          >
-            <div
-              class="q-pl-sm q-py-sm"
-              :class="$q.screen.gt.sm ? 'bg-grey-2' : ''"
-            >
+          <div style="flex-wrap: nowrap" :class="$q.screen.gt.sm ? 'col' : 'row justify-between'">
+            <div class="q-pl-sm q-py-sm">
               dsocunt
             </div>
             <div class="q-pl-sm q-py-sm">
               {{ booking?.booking_detail.vendor_discount }}
             </div>
           </div>
-          <div
-            style="flex-wrap: nowrap"
-            :class="$q.screen.gt.sm ? 'col' : 'row justify-between'"
-          >
-            <div
-              class="q-pl-sm q-py-sm"
-              :class="$q.screen.gt.sm ? 'bg-grey-2' : ''"
-            >
+          <div style="flex-wrap: nowrap" :class="$q.screen.gt.sm ? 'col' : 'row justify-between'">
+            <div class="q-pl-sm q-py-sm">
               Coupon Discount
             </div>
             <div class="q-pl-sm q-py-sm">
               {{ booking?.booking_detail.coupon_discount }}
             </div>
           </div>
-          <div
-            style="flex-wrap: nowrap"
-            :class="$q.screen.gt.sm ? 'col' : 'row justify-between'"
-          >
-            <div
-              class="q-pl-sm q-py-sm"
-              :class="$q.screen.gt.sm ? 'bg-grey-2' : ''"
-            >
+          <div style="flex-wrap: nowrap" :class="$q.screen.gt.sm ? 'col' : 'row justify-between'">
+            <div class="q-pl-sm q-py-sm">
               Grand Total
             </div>
             <div class="q-pl-sm q-py-sm">
@@ -202,49 +144,29 @@ const { data: booking, pending } = useAsyncData(
         <h6 class="text-subtitle1 text-bold">Payment Detail</h6>
         <br />
         <div class="" :class="$q.screen.gt.sm ? 'row' : 'column'">
-          <div
-            style="flex-wrap: nowrap"
-            :class="$q.screen.gt.sm ? 'col' : 'row justify-between'"
-          >
-            <div
-              class="q-pl-sm q-py-sm"
-              :class="$q.screen.gt.sm ? 'bg-grey-2' : ''"
-            >
+          <div style="flex-wrap: nowrap" :class="$q.screen.gt.sm ? 'col' : 'row justify-between'">
+            <div class="q-pl-sm q-py-sm">
               Payment Mode
             </div>
             <div class="q-pl-sm q-py-sm">Card</div>
           </div>
-          <div
-            style="flex-wrap: nowrap"
-            :class="$q.screen.gt.sm ? 'col' : 'row justify-between'"
-          >
-            <div
-              class="q-pl-sm q-py-sm"
-              :class="$q.screen.gt.sm ? 'bg-grey-2' : ''"
-            >
+          <div style="flex-wrap: nowrap" :class="$q.screen.gt.sm ? 'col' : 'row justify-between'">
+            <div class="q-pl-sm q-py-sm">
               Payment Status
             </div>
             <div class="q-pl-sm q-py-sm">
-              <q-badge class="normalcase q-badge-positive"
-                ><q-icon name="done"></q-icon> &nbsp;Paid</q-badge
-              >
+              <q-badge class="normalcase q-badge-positive q-py-sm q-px-md"><q-icon name="done"></q-icon>
+                &nbsp;Paid</q-badge>
             </div>
           </div>
-          <div
-            style="flex-wrap: nowrap"
-            :class="$q.screen.gt.sm ? 'col' : 'row justify-between'"
-          >
-            <div
-              class="q-pl-sm q-py-sm"
-              :class="$q.screen.gt.sm ? 'bg-grey-2' : ''"
-            >
+          <div style="flex-wrap: nowrap" :class="$q.screen.gt.sm ? 'col' : 'row justify-between'">
+            <div class="q-pl-sm q-py-sm">
               Options
             </div>
             <div class="q-pl-sm q-py-sm">
-              <q-badge class="normalcase q-badge-primary"
-                ><q-icon name="download"></q-icon> &nbsp;Download
-                Reciept</q-badge
-              >
+              <q-badge class="normalcase q-badge-primary q-py-sm q-px-md"><q-icon name="download"></q-icon>
+                &nbsp;Download
+                Reciept</q-badge>
             </div>
           </div>
         </div>
