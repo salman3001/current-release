@@ -14,22 +14,23 @@ export default class ConversationPolicy extends BasePolicy {
     await conversation.load('participant')
     let isValidParticipant = false
     if (user instanceof User) {
+      const identifier = `${userTypes.USER}-${user.id}`
       isValidParticipant = conversation.participant.some(
-        (participant) => participant.userType === userTypes.USER && participant.userId == user.id
+        (participant) => participant.userIdentifier === identifier
       )
     }
 
     if (user instanceof VendorUser) {
+      const identifier = `${userTypes.VENDER}-${user.id}`
       isValidParticipant = conversation.participant.some(
-        (participant) =>
-          participant.userType === userTypes.VENDER && participant.vendorUserId == user.id
+        (participant) => participant.userIdentifier === identifier
       )
     }
 
     if (user instanceof AdminUser) {
+      const identifier = `${userTypes.ADMIN}-${user.id}`
       isValidParticipant = conversation.participant.some(
-        (participant) =>
-          participant.userType === userTypes.ADMIN && participant.adminUserId == user.id
+        (participant) => participant.userIdentifier === identifier
       )
     }
 
@@ -48,24 +49,26 @@ export default class ConversationPolicy extends BasePolicy {
     await conversation.load('participant')
     let isValidParticipant = false
     if (user instanceof User) {
+      const identifier = `${userTypes.USER}-${user.id}`
       isValidParticipant = conversation.participant.some(
-        (participant) => participant.userType === userTypes.USER && participant.userId == user.id
+        (participant) => participant.userIdentifier === identifier
       )
     }
 
     if (user instanceof VendorUser) {
+      const identifier = `${userTypes.VENDER}-${user.id}`
       isValidParticipant = conversation.participant.some(
-        (participant) =>
-          participant.userType === userTypes.VENDER && participant.vendorUserId == user.id
+        (participant) => participant.userIdentifier === identifier
       )
     }
 
     if (user instanceof AdminUser) {
+      const identifier = `${userTypes.ADMIN}-${user.id}`
       isValidParticipant = conversation.participant.some(
-        (participant) =>
-          participant.userType === userTypes.ADMIN && participant.adminUserId == user.id
+        (participant) => participant.userIdentifier === identifier
       )
     }
+
     if (isValidParticipant) {
       return true
     } else {

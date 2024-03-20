@@ -22,6 +22,9 @@ type preload = Record<
     preload?: preload[]
     withAggregate: withAggregate[]
     withCount: withCount[]
+    limit: number
+    sortBy: string
+    descending: 'true' | 'false' | null
   }
 >
 type whereLike = Record<string, string> | null
@@ -300,12 +303,26 @@ export default class BaseController {
             }
           }
 
-          if (element.withCount) {
+          if (element?.withCount) {
             for (const item of element?.withCount) {
               builder.withCount(item.relation, (b) => {
                 b.as(item.as)
               })
             }
+          }
+
+          if (element?.sortBy) {
+            if (element?.descending === 'true') {
+              builder.orderBy(element.sortBy, 'desc')
+            } else if (element?.descending === 'false') {
+              builder.orderBy(element.sortBy, 'asc')
+            } else {
+              builder.orderBy(element.sortBy, 'asc')
+            }
+          }
+
+          if (element.limit) {
+            builder.limit(element.limit)
           }
 
           if (element.preload) {

@@ -4,10 +4,13 @@ import ConversationValidator from 'App/Validators/chat/ConversationValidator'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import AdminUser from 'App/Models/adminUser/AdminUser'
 import { ResponseContract } from '@ioc:Adonis/Core/Response'
-import Database from '@ioc:Adonis/Lucid/Database'
 import { userTypes } from 'App/Helpers/enums'
 import MessageValidator from 'App/Validators/chat/MessageValidator'
 import Message from 'App/Models/chat/Message'
+import User from 'App/Models/user/User'
+import VendorUser from 'App/Models/vendorUser/VendorUser'
+import Database from '@ioc:Adonis/Lucid/Database'
+import ConversationParticipant from 'App/Models/chat/ConversationParticipant'
 
 export default class ConversationsController extends BaseController {
   constructor() {
@@ -61,7 +64,7 @@ export default class ConversationsController extends BaseController {
     let conversation: Conversation | null = null
 
     conversation = await Conversation.query()
-      .whereHas('participant', (p) => {
+      .whereHas('participantOne', (p) => {
         if (auth.user?.userType === userTypes.USER) {
           p.where('user_id', auth.user.id)
         }
@@ -74,19 +77,17 @@ export default class ConversationsController extends BaseController {
           p.where('admin_user_id', auth.user.id)
         }
       })
-      .andWhereHas('participant', (p) => {
-        for (const participant of payload.participant) {
-          if (participant.userType == userTypes.USER) {
-            p.where('user_id', participant.userId)
-          }
+      .andWhereHas('participantTwo', (p) => {
+        if (payload.participant.userType == userTypes.USER) {
+          p.where('user_id', payload.participant.userId)
+        }
 
-          if (participant.userType == userTypes.VENDER) {
-            p.where('vendor_user_id', participant.userId)
-          }
+        if (payload.participant.userType == userTypes.VENDER) {
+          p.where('vendor_user_id', payload.participant.userId)
+        }
 
-          if (participant.userType == userTypes.ADMIN) {
-            p.where('admin_user_id', participant.userId)
-          }
+        if (payload.participant.userType == userTypes.ADMIN) {
+          p.where('admin_user_id', payload.participant.userId)
         }
       })
       .first()
@@ -104,51 +105,78 @@ export default class ConversationsController extends BaseController {
       await Database.transaction(async (trx) => {
         conversation = await Conversation.create({ name: payload.name }, { client: trx })
         if (auth.user?.userType === userTypes.USER) {
-          await conversation.related('participant').create({
-            userType: userTypes.USER,
-            userId: auth.user.id,
-          })
+          const participantOne = await ConversationParticipant.create(
+            {
+              userId: auth.user.id,
+              userIdentifier: `${userTypes.USER}-${auth.user.id}`,
+            },
+            { client: trx }
+          )
+
+          await conversation.related('participantOne').associate(participantOne)
         }
 
         if (auth.user?.userType === userTypes.VENDER) {
-          await conversation.related('participant').create({
-            userType: userTypes.VENDER,
-            vendorUserId: auth.user.id,
-          })
+          const participantOne = await ConversationParticipant.create(
+            {
+              vendorUserId: auth.user.id,
+              userIdentifier: `${userTypes.VENDER}-${auth.user.id}`,
+            },
+            { client: trx }
+          )
+
+          await conversation.related('participantOne').associate(participantOne)
         }
 
         if (auth.user?.userType === userTypes.ADMIN) {
-          await conversation.related('participant').create({
-            userType: userTypes.ADMIN,
-            adminUserId: auth.user.id,
-          })
+          const participantOne = await ConversationParticipant.create(
+            {
+              adminUserId: auth.user.id,
+              userIdentifier: `${userTypes.ADMIN}-${auth.user.id}`,
+            },
+            { client: trx }
+          )
+
+          await conversation.related('participantOne').associate(participantOne)
         }
 
-        for (const participant of payload.participant) {
-          if (participant.userType === userTypes.USER) {
-            await conversation.related('participant').create({
-              userType: participant.userType,
-              userId: participant.userId,
-            })
-          }
+        if (payload.participant.userType == userTypes.USER) {
+          const participantTwo = await ConversationParticipant.create(
+            {
+              userId: payload.participant.userId,
+              userIdentifier: `${userTypes.USER}-${payload.participant.userId}`,
+            },
+            { client: trx }
+          )
 
-          if (participant.userType === userTypes.VENDER) {
-            await conversation.related('participant').create({
-              userType: participant.userType,
-              vendorUserId: participant.userId,
-            })
-          }
+          await conversation.related('participantTwo').associate(participantTwo)
+        }
 
-          if (participant.userType === userTypes.ADMIN) {
-            await conversation.related('participant').create({
-              userType: participant.userType,
-              adminUserId: participant.userId,
-            })
-          }
+        if (payload.participant.userType == userTypes.VENDER) {
+          const participantTwo = await ConversationParticipant.create(
+            {
+              vendorUserId: payload.participant.userId,
+              userIdentifier: `${userTypes.VENDER}-${payload.participant.userId}`,
+            },
+            { client: trx }
+          )
+
+          await conversation.related('participantTwo').associate(participantTwo)
+        }
+
+        if (payload.participant.userType == userTypes.ADMIN) {
+          const participantTwo = await ConversationParticipant.create(
+            {
+              adminUserId: payload.participant.userId,
+              userIdentifier: `${userTypes.ADMIN}-${payload.participant.userId}`,
+            },
+            { client: trx }
+          )
+
+          await conversation.related('participantTwo').associate(participantTwo)
         }
       })
     }
-
     return response.custom({
       code: 201,
       message: 'Conversation Created',
@@ -162,19 +190,34 @@ export default class ConversationsController extends BaseController {
     response,
     bouncer,
     params,
+    auth,
   }: HttpContextContract): Promise<ResponseContract> {
     const conversation = await Conversation.findOrFail(+params.id)
     await bouncer.with('ConversationPolicy').authorize('update', conversation)
 
     const payload = await request.validate(MessageValidator)
 
-    conversation.related('messages').create(payload)
+    const message = new Message()
+    message.body = payload.body
+    message.conversationId = conversation.id
+    if (auth.user instanceof User) {
+      message.userIdentifier = `${userTypes.USER}-${auth.user.id}`
+    }
+    if (auth.user instanceof VendorUser) {
+      message.userIdentifier = `${userTypes.VENDER}-${auth.user.id}`
+    }
+
+    if (auth.user instanceof AdminUser) {
+      message.userIdentifier = `${userTypes.ADMIN}-${auth.user.id}`
+    }
+
+    await message.save
 
     return response.custom({
       code: 201,
       message: 'Message Created',
       success: true,
-      data: null,
+      data: message,
     })
   }
 

@@ -69,6 +69,16 @@ const apiRoutes = {
   service_variants: {
     ...createBaseRoutes("/api/service-variants"),
   },
+  chat: {
+    conversations: {
+      list: "/api/chat/conversations/",
+      create: "/api/chat/conversations/",
+      messages: (converstaionId: number) =>
+        `/api/chat/conversations/${converstaionId}/get-messages`,
+      create_message: (converstaionId: number) =>
+        `/api/chat/conversations/${converstaionId}/create-message`,
+    },
+  },
 };
 
 export default apiRoutes;

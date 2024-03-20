@@ -26,12 +26,10 @@ export default class ConversationValidator {
    */
   public schema = schema.create({
     name: schema.string.optional(),
-    participant: schema.array().members(
-      schema.object().members({
-        userType: schema.enum(Object.values(userTypes)),
-        userId: schema.number(),
-      })
-    ),
+    participant: schema.object().members({
+      userType: schema.enum(Object.values(userTypes)),
+      userId: schema.number(),
+    }),
   })
 
   /**

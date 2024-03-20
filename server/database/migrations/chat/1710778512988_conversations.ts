@@ -7,6 +7,20 @@ export default class extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id').primary()
       table.string('name')
+      table
+        .integer('participant_one_id')
+        .unsigned()
+        .notNullable()
+        .references('id')
+        .inTable('conversation_participants')
+        .onDelete('cascade')
+      table
+        .integer('participant_two_id')
+        .unsigned()
+        .notNullable()
+        .references('id')
+        .inTable('conversation_participants')
+        .onDelete('cascade')
       table.timestamp('created_at', { useTz: true })
     })
   }

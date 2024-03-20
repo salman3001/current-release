@@ -1,4 +1,3 @@
-import type { AdditionalParams } from "@/types/QueryParamsTypes";
 import type { UseFetchOptions } from "#app";
 import qs from "qs";
 

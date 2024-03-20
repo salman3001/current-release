@@ -17,6 +17,9 @@ type preload = Record<
     preload?: preload[];
     withAggregate?: withAggregate[];
     withCount?: withCount[];
+    limit?: number;
+    sortBy?: string;
+    descending?: "true" | "false" | null;
   }
 >;
 type whereLike = Record<string, string> | null;
@@ -24,7 +27,7 @@ type whereILike = Record<string, string> | null;
 type opt = ">" | ">=" | ">" | ">=" | "=";
 type where = Record<string, [opt, string]>;
 type select = string[] | null;
-type join = string[]
+type join = string[];
 type withAggregate = {
   relation: string;
   aggregator: string;
@@ -50,5 +53,5 @@ interface AdditionalParams {
   preload?: preload[] | null;
   withAggregate?: withAggregate[];
   withCount?: withCount[];
-  join?: join[]
+  join?: join[];
 }

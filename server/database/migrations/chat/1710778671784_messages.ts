@@ -7,6 +7,7 @@ export default class extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id').primary()
       table.string('body', 1500).notNullable()
+      table.string('user_identifier').notNullable()
       table.boolean('read').defaultTo(false)
       table.integer('conversation_id').references('id').inTable('conversations').notNullable()
       /**

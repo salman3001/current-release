@@ -12,6 +12,9 @@ export default class Message extends BaseModel {
   public body: string
 
   @column()
+  public userIdentifier: string
+
+  @column()
   public read: boolean
 
   @column()

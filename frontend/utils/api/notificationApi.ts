@@ -1,4 +1,3 @@
-import type { AdditionalParams } from "@/types/QueryParamsTypes";
 import { BaseApiClass } from "./BaseApiClass";
 import type { UseFetchOptions } from "#app";
 

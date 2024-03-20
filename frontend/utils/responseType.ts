@@ -20,7 +20,7 @@ interface IPageRes<T>
   extends IResType<{
     data: T;
     meta: PageMeta;
-  }> { }
+  }> {}
 
 interface ImageType {
   name: string;
@@ -421,20 +421,47 @@ type IBid = {
   meta: any;
 } & TimeStamps;
 
-
 type ICoupon = {
   coupon_type: string;
-  created_at: string
-  desc: string
-  discount_flat: string
-  discount_percentage: string
-  discount_type: string
-  expired_at: string
-  id: number
-  max_users: number
-  min_purchase_amount: string
-  name: string
-  updated_at: string
-  valid_from: string
-  vendor_user_id: number
-}
+  created_at: string;
+  desc: string;
+  discount_flat: string;
+  discount_percentage: string;
+  discount_type: string;
+  expired_at: string;
+  id: number;
+  max_users: number;
+  min_purchase_amount: string;
+  name: string;
+  updated_at: string;
+  valid_from: string;
+  vendor_user_id: number;
+};
+
+type IConversation = {
+  id: number;
+  name: string;
+  participant: IConversationParticipant[];
+  messages: IMessage[];
+  created_at: string;
+};
+
+type IConversationParticipant = {
+  id: number;
+  user_identifier: string;
+  conversation_id: number;
+  userId: number;
+  vendor_user_id: number;
+  adminUser_id: number;
+  conversation: IConversation;
+  adminUser: IAdminUser;
+  vendorUser: IVendorUser;
+  user: IUser;
+};
+
+type IMessage = {
+  id: number;
+  body: string;
+  user_identifier: string;
+  conversation_id: number;
+} & TimeStamps;
