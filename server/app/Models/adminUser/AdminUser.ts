@@ -20,6 +20,7 @@ import UserProfile from '../UserProfile'
 import Activity from '../Activity'
 import Notification from '../Notification'
 import Conversation from '../chat/Conversation'
+import { userTypes } from 'App/Helpers/enums'
 
 export default class AdminUser extends BaseModel {
   @column({ isPrimary: true })
@@ -54,7 +55,7 @@ export default class AdminUser extends BaseModel {
 
   @computed()
   public get userType() {
-    return 'admin'
+    return userTypes.ADMIN
   }
 
   @hasOne(() => UserProfile)

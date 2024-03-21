@@ -11,7 +11,7 @@ const next = useRoute().query.next
 const form = ref({
   email: '',
   password: '',
-  userType: 'customer'
+  userType: userTypes.USER
 });
 
 const login = async () => {
@@ -19,7 +19,7 @@ const login = async () => {
   const res = await auth.login(
     form.value.email,
     form.value.password,
-    form.value.userType as 'customer'
+    form.value.userType
   );
 
   if (res) {

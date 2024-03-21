@@ -9,7 +9,7 @@ export default class extends BaseSchema {
       table.string('body', 1500).notNullable()
       table.string('user_identifier').notNullable()
       table.boolean('read').defaultTo(false)
-      table.integer('conversation_id').references('id').inTable('conversations').notNullable()
+      table.integer('conversation_id').references('id').inTable('conversations').notNullable().onDelete('CASCADE')
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
        */

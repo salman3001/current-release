@@ -1,12 +1,13 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
+import { userTypes } from '@/utils/enums'
 
 const authStore = defineStore("Auth", () => {
   const customFetch = useCustomFetch()
   const login = async (
     email: string,
     password: string,
-    userType: "admin" | "vendor" | "customer"
+    userType: userTypes
   ) => {
     try {
       const res = await customFetch("/api/auth/login", {
@@ -27,7 +28,7 @@ const authStore = defineStore("Auth", () => {
     password: string;
     passwordConfirmation: string;
     bussinessName?: string;
-    userType: "vendor" | "customer";
+    userType: userTypes;
   }) => {
     try {
       const res = await customFetch("/api/auth/signup", {
@@ -41,7 +42,7 @@ const authStore = defineStore("Auth", () => {
   };
 
   const logout = async (
-    userType: "admin" | "vendor" | "customer",
+    userType: userTypes,
     onSuccess?: () => void
   ) => {
     try {
@@ -57,7 +58,7 @@ const authStore = defineStore("Auth", () => {
     const loading = ref(false);
     const execute = async (data: {
       email: string;
-      userType: "vendor" | "customer" | "admin";
+      userType: userTypes;
     }) => {
       try {
         loading.value = true;

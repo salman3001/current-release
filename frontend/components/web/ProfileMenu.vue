@@ -4,7 +4,7 @@ const user = useCookie("user") as Ref<IUser> | null;
 const getImageUrl = useGetImageUrl();
 
 const logout = () => {
-  auth.logout("customer", () => {
+  auth.logout(userTypes.USER, () => {
     const user = useCookie("user", {
       maxAge: 60 * 60 * 24,
     });

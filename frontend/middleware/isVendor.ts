@@ -5,7 +5,7 @@ export default defineNuxtRouteMiddleware((to, from) => {
     return navigateTo("/auth/vendor/login" + `?next=${to.fullPath}`);
   }
 
-  if (user.value?.userType !== 'vendor') {
+  if (user.value?.userType !== userTypes.VENDER) {
     return abortNavigation();
   }
 });

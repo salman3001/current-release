@@ -19,6 +19,7 @@ import Wishlist from './Wishlist'
 import Booking from '../bookings/Booking'
 import BidBooking from '../bookings/BidBooking'
 import Conversation from '../chat/Conversation'
+import { userTypes } from 'App/Helpers/enums'
 
 export default class User extends BaseModel {
   @column({ isPrimary: true })
@@ -50,7 +51,7 @@ export default class User extends BaseModel {
 
   @computed()
   public get userType() {
-    return 'customer'
+    return userTypes.USER
   }
 
   @hasOne(() => UserProfile)

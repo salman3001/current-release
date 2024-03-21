@@ -7,6 +7,7 @@ import ForgotPasswordOtpMail from 'App/Mailers/ForgotPasswordOtpMail'
 import VendorUser from 'App/Models/vendorUser/VendorUser'
 import UserCreateValidator from 'App/Validators/user/UserCreateValidator'
 import VendorUserCreateValidator from 'App/Validators/vendorUser/VendorUserCreateValidator'
+import { userTypes } from 'App/Helpers/enums'
 
 export default class AuthController {
   public async login({ auth, request, response }: HttpContextContract) {
@@ -16,23 +17,23 @@ export default class AuthController {
         rules.normalizeEmail({ allLowercase: false, gmailRemoveDots: false }),
       ]),
       password: schema.string({ trim: true }),
-      userType: schema.enum(['admin', 'vendor', 'customer']),
+      userType: schema.enum(Object.values(userTypes)),
     })
 
     const payload = await request.validate({ schema: payloadSchema })
 
     let user: AdminUser | User | VendorUser | null = null
 
-    if (payload.userType === 'admin') {
+    if (payload.userType === userTypes.ADMIN) {
       user = await AdminUser.findBy('email', payload.email)
     }
 
-    if (payload.userType === 'vendor') {
+    if (payload.userType === userTypes.VENDER) {
       user = await VendorUser.findBy('email', payload.email)
       console.log(payload.email)
     }
 
-    if (payload.userType === 'customer') {
+    if (payload.userType === userTypes.USER) {
       user = await User.findBy('email', payload.email)
     }
 
@@ -85,9 +86,9 @@ export default class AuthController {
   }
 
   public async signup({ auth, request, response }: HttpContextContract) {
-    const userType = request.body().userType
+    const userType = request.body().userType as userTypes
 
-    if (userType === 'customer') {
+    if (userType === userTypes.USER) {
       const { userType, passwordConfirmation, ...payload } =
         await request.validate(UserCreateValidator)
 
@@ -108,7 +109,7 @@ export default class AuthController {
         data: { user, token, socketToken },
         success: true,
       })
-    } else if (userType === 'vendor') {
+    } else if (userType === userTypes.VENDER) {
       const { userType, passwordConfirmation, ...payload } =
         await request.validate(VendorUserCreateValidator)
 
@@ -141,17 +142,17 @@ export default class AuthController {
 
   public async logout({ auth, response, request }: HttpContextContract) {
     const payloadSchema = schema.create({
-      userType: schema.enum(['admin', 'vendor', 'customer']),
+      userType: schema.enum(Object.values(userTypes)),
     })
     const payload = await request.validate({ schema: payloadSchema })
 
-    if (payload.userType == 'admin') {
+    if (payload.userType == userTypes.ADMIN) {
       await auth.use('adminUserApi').revoke()
     }
-    if (payload.userType == 'customer') {
+    if (payload.userType == userTypes.USER) {
       await auth.use('userApi').revoke()
     }
-    if (payload.userType == 'vendor') {
+    if (payload.userType == userTypes.VENDER) {
       await auth.use('vendorUserApi').revoke()
     }
 
@@ -169,7 +170,7 @@ export default class AuthController {
         rules.email(),
         rules.normalizeEmail({ allLowercase: true }),
       ]),
-      userType: schema.enum(['admin', 'vendor', 'customer']),
+      userType: schema.enum(Object.values(userTypes)),
     })
 
     const payload = await request.validate({
@@ -178,15 +179,15 @@ export default class AuthController {
 
     let user: AdminUser | User | VendorUser | null = null
 
-    if (payload.userType === 'admin') {
+    if (payload.userType === userTypes.ADMIN) {
       user = await AdminUser.findBy('email', payload.email)
     }
 
-    if (payload.userType === 'vendor') {
+    if (payload.userType === userTypes.VENDER) {
       user = await VendorUser.findBy('email', payload.email)
     }
 
-    if (payload.userType === 'customer') {
+    if (payload.userType === userTypes.USER) {
       user = await User.findBy('email', payload.email)
     }
 
@@ -217,7 +218,7 @@ export default class AuthController {
       otp: schema.string({ trim: true }),
       password: schema.string({ trim: true }, [rules.minLength(8)]),
       password_confirmation: schema.string({ trim: true }, [rules.confirmed('password')]),
-      userType: schema.enum(['admin', 'vendor', 'customer']),
+      userType: schema.enum(Object.values(userTypes)),
     })
 
     const payload = await request.validate({
@@ -226,15 +227,15 @@ export default class AuthController {
 
     let user: AdminUser | User | VendorUser | null = null
 
-    if (payload.userType === 'admin') {
+    if (payload.userType === userTypes.ADMIN) {
       user = await AdminUser.findBy('email', payload.email)
     }
 
-    if (payload.userType === 'vendor') {
+    if (payload.userType === userTypes.VENDER) {
       user = await VendorUser.findBy('email', payload.email)
     }
 
-    if (payload.userType === 'customer') {
+    if (payload.userType === userTypes.USER) {
       user = await User.findBy('email', payload.email)
     }
 
@@ -273,7 +274,7 @@ export default class AuthController {
       password: schema.string({ trim: true }, [rules.minLength(8)]),
       password_confirmation: schema.string({ trim: true }, [rules.confirmed('password')]),
       old_password: schema.string({ trim: true }),
-      userType: schema.enum(['admin', 'vendor', 'customer']),
+      userType: schema.enum(Object.values(userTypes)),
     })
 
     const payload = await request.validate({
@@ -282,15 +283,15 @@ export default class AuthController {
 
     let user: AdminUser | User | VendorUser | null = null
 
-    if (payload.userType === 'admin') {
+    if (payload.userType === userTypes.ADMIN) {
       user = await AdminUser.findOrFail(+params.id)
     }
 
-    if (payload.userType === 'vendor') {
+    if (payload.userType === userTypes.VENDER) {
       user = await VendorUser.findOrFail(+params.id)
     }
 
-    if (payload.userType === 'customer') {
+    if (payload.userType === userTypes.USER) {
       user = await User.findOrFail(+params.id)
     }
 

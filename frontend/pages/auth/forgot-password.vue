@@ -12,7 +12,7 @@ const form = ref({
   otp: '',
   password: '',
   password_confirmation: '',
-  userType: 'customer' as 'customer'
+  userType: userTypes.USER
 });
 
 const { execute: getOTP, loading: loadingOTP } = auth.getOtp({

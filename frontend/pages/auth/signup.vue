@@ -15,7 +15,7 @@ const form = ref({
   phone: '',
   password: '',
   passwordConfirmation: '',
-  userType: 'customer' as 'customer'
+  userType: userTypes.USER
 });
 
 const signup = async () => {
@@ -121,30 +121,30 @@ const signup = async () => {
                       <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer"
                         @click="isPwd = !isPwd" />
                     </template>
-</q-input>
-</div>
-</div>
-<q-btn color="primary" v-if="loading" :disable="true" style="width: 100%">
-  <q-circular-progress indeterminate size="20px" class="q-px-10" :thickness="1" color="primary" track-color="black"
-    style="min-width: 8rem" />
-</q-btn>
-<q-btn v-else type="submit" color="primary" style="width: 100%">Sign up</q-btn>
-</q-form>
-</q-card-section>
-<q-card-section>
-  <q-separator />
-</q-card-section>
+                  </q-input>
+                </div>
+              </div>
+              <q-btn color="primary" v-if="loading" :disable="true" style="width: 100%">
+                <q-circular-progress indeterminate size="20px" class="q-px-10" :thickness="1" color="primary"
+                  track-color="black" style="min-width: 8rem" />
+              </q-btn>
+              <q-btn v-else type="submit" color="primary" style="width: 100%">Sign up</q-btn>
+            </q-form>
+          </q-card-section>
+          <q-card-section>
+            <q-separator />
+          </q-card-section>
 
-<q-card-section class="row justify-center " :class="$q.screen.lt.sm ? 'q-pa-none' : ''">
-</q-card-section>
-<p class="q--sm text-center">Already have an account? <NuxtLink :to="routes.auth.login">Sign in</NuxtLink>
-</p>
+          <q-card-section class="row justify-center " :class="$q.screen.lt.sm ? 'q-pa-none' : ''">
+          </q-card-section>
+          <p class="q--sm text-center">Already have an account? <NuxtLink :to="routes.auth.login">Sign in</NuxtLink>
+          </p>
 
-</q-card>
-</div>
-</div>
-<div class="col-12 col-md-5 gt-sm full-height">
-  <div class="fit rounded-borders" :style="{ backgroundImage: 'url(/images/login-art.jpg)' }"></div>
-</div>
-</div>
+        </q-card>
+      </div>
+    </div>
+    <div class="col-12 col-md-5 gt-sm full-height">
+      <div class="fit rounded-borders" :style="{ backgroundImage: 'url(/images/login-art.jpg)' }"></div>
+    </div>
+  </div>
 </template>

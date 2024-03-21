@@ -12,7 +12,6 @@ import {
   hasOne,
   manyToMany,
 } from '@ioc:Adonis/Lucid/Orm'
-import BusinessProfile from './VendorProfile'
 import Notification from '../Notification'
 import Hash from '@ioc:Adonis/Core/Hash'
 import ServiceCategory from '../service/ServiceCategory'
@@ -23,6 +22,7 @@ import Service from '../service/Service'
 import VendorProfile from './VendorProfile'
 import BigNumber from 'bignumber.js'
 import Conversation from '../chat/Conversation'
+import { userTypes } from 'App/Helpers/enums'
 
 export default class VendorUser extends BaseModel {
   @column({ isPrimary: true })
@@ -62,7 +62,7 @@ export default class VendorUser extends BaseModel {
 
   @computed()
   public get userType() {
-    return 'vendor'
+    return userTypes.VENDER
   }
 
   @hasOne(() => VendorProfile)

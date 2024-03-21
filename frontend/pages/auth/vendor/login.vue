@@ -10,7 +10,7 @@ const $q = useQuasar()
 const form = ref({
   email: '',
   password: '',
-  userType: 'vendor'
+  userType: userTypes.VENDER
 });
 
 const login = async () => {
@@ -18,7 +18,7 @@ const login = async () => {
   const res = await auth.login(
     form.value.email,
     form.value.password,
-    form.value.userType as 'vendor'
+    form.value.userType
   );
 
   if (res) {
@@ -79,7 +79,8 @@ const login = async () => {
             <q-form class="q-gutter-y-sm" @submit.prevent="login">
               <div>
                 <label>Email adress</label>
-                <q-input outlined v-model="form.email" dense placeholder="name@example.com" :rules="[rules.required('Required'), rules.email('Email is not valid')]" />
+                <q-input outlined v-model="form.email" dense placeholder="name@example.com"
+                  :rules="[rules.required('Required'), rules.email('Email is not valid')]" />
               </div>
               <div>
                 <label>Password</label>
@@ -89,43 +90,43 @@ const login = async () => {
                     <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer"
                       @click="isPwd = !isPwd" />
                   </template>
-</q-input>
-<div class="row items-center justify-end q-pt-sm">
-  <NuxtLink :to="routes.auth.forgot_password" class="text-grey-7">Forgot
-    password?</NuxtLink>
-</div>
-</div>
-<q-btn color="primary" v-if="loading" :disable="true" style="width: 100%">
-  <q-circular-progress indeterminate size="20px" class="q-px-10" :thickness="1" color="primary" track-color="black"
-    style="min-width: 8rem" />
-</q-btn>
-<q-btn v-else type="submit" color="primary" style="width: 100%">Sign in</q-btn>
-</q-form>
+                </q-input>
+                <div class="row items-center justify-end q-pt-sm">
+                  <NuxtLink :to="routes.auth.forgot_password" class="text-grey-7">Forgot
+                    password?</NuxtLink>
+                </div>
+              </div>
+              <q-btn color="primary" v-if="loading" :disable="true" style="width: 100%">
+                <q-circular-progress indeterminate size="20px" class="q-px-10" :thickness="1" color="primary"
+                  track-color="black" style="min-width: 8rem" />
+              </q-btn>
+              <q-btn v-else type="submit" color="primary" style="width: 100%">Sign in</q-btn>
+            </q-form>
 
 
-</q-card-section>
-<q-card-section>
-  <q-separator />
+          </q-card-section>
+          <q-card-section>
+            <q-separator />
 
-</q-card-section>
+          </q-card-section>
 
-<!-- <q-card-section class="row justify-center ">
+          <!-- <q-card-section class="row justify-center ">
             <q-btn outline style="text-transform: none;" color="grey-8" class="full-width"><q-icon left
                 name="img:/images/google-icon.webp"></q-icon>
               <div> Sign in with Google</div>
             </q-btn>
           </q-card-section> -->
-<p class="q--sm text-center">Dont have an vendor's account? <NuxtLink :to="routes.auth.vendor_sign_up">Sign up
-    as
-    vendor
-  </NuxtLink>
-</p>
+          <p class="q--sm text-center">Dont have an vendor's account? <NuxtLink :to="routes.auth.vendor_sign_up">Sign up
+              as
+              vendor
+            </NuxtLink>
+          </p>
 
-</q-card>
-</div>
-</div>
-<div class="col-12 col-md-5 gt-sm ">
-  <div class=" fit rounded-borders" :style="{ backgroundImage: 'url(/images/login-art.jpg)' }"></div>
-</div>
-</div>
+        </q-card>
+      </div>
+    </div>
+    <div class="col-12 col-md-5 gt-sm ">
+      <div class=" fit rounded-borders" :style="{ backgroundImage: 'url(/images/login-art.jpg)' }"></div>
+    </div>
+  </div>
 </template>

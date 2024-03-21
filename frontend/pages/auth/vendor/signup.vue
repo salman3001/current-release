@@ -15,7 +15,7 @@ const form = ref({
   phone: '',
   password: '',
   passwordConfirmation: '',
-  userType: 'vendor' as 'vendor'
+  userType: userTypes.VENDER
 });
 
 const signup = async () => {

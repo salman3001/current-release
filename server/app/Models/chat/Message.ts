@@ -30,10 +30,13 @@ export default class Message extends BaseModel {
   public conversation: BelongsTo<typeof Conversation>
 
   @afterCreate()
-  public static pushNotification(message: Message) {
-    const ctx = HttpContext.get()
-    const user = ctx?.auth.user
-    let room = `${user?.userType}-${user!.id}-chats`
-    Ws.io.of('/chat/').to(room).emit(`on-coversation-${message.conversationId}-message`, message)
+  public static async pushNotification(message: Message) {
+    await message.load('conversation')
+
+    const room1 = message.conversation.participantOneIdentifier + '-chats'
+    const room2 = message.conversation.participantTwoIdentifier + '-chats'
+
+    Ws.io.of('/chat/').to(room1).emit(`new-message`, message)
+    Ws.io.of('/chat/').to(room2).emit(`new-message`, message)
   }
 }

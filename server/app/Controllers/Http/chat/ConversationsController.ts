@@ -20,7 +20,7 @@ export default class ConversationsController extends BaseController {
   public getIndexQuery(ctx: HttpContextContract) {
     const user = ctx.auth.user
 
-    return user ? (user as AdminUser).related('conversations').query() : null
+    return user ? Conversation.query().where('participant_one_identifier', `${ctx.auth.user?.userType}-${ctx.auth.user?.id}`).orWhere('participant_two_identifier', `${ctx.auth.user?.userType}-${ctx.auth.user?.id}`) : null
   }
 
   public async getConversationMessages({
@@ -62,35 +62,14 @@ export default class ConversationsController extends BaseController {
     const payload = await request.validate(ConversationValidator)
 
     let conversation: Conversation | null = null
+    const identifierOne = `${auth.user?.userType}-${auth.user!.id}`
+    const identifierTwo = `${payload.participant.userType}-${payload.participant.userId}`
 
-    conversation = await Conversation.query()
-      .whereHas('participantOne', (p) => {
-        if (auth.user?.userType === userTypes.USER) {
-          p.where('user_id', auth.user.id)
-        }
-
-        if (auth.user?.userType === userTypes.VENDER) {
-          p.where('vendor_user_id', auth.user.id)
-        }
-
-        if (auth.user?.userType === userTypes.ADMIN) {
-          p.where('admin_user_id', auth.user.id)
-        }
-      })
-      .andWhereHas('participantTwo', (p) => {
-        if (payload.participant.userType == userTypes.USER) {
-          p.where('user_id', payload.participant.userId)
-        }
-
-        if (payload.participant.userType == userTypes.VENDER) {
-          p.where('vendor_user_id', payload.participant.userId)
-        }
-
-        if (payload.participant.userType == userTypes.ADMIN) {
-          p.where('admin_user_id', payload.participant.userId)
-        }
-      })
-      .first()
+    conversation = await Conversation.query().where(b => {
+      b.where('participant_one_identifier', identifierOne).orWhere('participant_one_identifier', identifierOne)
+    }).andWhere(b => {
+      b.where('participant_two_identifier', identifierOne).orWhere('participant_two_identifier', identifierTwo)
+    }).first()
 
     if (conversation) {
       return response.custom({
@@ -101,79 +80,93 @@ export default class ConversationsController extends BaseController {
       })
     }
 
+
     if (!conversation) {
       await Database.transaction(async (trx) => {
         conversation = await Conversation.create({ name: payload.name }, { client: trx })
+
         if (auth.user?.userType === userTypes.USER) {
           const participantOne = await ConversationParticipant.create(
             {
               userId: auth.user.id,
-              userIdentifier: `${userTypes.USER}-${auth.user.id}`,
+              userIdentifier: identifierOne,
             },
             { client: trx }
           )
 
           await conversation.related('participantOne').associate(participantOne)
+          conversation.participantOneIdentifier = identifierOne
+          await conversation.save()
         }
 
         if (auth.user?.userType === userTypes.VENDER) {
           const participantOne = await ConversationParticipant.create(
             {
               vendorUserId: auth.user.id,
-              userIdentifier: `${userTypes.VENDER}-${auth.user.id}`,
+              userIdentifier: identifierOne
             },
             { client: trx }
           )
 
           await conversation.related('participantOne').associate(participantOne)
+          conversation.participantOneIdentifier = identifierOne
+          await conversation.save()
         }
 
         if (auth.user?.userType === userTypes.ADMIN) {
           const participantOne = await ConversationParticipant.create(
             {
               adminUserId: auth.user.id,
-              userIdentifier: `${userTypes.ADMIN}-${auth.user.id}`,
+              userIdentifier: identifierOne
             },
             { client: trx }
           )
 
           await conversation.related('participantOne').associate(participantOne)
+          conversation.participantOneIdentifier = identifierOne
+          await conversation.save()
         }
 
         if (payload.participant.userType == userTypes.USER) {
           const participantTwo = await ConversationParticipant.create(
             {
               userId: payload.participant.userId,
-              userIdentifier: `${userTypes.USER}-${payload.participant.userId}`,
+              userIdentifier: identifierTwo,
             },
             { client: trx }
           )
 
           await conversation.related('participantTwo').associate(participantTwo)
+          conversation.participantTwoIdentifier = identifierTwo
+          await conversation.save()
         }
 
         if (payload.participant.userType == userTypes.VENDER) {
           const participantTwo = await ConversationParticipant.create(
             {
               vendorUserId: payload.participant.userId,
-              userIdentifier: `${userTypes.VENDER}-${payload.participant.userId}`,
+              userIdentifier: identifierTwo
             },
             { client: trx }
           )
 
           await conversation.related('participantTwo').associate(participantTwo)
+          conversation.participantTwoIdentifier = identifierTwo
+          await conversation.save()
         }
 
         if (payload.participant.userType == userTypes.ADMIN) {
           const participantTwo = await ConversationParticipant.create(
             {
               adminUserId: payload.participant.userId,
-              userIdentifier: `${userTypes.ADMIN}-${payload.participant.userId}`,
+              userIdentifier: identifierTwo
             },
             { client: trx }
           )
 
           await conversation.related('participantTwo').associate(participantTwo)
+          conversation.participantTwoIdentifier = identifierTwo
+          await conversation.save()
         }
       })
     }
@@ -211,7 +204,7 @@ export default class ConversationsController extends BaseController {
       message.userIdentifier = `${userTypes.ADMIN}-${auth.user.id}`
     }
 
-    await message.save
+    await message.save()
 
     return response.custom({
       code: 201,
@@ -225,11 +218,14 @@ export default class ConversationsController extends BaseController {
     response,
     bouncer,
     params,
+    auth
   }: HttpContextContract): Promise<ResponseContract> {
     const conversation = await Conversation.findOrFail(+params.id)
     await bouncer.with('ConversationPolicy').authorize('update', conversation)
 
-    await conversation.related('messages').query().where('read', 0).update({ read: 0 }).exec()
+    const userIdentifier = `${auth.user?.userType}-${auth.user!.id}`
+
+    await conversation.related('messages').query().where('user_identifier', userIdentifier).where('read', 0).update({ read: 1 }).exec()
 
     return response.custom({
       code: 201,

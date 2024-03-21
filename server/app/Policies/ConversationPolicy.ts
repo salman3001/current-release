@@ -11,27 +11,20 @@ export default class ConversationPolicy extends BasePolicy {
   }
 
   public async view(user: User | VendorUser | AdminUser, conversation: Conversation) {
-    await conversation.load('participant')
     let isValidParticipant = false
     if (user instanceof User) {
       const identifier = `${userTypes.USER}-${user.id}`
-      isValidParticipant = conversation.participant.some(
-        (participant) => participant.userIdentifier === identifier
-      )
+      isValidParticipant = conversation.participantOneIdentifier === identifier || conversation.participantTwoIdentifier === identifier
     }
 
     if (user instanceof VendorUser) {
       const identifier = `${userTypes.VENDER}-${user.id}`
-      isValidParticipant = conversation.participant.some(
-        (participant) => participant.userIdentifier === identifier
-      )
+      isValidParticipant = conversation.participantOneIdentifier === identifier || conversation.participantTwoIdentifier === identifier
     }
 
     if (user instanceof AdminUser) {
       const identifier = `${userTypes.ADMIN}-${user.id}`
-      isValidParticipant = conversation.participant.some(
-        (participant) => participant.userIdentifier === identifier
-      )
+      isValidParticipant = conversation.participantOneIdentifier === identifier || conversation.participantTwoIdentifier === identifier
     }
 
     if (isValidParticipant) {
@@ -46,27 +39,20 @@ export default class ConversationPolicy extends BasePolicy {
   }
 
   public async update(user: User, conversation: Conversation) {
-    await conversation.load('participant')
     let isValidParticipant = false
     if (user instanceof User) {
       const identifier = `${userTypes.USER}-${user.id}`
-      isValidParticipant = conversation.participant.some(
-        (participant) => participant.userIdentifier === identifier
-      )
+      isValidParticipant = conversation.participantOneIdentifier === identifier || conversation.participantTwoIdentifier === identifier
     }
 
     if (user instanceof VendorUser) {
       const identifier = `${userTypes.VENDER}-${user.id}`
-      isValidParticipant = conversation.participant.some(
-        (participant) => participant.userIdentifier === identifier
-      )
+      isValidParticipant = conversation.participantOneIdentifier === identifier || conversation.participantTwoIdentifier === identifier
     }
 
     if (user instanceof AdminUser) {
       const identifier = `${userTypes.ADMIN}-${user.id}`
-      isValidParticipant = conversation.participant.some(
-        (participant) => participant.userIdentifier === identifier
-      )
+      isValidParticipant = conversation.participantOneIdentifier === identifier || conversation.participantTwoIdentifier === identifier
     }
 
     if (isValidParticipant) {

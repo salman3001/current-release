@@ -5,7 +5,7 @@ export default defineNuxtRouteMiddleware((to, from) => {
     return navigateTo("/auth/admin/login" + `?next=${to.fullPath}`);
   }
 
-  if (user.value?.userType !== 'admin') {
+  if (user.value?.userType !== userTypes.ADMIN) {
     return abortNavigation();
   }
 });

@@ -11,18 +11,24 @@ export default class Conversation extends BaseModel {
   public name: string
 
   @column()
+  public participantOneIdentifier: string
+
+  @column()
+  public participantTwoIdentifier: string
+
+  @column()
   public participantOneId: number
 
   @column()
   public participantTwoId: number
 
   @belongsTo(() => ConversationParticipant, {
-    foreignKey: 'participant_one_id',
+    foreignKey: 'participantOneId',
   })
   public participantOne: BelongsTo<typeof ConversationParticipant>
 
   @belongsTo(() => ConversationParticipant, {
-    foreignKey: 'participant_two_id',
+    foreignKey: 'participantTwoId',
   })
   public participantTwo: BelongsTo<typeof ConversationParticipant>
 
