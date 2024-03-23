@@ -9,6 +9,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: "review", bid: IBid): void;
+  (e: "create-chat"): void
 }>();
 
 const getImageUrl = useGetImageUrl();
@@ -31,6 +32,7 @@ const getImageUrl = useGetImageUrl();
             <p v-if="accepted" class="text-bold text-subtitle1">
               {{ bid?.vendorUser.first_name }}
               {{ bid?.vendorUser.last_name }}
+              <q-btn size="xs" color="secondary" @click="emit('create-chat')">chat</q-btn>
             </p>
             <p v-else class="text-bold text-subtitle1">Anonymous</p>
             <div>

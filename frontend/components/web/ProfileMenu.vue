@@ -43,6 +43,10 @@ const confirmLogout = () => {
 
     <q-menu anchor="bottom left" style="border-radius: 10px">
       <q-list dense style="min-width: 180px" class="">
+        <q-item clickable v-close-popup :to="routes.chats">
+          <q-item-section avatar><q-icon name="mail" color="primary"></q-icon></q-item-section>
+          <q-item-section> Messages </q-item-section>
+        </q-item>
         <q-item clickable v-close-popup :to="routes.account">
           <q-item-section avatar><q-icon name="manage_accounts" color="primary"></q-icon></q-item-section>
           <q-item-section> My Account </q-item-section>

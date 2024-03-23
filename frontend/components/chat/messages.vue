@@ -83,11 +83,7 @@ const getMoreMessages = async () => {
   <div v-if="pending">
     <SkeletonBase type="list" v-for="i in 5" />
   </div>
-  <div
-    v-else
-    ref="scrollRef"
-    class="hide-scrollbar scroll q-py-md"
-    style="
+  <div v-else ref="scrollRef" class="hide-scrollbar scroll q-pa-md q-pa--md-lg" style="
       height: 100%;
       width: 100%;
       display: flex;
@@ -95,8 +91,7 @@ const getMoreMessages = async () => {
       max-width: 900px;
       margin-left: auto;
       margin-right: auto;
-    "
-  >
+    ">
     <!-- <q-chat-message
       v-for="m in data?.data"
       :text="[m.body]"
@@ -104,36 +99,17 @@ const getMoreMessages = async () => {
       :stamp="formatDistance(Date.now(), m.created_at, { addSuffix: true })"
     ></q-chat-message> -->
 
-    <q-chat-message
-      v-for="m in dataRef?.data"
-      :text="[m.body]"
-      :sent="m.user_identifier !== myIdentifier"
-      :stamp="formatDistance(Date.now(), m.created_at, { addSuffix: true })"
-    ></q-chat-message>
+    <q-chat-message v-for="m in dataRef?.data" :text="[m.body]" :sent="m.user_identifier !== myIdentifier"
+      :stamp="formatDistance(Date.now(), m.created_at, { addSuffix: true })"></q-chat-message>
 
     <div v-if="data?.data?.length! > 1" class="row justify-center full-width">
-      <q-circular-progress
-        v-if="pending"
-        indeterminate
-        size="20px"
-        class="q-px-10"
-        :thickness="1"
-        color="grey-8"
-        track-color="orange-2"
-        style="min-width: 8rem"
-      />
-      <q-btn
-        v-else-if="dataRef?.meta.next_page_url"
-        color="secondary"
-        @click="
-          () => {
-            getMoreMessages();
-            // y = -10000000000;
-            // page += 1;
-          }
-        "
-        >Load More</q-btn
-      >
+      <LoadingIndicator v-if="pending" />
+      <q-btn v-else-if="dataRef?.meta.next_page_url" color="secondary" @click="() => {
+    getMoreMessages();
+    // y = -10000000000;
+    // page += 1;
+  }
+    ">Load More</q-btn>
     </div>
   </div>
 </template>

@@ -151,6 +151,33 @@ const refreshData = async () => {
   };
   await refreshBids();
 };
+
+const createChat = async () => {
+
+  try {
+    const res = await customFetch<IResType<IConversation>>(apiRoutes.chat.conversations.create, {
+      method: 'post',
+      body: {
+        participant: {
+          userType: data.value?.acceptedBid?.vendorUser?.userType,
+          userId: data.value?.acceptedBid?.vendorUser?.id,
+        }
+      }
+    })
+
+    if (res.success == true) {
+      navigateTo({
+        path: routes.chats, query: {
+          newConversationId: res?.data?.id
+        }
+      })
+    }
+  } catch (error) {
+    console.log(error)
+  }
+
+
+}
 </script>
 
 <template>
@@ -171,12 +198,12 @@ const refreshData = async () => {
           <p>You haven't accepted any bid yet. Please accept a bid</p>
           <br />
         </div>
-        <WebProposalCard v-else :accepted="true" :bid="data?.acceptedBid"
+        <WebProposalCard v-else :accepted="true" :bid="data?.acceptedBid" @create-chat="createChat()"
           :any-bid-accepted="data.acceptedBid ? true : false" :requirement-id="data.serviceRequirement.id"
           @bid-rejected="refreshData" @review="(v) => {
-        selectedBid = v;
-        bidDetailModal = true;
-      }
+      selectedBid = v;
+      bidDetailModal = true;
+    }
       " />
       </div>
       <br />
@@ -214,15 +241,15 @@ const refreshData = async () => {
           <div v-else class="row q-gutter-md">
             <WebProposalCard v-for="bid in recivedBids?.data" :accepted="false" :bid="bid"
               :any-bid-accepted="data?.acceptedBid ? true : false" @bid-accpted="refreshData" @review="(v) => {
-        selectedBid = v;
-        bidDetailModal = true;
-      }
+      selectedBid = v;
+      bidDetailModal = true;
+    }
       " />
           </div>
           <PaginateComponet :page="bidQuery.page" :meta="recivedBids?.meta" @update:model-value="(v) => {
-        bidQuery.page = v;
-        refreshBids();
-      }
+      bidQuery.page = v;
+      refreshBids();
+    }
       " />
         </div>
       </div>
@@ -248,6 +275,8 @@ const refreshData = async () => {
                 <p v-if="data?.acceptedBid?.id === selectedBid?.id" class="text-bold text-subtitle1">
                   {{ selectedBid?.vendorUser.first_name }}
                   {{ selectedBid?.vendorUser.last_name }}
+                  <q-btn size="xs" color="secondary" v-if="data?.acceptedBid?.id === selectedBid?.id"
+                    @click="createChat">chat</q-btn>
                 </p>
                 <p v-else class="text-bold text-subtitle1">Anonymous</p>
                 <div>
@@ -255,6 +284,7 @@ const refreshData = async () => {
       selectedBid?.vendorUser?.business_name
     }}</NuxtLink>
                 </div>
+
                 <div>
                   <RatingComponent :rating="selectedBid?.vendorUser?.avg_rating || 0" size="1.25rem" />
                 </div>
@@ -266,7 +296,8 @@ const refreshData = async () => {
       date.formatDate(selectedBid?.created_at, "DD/MM/YYYY hh:mmA")
     }}
               </p>
-              <q-badge v-if="data?.acceptedBid?.id === selectedBid?.id" outline class="q-badge-primary justify-center">
+              <q-badge v-if="data?.acceptedBid?.id === selectedBid?.id" outline
+                class="q-badge-positive q-py-sm q-px-md justify-center">
                 Accepted</q-badge>
             </div>
           </div>

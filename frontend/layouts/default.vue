@@ -52,11 +52,11 @@ function toggleLeftDrawer() {
             </div>
             <WebNavMenu class="gt-sm" />
             <WebNotificationMenu v-if="user" />
-            <NuxtLink :to="routes.chats">
+            <!-- <NuxtLink :to="routes.chats">
               <q-btn round flat class="btn-grey">
                 <q-icon name="mail" color="nutral"> </q-icon>
               </q-btn>
-            </NuxtLink>
+            </NuxtLink> -->
             <WebProfileMenu v-if="user" />
             <NuxtLink :to="routes.auth.login">
               <q-btn color="primary" v-if="!user">Login</q-btn>
