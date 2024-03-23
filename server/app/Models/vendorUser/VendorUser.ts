@@ -25,6 +25,8 @@ import Conversation from '../chat/Conversation'
 import { userTypes } from 'App/Helpers/enums'
 
 export default class VendorUser extends BaseModel {
+  public serializeExtras = true
+
   @column({ isPrimary: true })
   public id: number
 

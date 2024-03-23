@@ -20,10 +20,6 @@ import Image from '../Image'
 import Faq from '../Faq'
 import Review from '../Review'
 import ServiceVariant from './ServiceVariant'
-import {
-  ResponsiveAttachmentContract,
-  responsiveAttachment,
-} from '@ioc:Adonis/Addons/ResponsiveAttachment'
 import { AttachmentContract, attachment } from '@ioc:Adonis/Addons/AttachmentLite'
 import Coupon from '../orders/Coupon'
 import VendorUser from '../vendorUser/VendorUser'

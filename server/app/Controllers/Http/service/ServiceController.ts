@@ -4,22 +4,53 @@ import Image from 'App/Models/Image'
 import Service from 'App/Models/service/Service'
 import ServiceCreateValidator from 'App/Validators/service/ServiceCreateValidator'
 import ServiceUpdateValidator from 'App/Validators/service/ServiceUpdateValidator'
-import BaseController from '../BaseController'
-import { validator } from '@ioc:Adonis/Core/Validator'
 import Database from '@ioc:Adonis/Lucid/Database'
+import { ModelQueryBuilderContract } from '@ioc:Adonis/Lucid/Orm'
+import Config from '@ioc:Adonis/Core/Config'
 
-export default class ServiceController extends BaseController {
-  constructor() {
-    super(Service, ServiceCreateValidator, ServiceUpdateValidator, 'ServicePolicy')
+export default class ServiceController {
+
+  public async index({ request, response, bouncer }: HttpContextContract) {
+    await bouncer.with('ServicePolicy').authorize('viewList')
+    const serviceQuery = Service.query().preload('serviceCategory', s => {
+      s.select(['name'])
+    }).preload('images').preload('variants', v => {
+      v.select(['name'])
+    }).select(['id', 'name', 'slug', "short_desc", "is_active", "geo_location", "avg_rating", "vendor_user_id", "service_category_id", "service_subcategory_id"])
+
+    this.applyFilters(serviceQuery, request.qs())
+
+    serviceQuery.withCount('reviews', r => {
+      r.as('reviews_count')
+    })
+
+    serviceQuery.withAggregate('variants', v => {
+      v.min('price').as('starting_from')
+    })
+
+
+
+    const services = await serviceQuery.paginate(request.qs().page || 1, request.qs().perPage || Config.get('common.rowsPerPage'))
+
+    return response.custom({
+      code: 200,
+      data: services,
+      success: true,
+      message: null
+    })
   }
 
-  public async showBySlug({ request, response, bouncer, auth, params }: HttpContextContract) {
+  public async showBySlug({ request, response, bouncer, params }: HttpContextContract) {
     await bouncer.with('ServicePolicy').authorize('view')
 
     const slug = params.slug
-    const serviceQuery = Service.query().where('slug', slug)
+    const serviceQuery = Service.query().where('slug', slug).preload('variants').preload('vendorUser', v => {
+      v.withCount('reviews')
+    }).preload('reviews', r => {
+      r.limit(10)
+    })
 
-    this.showfilterQuery(request.qs() as any, serviceQuery)
+    this.applyFilters(serviceQuery, request.qs() as any,)
 
     const service = await serviceQuery.first()
 
@@ -204,22 +235,39 @@ export default class ServiceController extends BaseController {
     })
   }
 
-  public excludeIncludeExportProperties(record: any) {
-    const { createdAt, updatedAt, logo, cover, brocher, ...rest } = record
-    return rest
-  }
-
-  public async storeExcelData(data: any, ctx: HttpContextContract): Promise<void> {
-    ctx.meta = {
-      currentObjectId: data.id,
+  private applyFilters(modelQuery: ModelQueryBuilderContract<typeof Service, Service>, qs: Record<string, any>) {
+    if (qs?.search) {
+      modelQuery.whereILike('name', qs?.search)
     }
-    const validatedData = await validator.validate({
-      schema: new ServiceUpdateValidator(ctx).schema,
-      data: {
-        service: data,
-      },
-    })
 
-    await Service.updateOrCreate({ id: validatedData.service!.id }, validatedData.service!)
+    if (qs?.where?.category_id) {
+      modelQuery.whereHas('serviceCategory', b => {
+        b.where('id', qs?.where?.category_id)
+      })
+    }
+
+    if (qs?.orderBy) {
+      const [orderBy, direction] = (qs.orderBy as string).split(':')
+      modelQuery.orderBy(orderBy, (direction as 'desc') || 'asc')
+    }
   }
+
+  // public excludeIncludeExportProperties(record: any) {
+  //   const { createdAt, updatedAt, logo, cover, brocher, ...rest } = record
+  //   return rest
+  // }
+
+  // public async storeExcelData(data: any, ctx: HttpContextContract): Promise<void> {
+  //   ctx.meta = {
+  //     currentObjectId: data.id,
+  //   }
+  //   const validatedData = await validator.validate({
+  //     schema: new ServiceUpdateValidator(ctx).schema,
+  //     data: {
+  //       service: data,
+  //     },
+  //   })
+
+  //   await Service.updateOrCreate({ id: validatedData.service!.id }, validatedData.service!)
+  // }
 }
