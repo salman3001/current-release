@@ -11,6 +11,7 @@ import User from 'App/Models/user/User'
 import VendorUser from 'App/Models/vendorUser/VendorUser'
 import Database from '@ioc:Adonis/Lucid/Database'
 import ConversationParticipant from 'App/Models/chat/ConversationParticipant'
+import { DateTime } from 'luxon'
 
 export default class ConversationsController extends BaseController {
   constructor() {
@@ -20,7 +21,11 @@ export default class ConversationsController extends BaseController {
   public getIndexQuery(ctx: HttpContextContract) {
     const user = ctx.auth.user
 
-    return user ? Conversation.query().where('participant_one_identifier', `${ctx.auth.user?.userType}-${ctx.auth.user?.id}`).orWhere('participant_two_identifier', `${ctx.auth.user?.userType}-${ctx.auth.user?.id}`) : null
+    return user
+      ? Conversation.query()
+          .where('participant_one_identifier', `${ctx.auth.user?.userType}-${ctx.auth.user?.id}`)
+          .orWhere('participant_two_identifier', `${ctx.auth.user?.userType}-${ctx.auth.user?.id}`)
+      : null
   }
 
   public async getConversationMessages({
@@ -65,11 +70,20 @@ export default class ConversationsController extends BaseController {
     const identifierOne = `${auth.user?.userType}-${auth.user!.id}`
     const identifierTwo = `${payload.participant.userType}-${payload.participant.userId}`
 
-    conversation = await Conversation.query().where(b => {
-      b.where('participant_one_identifier', identifierOne).orWhere('participant_one_identifier', identifierOne)
-    }).andWhere(b => {
-      b.where('participant_two_identifier', identifierOne).orWhere('participant_two_identifier', identifierTwo)
-    }).first()
+    conversation = await Conversation.query()
+      .where((b) => {
+        b.where('participant_one_identifier', identifierOne).andWhere(
+          'participant_two_identifier',
+          identifierTwo
+        )
+      })
+      .orWhere((b) => {
+        b.where('participant_two_identifier', identifierOne).andWhere(
+          'participant_one_identifier',
+          identifierTwo
+        )
+      })
+      .first()
 
     if (conversation) {
       return response.custom({
@@ -79,7 +93,6 @@ export default class ConversationsController extends BaseController {
         data: conversation,
       })
     }
-
 
     if (!conversation) {
       await Database.transaction(async (trx) => {
@@ -103,7 +116,7 @@ export default class ConversationsController extends BaseController {
           const participantOne = await ConversationParticipant.create(
             {
               vendorUserId: auth.user.id,
-              userIdentifier: identifierOne
+              userIdentifier: identifierOne,
             },
             { client: trx }
           )
@@ -117,7 +130,7 @@ export default class ConversationsController extends BaseController {
           const participantOne = await ConversationParticipant.create(
             {
               adminUserId: auth.user.id,
-              userIdentifier: identifierOne
+              userIdentifier: identifierOne,
             },
             { client: trx }
           )
@@ -145,7 +158,7 @@ export default class ConversationsController extends BaseController {
           const participantTwo = await ConversationParticipant.create(
             {
               vendorUserId: payload.participant.userId,
-              userIdentifier: identifierTwo
+              userIdentifier: identifierTwo,
             },
             { client: trx }
           )
@@ -159,7 +172,7 @@ export default class ConversationsController extends BaseController {
           const participantTwo = await ConversationParticipant.create(
             {
               adminUserId: payload.participant.userId,
-              userIdentifier: identifierTwo
+              userIdentifier: identifierTwo,
             },
             { client: trx }
           )
@@ -190,21 +203,30 @@ export default class ConversationsController extends BaseController {
 
     const payload = await request.validate(MessageValidator)
 
-    const message = new Message()
-    message.body = payload.body
-    message.conversationId = conversation.id
-    if (auth.user instanceof User) {
-      message.userIdentifier = `${userTypes.USER}-${auth.user.id}`
-    }
-    if (auth.user instanceof VendorUser) {
-      message.userIdentifier = `${userTypes.VENDER}-${auth.user.id}`
-    }
+    let message: Message | null = null
 
-    if (auth.user instanceof AdminUser) {
-      message.userIdentifier = `${userTypes.ADMIN}-${auth.user.id}`
-    }
+    Database.transaction(async (trx) => {
+      message = new Message()
+      message.useTransaction(trx)
+      message.body = payload.body
+      message.conversationId = conversation.id
+      if (auth.user instanceof User) {
+        message.userIdentifier = `${userTypes.USER}-${auth.user.id}`
+      }
+      if (auth.user instanceof VendorUser) {
+        message.userIdentifier = `${userTypes.VENDER}-${auth.user.id}`
+      }
 
-    await message.save()
+      if (auth.user instanceof AdminUser) {
+        message.userIdentifier = `${userTypes.ADMIN}-${auth.user.id}`
+      }
+
+      await message.save()
+
+      conversation.useTransaction(trx)
+      conversation.merge({ updatedAt: DateTime.now() })
+      await conversation.save()
+    })
 
     return response.custom({
       code: 201,
@@ -218,14 +240,20 @@ export default class ConversationsController extends BaseController {
     response,
     bouncer,
     params,
-    auth
+    auth,
   }: HttpContextContract): Promise<ResponseContract> {
     const conversation = await Conversation.findOrFail(+params.id)
     await bouncer.with('ConversationPolicy').authorize('update', conversation)
 
     const userIdentifier = `${auth.user?.userType}-${auth.user!.id}`
 
-    await conversation.related('messages').query().where('user_identifier', userIdentifier).where('read', 0).update({ read: 1 }).exec()
+    await conversation
+      .related('messages')
+      .query()
+      .where('user_identifier', userIdentifier)
+      .where('read', 0)
+      .update({ read: 1 })
+      .exec()
 
     return response.custom({
       code: 201,

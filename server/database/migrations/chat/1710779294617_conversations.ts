@@ -22,6 +22,7 @@ export default class extends BaseSchema {
         .inTable('conversation_participants')
         .onDelete('cascade')
       table.timestamp('created_at', { useTz: true })
+      table.timestamp('updated_at', { useTz: true })
     })
   }
 

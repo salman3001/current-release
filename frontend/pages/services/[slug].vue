@@ -352,8 +352,9 @@ const {
         <br />
 
         <div>
-          <RatingComponent :rating="service?.avg_rating || 0" /><span
-            class="text-h5"
+          <RatingComponent
+            :rating="service?.avg_rating ? Number(service?.avg_rating) : 0"
+          /><span class="text-h5"
             >{{ service?.avg_rating || 0 }} out of 5 | 28 Reviews</span
           >
         </div>

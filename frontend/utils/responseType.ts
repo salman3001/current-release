@@ -20,7 +20,7 @@ interface IPageRes<T>
   extends IResType<{
     data: T;
     meta: PageMeta;
-  }> { }
+  }> {}
 
 interface ImageType {
   name: string;
@@ -442,7 +442,7 @@ type IConversation = {
   id: number;
   name: string;
   participant_one_id: number;
-  participant_two_id: number
+  participant_two_id: number;
   participant_one_identifier: string;
   participant_two_identifier: string;
   participantOne: IConversationParticipant;
@@ -460,13 +460,13 @@ type IConversationParticipant = {
   adminUser: IAdminUser;
   vendorUser: IVendorUser;
   user: IUser;
-};
+} & TimeStamps;
 
 type IMessage = {
   id: number;
   body: string;
   user_identifier: string;
-  read: boolean
+  read: boolean;
   conversation_id: number;
-  conversation: IConversation
+  conversation: IConversation;
 } & TimeStamps;

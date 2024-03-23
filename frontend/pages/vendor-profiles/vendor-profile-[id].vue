@@ -173,8 +173,9 @@ const {
         <h5>Reviews & Rating</h5>
 
         <div>
-          <RatingComponent :rating="vendor?.avg_rating || 0" /><span
-            class="text-h5"
+          <RatingComponent
+            :rating="vendor?.avg_rating ? Number(vendor?.avg_rating) : 0"
+          /><span class="text-h5"
             >{{ vendor?.avg_rating || 0 }} out of 5 | 28 Reviews</span
           >
         </div>

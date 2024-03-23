@@ -3,7 +3,7 @@ import { ref } from "vue";
 const modal = modalStore();
 
 const props = defineProps<{
-  initailValue: string;
+  initailValue?: string;
 }>();
 
 const text = ref(
@@ -36,8 +36,8 @@ const text = ref(
             $emit('search', text);
           }
         "
+        icon="search"
       >
-        <q-icon name="search" />
       </q-btn>
     </template>
   </q-input>

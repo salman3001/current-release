@@ -34,7 +34,9 @@ const iconUrl = props.category?.thumbnail?.url
     @mouseleave="hovered = false"
   >
     <div class="col-6">
-      <q-icon :name="icons[choosenIcon]" size="30px"></q-icon>
+      <client-only>
+        <q-icon :name="icons[choosenIcon]" size="30px"></q-icon>
+      </client-only>
     </div>
     <div class="col-6">
       <span class="ellipsis-2-lines" style="font-size: small; line-height: 18px"
