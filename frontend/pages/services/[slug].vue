@@ -13,38 +13,6 @@ const { data: service, pending: servicePending, refresh: refreshService } = awai
   async () => {
     const data = await customFetch<IResType<IService>>(
       apiRoutes.services.view_by_slug(route.params.slug as string),
-      {
-        query: {
-          preload: [
-            {
-              serviceCategory: {
-                select: ["name"],
-              },
-            },
-            {
-              images: {
-                select: ["*"],
-              },
-              variants: {
-                select: [
-                  "id",
-                  "price",
-                  "name",
-                  "image",
-                  "included",
-                  "excluded",
-                ],
-              },
-              vendorUser: {
-                select: ["id", "first_name", "last_name", "businessName"],
-              },
-              reviews: {
-                select: ["rating"],
-              },
-            },
-          ],
-        } as AdditionalParams,
-      }
     );
     return data.data;
   }
@@ -59,6 +27,7 @@ const {
     query: {
       page: 1,
       perPage: 5,
+      ...service.value?.service_category_id ? { where_category_id: service.value?.service_category_id } : {}
     },
   })
 );

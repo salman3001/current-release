@@ -48,13 +48,9 @@ const {
     query: {
       page: page.value,
       orderBy: sortBy.value || "created_at",
-      where: route.query.tab
-        ? {
-          category_id: route.query.tab,
-        }
-        : {},
+      ...route.query.tab ? { where_service_category_id: route.query.tab } : {},
       search: route.query.whereILike || null
-    }
+    } as IQs
   })
 );
 

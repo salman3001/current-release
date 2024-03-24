@@ -55,3 +55,11 @@ interface AdditionalParams {
   withCount?: withCount[];
   join?: join[];
 }
+
+type IQs = {
+  search?: string,
+  orderBY?: string,
+  page?: number,
+  perPage?: number,
+
+} & Record<any, any>

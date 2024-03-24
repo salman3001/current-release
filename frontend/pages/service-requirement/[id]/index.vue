@@ -15,32 +15,7 @@ const { data, refresh: refreshRequirement } = await useAsyncData(
       customFetch<IResType<IServiceRequirement>>(
         apiRoutes.service_requirements.view(
           route.params.id as unknown as number
-        ),
-        {
-          query: {
-            preload: [
-              {
-                serviceCategory: {
-                  select: ["name"],
-                },
-              },
-            ],
-            withCount: [
-              {
-                relation: "recievedBids",
-                as: "bidCount",
-              },
-            ],
-            withAggregate: [
-              {
-                aggregator: "avg",
-                relation: "recievedBids",
-                field: "offered_price",
-                as: "avgBidPrice",
-              },
-            ],
-          } as AdditionalParams,
-        }
+        )
       ),
       customFetch<IResType<IBid>>(
         apiRoutes.service_requirements.show_accepted_bid(
@@ -75,13 +50,9 @@ const { data, refresh: refreshRequirement } = await useAsyncData(
 
 const bidQuery = reactive({
   page: 1,
-  sortBy: "created_at",
-  descending: "false",
-  join: [] as string[][],
-  select: ["*"],
-  where: {
-    id: ["!=", (data.value?.acceptedBid?.id as unknown as string) || 0],
-  },
+  orderBy: "created_at:asc",
+  orderby_lowest_price: "",
+  orderby_avg_rating: ""
 });
 
 const {
@@ -97,20 +68,11 @@ const {
       ),
       {
         query: {
-          preload: [
-            {
-              vendorUser: {
-                select: ["avg_rating"],
-              },
-            },
-          ],
           page: bidQuery.page,
-          join: bidQuery.join,
-          descending: bidQuery.descending,
-          select: bidQuery.select,
-          sortBy: bidQuery.sortBy,
-          where: bidQuery.where as any,
-        } as AdditionalParams,
+          orderBy: bidQuery.orderBy,
+          orderby_lowest_price: bidQuery.orderby_lowest_price,
+          orderby_avg_rating: bidQuery.orderby_avg_rating,
+        } as IQs,
       }
     );
 
@@ -119,36 +81,24 @@ const {
 );
 
 const sortByVendorRating = () => {
-  bidQuery.sortBy = "vendor_users.avg_rating";
-  bidQuery.select = ["bids.*"];
-  bidQuery.descending = "true";
-  bidQuery.join = [["vendor_users", "bids.vendor_user_id", "vendor_users.id"]];
-  bidQuery.where = {
-    "bids.id": ["!=", (data.value?.acceptedBid?.id as unknown as string) || 0],
-  };
+  bidQuery.orderBy = ""
+  bidQuery.orderby_avg_rating = "1"
+  bidQuery.orderby_lowest_price = ""
   refreshBids();
 };
 
 const sortByLowestPrice = () => {
-  bidQuery.sortBy = "offered_price";
-  bidQuery.select = ["*"];
-  bidQuery.descending = "false";
-  bidQuery.join = [];
-  bidQuery.where = {
-    id: ["!=", (data.value?.acceptedBid?.id as unknown as string) || 0],
-  };
+  bidQuery.orderBy = ""
+  bidQuery.orderby_avg_rating = ""
+  bidQuery.orderby_lowest_price = "1"
   refreshBids();
 };
 
 const refreshData = async () => {
   await refreshRequirement();
-  bidQuery.sortBy = "created_at";
-  bidQuery.select = ["*"];
-  bidQuery.descending = "false";
-  bidQuery.join = [];
-  bidQuery.where = {
-    id: ["!=", (data.value?.acceptedBid?.id as unknown as string) || 0],
-  };
+  bidQuery.orderBy = "created_at:asc";
+  bidQuery.orderby_avg_rating = ''
+  bidQuery.orderby_lowest_price = ''
   await refreshBids();
 };
 
@@ -214,9 +164,10 @@ const createChat = async () => {
             <h6 class="text-bold">Bids Recieved</h6>
           </div>
           <div class="row items-center q-gutter-sm">
-            <q-badge class="q-badge-primary text-subtitle1" v-if="bidQuery.sortBy == 'vendor_users.avg_rating'">Sorting
+            <q-badge class="q-badge-primary text-subtitle1" v-if="bidQuery.orderby_avg_rating == '1'">Sorting
               by Top Rating</q-badge>
-            <q-badge class="q-badge-primary text-subtitle1" v-if="bidQuery.sortBy == 'offered_price'">Sorting by Lowest
+            <q-badge class="q-badge-primary text-subtitle1" v-if="bidQuery.orderby_lowest_price == '1'">Sorting by
+              Lowest
               Price</q-badge>
 
             <q-btn-dropdown outline icon="filter_alt" color="primary" label="Filter">

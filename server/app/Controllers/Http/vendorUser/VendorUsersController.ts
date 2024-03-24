@@ -1,9 +1,8 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import VendorUser from 'App/Models/vendorUser/VendorUser'
-import BaseController from '../BaseController'
 import VendorUserUpdateValidator from 'App/Validators/vendorUser/VendorUserUpdateValidator'
 import VendorUserCreateValidator from 'App/Validators/vendorUser/VendorUserCreateValidator'
-import { schema, rules, validator } from '@ioc:Adonis/Core/Validator'
+import { schema, rules } from '@ioc:Adonis/Core/Validator'
 import { ResponsiveAttachment } from '@ioc:Adonis/Addons/ResponsiveAttachment'
 import Database from '@ioc:Adonis/Lucid/Database'
 import VendorProfileUpdateValidator from 'App/Validators/VendorProfileUpdateValidator'
@@ -11,27 +10,49 @@ import Image from 'App/Models/Image'
 import VendorProfile from 'App/Models/vendorUser/VendorProfile'
 import Review from 'App/Models/Review'
 import CreateReviewValidator from 'App/Validators/CreateReviewValidator'
+import BaseApiController from '../BaseApiController'
 
-export default class VendorUsersController extends BaseController {
-  constructor() {
-    super(VendorUser, VendorUserCreateValidator, VendorUserUpdateValidator, 'VendorUserPolicy')
+export default class VendorUsersController extends BaseApiController {
+  protected searchByFileds(): string[] {
+    return ['first_name', 'last_name']
   }
+
+  public async index({ response, request, bouncer }: HttpContextContract) {
+    await bouncer.with('VendorUserPolicy').authorize('viewList')
+    const vendorQuery = VendorUser.query()
+
+    this.applyFilters(vendorQuery, request.qs)
+
+    const reviews = await this.paginate(request, vendorQuery)
+
+    return response.custom({
+      code: 200,
+      success: true,
+      message: null,
+      data: reviews,
+    })
+  }
+
+  public async show({ response, params, bouncer }: HttpContextContract) {
+    const vendor = await VendorUser.query().where('id', +params.id).preload('reviews', r => {
+      r.limit(10).orderBy('created_at')
+    }).withCount('reviews').firstOrFail()
+    await bouncer.with('VendorUserPolicy').authorize('view', vendor)
+
+    return response.custom({
+      code: 200,
+      success: true,
+      message: null,
+      data: vendor,
+    })
+  }
+
+
 
   public async getReviews({ response, params, request }: HttpContextContract) {
     const reviewsQuery = Review.query().where('vendor_user_id', params.id)
 
-    this.indexfilterQuery(request.qs() as any, reviewsQuery)
-
-    let reviews: Review[] | null = null
-
-    if (request.qs().page) {
-      reviews = await reviewsQuery.paginate(
-        request.qs().page,
-        request.qs().rowsPerPage || this.perPage
-      )
-    } else {
-      reviews = await reviewsQuery.exec()
-    }
+    const reviews = await this.paginate(request, reviewsQuery)
 
     return response.custom({
       code: 200,
@@ -270,24 +291,5 @@ export default class VendorUsersController extends BaseController {
       data: user,
       success: true,
     })
-  }
-
-  public async storeExcelData(data: any, ctx: HttpContextContract): Promise<void> {
-    ctx.meta = {
-      currentObjectId: data.id,
-    }
-    const validatedData = await validator.validate({
-      schema: new VendorUserUpdateValidator(ctx).schema,
-      data: {
-        user: data,
-      },
-    })
-
-    await VendorUser.updateOrCreate({ id: validatedData.id }, validatedData)
-  }
-
-  public excludeIncludeExportProperties(record: any) {
-    const { createdAt, updatedAt, avatar, ...rest } = record
-    return { ...rest, password: '' }
   }
 }

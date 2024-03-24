@@ -6,9 +6,24 @@ import ServiceCreateValidator from 'App/Validators/service/ServiceCreateValidato
 import ServiceUpdateValidator from 'App/Validators/service/ServiceUpdateValidator'
 import Database from '@ioc:Adonis/Lucid/Database'
 import { ModelQueryBuilderContract } from '@ioc:Adonis/Lucid/Orm'
-import Config from '@ioc:Adonis/Core/Config'
+import BaseApiController from '../BaseApiController'
 
-export default class ServiceController {
+export default class ServiceController extends BaseApiController {
+  protected searchByFileds(): string[] {
+    return ['name']
+  }
+
+  public extraFilters(modelQuery: ModelQueryBuilderContract<typeof Service, Service>, qs: Record<string, any>): void {
+    if (qs?.where_service_category_id) {
+      modelQuery.whereHas('serviceCategory', b => {
+        b.where('id', qs?.where_service_category_id)
+      })
+    }
+
+    if (qs?.where_vendor_id) {
+      modelQuery.where('vendor_user_id', qs?.where_vendor_id)
+    }
+  }
 
   public async index({ request, response, bouncer }: HttpContextContract) {
     await bouncer.with('ServicePolicy').authorize('viewList')
@@ -28,9 +43,7 @@ export default class ServiceController {
       v.min('price').as('starting_from')
     })
 
-
-
-    const services = await serviceQuery.paginate(request.qs().page || 1, request.qs().perPage || Config.get('common.rowsPerPage'))
+    const services = await this.paginate(request, serviceQuery)
 
     return response.custom({
       code: 200,
@@ -49,8 +62,6 @@ export default class ServiceController {
     }).preload('reviews', r => {
       r.limit(10)
     })
-
-    this.applyFilters(serviceQuery, request.qs() as any,)
 
     const service = await serviceQuery.first()
 
@@ -235,22 +246,6 @@ export default class ServiceController {
     })
   }
 
-  private applyFilters(modelQuery: ModelQueryBuilderContract<typeof Service, Service>, qs: Record<string, any>) {
-    if (qs?.search) {
-      modelQuery.whereILike('name', qs?.search)
-    }
-
-    if (qs?.where?.category_id) {
-      modelQuery.whereHas('serviceCategory', b => {
-        b.where('id', qs?.where?.category_id)
-      })
-    }
-
-    if (qs?.orderBy) {
-      const [orderBy, direction] = (qs.orderBy as string).split(':')
-      modelQuery.orderBy(orderBy, (direction as 'desc') || 'asc')
-    }
-  }
 
   // public excludeIncludeExportProperties(record: any) {
   //   const { createdAt, updatedAt, logo, cover, brocher, ...rest } = record
