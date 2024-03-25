@@ -48,59 +48,6 @@ const { data, refresh: refreshRequirement } = await useAsyncData(
   }
 );
 
-const bidQuery = reactive({
-  page: 1,
-  orderBy: "created_at:asc",
-  orderby_lowest_price: "",
-  orderby_avg_rating: ""
-});
-
-const {
-  data: recivedBids,
-  pending,
-  refresh: refreshBids,
-} = await useAsyncData(
-  "recieved-bids" + route.params.id + bidQuery.page,
-  async () => {
-    const data = await customFetch<IPageRes<IBid>>(
-      apiRoutes.service_requirements.show_bids(
-        route.params.id as unknown as number
-      ),
-      {
-        query: {
-          page: bidQuery.page,
-          orderBy: bidQuery.orderBy,
-          orderby_lowest_price: bidQuery.orderby_lowest_price,
-          orderby_avg_rating: bidQuery.orderby_avg_rating,
-        } as IQs,
-      }
-    );
-
-    return data.data;
-  }
-);
-
-const sortByVendorRating = () => {
-  bidQuery.orderBy = ""
-  bidQuery.orderby_avg_rating = "1"
-  bidQuery.orderby_lowest_price = ""
-  refreshBids();
-};
-
-const sortByLowestPrice = () => {
-  bidQuery.orderBy = ""
-  bidQuery.orderby_avg_rating = ""
-  bidQuery.orderby_lowest_price = "1"
-  refreshBids();
-};
-
-const refreshData = async () => {
-  await refreshRequirement();
-  bidQuery.orderBy = "created_at:asc";
-  bidQuery.orderby_avg_rating = ''
-  bidQuery.orderby_lowest_price = ''
-  await refreshBids();
-};
 
 const createChat = async () => {
 
@@ -109,15 +56,15 @@ const createChat = async () => {
       method: 'post',
       body: {
         participant: {
-          userType: data.value?.acceptedBid?.vendorUser?.userType,
-          userId: data.value?.acceptedBid?.vendorUser?.id,
+          userType: data.value?.serviceRequirement?.user?.userType,
+          userId: data.value?.serviceRequirement?.user?.id,
         }
       }
     })
 
     if (res.success == true) {
       navigateTo({
-        path: routes.chats, query: {
+        path: routes.vendor.chat, query: {
           newConversationId: res?.data?.id
         }
       })
@@ -134,12 +81,12 @@ const createChat = async () => {
   <div>
     <br />
     <br />
-    <WebRequirementCard :requirement="data?.serviceRequirement!" />
+    <VendorRequirementCard :requirement="data?.serviceRequirement!" @create-chat="createChat()" />
     <br />
     <br />
     <div class="" style="max-width: 95vw">
       <div>
-        <h6 class="text-bold">Acceped Bid</h6>
+        <h6 class="text-bold">Bid Placed</h6>
       </div>
       <br />
 
@@ -148,64 +95,13 @@ const createChat = async () => {
           <p>You haven't accepted any bid yet. Please accept a bid</p>
           <br />
         </div>
-        <WebProposalCard v-else :accepted="true" :bid="data?.acceptedBid" @create-chat="createChat()"
-          :any-bid-accepted="data.acceptedBid ? true : false" :requirement-id="data.serviceRequirement.id"
-          @bid-rejected="refreshData" @review="(v) => {
-      selectedBid = v;
-      bidDetailModal = true;
-    }
-      " />
+        <VendorPlacedBidCard v-else :accepted="true" :bid="data?.acceptedBid"
+          :any-bid-accepted="data.acceptedBid ? true : false" :requirement-id="data.serviceRequirement.id" />
       </div>
       <br />
       <br />
-      <div class="q-gutter-y-md">
-        <div class="row justify-between items-center q-gutter-y-md">
-          <div>
-            <h6 class="text-bold">Bids Recieved</h6>
-          </div>
-          <div class="row items-center q-gutter-sm">
-            <q-badge class="q-badge-primary text-subtitle1" v-if="bidQuery.orderby_avg_rating == '1'">Sorting
-              by Top Rating</q-badge>
-            <q-badge class="q-badge-primary text-subtitle1" v-if="bidQuery.orderby_lowest_price == '1'">Sorting by
-              Lowest
-              Price</q-badge>
-
-            <q-btn-dropdown outline icon="filter_alt" color="primary" label="Filter">
-              <q-list style="" dense>
-                <q-item clickable v-ripple @click="sortByVendorRating">
-                  <q-item-section> Highest Rating </q-item-section>
-                </q-item>
-                <q-separator inset />
-                <q-item clickable v-ripple @click="sortByLowestPrice">
-                  <q-item-section>Lowest Price</q-item-section>
-                </q-item>
-              </q-list>
-            </q-btn-dropdown>
-          </div>
-        </div>
-        <br />
-
-        <div>
-          <div v-if="pending">
-            <SkeletonBase type="list" v-for="i in 3" :key="i"></SkeletonBase>
-          </div>
-          <div v-else class="row gap-100">
-            <WebProposalCard v-for="bid in recivedBids?.data" :accepted="false" :bid="bid"
-              :any-bid-accepted="data?.acceptedBid ? true : false" @bid-accpted="refreshData" @review="(v) => {
-      selectedBid = v;
-      bidDetailModal = true;
-    }
-      " />
-          </div>
-          <PaginateComponet :page="bidQuery.page" :meta="recivedBids?.meta" @update:model-value="(v) => {
-      bidQuery.page = v;
-      refreshBids();
-    }
-      " />
-        </div>
-      </div>
     </div>
-    <q-dialog v-model="bidDetailModal">
+    <!-- <q-dialog v-model="bidDetailModal">
       <q-card style="width: 100%">
         <q-toolbar color="primary">
           <q-toolbar-title><span class="text-weight-bold">Bid Detail</span></q-toolbar-title>
@@ -281,6 +177,6 @@ const createChat = async () => {
           </NuxtLink>
         </q-card-acetion>
       </q-card>
-    </q-dialog>
+    </q-dialog> -->
   </div>
 </template>

@@ -9,9 +9,9 @@ const props = defineProps<{
 }>();
 
 const customFetch = useCustomFetch();
-const user = useCookie("user") as unknown as IUser;
+const user = useCookie("user") as unknown as Ref<IUser>;
 
-const myIdentifier = `${user?.userType}-${user?.id}`;
+const myIdentifier = `${user?.value.userType}-${user?.value.id}`;
 
 const { data, pending, refresh } = await useAsyncData(async () => {
   const data = await customFetch<IPageRes<IMessage[]>>(
@@ -98,8 +98,7 @@ const getMoreMessages = async () => {
       :sent="m.user_identifier !== myIdentifier"
       :stamp="formatDistance(Date.now(), m.created_at, { addSuffix: true })"
     ></q-chat-message> -->
-
-    <q-chat-message v-for="m in dataRef?.data" :text="[m.body]" :sent="m.user_identifier !== myIdentifier"
+    <q-chat-message v-for="m in dataRef?.data" :text="[m.body]" :sent="m.user_identifier == myIdentifier"
       :stamp="formatDistance(Date.now(), m.created_at, { addSuffix: true })"></q-chat-message>
 
     <div v-if="data?.data?.length! > 1" class="row justify-center full-width">

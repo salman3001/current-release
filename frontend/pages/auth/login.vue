@@ -124,8 +124,13 @@ const login = async () => {
           </q-card-section>
           <div>
             <p class="text-center">Dont have an account? <NuxtLink :to="routes.auth.sign_up">Sign up</NuxtLink>
-            <p class="q-pt-none text-center">Need an Vendor's account? <NuxtLink :to="routes.auth.vendor_sign_up">Sign
-                up as Vendor
+              <br>
+              <br>
+            <p class="q-pt-none text-center">
+              <NuxtLink :to="routes.auth.vendor_login">
+                <q-btn color="primary">
+                  Sign in as Vendor
+                </q-btn>
               </NuxtLink>
             </p>
             </p>

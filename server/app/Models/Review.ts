@@ -46,9 +46,8 @@ export default class Review extends BaseModel {
     if (review.serviceId) {
       const service = await Service.query()
         .where('id', review.serviceId)
-        .preload('reviews')
         .withAggregate('reviews', (b) => {
-          b.avg('rating').as('avg_vendor_rating')
+          b.avg('rating').as('service_avg_rating')
         })
         .first()
 
@@ -68,7 +67,10 @@ export default class Review extends BaseModel {
           .first()
 
         if (vendor) {
-          const avg_rating = new BigNumber(vendor.$extras?.service_avg_rating || 0).toFixed(1)
+          const avg_rating = new BigNumber(vendor.$extras?.service_avg_rating || 0)
+            .plus(vendor.$extras?.vendor_avg_rating || 0)
+            .dividedBy(2)
+            .toFixed(1)
 
           vendor.avgRating = avg_rating
           await vendor.save()

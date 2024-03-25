@@ -24,7 +24,9 @@ export default class ServiceRequirementController extends BaseApiController {
   public async index({ response, bouncer, request }: HttpContextContract) {
     await bouncer.with('ServiceRequirementPolicy').authorize('viewList')
 
-    const serviceRequirementQuery = ServiceRequirement.query()
+    const serviceRequirementQuery = ServiceRequirement.query().preload('user', u => {
+      u.select(['first_name', "last_name"])
+    })
 
     this.applyFilters(serviceRequirementQuery, request.qs())
 
@@ -42,6 +44,8 @@ export default class ServiceRequirementController extends BaseApiController {
 
     const serviceRequirement = await ServiceRequirement.query().where('id', +params.id).preload('serviceCategory', s => {
       s.select('name')
+    }).preload('user', u => {
+      u.select(['first_name', "last_name"])
     }).withCount('recievedBids').withAggregate('recievedBids', b => {
       b.avg('offered_price').as('avgBidPrice')
     }).firstOrFail()
@@ -119,12 +123,13 @@ export default class ServiceRequirementController extends BaseApiController {
       bidQuery.whereNot('bids.id', serviceRequirement?.acceptedBidId || 0)
       bidQuery.select('bids.*')
       bidQuery.orderBy('vendor_users.avg_rating', 'desc')
-    }
-
-    if (request.qs()?.orderby_lowest_price) {
+    } else if (request.qs()?.orderby_lowest_price) {
       bidQuery.whereNot('id', serviceRequirement?.acceptedBidId || 0)
       bidQuery.orderBy('offered_price', 'asc')
       bidQuery.select('*')
+    } else {
+      bidQuery.whereNot('id', serviceRequirement?.acceptedBidId || 0)
+      bidQuery.orderBy('created_at', 'desc')
     }
 
     this.applyFilters(bidQuery, request.qs())

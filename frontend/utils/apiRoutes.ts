@@ -3,8 +3,8 @@ const createBaseRoutes = (url: string) => {
     list: url,
     view: (id: number) => `${url}/${id}`,
     create: url,
-    update: (id: number) => (id: number) => `${url}/${id}`,
-    delete: (id: number) => (id: number) => `${url}/${id}`,
+    update: (id: number) => `${url}/${id}`,
+    delete: (id: number) => `${url}/${id}`,
   };
 };
 
@@ -14,6 +14,7 @@ const apiRoutes = {
   },
   vendor_user: {
     ...createBaseRoutes("/api/vendor-users"),
+    update_profile: (id: number) => `/api/vendor-users/${id}/update-profile`,
     reviews: (vendorId: number) => `/api/vendor-users/${vendorId}/reviews`,
     create_review: (service_id: string) =>
       `/api/vendor-users/${service_id}/reviews`,

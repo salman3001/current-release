@@ -2,7 +2,7 @@ import { schema, CustomMessages, rules } from '@ioc:Adonis/Core/Validator'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 export default class VendorProfileUpdateValidator {
-  constructor(protected ctx: HttpContextContract) {}
+  constructor(protected ctx: HttpContextContract) { }
 
   /*
    * Define schema to validate the "shape", "type", "formatting" and "integrity" of data.
@@ -38,7 +38,7 @@ export default class VendorProfileUpdateValidator {
         size: '5mb',
       })
     ),
-    profile: schema.object().members({
+    profile: schema.object.optional().members({
       shortDesc: schema.string.optional(),
       longDesc: schema.string.optional(),
       isActive: schema.boolean.optional(),
