@@ -13,9 +13,12 @@ export default class ServiceController extends BaseApiController {
     return ['name']
   }
 
-  public extraFilters(modelQuery: ModelQueryBuilderContract<typeof Service, Service>, qs: Record<string, any>): void {
+  public extraFilters(
+    modelQuery: ModelQueryBuilderContract<typeof Service, Service>,
+    qs: Record<string, any>
+  ): void {
     if (qs?.where_service_category_id) {
-      modelQuery.whereHas('serviceCategory', b => {
+      modelQuery.whereHas('serviceCategory', (b) => {
         b.where('id', qs?.where_service_category_id)
       })
     }
@@ -27,19 +30,34 @@ export default class ServiceController extends BaseApiController {
 
   public async index({ request, response, bouncer }: HttpContextContract) {
     await bouncer.with('ServicePolicy').authorize('viewList')
-    const serviceQuery = Service.query().preload('serviceCategory', s => {
-      s.select(['name'])
-    }).preload('images').preload('variants', v => {
-      v.select(['name'])
-    }).select(['id', 'name', 'slug', "short_desc", "is_active", "geo_location", "avg_rating", "vendor_user_id", "service_category_id", "service_subcategory_id"])
+    const serviceQuery = Service.query()
+      .preload('serviceCategory', (s) => {
+        s.select(['name'])
+      })
+      .preload('images')
+      .preload('variants', (v) => {
+        v.select(['name'])
+      })
+      .select([
+        'id',
+        'name',
+        'slug',
+        'short_desc',
+        'is_active',
+        'geo_location',
+        'avg_rating',
+        'vendor_user_id',
+        'service_category_id',
+        'service_subcategory_id',
+      ])
 
     this.applyFilters(serviceQuery, request.qs())
 
-    serviceQuery.withCount('reviews', r => {
+    serviceQuery.withCount('reviews', (r) => {
       r.as('reviews_count')
     })
 
-    serviceQuery.withAggregate('variants', v => {
+    serviceQuery.withAggregate('variants', (v) => {
       v.min('price').as('starting_from')
     })
 
@@ -49,7 +67,7 @@ export default class ServiceController extends BaseApiController {
       code: 200,
       data: services,
       success: true,
-      message: null
+      message: null,
     })
   }
 
@@ -57,11 +75,18 @@ export default class ServiceController extends BaseApiController {
     await bouncer.with('ServicePolicy').authorize('view')
 
     const slug = params.slug
-    const serviceQuery = Service.query().where('slug', slug).preload('variants').preload('vendorUser', v => {
-      v.withCount('reviews')
-    }).preload('reviews', r => {
-      r.limit(10)
-    })
+    const serviceQuery = Service.query()
+      .where('slug', slug)
+      .preload('variants')
+      .preload('vendorUser', (v) => {
+        v.withCount('reviews')
+      })
+      .preload('reviews', (r) => {
+        r.limit(10)
+      })
+      .withCount('reviews', (r) => {
+        r.as('reviews_count')
+      })
 
     const service = await serviceQuery.first()
 
@@ -245,7 +270,6 @@ export default class ServiceController extends BaseApiController {
       success: true,
     })
   }
-
 
   // public excludeIncludeExportProperties(record: any) {
   //   const { createdAt, updatedAt, logo, cover, brocher, ...rest } = record
