@@ -9,6 +9,9 @@ export default {
     },
     bookings: {
       list: "/manage-bookings",
+      view: (id: number) => `/manage-bookings/booking-${id}`,
+      view_custom_booking: (id: number) =>
+        `/manage-bookings/custom-booking-${id}`,
     },
   },
 };

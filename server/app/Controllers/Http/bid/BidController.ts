@@ -3,6 +3,7 @@ import BaseController from '../BaseController'
 import Database from '@ioc:Adonis/Lucid/Database'
 import Bid from 'App/Models/bid/Bid'
 import BidValidator from 'App/Validators/bid/BidValidator'
+import ServiceRequirement from 'App/Models/bid/ServiceRequirement'
 
 export default class BidController extends BaseController {
   constructor() {
@@ -36,6 +37,23 @@ export default class BidController extends BaseController {
     await bouncer.with('BidPolicy').authorize('create')
 
     const payload = await request.validate(BidValidator)
+
+    const serviceRequirment = await ServiceRequirement.query()
+      .whereHas('recievedBids', (r) => {
+        r.whereHas('vendorUser', (v) => {
+          v.where('id', auth.user!.id)
+        })
+      })
+      .first()
+
+    if (serviceRequirment) {
+      return response.custom({
+        code: 400,
+        message: 'You have already sent proposal for this requirement',
+        data: null,
+        success: false,
+      })
+    }
 
     let bid: Bid | null = null
 

@@ -48,6 +48,7 @@ const apiRoutes = {
   bookings: {
     ...createBaseRoutes("/api/bookings"),
     for_customer: "/api/bookings/customer-bookings",
+    for_vendnor: "/api/bookings/vendor-bookings",
     summary: "/api/bookings/summary",
     get_coupons: (variantId: number) =>
       `/api/bookings/get-coupons?serviceVariantId=${variantId}`,

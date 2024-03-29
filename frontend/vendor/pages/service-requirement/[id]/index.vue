@@ -1,11 +1,7 @@
 <script setup lang="ts">
-import BigNumber from "bignumber.js";
-import { date } from "quasar";
-
 const route = useRoute();
 const customFetch = useCustomFetch();
-const bidDetailModal = ref(false);
-const selectedBid = ref<IBid | null>(null);
+const placeBidModal = ref(false);
 const getImageUrl = useGetImageUrl();
 
 const { data: requirement, refresh: refreshRequirement } = await useAsyncData(
@@ -27,8 +23,8 @@ const createChat = async () => {
         method: "post",
         body: {
           participant: {
-            userType: requirement.value?.serviceRequirement?.user?.userType,
-            userId: requirement.value?.serviceRequirement?.user?.id,
+            userType: requirement.value?.user?.userType,
+            userId: requirement.value?.user?.id,
           },
         },
       }
@@ -46,6 +42,30 @@ const createChat = async () => {
     console.log(error);
   }
 };
+
+const placeBidForm = reactive({
+  serviceRequirementId: requirement.value!.id,
+  offeredPrice: "",
+  message: "",
+});
+
+const creatingBid = ref(false);
+const createBid = async () => {
+  creatingBid.value = true;
+  try {
+    const res = await customFetch<IResType<any>>(apiRoutes.bids.create, {
+      method: "post",
+      body: placeBidForm,
+    });
+
+    if (res.success == true) {
+      alert("bid placed");
+    }
+  } catch (error) {
+    console.log(error);
+  }
+  creatingBid.value = false;
+};
 </script>
 
 <template>
@@ -53,111 +73,77 @@ const createChat = async () => {
     <br />
     <br />
     <VendorRequirementCard
-      :requirement="data?.serviceRequirement!"
+      :requirement="requirement!"
       @create-chat="createChat()"
     />
     <br />
     <br />
     <div class="" style="max-width: 95vw">
       <div>
-        <NuxtLink :to="routes.vendor.service_requirements.view(requirement.id)">
-          <q-btn color="primary"> Place a Bid</q-btn>
+        <NuxtLink
+          :to="routes.vendor.service_requirements.view(requirement!.id)"
+        >
+          <q-btn color="primary" @click="placeBidModal = true">
+            Place a Bid</q-btn
+          >
         </NuxtLink>
       </div>
       <br />
 
       <div class="row">
-        <div v-if="!data?.acceptedBid" class="text-subtitle1">
-          <p>You haven't accepted any bid yet. Please accept a bid</p>
-          <br />
-        </div>
-        <VendorPlacedBidCard
-          v-else
+        <!-- <VendorPlacedBidCard
           :accepted="true"
           :bid="data?.acceptedBid"
           :any-bid-accepted="data.acceptedBid ? true : false"
           :requirement-id="data.serviceRequirement.id"
-        />
+        /> -->
       </div>
       <br />
       <br />
     </div>
-    <!-- <q-dialog v-model="bidDetailModal">
+    <q-dialog v-model="placeBidModal">
       <q-card style="width: 100%">
         <q-toolbar color="primary">
-          <q-toolbar-title><span class="text-weight-bold">Bid Detail</span></q-toolbar-title>
+          <q-toolbar-title
+            ><span class="text-weight-bold">Bid Detail</span></q-toolbar-title
+          >
           <q-btn flat dense icon="close" v-close-popup />
         </q-toolbar>
-
-        <q-card-section class="column q-pa-lg" v-if="selectedBid">
-          <div class="row q-gutter-y-md wrap justify-between">
-            <div class="row gap-50">
-              <q-avatar size="72px">
-                <img :src="getImageUrl(
-      selectedBid?.vendorUser?.profile?.avatar?.url,
-      '/images/sample-dp.png'
-    )
-      " />
-              </q-avatar>
-              <div>
-                <p v-if="data?.acceptedBid?.id === selectedBid?.id" class="text-bold text-subtitle1">
-                  {{ selectedBid?.vendorUser.first_name }}
-                  {{ selectedBid?.vendorUser.last_name }}
-                  <q-btn size="xs" color="secondary" v-if="data?.acceptedBid?.id === selectedBid?.id"
-                    @click="createChat">chat</q-btn>
-                </p>
-                <p v-else class="text-bold text-subtitle1">Anonymous</p>
-                <div>
-                  <NuxtLink :to="routes.home" class="underline">{{
-      selectedBid?.vendorUser?.business_name
-    }}</NuxtLink>
-                </div>
-
-                <div>
-                  <RatingComponent :rating="selectedBid?.vendorUser?.avg_rating || 0" size="1.25rem" />
-                </div>
-              </div>
+        <q-card-section>
+          <q-form class="q-gutter-y-sm" @submit="createBid">
+            <q-input
+              outlined
+              type="number"
+              v-model="placeBidForm.offeredPrice"
+              label="Offer a price"
+              class="col-12 col-sm-6 col-md-3"
+              :rules="[rules.required('required')]"
+              lazy-rules="true"
+            />
+            <q-input
+              type="textarea"
+              outlined
+              v-model="placeBidForm.message"
+              label="Message"
+              class="col-12 col-sm-6 col-md-3"
+              :rules="[rules.required('required')]"
+            />
+            <div class="row q-gutter-sm justify-end q-pt-lg">
+              <q-btn color="primary" v-if="creatingBid" disabled>
+                <LoadingIndicator /> Processing
+              </q-btn>
+              <q-btn
+                color="primary"
+                type="submit"
+                :disabled="creatingBid"
+                v-else
+                style="min-width: 6rem"
+                >Submit</q-btn
+              >
             </div>
-            <div>
-              <p class="text-muted" style="width: max-content">
-                {{
-      date.formatDate(selectedBid?.created_at, "DD/MM/YYYY hh:mmA")
-    }}
-              </p>
-              <q-badge v-if="data?.acceptedBid?.id === selectedBid?.id" outline
-                class="q-badge-positive q-py-sm q-px-md justify-center">
-                Accepted</q-badge>
-            </div>
-          </div>
-          <br />
-          <div class="q-gutter-sm">
-            <q-badge class="q-badge-primary justify-center" style="width: 120px">
-              <span class="text-bold text-body1">&#x20B9;{{
-      new BigNumber(selectedBid?.offered_price || 0).toFixed(2)
-    }}</span>
-              / Qty</q-badge>
-            <q-badge class="q-badge-primary justify-center" style="width: 120px">
-              <span class="text-bold text-body1">3</span>
-              Hrs</q-badge>
-          </div>
-          <br />
-          <div>
-            <p class="text-body-1 ellipsis-3-lines">
-              {{ selectedBid?.message }}
-            </p>
-          </div>
+          </q-form>
         </q-card-section>
-        <q-card-acetion class="row justify-end q-pa-lg" v-if="selectedBid">
-          <NuxtLink :to="{
-      path: routes.book_custom_Service(data!?.serviceRequirement.id),
-      query: {
-        acceptedBidId: selectedBid.id,
-      },
-    }" v-if="!data?.serviceRequirement.accepted_bid_id">
-            <q-btn color="primary">Accept and Book</q-btn>
-          </NuxtLink>
-        </q-card-acetion>
       </q-card>
-    </q-dialog> -->
+    </q-dialog>
   </div>
 </template>
