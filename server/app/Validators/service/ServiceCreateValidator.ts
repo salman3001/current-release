@@ -1,5 +1,6 @@
 import { schema, CustomMessages, rules } from '@ioc:Adonis/Core/Validator'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import { DiscountType } from 'App/Helpers/enums'
 
 export default class ServiceCreateValidator {
   constructor(protected ctx: HttpContextContract) {}
@@ -34,13 +35,15 @@ export default class ServiceCreateValidator {
         size: '5mb',
       })
     ),
+    thumbnail: schema.file.optional({
+      extnames: ['jpg', 'JPG', 'jpeg', 'JPEG', 'png', 'PNG', 'webp', 'WEBP'],
+      size: '5mb',
+    }),
     service: schema.object().members({
-      name: schema.string({ trim: true }),
-      slug: schema.string({ trim: true }, [
-        rules.slug(),
+      name: schema.string({ trim: true }, [
         rules.unique({
           table: 'services',
-          column: 'slug',
+          column: 'name',
         }),
       ]),
       shortDesc: schema.string.optional(),
@@ -48,10 +51,26 @@ export default class ServiceCreateValidator {
       isActive: schema.boolean.optional(),
       locationSpecific: schema.boolean.optional(),
       geoLocation: schema.string(),
-      vendorUserId: schema.number(),
       serviceCategoryId: schema.number.optional(),
       serviceSubcategoryId: schema.number.optional(),
     }),
+    variant: schema.array().members(
+      schema.object().members({
+        image: schema.file.optional({
+          extnames: ['jpg', 'JPG', 'jpeg', 'JPEG', 'png', 'PNG', 'webp', 'WEBP'],
+          size: '5mb',
+        }),
+        name: schema.string([rules.maxLength(100)]),
+        price: schema.number(),
+        discountType: schema.enum(Object.values(DiscountType)),
+        discountFlat: schema.number.optional([
+          rules.numberLessThanField('price'),
+          rules.minNumber(0),
+        ]),
+        discountPercentage: schema.number.optional([rules.maxNumber(99), rules.minNumber(0)]),
+        desc: schema.string.optional(),
+      })
+    ),
     seo: schema.object.optional().members({
       metaTitle: schema.string.optional(),
       metaKeywords: schema.string.optional(),

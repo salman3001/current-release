@@ -11,6 +11,18 @@ export default class extends BaseSchema {
       table.boolean('is_published').defaultTo(0)
       table.json('thumbnail')
       table
+        .integer('vendor_user_id')
+        .unsigned()
+        .references('id')
+        .inTable('vendor_users')
+        .onDelete('CASCADE')
+      table
+        .integer('admin_user_id')
+        .unsigned()
+        .references('id')
+        .inTable('admin_users')
+        .onDelete('CASCADE')
+      table
         .integer('language_id')
         .unsigned()
         .references('id')

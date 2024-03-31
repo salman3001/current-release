@@ -4,7 +4,6 @@ import BaseController from '../BaseController'
 import Database from '@ioc:Adonis/Lucid/Database'
 import VariantCreateValidator from 'App/Validators/service/VariantCreateValidator'
 import ServiceVariant from 'App/Models/service/ServiceVariant'
-import Service from 'App/Models/service/Service'
 
 export default class ServiceVariantController extends BaseController {
   constructor() {
@@ -48,7 +47,6 @@ export default class ServiceVariantController extends BaseController {
     await bouncer.with('ServicePolicy').authorize('update', variant.service)
 
     const payload = await request.validate(VariantCreateValidator)
-
 
     await Database.transaction(async (trx) => {
       variant.useTransaction(trx)

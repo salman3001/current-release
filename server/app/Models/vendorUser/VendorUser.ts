@@ -23,6 +23,7 @@ import VendorProfile from './VendorProfile'
 import BigNumber from 'bignumber.js'
 import Conversation from '../chat/Conversation'
 import { userTypes } from 'App/Helpers/enums'
+import Blog from '../blogs/Blog'
 
 export default class VendorUser extends BaseModel {
   public serializeExtras = true
@@ -66,6 +67,9 @@ export default class VendorUser extends BaseModel {
   public get userType() {
     return userTypes.VENDER
   }
+
+  @hasMany(() => Blog)
+  public blogs: HasMany<typeof Blog>
 
   @hasOne(() => VendorProfile)
   public profile: HasOne<typeof VendorProfile>

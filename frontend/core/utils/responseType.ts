@@ -34,6 +34,7 @@ interface ImageType {
   url: string;
   breakpoints: {
     thumbnail: {
+      url: string;
       name: string;
       hash: string;
       extname: string;
@@ -87,6 +88,7 @@ type IService = {
   avg_rating: string;
   video: ImageType | null;
   images: ImageType[] | null;
+  thumbnail: ImageType;
   vendor_user_id: number;
   vendorUser: IVendorUser;
   service_category_id: number;
@@ -94,7 +96,10 @@ type IService = {
   service_subcategory_id: number;
   serviceSubcategory: IServiceSubcategory;
   variants: IServiceVariant[];
+  seo: ISeo;
+  tags: IServiceTag[];
   reviews: IReview[];
+  faq: IFaq[];
   meta: Record<any, any>;
 } & TimeStamps;
 
@@ -105,14 +110,11 @@ interface IServiceVariant {
   discount_type: "flat" | "percentage";
   discount_flat: string | number;
   discount_percentage: string | number;
-  features: string[];
-  included: string[];
-  excluded: string[];
+  desc: string;
   order: number;
   image: ImageType | null;
   serviceId: number;
   service: IService;
-  additionalProperties: string[];
   meta: any;
 }
 
@@ -222,6 +224,7 @@ type IVendorUser = {
   bid_booking: IBidBooking[];
   reviews: IReview[];
   services: IService[];
+  blogs: IBlog[];
   meta: any;
 } & TimeStamps;
 
@@ -240,6 +243,7 @@ type IUser = {
   bookings: IBooking[];
   notifications: INotification[];
   bid_booking: IBooking[];
+  blogs: IBlog[];
   meta: any;
 } & TimeStamps;
 
@@ -469,4 +473,34 @@ type IMessage = {
   read: boolean;
   conversation_id: number;
   conversation: IConversation;
+} & TimeStamps;
+
+type IBlogCategory = {
+  id: number;
+  name: string;
+  slug: string;
+  order: number;
+  status: boolean;
+  languageId: number;
+  language: ILanguage;
+  metaTitle: string;
+  metaKeywords: string;
+  metaDesc: string;
+  blogs: IBlog[];
+};
+
+type IBlog = {
+  id: number;
+  title: string;
+  slug: string;
+  thumbnail: ImageType;
+  category: IBlogCategory;
+  vendorUser: IAdminUser;
+  languageId: number;
+  language: ILanguage;
+  longDesc: string;
+  isPublished: boolean;
+  metaTitle: string;
+  metaKeywords: string;
+  metaDesc: string;
 } & TimeStamps;

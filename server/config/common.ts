@@ -1,3 +1,3 @@
-const common = {
-    rowsPerPage: 20
+export default {
+  rowsPerPage: 20,
 }

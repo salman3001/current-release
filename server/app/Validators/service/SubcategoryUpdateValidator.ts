@@ -30,13 +30,10 @@ export default class SubcategoryUpdateValidator {
     }),
     category: schema.object.optional().members({
       id: schema.number.optional(),
-      name: schema.string({ trim: true }),
-      slug: schema.string({ trim: true }, [
-        rules.slug(),
+      name: schema.string({ trim: true }, [
         rules.unique({
           table: 'service_subcategories',
-          column: 'slug',
-          whereNot: { id: this.ctx.params.id },
+          column: 'name',
         }),
       ]),
       shortDesc: schema.string.optional(),

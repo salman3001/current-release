@@ -24,6 +24,10 @@ import { AttachmentContract, attachment } from '@ioc:Adonis/Addons/AttachmentLit
 import Coupon from '../orders/Coupon'
 import VendorUser from '../vendorUser/VendorUser'
 import BigNumber from 'bignumber.js'
+import {
+  responsiveAttachment,
+  ResponsiveAttachmentContract,
+} from '@ioc:Adonis/Addons/ResponsiveAttachment'
 
 export default class Service extends BaseModel {
   public serializeExtras = true
@@ -61,6 +65,24 @@ export default class Service extends BaseModel {
     folder: 'service/videos',
   })
   public video: AttachmentContract
+
+  @responsiveAttachment({
+    folder: 'services/thumbnails',
+    preComputeUrls: true,
+    forceFormat: 'webp',
+    responsiveDimensions: true,
+    breakpoints: {
+      small: 'off',
+      large: 'off',
+      medium: 'off',
+    },
+    breakpoints: {
+      small: 'off',
+      large: 'off',
+      medium: 'off',
+    },
+  })
+  public thumbnail: ResponsiveAttachmentContract
 
   @column()
   public vendorUserId: number

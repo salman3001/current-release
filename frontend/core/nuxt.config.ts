@@ -21,15 +21,16 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       baseApi: "http://127.0.0.1:3333", // this must be http://127.0.0.1:3333 not localhost
-      webBaseUrl: "http://127.0.0.1:3000/",
-      vendorBaseUrl: "http://127.0.0.1:3001",
-      adminBaseUrl: "http://127.0.0.1:3002",
+      webBaseUrl: "http://localhost:3000",
+      vendorBaseUrl: "http://localhost:3001",
+      adminBaseUrl: "http://localhost:3002",
     },
   },
   quasar: {
     plugins: ["Notify"],
     sassVariables: join(currentDir, "./assets/css/styles.scss"),
     cssAddon: true,
+    components: {},
   },
   devServer: {},
   imports: {

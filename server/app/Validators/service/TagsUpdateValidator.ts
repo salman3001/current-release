@@ -30,7 +30,12 @@ export default class TagsUpdateValidator {
     }),
     category: schema.object.optional().members({
       id: schema.number.optional(),
-      name: schema.string({ trim: true }),
+      name: schema.string({ trim: true }, [
+        rules.unique({
+          table: 'service_tags',
+          column: 'name',
+        }),
+      ]),
       slug: schema.string({ trim: true }, [
         rules.slug(),
         rules.unique({

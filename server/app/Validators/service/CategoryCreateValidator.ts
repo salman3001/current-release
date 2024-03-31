@@ -30,12 +30,10 @@ export default class CategoryCreateValidator {
     }),
     category: schema.object().members({
       id: schema.number.optional(),
-      name: schema.string({ trim: true }),
-      slug: schema.string({ trim: true }, [
-        rules.slug(),
+      name: schema.string({ trim: true }, [
         rules.unique({
           table: 'service_categories',
-          column: 'slug',
+          column: 'name',
         }),
       ]),
       shortDesc: schema.string.optional(),

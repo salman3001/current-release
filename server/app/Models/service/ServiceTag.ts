@@ -30,8 +30,12 @@ export default class ServiceTag extends BaseModel {
     folder: 'service-tag',
     preComputeUrls: true,
     forceFormat: 'webp',
-    disableThumbnail: true,
-    responsiveDimensions: false,
+    responsiveDimensions: true,
+    breakpoints: {
+      small: 'off',
+      large: 'off',
+      medium: 'off',
+    },
   })
   public thumbnail: ResponsiveAttachmentContract
 

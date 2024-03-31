@@ -13,15 +13,11 @@ import CreateReviewValidator from 'App/Validators/CreateReviewValidator'
 import BaseApiController from '../BaseApiController'
 
 export default class VendorUsersController extends BaseApiController {
-  protected searchByFileds(): string[] {
-    return ['first_name', 'last_name']
-  }
-
   public async index({ response, request, bouncer }: HttpContextContract) {
     await bouncer.with('VendorUserPolicy').authorize('viewList')
     const vendorQuery = VendorUser.query()
 
-    this.applyFilters(vendorQuery, request.qs)
+    this.applyFilters(vendorQuery, request.qs, { searchFields: ['first_name', 'last_name'] })
 
     const reviews = await this.paginate(request, vendorQuery)
 
@@ -34,9 +30,13 @@ export default class VendorUsersController extends BaseApiController {
   }
 
   public async show({ response, params, bouncer }: HttpContextContract) {
-    const vendor = await VendorUser.query().where('id', +params.id).preload('reviews', r => {
-      r.limit(10).orderBy('created_at')
-    }).withCount('reviews').firstOrFail()
+    const vendor = await VendorUser.query()
+      .where('id', +params.id)
+      .preload('reviews', (r) => {
+        r.limit(10).orderBy('created_at')
+      })
+      .withCount('reviews')
+      .firstOrFail()
     await bouncer.with('VendorUserPolicy').authorize('view', vendor)
 
     return response.custom({
@@ -46,8 +46,6 @@ export default class VendorUsersController extends BaseApiController {
       data: vendor,
     })
   }
-
-
 
   public async getReviews({ response, params, request }: HttpContextContract) {
     const reviewsQuery = Review.query().where('vendor_user_id', params.id)

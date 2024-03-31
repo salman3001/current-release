@@ -34,7 +34,7 @@ const tab = ref(query?.tab || "Bookings");
       <q-tab-panel name="Custom Bookings">
         <div class="text-h6">Custom Bookings</div>
         <br />
-        <!-- <WebBookingList /> -->
+        <VendorCustomBookingList />
       </q-tab-panel>
     </q-tab-panels>
   </div>

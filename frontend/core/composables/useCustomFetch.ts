@@ -1,6 +1,4 @@
 import { Notify } from "quasar";
-import qs from "qs";
-import type { FetchContext } from "ofetch";
 
 export default function (
   opt: {
@@ -24,29 +22,31 @@ export default function (
             message,
             icon: "done",
             color: "positive",
+            position: "top-right",
           });
         } else {
           Notify.create({
             message,
             icon: "warning",
             color: "negative",
+            position: "top-right",
           });
         }
       }
     }
   };
 
-  const onRequest = (c: FetchContext<any, any>): void => {
-    const queryString = qs.stringify(c.options.query);
-    let newUrl: RequestInfo = "";
-    if (queryString) {
-      newUrl = c.request + "?" + queryString;
-    } else {
-      newUrl = c.request;
-    }
-    c.options.query = {};
-    c.request = newUrl;
-  };
+  // const onRequest = (c: FetchContext<any, any>): void => {
+  //   const queryString = qs.stringify(c.options.query);
+  //   let newUrl: RequestInfo = "";
+  //   if (queryString) {
+  //     newUrl = c.request + "?" + queryString;
+  //   } else {
+  //     newUrl = c.request;
+  //   }
+  //   c.options.query = {};
+  //   c.request = newUrl;
+  // };
 
   return $fetch.create({
     baseURL: config.public.baseApi,
@@ -54,6 +54,5 @@ export default function (
       authorization,
     },
     onResponse: !process.server ? onResponse : undefined,
-    onRequest: onRequest,
   });
 }

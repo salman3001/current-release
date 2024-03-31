@@ -1,42 +1,54 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import { LucidModel, ModelQueryBuilderContract } from '@ioc:Adonis/Lucid/Orm'
+import { ModelQueryBuilderContract } from '@ioc:Adonis/Lucid/Orm'
 import Config from '@ioc:Adonis/Core/Config'
 
-
-
 export default class BaseApiController {
+  public async paginate(
+    request: HttpContextContract['request'],
+    modelQuery: ModelQueryBuilderContract<any, any>
+  ) {
+    const model = await modelQuery.paginate(
+      request.qs().page || 1,
+      request.qs().perPage || Config.get('common.rowsPerPage')
+    )
+    return model
+  }
 
-    protected searchByFileds(): string[] {
-        return []
+  public applyFilters(
+    modelQuery: ModelQueryBuilderContract<any, any>,
+    qs: Record<string, any>,
+    opt?: {
+      searchFields?: string[]
     }
+  ) {
+    for (const key in qs) {
+      if (Object.prototype.hasOwnProperty.call(qs, key)) {
+        const value = qs[key]
 
-    public async paginate(request: HttpContextContract['request'], modelQuery: ModelQueryBuilderContract<any, any>) {
-        const model = await modelQuery.paginate(request.qs().page || 1, request.qs().perPage || Config.get('common.rowsPerPage'))
-        return model
-    }
-
-    public applyFilters(modelQuery: ModelQueryBuilderContract<any, any>, qs: Record<string, any>) {
-
-        if (qs?.search) {
-            this.searchByFileds().forEach((field, i) => {
-                if (i == 0) {
-                    modelQuery.whereILike(field, qs?.search)
-                } else {
-                    modelQuery.orWhereILike(field, qs?.search)
-                }
+        if (value) {
+          if (key === 'search') {
+            opt?.searchFields?.forEach((field, i) => {
+              if (i == 0) {
+                modelQuery.whereILike(field, value)
+              } else {
+                modelQuery.orWhereILike(field, value)
+              }
             })
-        }
+          }
 
-        if (qs?.orderBy) {
-            const [orderBy, direction] = (qs.orderBy as string).split(':')
+          if (key === 'orderBy') {
+            const [orderBy, direction] = value.split(':')
             modelQuery.orderBy(orderBy, (direction as 'desc') || 'asc')
+          }
+
+          if (key.startsWith('field__')) {
+            const field = key.split('__')[1]
+            modelQuery.where(field, value)
+          }
         }
-
-        this.extraFilters(modelQuery, qs)
-
-        return modelQuery
+      }
     }
 
-    public extraFilters(modelQuery: ModelQueryBuilderContract<any, any>, qs: Record<string, any>): void {
-    }
+    return modelQuery
+  }
 }

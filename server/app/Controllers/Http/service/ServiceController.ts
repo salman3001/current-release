@@ -5,39 +5,28 @@ import Service from 'App/Models/service/Service'
 import ServiceCreateValidator from 'App/Validators/service/ServiceCreateValidator'
 import ServiceUpdateValidator from 'App/Validators/service/ServiceUpdateValidator'
 import Database from '@ioc:Adonis/Lucid/Database'
-import { ModelQueryBuilderContract } from '@ioc:Adonis/Lucid/Orm'
 import BaseApiController from '../BaseApiController'
+import slugify from 'slugify'
+import ServiceVariant from 'App/Models/service/ServiceVariant'
 
 export default class ServiceController extends BaseApiController {
-  protected searchByFileds(): string[] {
-    return ['name']
-  }
-
-  public extraFilters(
-    modelQuery: ModelQueryBuilderContract<typeof Service, Service>,
-    qs: Record<string, any>
-  ): void {
-    if (qs?.where_service_category_id) {
-      modelQuery.whereHas('serviceCategory', (b) => {
-        b.where('id', qs?.where_service_category_id)
-      })
-    }
-
-    if (qs?.where_vendor_id) {
-      modelQuery.where('vendor_user_id', qs?.where_vendor_id)
-    }
-  }
-
   public async index({ request, response, bouncer }: HttpContextContract) {
     await bouncer.with('ServicePolicy').authorize('viewList')
     const serviceQuery = Service.query()
       .preload('serviceCategory', (s) => {
         s.select(['name'])
       })
+      .preload('serviceSubcategory', (s) => {
+        s.select(['id', 'name'])
+      })
+      .preload('tags', (s) => {
+        s.select(['id', 'name'])
+      })
       .preload('images')
       .preload('variants', (v) => {
         v.select(['name'])
       })
+      .preload('images')
       .select([
         'id',
         'name',
@@ -45,13 +34,15 @@ export default class ServiceController extends BaseApiController {
         'short_desc',
         'is_active',
         'geo_location',
+        'thumbnail',
         'avg_rating',
         'vendor_user_id',
         'service_category_id',
         'service_subcategory_id',
+        'created_at',
       ])
 
-    this.applyFilters(serviceQuery, request.qs())
+    this.applyFilters(serviceQuery, request.qs(), { searchFields: ['name'] })
 
     serviceQuery.withCount('reviews', (r) => {
       r.as('reviews_count')
@@ -60,6 +51,26 @@ export default class ServiceController extends BaseApiController {
     serviceQuery.withAggregate('variants', (v) => {
       v.min('price').as('starting_from')
     })
+
+    if (request.qs()?.where_service_category_id) {
+      serviceQuery.whereHas('serviceCategory', (b) => {
+        b.where('id', request.qs()?.where_service_category_id)
+      })
+    }
+
+    if (request.qs()?.where_service_subcategory_id) {
+      serviceQuery.whereHas('serviceSubcategory', (b) => {
+        b.where('id', request.qs()?.where_service_subcategory_id)
+      })
+    }
+
+    if (request.qs()?.where_vendor_id) {
+      serviceQuery.where('vendor_user_id', request.qs()?.where_vendor_id)
+    }
+
+    if (request.qs()?.where_is_active) {
+      serviceQuery.where('is_active', request.qs()?.where_is_active)
+    }
 
     const services = await this.paginate(request, serviceQuery)
 
@@ -84,6 +95,10 @@ export default class ServiceController extends BaseApiController {
       .preload('reviews', (r) => {
         r.limit(10)
       })
+      .preload('faq')
+      .preload('seo')
+      .preload('tags')
+      .preload('images')
       .withCount('reviews', (r) => {
         r.as('reviews_count')
       })
@@ -98,15 +113,32 @@ export default class ServiceController extends BaseApiController {
     })
   }
 
-  public async store({ request, response, bouncer }: HttpContextContract) {
+  public async store({ request, response, bouncer, auth }: HttpContextContract) {
     await bouncer.with('ServicePolicy').authorize('create')
 
     const payload = await request.validate(ServiceCreateValidator)
+    const slug = slugify(payload.service.name)
 
     let service: Service | null = null
 
     await Database.transaction(async (trx) => {
-      service = await Service.create(payload.service, { client: trx })
+      service = await Service.create(
+        { ...payload.service, vendorUserId: auth.user!.id, slug: slug },
+        { client: trx }
+      )
+
+      if (payload.variant) {
+        for (const variantPayload of payload.variant) {
+          const { image, ...restPayload } = variantPayload
+          const variant = await ServiceVariant.create(restPayload, { client: trx })
+
+          if (image) {
+            variant.image = await ResponsiveAttachment.fromFile(image)
+          }
+          await variant.save()
+          await service.related('variants').save(variant)
+        }
+      }
 
       if (payload.seo) {
         await service.related('seo').create(payload.seo)
@@ -118,6 +150,10 @@ export default class ServiceController extends BaseApiController {
 
       if (payload.faq) {
         await service.related('faq').createMany(payload.faq)
+      }
+
+      if (payload.thumbnail) {
+        service.thumbnail = await ResponsiveAttachment.fromFile(payload.thumbnail)
       }
 
       if (payload.images) {
@@ -170,8 +206,35 @@ export default class ServiceController extends BaseApiController {
       await bouncer.with('ServicePolicy').authorize('update', service)
 
       if (payload.service) {
-        service.merge(payload.service)
-        await service.save()
+        if (payload.service?.name) {
+          const slug = slugify(payload.service.name)
+          service.merge({ ...payload.service, slug })
+          await service.save()
+        } else {
+          service.merge(payload.service)
+          await service.save()
+        }
+      }
+
+      if (payload.variant) {
+        await service.load('variants')
+
+        if (service.variants) {
+          for (const v of service.variants) {
+            await v.delete()
+          }
+        }
+
+        for (const variantPayload of payload.variant) {
+          const { image, ...restPayload } = variantPayload
+          const variant = await ServiceVariant.create(restPayload, { client: trx })
+
+          if (image) {
+            variant.image = await ResponsiveAttachment.fromFile(image)
+          }
+          await variant.save()
+          await service.related('variants').save(variant)
+        }
       }
 
       if (payload.seo) {
@@ -184,6 +247,11 @@ export default class ServiceController extends BaseApiController {
         }
       }
 
+      if (payload.tags) {
+        await service.related('tags').detach()
+        await service.related('tags').attach(payload.tags)
+      }
+
       if (payload.faq) {
         await service.load('faq')
         if (service.faq) {
@@ -192,6 +260,10 @@ export default class ServiceController extends BaseApiController {
           }
         }
         await service.related('faq').createMany(payload.faq)
+      }
+
+      if (payload.thumbnail) {
+        service.thumbnail = await ResponsiveAttachment.fromFile(payload.thumbnail)
       }
 
       if (payload.images) {

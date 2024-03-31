@@ -9,8 +9,14 @@ const tab = ref(query?.tab || "Profile");
 <template>
   <br />
   <div>
-    <q-tabs dense v-model="tab" active-color="white" indicator-color="secondary" active-bg-color="secondary"
-      align="left">
+    <q-tabs
+      dense
+      v-model="tab"
+      active-color="white"
+      indicator-color="secondary"
+      active-bg-color="secondary"
+      align="left"
+    >
       <q-tab name="Profile" label="Profile" />
       <q-tab name="Settings" label="Settings" />
       <q-tab name="Security" label="Security" />

@@ -25,20 +25,8 @@ export default class ServiceVariant extends BaseModel {
   @column()
   public discountPercentage: string | number
 
-  @column({
-    prepare: (v) => JSON.stringify(v),
-  })
-  public features: Object
-
-  @column({
-    prepare: (v) => JSON.stringify(v),
-  })
-  public included: Object
-
-  @column({
-    prepare: (v) => JSON.stringify(v),
-  })
-  public excluded: Object
+  @column()
+  public desc: Object
 
   @column()
   public order: number
@@ -47,8 +35,12 @@ export default class ServiceVariant extends BaseModel {
     folder: 'service/variants/images',
     preComputeUrls: true,
     forceFormat: 'webp',
-    disableThumbnail: true,
-    responsiveDimensions: false,
+    responsiveDimensions: true,
+    breakpoints: {
+      small: 'off',
+      large: 'off',
+      medium: 'off',
+    },
   })
   public image: ResponsiveAttachmentContract
 
@@ -57,9 +49,4 @@ export default class ServiceVariant extends BaseModel {
 
   @belongsTo(() => Service)
   public service: BelongsTo<typeof Service>
-
-  @column({
-    prepare: (v) => JSON.stringify(v),
-  })
-  public additionalProperties: Object
 }

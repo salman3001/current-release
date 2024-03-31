@@ -1,5 +1,6 @@
 import { schema, CustomMessages, rules } from '@ioc:Adonis/Core/Validator'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import { DiscountType } from 'App/Helpers/enums'
 
 export default class ServiceUpdateValidator {
   constructor(protected ctx: HttpContextContract) {}
@@ -34,14 +35,15 @@ export default class ServiceUpdateValidator {
         size: '5mb',
       })
     ),
+    thumbnail: schema.file.optional({
+      extnames: ['jpg', 'JPG', 'jpeg', 'JPEG', 'png', 'PNG', 'webp', 'WEBP'],
+      size: '5mb',
+    }),
     service: schema.object().members({
-      name: schema.string({ trim: true }),
-      slug: schema.string({ trim: true }, [
-        rules.slug(),
+      name: schema.string({ trim: true }, [
         rules.unique({
           table: 'services',
-          column: 'slug',
-          whereNot: { id: this.ctx.params.id },
+          column: 'name',
         }),
       ]),
       shortDesc: schema.string.optional(),
@@ -49,7 +51,6 @@ export default class ServiceUpdateValidator {
       isActive: schema.boolean.optional(),
       locationSpecific: schema.boolean.optional(),
       geoLocation: schema.string.optional(),
-      vendorUserId: schema.number(),
       serviceCategoryId: schema.number.optional(),
       serviceSubcategoryId: schema.number.optional(),
     }),
@@ -63,6 +64,23 @@ export default class ServiceUpdateValidator {
       schema.object().members({
         quest: schema.string(),
         ans: schema.string(),
+      })
+    ),
+    variant: schema.array().members(
+      schema.object().members({
+        image: schema.file.optional({
+          extnames: ['jpg', 'JPG', 'jpeg', 'JPEG', 'png', 'PNG', 'webp', 'WEBP'],
+          size: '5mb',
+        }),
+        name: schema.string([rules.maxLength(100)]),
+        price: schema.number(),
+        discountType: schema.enum(Object.values(DiscountType)),
+        discountFlat: schema.number.optional([
+          rules.numberLessThanField('price'),
+          rules.minNumber(0),
+        ]),
+        discountPercentage: schema.number.optional([rules.maxNumber(99), rules.minNumber(0)]),
+        desc: schema.string.optional(),
       })
     ),
   })

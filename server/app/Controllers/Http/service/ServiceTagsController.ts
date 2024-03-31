@@ -1,14 +1,28 @@
 import { ResponsiveAttachment } from '@ioc:Adonis/Addons/ResponsiveAttachment'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import ServiceTag from 'App/Models/service/ServiceTag'
-import BaseController from '../BaseController'
 import { validator } from '@ioc:Adonis/Core/Validator'
 import TagsCreateValidator from 'App/Validators/service/TagsCreateValidator'
 import TagsUpdateValidator from 'App/Validators/service/TagsUpdateValidator'
+import BaseApiController from '../BaseApiController'
+import slugify from 'slugify'
 
-export default class ServiceTagsController extends BaseController {
-  constructor() {
-    super(ServiceTag, TagsCreateValidator, TagsUpdateValidator, 'ServiceCategoryPolicy')
+export default class ServiceTagsController extends BaseApiController {
+  public async index({ request, response, bouncer }: HttpContextContract) {
+    await bouncer.with('ServiceCategoryPolicy').authorize('viewList')
+
+    const tagQuery = ServiceTag.query().select(['id', 'name'])
+
+    this.applyFilters(tagQuery, request.qs(), { searchFields: ['name'] })
+
+    const tags = await tagQuery.exec()
+
+    return response.custom({
+      code: 200,
+      data: tags,
+      success: true,
+      message: null,
+    })
   }
 
   public async showBySlug({ request, response, bouncer, params }: HttpContextContract) {
@@ -17,7 +31,7 @@ export default class ServiceTagsController extends BaseController {
     const slug = params.slug
     const tagQuery = ServiceTag.query().where('slug', slug)
 
-    this.showfilterQuery(request.qs() as any, tagQuery)
+    this.applyFilters(tagQuery, request.qs(), { searchFields: ['name'] })
 
     const tag = await tagQuery.first()
 
@@ -33,7 +47,8 @@ export default class ServiceTagsController extends BaseController {
     await bouncer.with('ServiceCategoryPolicy').authorize('create')
 
     const payload = await request.validate(TagsCreateValidator)
-    const tag = await ServiceTag.create(payload.category)
+    const slug = slugify(payload.category.name)
+    const tag = await ServiceTag.create({ ...payload.category, slug })
 
     if (payload.seo) {
       await tag.related('seo').create(payload.seo)
@@ -46,6 +61,7 @@ export default class ServiceTagsController extends BaseController {
     if (payload.image) {
       tag.thumbnail = await ResponsiveAttachment.fromFile(payload.image)
     }
+
     await tag.save()
 
     return response.custom({
@@ -63,8 +79,14 @@ export default class ServiceTagsController extends BaseController {
     const tag = await ServiceTag.findOrFail(+params.id)
 
     if (payload.category) {
-      tag.merge(payload.category)
-      await tag.save()
+      if (payload?.category?.name) {
+        const slug = slugify(payload?.category.name)
+        tag.merge({ ...payload.category, slug })
+        await tag.save()
+      } else {
+        tag.merge(payload.category)
+        await tag.save()
+      }
     }
 
     if (payload.seo) {

@@ -5,30 +5,30 @@ import Database from '@ioc:Adonis/Lucid/Database'
 
 import Bid from 'App/Models/bid/Bid'
 import BaseApiController from '../BaseApiController'
-import { ModelQueryBuilderContract } from '@ioc:Adonis/Lucid/Orm'
 
 export default class ServiceRequirementController extends BaseApiController {
-
-  public extraFilters(modelQuery: ModelQueryBuilderContract<typeof ServiceRequirement, ServiceRequirement>, qs: Record<string, any>): void {
-    if (qs.where_accepted_bid_id) {
-      modelQuery.where('accepted_bid_id', qs.where_accepted_bid_id)
-    }
-    if (qs.where_expires_at_lt) {
-      modelQuery.where('expires_at', '<', qs.where_expires_at_lt)
-    }
-    if (qs.where_expires_at_gt) {
-      modelQuery.where('expires_at', '>', qs.where_expires_at_gt)
-    }
-  }
-
   public async index({ response, bouncer, request }: HttpContextContract) {
     await bouncer.with('ServiceRequirementPolicy').authorize('viewList')
 
-    const serviceRequirementQuery = ServiceRequirement.query().preload('user', u => {
-      u.select(['first_name', "last_name"])
-    })
+    const serviceRequirementQuery = ServiceRequirement.query()
+      .preload('user', (u) => {
+        u.select(['first_name', 'last_name'])
+      })
+      .preload('serviceCategory', (c) => {
+        c.select('name')
+      })
 
-    this.applyFilters(serviceRequirementQuery, request.qs())
+    this.applyFilters(serviceRequirementQuery, request.qs(), { searchFields: ['name'] })
+
+    if (request.qs().where_accepted_bid_id) {
+      serviceRequirementQuery.where('accepted_bid_id', request.qs().where_accepted_bid_id)
+    }
+    if (request.qs().where_expires_at_lt) {
+      serviceRequirementQuery.where('expires_at', '<', request.qs().where_expires_at_lt)
+    }
+    if (request.qs().where_expires_at_gt) {
+      serviceRequirementQuery.where('expires_at', '>', request.qs().where_expires_at_gt)
+    }
 
     const serviceRequirements = await this.paginate(request, serviceRequirementQuery)
 
@@ -41,14 +41,19 @@ export default class ServiceRequirementController extends BaseApiController {
   }
 
   public async show({ response, bouncer, params }: HttpContextContract) {
-
-    const serviceRequirement = await ServiceRequirement.query().where('id', +params.id).preload('serviceCategory', s => {
-      s.select('name')
-    }).preload('user', u => {
-      u.select(['first_name', "last_name"])
-    }).withCount('recievedBids').withAggregate('recievedBids', b => {
-      b.avg('offered_price').as('avgBidPrice')
-    }).firstOrFail()
+    const serviceRequirement = await ServiceRequirement.query()
+      .where('id', +params.id)
+      .preload('serviceCategory', (s) => {
+        s.select('name')
+      })
+      .preload('user', (u) => {
+        u.select(['first_name', 'last_name'])
+      })
+      .withCount('recievedBids')
+      .withAggregate('recievedBids', (b) => {
+        b.avg('offered_price').as('avgBidPrice')
+      })
+      .firstOrFail()
 
     await bouncer.with('ServiceRequirementPolicy').authorize('view', serviceRequirement)
 
@@ -60,17 +65,20 @@ export default class ServiceRequirementController extends BaseApiController {
     })
   }
 
-
   public async myList({ auth, response, bouncer, request }: HttpContextContract) {
     await bouncer.with('ServiceRequirementPolicy').authorize('myList')
 
     const user = auth.user!
 
-    const serviceRequirementQuery = ServiceRequirement.query().where('user_id', user.id).preload('serviceCategory', s => {
-      s.select(['name'])
-    }).withCount('recievedBids').withAggregate('recievedBids', b => {
-      b.avg('offered_price').as('avgBidPrice')
-    })
+    const serviceRequirementQuery = ServiceRequirement.query()
+      .where('user_id', user.id)
+      .preload('serviceCategory', (s) => {
+        s.select(['name'])
+      })
+      .withCount('recievedBids')
+      .withAggregate('recievedBids', (b) => {
+        b.avg('offered_price').as('avgBidPrice')
+      })
 
     this.applyFilters(serviceRequirementQuery, request.qs() as any)
 
@@ -89,15 +97,11 @@ export default class ServiceRequirementController extends BaseApiController {
 
     await bouncer.with('ServiceRequirementPolicy').authorize('view', serviceRequirement)
 
-    const bidQuery = Bid.query().where('id', serviceRequirement.acceptedBidId || 0).preload('vendorUser', v => {
-      v.select([
-        "first_name",
-        "last_name",
-        "id",
-        "avg_rating",
-        "business_name",
-      ])
-    })
+    const bidQuery = Bid.query()
+      .where('id', serviceRequirement.acceptedBidId || 0)
+      .preload('vendorUser', (v) => {
+        v.select(['first_name', 'last_name', 'id', 'avg_rating', 'business_name'])
+      })
 
     const bid = await bidQuery.first()
 
@@ -114,12 +118,14 @@ export default class ServiceRequirementController extends BaseApiController {
 
     await bouncer.with('ServiceRequirementPolicy').authorize('view', serviceRequirement)
 
-    const bidQuery = Bid.query().where('service_requirement_id', serviceRequirement.id).preload('vendorUser', v => {
-      v.select('avg_rating')
-    })
+    const bidQuery = Bid.query()
+      .where('service_requirement_id', serviceRequirement.id)
+      .preload('vendorUser', (v) => {
+        v.select('avg_rating')
+      })
 
     if (request.qs()?.orderby_avg_rating) {
-      bidQuery.join("vendor_users", "bids.vendor_user_id", "vendor_users.id")
+      bidQuery.join('vendor_users', 'bids.vendor_user_id', 'vendor_users.id')
       bidQuery.whereNot('bids.id', serviceRequirement?.acceptedBidId || 0)
       bidQuery.select('bids.*')
       bidQuery.orderBy('vendor_users.avg_rating', 'desc')

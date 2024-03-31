@@ -13,6 +13,8 @@ import {
   ResponsiveAttachmentContract,
   responsiveAttachment,
 } from '@ioc:Adonis/Addons/ResponsiveAttachment'
+import VendorUser from '../vendorUser/VendorUser'
+import AdminUser from '../adminUser/AdminUser'
 
 export default class Blog extends BaseModel {
   @column({ isPrimary: true })
@@ -28,8 +30,12 @@ export default class Blog extends BaseModel {
     folder: 'blogs',
     preComputeUrls: true,
     forceFormat: 'webp',
-    disableThumbnail: true,
-    responsiveDimensions: false,
+    responsiveDimensions: true,
+    breakpoints: {
+      small: 'off',
+      large: 'off',
+      medium: 'off',
+    },
   })
   public thumbnail: ResponsiveAttachmentContract
 
@@ -38,8 +44,20 @@ export default class Blog extends BaseModel {
   })
   public category: ManyToMany<typeof BlogCategory>
 
+  @belongsTo(() => VendorUser)
+  public vendorUser: BelongsTo<typeof VendorUser>
+
+  @belongsTo(() => AdminUser)
+  public adminUser: BelongsTo<typeof AdminUser>
+
   @column()
   public languageId: number
+
+  @column()
+  public adminUserId: number
+
+  @column()
+  public vendorUserId: number
 
   @belongsTo(() => Language)
   public language: BelongsTo<typeof Language>

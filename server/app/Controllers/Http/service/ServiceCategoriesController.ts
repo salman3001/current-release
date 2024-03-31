@@ -5,6 +5,7 @@ import CategoryCreateValidator from 'App/Validators/service/CategoryCreateValida
 import CategoryUpdateValidator from 'App/Validators/service/CategoryUpdateValidator'
 import BaseController from '../BaseController'
 import { validator } from '@ioc:Adonis/Core/Validator'
+import slugify from 'slugify'
 
 export default class ServiceCategoriesController extends BaseController {
   constructor() {
@@ -37,7 +38,8 @@ export default class ServiceCategoriesController extends BaseController {
   public async store({ request, response, bouncer }: HttpContextContract) {
     await bouncer.with('ServiceCategoryPolicy').authorize('create')
     const payload = await request.validate(CategoryCreateValidator)
-    const category = await ServiceCategory.create(payload.category)
+    const slug = slugify(payload.category.name)
+    const category = await ServiceCategory.create({ ...payload.category, slug })
 
     if (payload.seo) {
       await category.related('seo').create(payload.seo)
@@ -67,8 +69,14 @@ export default class ServiceCategoriesController extends BaseController {
     const category = await ServiceCategory.findOrFail(+params.id)
 
     if (payload.category) {
-      category.merge(payload.category)
-      await category.save()
+      if (payload?.category?.name) {
+        const slug = slugify(payload?.category.name)
+        category.merge({ ...payload.category, slug })
+        await category.save()
+      } else {
+        category.merge(payload.category)
+        await category.save()
+      }
     }
 
     if (payload.seo) {

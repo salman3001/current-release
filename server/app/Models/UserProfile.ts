@@ -29,8 +29,12 @@ export default class UserProfile extends BaseModel {
     folder: 'user',
     preComputeUrls: true,
     forceFormat: 'webp',
-    disableThumbnail: true,
-    responsiveDimensions: false,
+    responsiveDimensions: true,
+    breakpoints: {
+      small: 'off',
+      large: 'off',
+      medium: 'off',
+    },
   })
   public avatar: ResponsiveAttachmentContract
 
@@ -67,5 +71,4 @@ export default class UserProfile extends BaseModel {
     pivotTable: 'user_skills',
   })
   public skills: ManyToMany<typeof Skill>
-
 }

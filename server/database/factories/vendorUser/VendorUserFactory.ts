@@ -2,6 +2,7 @@ import VendorUser from 'App/Models/vendorUser/VendorUser'
 import Factory from '@ioc:Adonis/Lucid/Factory'
 import ServiceFactory from '../service/ServiceFactory'
 import VendorProfileFactory from './VendorProfileFactory'
+import BlogFactory from '../blogs/BlogFactory'
 
 export default Factory.define(VendorUser, ({ faker }) => {
   return {
@@ -16,4 +17,5 @@ export default Factory.define(VendorUser, ({ faker }) => {
 })
   .relation('services', () => ServiceFactory)
   .relation('profile', () => VendorProfileFactory)
+  .relation('blogs', () => BlogFactory)
   .build()

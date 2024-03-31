@@ -21,6 +21,7 @@ import Activity from '../Activity'
 import Notification from '../Notification'
 import Conversation from '../chat/Conversation'
 import { userTypes } from 'App/Helpers/enums'
+import Blog from '../blogs/Blog'
 
 export default class AdminUser extends BaseModel {
   @column({ isPrimary: true })
@@ -60,6 +61,9 @@ export default class AdminUser extends BaseModel {
 
   @hasOne(() => UserProfile)
   public profile: HasOne<typeof UserProfile>
+
+  @hasMany(() => Blog)
+  public blogs: HasMany<typeof Blog>
 
   @belongsTo(() => Role)
   public role: BelongsTo<typeof Role>

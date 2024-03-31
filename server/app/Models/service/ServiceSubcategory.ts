@@ -47,8 +47,12 @@ export default class ServiceSubcategory extends BaseModel {
     folder: 'service-subcategory',
     preComputeUrls: true,
     forceFormat: 'webp',
-    disableThumbnail: true,
-    responsiveDimensions: false,
+    responsiveDimensions: true,
+    breakpoints: {
+      small: 'off',
+      large: 'off',
+      medium: 'off',
+    },
   })
   public thumbnail: ResponsiveAttachmentContract
 

@@ -3,6 +3,7 @@ import Factory from '@ioc:Adonis/Lucid/Factory'
 import RoleFactory from './RoleFactory'
 import ActivityFactory from '../ActivityFactory'
 import UserProfileFactory from '../UserProfileFactory'
+import BlogFactory from '../blogs/BlogFactory'
 
 export default Factory.define(AdminUser, ({ faker }) => {
   return {
@@ -18,4 +19,5 @@ export default Factory.define(AdminUser, ({ faker }) => {
   .relation('profile', () => UserProfileFactory)
   .relation('role', () => RoleFactory)
   .relation('activities', () => ActivityFactory)
+  .relation('blogs', () => BlogFactory)
   .build()

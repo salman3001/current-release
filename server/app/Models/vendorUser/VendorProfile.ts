@@ -38,8 +38,12 @@ export default class VendorProfile extends BaseModel {
     folder: 'vendor',
     preComputeUrls: true,
     forceFormat: 'webp',
-    disableThumbnail: true,
-    responsiveDimensions: false,
+    responsiveDimensions: true,
+    breakpoints: {
+      small: 'off',
+      large: 'off',
+      medium: 'off',
+    },
   })
   public avatar: ResponsiveAttachmentContract
 
@@ -47,8 +51,12 @@ export default class VendorProfile extends BaseModel {
     folder: 'business/logos',
     preComputeUrls: true,
     forceFormat: 'webp',
-    disableThumbnail: true,
-    responsiveDimensions: false,
+    responsiveDimensions: true,
+    breakpoints: {
+      small: 'off',
+      large: 'off',
+      medium: 'off',
+    },
   })
   public logo: ResponsiveAttachmentContract
 

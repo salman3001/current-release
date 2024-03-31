@@ -30,12 +30,10 @@ export default class TagsCreateValidator {
     }),
     category: schema.object().members({
       id: schema.number.optional(),
-      name: schema.string({ trim: true }),
-      slug: schema.string({ trim: true }, [
-        rules.slug(),
+      name: schema.string({ trim: true }, [
         rules.unique({
           table: 'service_tags',
-          column: 'slug',
+          column: 'name',
         }),
       ]),
       shortDesc: schema.string.optional(),

@@ -34,15 +34,7 @@ export default class VariantCreateValidator {
     discountType: schema.enum(Object.values(DiscountType)),
     discountFlat: schema.number.optional([rules.numberLessThanField('price'), rules.minNumber(0)]),
     discountPercentage: schema.number.optional([rules.maxNumber(99), rules.minNumber(0)]),
-    features: schema.array.optional().members(schema.string()),
-    included: schema.array.optional().members(schema.string()),
-    excluded: schema.array.optional().members(schema.string()),
-    additionalProperties: schema.array.optional().members(
-      schema.object().members({
-        name: schema.string(),
-        value: schema.string(),
-      })
-    ),
+    desc: schema.string.optional(),
   })
 
   /**

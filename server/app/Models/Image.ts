@@ -16,8 +16,12 @@ export default class Image extends BaseModel {
     folder: 'other',
     preComputeUrls: true,
     forceFormat: 'webp',
-    disableThumbnail: true,
-    responsiveDimensions: false,
+    responsiveDimensions: true,
+    breakpoints: {
+      small: 'off',
+      large: 'off',
+      medium: 'off',
+    },
   })
   public file: ResponsiveAttachmentContract
 

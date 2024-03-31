@@ -19,7 +19,7 @@ function toggleLeftDrawer() {
 
 <template>
   <ScrollArea height="100vh" width="100%">
-    <q-layout view="hHh lpR lFf">
+    <q-layout view="hHh LpR lFf">
       <q-header
         bordered
         reveal
@@ -56,32 +56,130 @@ function toggleLeftDrawer() {
             </NuxtLink>
           </div>
         </q-toolbar>
-        <q-toolbar class="lt-md q-pb-sm">
-          <WebServiceSearch
-            :initail-value="route.query?.whereILike as string"
-            @search="
-              (v) => {
-                if (v !== '') {
-                  navigateTo({
-                    path: routes.home,
-                    query: {
-                      ...route.query,
-                      whereILike: `%${v}%`,
-                    },
-                  });
-                } else {
-                  navigateTo({
-                    path: routes.home,
-                    query: {
-                      whereILike: '',
-                    },
-                  });
-                }
-              }
-            "
-            style="flex-grow: 1"
-          />
-        </q-toolbar>
+        <!-- <q-toolbar
+          v-if="$q.screen.gt.xs"
+          class="bg-white text-black"
+          style="border: 1px solid rgba(0, 0, 0, 0.106)"
+        >
+          <div>
+            <NavMenu title="Services">
+              <q-item clickable v-close-popup>
+                <q-item-section>
+                  <NuxtLink
+                    :to="''"
+                    class="text-black"
+                    style="text-decoration: none"
+                    >Admin Users</NuxtLink
+                  >
+                </q-item-section>
+              </q-item>
+              <q-item>
+                <q-item-section>
+                  <NuxtLink
+                    :to="''"
+                    class="text-black"
+                    style="text-decoration: none"
+                    >Roles</NuxtLink
+                  >
+                </q-item-section>
+              </q-item>
+            </NavMenu>
+            <NavMenu title="Help Center">
+              <q-item style="padding: 0">
+                <q-item-section style="padding: 0">
+                  <q-btn
+                    class="text-black"
+                    label="Knowledgebase"
+                    unelevated
+                    icon-right="chevron_right"
+                    style="width: 100%; text-transform: none"
+                  >
+                    <q-menu
+                      anchor="center right"
+                      style="border-radius: 14px; border-top: 4px solid black"
+                    >
+                      <q-list style="min-width: 100px" dense>
+                        <q-item clickable v-close-popup>
+                          <q-item-section>
+                            <NuxtLink
+                              :to="''"
+                              class="text-black"
+                              style="text-decoration: none"
+                              >Content</NuxtLink
+                            >
+                          </q-item-section>
+                        </q-item>
+                        <q-item clickable v-close-popup>
+                          <q-item-section>
+                            <NuxtLink
+                              :to="''"
+                              class="text-black"
+                              style="text-decoration: none"
+                              >Categories</NuxtLink
+                            >
+                          </q-item-section>
+                        </q-item>
+                      </q-list>
+                    </q-menu>
+                  </q-btn>
+                </q-item-section>
+              </q-item>
+              <q-item clickable v-close-popup>
+                <q-item-section>
+                  <NuxtLink
+                    :to="''"
+                    class="text-black"
+                    style="text-decoration: none"
+                    >Support ticket</NuxtLink
+                  >
+                </q-item-section>
+              </q-item>
+              <q-item clickable v-close-popup>
+                <q-item-section>
+                  <NuxtLink
+                    :to="''"
+                    class="text-black"
+                    style="text-decoration: none"
+                    >Contact Messages</NuxtLink
+                  >
+                </q-item-section>
+              </q-item>
+            </NavMenu>
+            <NavMenu title="Blogs" v-if="''">
+              <q-item clickable v-close-popup>
+                <q-item-section>
+                  <NuxtLink
+                    :to="''"
+                    class="text-black"
+                    style="text-decoration: none"
+                    >Blog Posts</NuxtLink
+                  >
+                </q-item-section>
+              </q-item>
+              <q-item clickable v-close-popup>
+                <q-item-section>
+                  <NuxtLink
+                    :to="''"
+                    class="text-black"
+                    style="text-decoration: none"
+                    >Blog Categories</NuxtLink
+                  >
+                </q-item-section>
+              </q-item>
+            </NavMenu>
+            <NuxtLink
+              v-if="''"
+              class="text-black"
+              style="
+                text-decoration: none;
+                text-transform: uppercase;
+                font-weight: 500;
+              "
+            >
+              <q-btn flat> Users </q-btn>
+            </NuxtLink>
+          </div>
+        </q-toolbar> -->
       </q-header>
 
       <q-drawer
@@ -90,17 +188,15 @@ function toggleLeftDrawer() {
         v-model="leftDrawerOpen"
         side="left"
         :width="250"
-        :breakpoint="500"
-        :mini="miniState"
-        @mouseover="miniState = false"
-        @mouseout="miniState = true"
       >
         <q-scroll-area class="fit" :horizontal-thumb-style="{ opacity: 0 }">
           <q-list padding>
             <NuxtLink
               :to="routes.vendor.dashboard"
               :class="
-                route.path === routes.home ? 'text-primary' : 'text-muted'
+                route.path === routes.vendor.dashboard
+                  ? 'text-primary'
+                  : 'text-muted'
               "
             >
               <q-item clickable v-ripple>
@@ -112,9 +208,25 @@ function toggleLeftDrawer() {
               </q-item>
             </NuxtLink>
             <NuxtLink
+              :to="routes.vendor.services.list"
+              :class="
+                route.path === routes.vendor.services.list
+                  ? 'text-primary'
+                  : 'text-muted'
+              "
+            >
+              <q-item clickable v-ripple>
+                <q-item-section avatar>
+                  <q-icon name="cleaning_services" />
+                </q-item-section>
+
+                <q-item-section>My Services</q-item-section>
+              </q-item>
+            </NuxtLink>
+            <NuxtLink
               :to="routes.vendor.service_requirements.list"
               :class="
-                route.path === routes.service_requirement
+                route.path === routes.vendor.service_requirements.list
                   ? 'text-primary'
                   : 'text-muted'
               "
@@ -130,7 +242,9 @@ function toggleLeftDrawer() {
             <NuxtLink
               :to="routes.vendor.bookings.list"
               :class="
-                route.path === routes.blogs ? 'text-primary' : 'text-muted'
+                route.path === routes.vendor.bookings.list
+                  ? 'text-primary'
+                  : 'text-muted'
               "
             >
               <q-item clickable v-ripple>
@@ -144,7 +258,9 @@ function toggleLeftDrawer() {
             <NuxtLink
               :to="routes.vendor.chat"
               :class="
-                route.path === routes.blogs ? 'text-primary' : 'text-muted'
+                route.path === routes.vendor.chat
+                  ? 'text-primary'
+                  : 'text-muted'
               "
             >
               <q-item clickable v-ripple>
@@ -157,7 +273,9 @@ function toggleLeftDrawer() {
             <NuxtLink
               :to="routes.vendor.account"
               :class="
-                route.path === routes.blogs ? 'text-primary' : 'text-muted'
+                route.path === routes.vendor.account
+                  ? 'text-primary'
+                  : 'text-muted'
               "
             >
               <q-item clickable v-ripple>
@@ -180,10 +298,6 @@ function toggleLeftDrawer() {
           </q-list>
         </q-scroll-area>
       </q-drawer>
-      <!-- 
-      <q-drawer show-if-above v-model="rightDrawerOpen" side="right" bordered>
-        <WebCategoryList />
-      </q-drawer> -->
 
       <q-page-container class="justify-center row">
         <div
