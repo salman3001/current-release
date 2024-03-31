@@ -10,8 +10,8 @@ const props = defineProps<{
   height?: string;
   rounded?: boolean;
   duration?: number;
-  reactOnMouse?: boolean
-  imageUrls: string[]
+  reactOnMouse?: boolean;
+  imageUrls: string[];
 }>();
 
 const atMouseOver = () => {
@@ -26,18 +26,42 @@ const atMouseLeave = () => {
 </script>
 
 <template>
-  <q-carousel animated swipeable v-model="slide" :arrows="controls" :autoplay="autoplay" :navigation="true" infinite
-    transition-prev="slide-right" transition-next="slide-left" @mouseenter.stop="atMouseOver"
-    @mouseleave.stop="atMouseLeave" :height="height || '200px'" control-type="unelevated" control-color="primary">
+  <q-carousel
+    animated
+    swipeable
+    v-model="slide"
+    :arrows="controls"
+    :autoplay="autoplay"
+    :navigation="true"
+    infinite
+    transition-prev="slide-right"
+    transition-next="slide-left"
+    @mouseenter.stop="atMouseOver"
+    @mouseleave.stop="atMouseLeave"
+    :height="height || '200px'"
+    control-type="unelevated"
+    control-color="primary"
+  >
     <template v-slot:navigation-icon="{ active, btnProps, onClick }">
       <q-btn size="xs" color="white" flat round dense @click.stop="onClick">
-        <q-icon :name="btnProps.icon" :color="active ? 'primary' : 'grey-6'"></q-icon>
+        <q-icon
+          :name="btnProps.icon"
+          :color="active ? 'primary' : 'grey-6'"
+        ></q-icon>
       </q-btn>
     </template>
-    <q-carousel-slide v-for="url, i in imagesUrls" :key="i" :name="1" :img-src="url" class="cursor-pointer"
-      :class="rounded ? 'rounded-borders' : ''" @click="() => {
-    to && navigateTo(to);
-  }
-    " />
+    <q-carousel-slide
+      v-for="(url, i) in imageUrls"
+      :key="i"
+      :name="i"
+      :img-src="url"
+      class="cursor-pointer"
+      :class="rounded ? 'rounded-borders' : ''"
+      @click="
+        () => {
+          to && navigateTo(to);
+        }
+      "
+    />
   </q-carousel>
 </template>

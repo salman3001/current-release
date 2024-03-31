@@ -6,33 +6,33 @@ const page = ref(1);
 const user = useCookie("user");
 const modal = modalStore();
 
-const { data: vendor, refresh: refreshVendor, pending } = await useAsyncData(
-  "vendor-profile-" + route.params.id,
-  async () => {
-    const data = await customFetch<IResType<IVendorUser>>(
-      apiRoutes.vendor_user.view(route.params.id as any),
-    );
-    return data.data;
-  }
-);
+const {
+  data: vendor,
+  refresh: refreshVendor,
+  pending,
+} = await useAsyncData("vendor-profile-" + route.params.id, async () => {
+  const data = await customFetch<IResType<IVendorUser>>(
+    apiRoutes.vendor_user.view(route.params.id as any)
+  );
+  return data.data;
+});
 
 const {
   data: services,
   refresh,
   pending: servicesPending,
 } = await useAsyncData(async () => {
-  const data = await customFetch<IPageRes<IService[]>>(apiRoutes.services.list, {
-    query: {
-      page: page.value,
-      where_vendor_id: vendor.value!.id
+  const data = await customFetch<IPageRes<IService[]>>(
+    apiRoutes.services.list,
+    {
+      query: {
+        page: page.value,
+        where_vendor_id: vendor.value!.id,
+      },
     }
-  })
-  return data
-}
-
-);
-
-
+  );
+  return data;
+});
 </script>
 
 <template>
@@ -40,8 +40,17 @@ const {
 
   <div class="q-gutter-y-lg">
     <div class="row q-gutter-md">
-      <q-avatar size="156px" text-color="white" class="shadow-2 rounded-borders shadow-12" square>
-        <img :src="getImageUrl(undefined, '/images/sample-dp.png')" />
+      <q-avatar
+        size="156px"
+        text-color="white"
+        class="shadow-2 rounded-borders shadow-12"
+        square
+      >
+        <img
+          :src="
+            getImageUrl(vendor?.profile?.avatar?.url, '/images/sample-dp.png')
+          "
+        />
       </q-avatar>
       <div>
         <p class="text-h6 text-primary text-bold">
@@ -51,7 +60,10 @@ const {
           {{ vendor?.business_name }}
         </p>
         <div class="row items-center gap-100 text-h6">
-          <RatingComponent :rating="vendor?.avg_rating ? Number(vendor?.avg_rating) : 0" size="2rem" />
+          <RatingComponent
+            :rating="vendor?.avg_rating ? Number(vendor?.avg_rating) : 0"
+            size="2rem"
+          />
           {{ vendor?.avg_rating || 0 }}
         </div>
         <p>{{ vendor?.meta?.reviews_count }} Reviews</p>
@@ -76,43 +88,65 @@ const {
       Services Listed By {{ vendor?.first_name + " " + vendor?.last_name }}
     </h6>
     <div class="row q-col-gutter-lg q-mt-sm">
-      <div v-if="servicesPending" v-for="s in 10" class="col-12 col-sm-6 col-md-4 col-lg-3">
+      <div
+        v-if="servicesPending"
+        v-for="s in 10"
+        class="col-12 col-sm-6 col-md-4 col-lg-3"
+      >
         <SkeletonBase type="card" />
       </div>
-      <div v-else v-for="s in services?.data.data" class="col-12 col-sm-6 col-md-4 col-lg-3">
+      <div
+        v-else
+        v-for="s in services?.data.data"
+        class="col-12 col-sm-6 col-md-4 col-lg-3"
+      >
         <WebServiceCard :service="s" />
       </div>
     </div>
     <div class="row col-12">
-      <PaginateComponet :page="page" :meta="services?.data.meta"
-        @update:model-value="(v: number) => { page = v; refresh() }" />
+      <PaginateComponet
+        :page="page"
+        :meta="services?.data.meta"
+        @update:model-value="(v: number) => { page = v; refresh() }"
+      />
     </div>
     <div class="q-gutter-md">
       <div style="max-width: 700px">
         <h5>Reviews & Rating</h5>
 
         <div>
-          <RatingComponent :rating="vendor?.avg_rating ? Number(vendor?.avg_rating) : 0" /><span class="text-h5">{{
-          vendor?.avg_rating || 0 }} out of 5 | {{ vendor?.meta?.reviews_count }} Reviews</span>
+          <RatingComponent
+            :rating="vendor?.avg_rating ? Number(vendor?.avg_rating) : 0"
+          /><span class="text-h5"
+            >{{ vendor?.avg_rating || 0 }} out of 5 |
+            {{ vendor?.meta?.reviews_count }} Reviews</span
+          >
         </div>
         <br />
-        <q-btn color="primary" @click="() => {
-          if (user) {
-            modal.togel('WebAddReview', {
-              type: 'vendor',
-              vendorId: vendor?.id,
-              onSuccess: refreshVendor,
-            });
-          } else {
-            navigateTo(routes.auth.login + `?next=${route.path}`);
-          }
-        }
-          ">Write a Review</q-btn>
+        <q-btn
+          color="primary"
+          @click="
+            () => {
+              if (user) {
+                modal.togel('WebAddReview', {
+                  type: 'vendor',
+                  vendorId: vendor?.id,
+                  onSuccess: refreshVendor,
+                });
+              } else {
+                navigateTo(routes.auth.login + `?next=${route.path}`);
+              }
+            }
+          "
+          >Write a Review</q-btn
+        >
       </div>
       <br />
 
       <div class="row justify-start">
-        <q-btn right flat color="primary" class="normalcase text-h6">View all Reviews</q-btn>
+        <q-btn right flat color="primary" class="normalcase text-h6"
+          >View all Reviews</q-btn
+        >
       </div>
     </div>
     <div class="col-12 col-md-8">

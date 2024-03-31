@@ -43,27 +43,56 @@ selectedVariant.value = service.value?.variants[0] || null;
   <div>
     <q-card class="shadow-18 q-pa-none">
       <q-card-section :horizontal="$q.screen.gt.sm" class="">
-        <q-card-section class="col q-pb-md justify-center position-relative items-center" :style="{
-        scale: $q.screen.lt.md ? '125%' : '100%',
-        top: $q.screen.lt.md ? '-30px' : '',
-      }">
-          <WebCrousel :height="$q.screen.gt.sm ? '100%' : '200px'" :rounded="$q.screen.gt.sm" :duration="2500" />
+        <q-card-section
+          class="col q-pb-md justify-center position-relative items-center"
+          :style="{
+            scale: $q.screen.lt.md ? '125%' : '100%',
+            top: $q.screen.lt.md ? '-30px' : '',
+          }"
+        >
+          <WebCrousel
+            :height="$q.screen.gt.sm ? '100%' : '200px'"
+            :rounded="$q.screen.gt.sm"
+            :duration="2500"
+            :image-urls="
+              service?.images?.length > 0
+                ? service?.images?.map((img) => getImageUrl(img?.file?.url))
+                : ['/images/No-image-found.jpg', '/images/No-image-found.jpg']
+            "
+          />
         </q-card-section>
         <q-card-section class="col q-col-gutter-lg">
           <div class="row justify-between items-center">
-            <NuxtLink :to="{
-        path: routes.home,
-        query: { tab: service?.serviceCategory?.id },
-      }"><q-btn flat icon="mail" class="q-px-xs normalcase" :label="service?.serviceCategory?.name"
-                v-if="service?.serviceCategory">
+            <NuxtLink
+              :to="{
+                path: routes.home,
+                query: { tab: service?.serviceCategory?.id },
+              }"
+              ><q-btn
+                flat
+                icon="mail"
+                class="q-px-xs normalcase"
+                :label="service?.serviceCategory?.name"
+                v-if="service?.serviceCategory"
+              >
               </q-btn>
             </NuxtLink>
 
-            <div class="row items-center justify-end q-gutter-sm text-h5 text-muted">
-              <NuxtLink class="text-muted underline" to="/"><q-btn left flat icon="share" label="Share"></q-btn>
+            <div
+              class="row items-center justify-end q-gutter-sm text-h5 text-muted"
+            >
+              <NuxtLink class="text-muted underline" to="/"
+                ><q-btn left flat icon="share" label="Share"></q-btn>
               </NuxtLink>
-              <NuxtLink class="text-muted underline" to="/"><q-btn left outline icon="favorite" color="muted"
-                  label="Add to Wishlist" class="icon-pink">
+              <NuxtLink class="text-muted underline" to="/"
+                ><q-btn
+                  left
+                  outline
+                  icon="favorite"
+                  color="muted"
+                  label="Add to Wishlist"
+                  class="icon-pink"
+                >
                 </q-btn>
               </NuxtLink>
             </div>
@@ -81,8 +110,12 @@ selectedVariant.value = service.value?.variants[0] || null;
             </span>
           </div>
           <div class="q-gutter-xl row items-start">
-            <WebSelectVariant v-for="variant in service?.variants" :variant="variant"
-              @variant-selection="(variant) => (selectedVariant = variant)" :selected-id="selectedVariant?.id || 0" />
+            <WebSelectVariant
+              v-for="variant in service?.variants"
+              :variant="variant"
+              @variant-selection="(variant) => (selectedVariant = variant)"
+              :selected-id="selectedVariant?.id || 0"
+            />
           </div>
           <div>
             <WebPriceCard :selected-variant="selectedVariant!" />
@@ -102,27 +135,44 @@ selectedVariant.value = service.value?.variants[0] || null;
           <h6>Variant Description</h6>
           <p class="text-subtitle1 text-muted">{{ selectedVariant?.desc }}</p>
         </div>
-        <br>
+        <br />
         <div>
           <h6>Service Description</h6>
-          <p class="text-subtitle1 text-muted ">{{ service?.long_desc }}</p>
+          <p class="text-subtitle1 text-muted">{{ service?.long_desc }}</p>
         </div>
         <br />
+
+        <div v-if="service?.faq">
+          <h6>Frequently Asked Question</h6>
+          <br />
+          <Accordian
+            :items="
+              service?.faq?.map((f) => ({ title: f.quest, desc: f.ans })) || []
+            "
+          />
+        </div>
         <br />
         <br />
         <div class="row jjustify-between full-width">
           <div class="row items-center q-gutter-md">
-            <ProfileAvatar :image="getImageUrl(
-        service?.vendorUser?.profile?.avatar?.url,
-        '/images/sample-dp.png'
-      )
-        " />
+            <ProfileAvatar
+              :image="
+                getImageUrl(
+                  service?.vendorUser?.profile?.avatar?.url,
+                  '/images/sample-dp.png'
+                )
+              "
+            />
             <div>
               Listed by {{ service?.vendorUser?.first_name }}
               {{ service?.vendorUser?.last_name }}
               <br />
-              <NuxtLink :to="routes.view_business(service?.vendorUser.id!)" class="underline">
-                {{ service?.vendorUser?.business_name }}</NuxtLink>
+              <NuxtLink
+                :to="routes.view_business(service?.vendorUser.id!)"
+                class="underline"
+              >
+                {{ service?.vendorUser?.business_name }}</NuxtLink
+              >
             </div>
           </div>
         </div>
@@ -135,29 +185,38 @@ selectedVariant.value = service.value?.variants[0] || null;
             <br />
 
             <div>
-              <RatingComponent :rating="service?.avg_rating ? Number(service?.avg_rating) : 0" /><span
-                class="text-h5">{{
-        service?.avg_rating || 0 }} out of 5 |
-                {{ service?.meta?.reviews_count }} Reviews</span>
+              <RatingComponent
+                :rating="service?.avg_rating ? Number(service?.avg_rating) : 0"
+              /><span class="text-h5"
+                >{{ service?.avg_rating || 0 }} out of 5 |
+                {{ service?.meta?.reviews_count }} Reviews</span
+              >
             </div>
             <br />
 
-            <q-btn color="primary" @click="() => {
-        if (user) {
-          modal.togel('WebAddReview', {
-            type: 'service',
-            serviceId: service?.id,
-            onSuccess: refreshService,
-          });
-        } else {
-          navigateTo(routes.auth.login + `?next=${route.path}`);
-        }
-      }
-        ">Write a Review</q-btn>
+            <q-btn
+              color="primary"
+              @click="
+                () => {
+                  if (user) {
+                    modal.togel('WebAddReview', {
+                      type: 'service',
+                      serviceId: service?.id,
+                      onSuccess: refreshService,
+                    });
+                  } else {
+                    navigateTo(routes.auth.login + `?next=${route.path}`);
+                  }
+                }
+              "
+              >Write a Review</q-btn
+            >
           </div>
 
           <div class="row justify-start">
-            <q-btn right flat color="primary" class="normalcase text-h6">View all Reviews</q-btn>
+            <q-btn right flat color="primary" class="normalcase text-h6"
+              >View all Reviews</q-btn
+            >
           </div>
         </div>
         <div class="col-12 col-md-8">
@@ -187,15 +246,41 @@ selectedVariant.value = service.value?.variants[0] || null;
           <br />
         </div>
         <div v-else>
-          <q-carousel animated swipeable v-model="slide" :arrows="true" :controls="true" :autoplay="2500"
-            :navigation="true" infinite transition-prev="slide-right" transition-next="slide-left" :height="'200px'"
-            control-type="unelevated" control-color="primary">
+          <q-carousel
+            animated
+            swipeable
+            v-model="slide"
+            :arrows="true"
+            :controls="true"
+            :autoplay="2500"
+            :navigation="true"
+            infinite
+            transition-prev="slide-right"
+            transition-next="slide-left"
+            :height="'200px'"
+            control-type="unelevated"
+            control-color="primary"
+          >
             <template v-slot:navigation-icon="{ active, btnProps, onClick }">
-              <q-btn size="xs" color="white" flat round dense @click.stop="onClick">
-                <q-icon :name="btnProps.icon" :color="active ? 'primary' : 'grey-6'"></q-icon>
+              <q-btn
+                size="xs"
+                color="white"
+                flat
+                round
+                dense
+                @click.stop="onClick"
+              >
+                <q-icon
+                  :name="btnProps.icon"
+                  :color="active ? 'primary' : 'grey-6'"
+                ></q-icon>
               </q-btn>
             </template>
-            <q-carousel-slide v-for="s in similarServices?.data.data" :name="s.id" class="cursor-pointer">
+            <q-carousel-slide
+              v-for="s in similarServices?.data.data"
+              :name="s.id"
+              class="cursor-pointer"
+            >
               <WebServiceCard2 :service="s" />
             </q-carousel-slide>
           </q-carousel>
@@ -204,6 +289,5 @@ selectedVariant.value = service.value?.variants[0] || null;
     </div>
     <br />
     <br />
-
   </div>
 </template>

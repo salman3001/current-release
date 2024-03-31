@@ -116,7 +116,6 @@ export default class ServiceController extends BaseApiController {
   public async store({ request, response, bouncer, auth }: HttpContextContract) {
     await bouncer.with('ServicePolicy').authorize('create')
 
-
     const payload = await request.validate(ServiceCreateValidator)
     const slug = slugify(payload.service.name)
 
@@ -130,7 +129,10 @@ export default class ServiceController extends BaseApiController {
 
       if (payload.variant) {
         for (const [index, variantPayload] of payload.variant.entries()) {
-          const variant = await ServiceVariant.create({ ...variantPayload, serviceId: service.id }, { client: trx })
+          const variant = await ServiceVariant.create(
+            { ...variantPayload, serviceId: service.id },
+            { client: trx }
+          )
 
           if (payload?.variantImages?.[index]) {
             variant.image = await ResponsiveAttachment.fromFile(payload?.variantImages[index])
@@ -158,7 +160,7 @@ export default class ServiceController extends BaseApiController {
 
       if (payload.images) {
         for (const img of payload.images) {
-          await Image.create({ file: await ResponsiveAttachment.fromFile(img), serviceId: service.id })
+          await service.related('images').create({ file: await ResponsiveAttachment.fromFile(img) })
         }
       }
 
@@ -207,7 +209,10 @@ export default class ServiceController extends BaseApiController {
         }
 
         for (const [index, variantPayload] of payload.variant.entries()) {
-          const variant = await ServiceVariant.create({ ...variantPayload, serviceId: service.id }, { client: trx })
+          const variant = await ServiceVariant.create(
+            { ...variantPayload, serviceId: service.id },
+            { client: trx }
+          )
 
           if (payload.variantImages?.[index]) {
             variant.image = await ResponsiveAttachment.fromFile(payload.variantImages?.[index])
@@ -252,13 +257,10 @@ export default class ServiceController extends BaseApiController {
         // }
 
         for (const img of payload.images) {
-          await Image.create(
-            {
-              file: await ResponsiveAttachment.fromFile(img),
-              serviceId: service.id
-            },
-            { client: trx }
-          )
+          await service.related('images').create({
+            file: await ResponsiveAttachment.fromFile(img),
+            serviceId: service.id,
+          })
         }
       }
 

@@ -12,12 +12,9 @@ import VendorUser from 'App/Models/vendorUser/VendorUser'
 import Database from '@ioc:Adonis/Lucid/Database'
 import ConversationParticipant from 'App/Models/chat/ConversationParticipant'
 import { DateTime } from 'luxon'
+import BaseApiController from '../BaseApiController'
 
-export default class ConversationsController extends BaseController {
-  constructor() {
-    super(Conversation, ConversationValidator, ConversationValidator, 'ConversationPolicy')
-  }
-
+export default class ConversationsController extends BaseApiController {
   public getIndexQuery(ctx: HttpContextContract) {
     const user = ctx.auth.user
 
@@ -26,6 +23,62 @@ export default class ConversationsController extends BaseController {
           .where('participant_one_identifier', `${ctx.auth.user?.userType}-${ctx.auth.user?.id}`)
           .orWhere('participant_two_identifier', `${ctx.auth.user?.userType}-${ctx.auth.user?.id}`)
       : null
+  }
+
+  public async index({ request, response, bouncer, auth }: HttpContextContract) {
+    await bouncer.with('ServicePolicy').authorize('viewList')
+    const conversationQuery = Conversation.query()
+      .where('participant_one_identifier', `${auth.user?.userType}-${auth.user?.id}`)
+      .orWhere('participant_two_identifier', `${auth.user?.userType}-${auth.user?.id}`)
+      .preload('participantOne', (s) => {
+        s.preload('user', (u) => {
+          u.preload('profile', (p) => {
+            p.select('avatar')
+          })
+        })
+          .preload('vendorUser', (v) => {
+            v.preload('profile', (p) => {
+              p.select('avatar')
+            })
+          })
+          .preload('adminUser', (a) => {
+            a.preload('profile', (p) => {
+              p.select('avatar')
+            })
+          })
+      })
+      .preload('participantTwo', (s) => {
+        s.preload('user', (u) => {
+          u.preload('profile', (p) => {
+            p.select('avatar')
+          })
+        })
+          .preload('vendorUser', (v) => {
+            v.preload('profile', (p) => {
+              p.select('avatar')
+            })
+          })
+          .preload('adminUser', (a) => {
+            a.preload('profile', (p) => {
+              p.select('avatar')
+            })
+          })
+      })
+      .preload('messages', (m) => {
+        m.orderBy('created_at', 'desc').limit(1)
+      })
+      .orderBy('created_at', 'desc')
+
+    this.applyFilters(conversationQuery, request.qs(), { searchFields: ['name'] })
+
+    const conversation = await this.paginate(request, conversationQuery)
+
+    return response.custom({
+      code: 200,
+      data: conversation,
+      success: true,
+      message: null,
+    })
   }
 
   public async getConversationMessages({
@@ -38,16 +91,13 @@ export default class ConversationsController extends BaseController {
 
     await bouncer.with('ConversationPolicy').authorize('view', conversation)
 
-    let messages: Message[] = []
+    const messagesQuery = Message.query()
+      .where('conversation_id', conversation.id)
+      .orderBy('created_at', 'desc')
 
-    const messagesQuery = Message.query().where('conversation_id', conversation.id)
+    this.applyFilters(request.qs() as any, messagesQuery)
 
-    this.indexfilterQuery(request.qs() as any, messagesQuery)
-
-    messages = await messagesQuery.paginate(
-      request.qs().page,
-      request.qs().rowsPerPage || this.perPage
-    )
+    const messages = await this.paginate(request, messagesQuery)
 
     return response.custom({
       code: 200,
