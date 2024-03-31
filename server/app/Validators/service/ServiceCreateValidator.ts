@@ -3,7 +3,7 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { DiscountType } from 'App/Helpers/enums'
 
 export default class ServiceCreateValidator {
-  constructor(protected ctx: HttpContextContract) {}
+  constructor(protected ctx: HttpContextContract) { }
 
   /*
    * Define schema to validate the "shape", "type", "formatting" and "integrity" of data.
@@ -35,6 +35,12 @@ export default class ServiceCreateValidator {
         size: '5mb',
       })
     ),
+    variantImages: schema.array.optional().members(
+      schema.file({
+        extnames: ['jpg', 'JPG', 'jpeg', 'JPEG', 'png', 'PNG', 'webp', 'WEBP'],
+        size: '5mb',
+      })
+    ),
     thumbnail: schema.file.optional({
       extnames: ['jpg', 'JPG', 'jpeg', 'JPEG', 'png', 'PNG', 'webp', 'WEBP'],
       size: '5mb',
@@ -54,23 +60,7 @@ export default class ServiceCreateValidator {
       serviceCategoryId: schema.number.optional(),
       serviceSubcategoryId: schema.number.optional(),
     }),
-    variant: schema.array().members(
-      schema.object().members({
-        image: schema.file.optional({
-          extnames: ['jpg', 'JPG', 'jpeg', 'JPEG', 'png', 'PNG', 'webp', 'WEBP'],
-          size: '5mb',
-        }),
-        name: schema.string([rules.maxLength(100)]),
-        price: schema.number(),
-        discountType: schema.enum(Object.values(DiscountType)),
-        discountFlat: schema.number.optional([
-          rules.numberLessThanField('price'),
-          rules.minNumber(0),
-        ]),
-        discountPercentage: schema.number.optional([rules.maxNumber(99), rules.minNumber(0)]),
-        desc: schema.string.optional(),
-      })
-    ),
+
     seo: schema.object.optional().members({
       metaTitle: schema.string.optional(),
       metaKeywords: schema.string.optional(),
@@ -83,6 +73,19 @@ export default class ServiceCreateValidator {
       })
     ),
     tags: schema.array.optional().members(schema.number()),
+    variant: schema.array().members(
+      schema.object().members({
+        name: schema.string([rules.maxLength(100)]),
+        price: schema.number(),
+        discountType: schema.enum(Object.values(DiscountType)),
+        discountFlat: schema.number.optional([
+          rules.numberLessThanField('price'),
+          rules.minNumber(0),
+        ]),
+        discountPercentage: schema.number.optional([rules.maxNumber(99), rules.minNumber(0)]),
+        desc: schema.string.optional(),
+      })
+    ),
   })
 
   /**

@@ -20,7 +20,7 @@ interface IPageRes<T>
   extends IResType<{
     data: T;
     meta: PageMeta;
-  }> {}
+  }> { }
 
 interface ImageType {
   name: string;
@@ -44,6 +44,14 @@ interface ImageType {
       size: number;
     };
   };
+}
+
+interface Image {
+  id: number;
+  file: ImageType;
+  service_id: number,
+  vendor_profile_id: number,
+  media_id: number
 }
 
 interface TimeStamps {
@@ -87,7 +95,7 @@ type IService = {
   };
   avg_rating: string;
   video: ImageType | null;
-  images: ImageType[] | null;
+  images: Image[] | null;
   thumbnail: ImageType;
   vendor_user_id: number;
   vendorUser: IVendorUser;

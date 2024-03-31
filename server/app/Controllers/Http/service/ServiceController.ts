@@ -116,6 +116,7 @@ export default class ServiceController extends BaseApiController {
   public async store({ request, response, bouncer, auth }: HttpContextContract) {
     await bouncer.with('ServicePolicy').authorize('create')
 
+
     const payload = await request.validate(ServiceCreateValidator)
     const slug = slugify(payload.service.name)
 
@@ -128,15 +129,14 @@ export default class ServiceController extends BaseApiController {
       )
 
       if (payload.variant) {
-        for (const variantPayload of payload.variant) {
-          const { image, ...restPayload } = variantPayload
-          const variant = await ServiceVariant.create(restPayload, { client: trx })
+        for (const [index, variantPayload] of payload.variant.entries()) {
+          const variant = await ServiceVariant.create({ ...variantPayload, serviceId: service.id }, { client: trx })
 
-          if (image) {
-            variant.image = await ResponsiveAttachment.fromFile(image)
+          if (payload?.variantImages?.[index]) {
+            variant.image = await ResponsiveAttachment.fromFile(payload?.variantImages[index])
           }
+
           await variant.save()
-          await service.related('variants').save(variant)
         }
       }
 
@@ -157,28 +157,9 @@ export default class ServiceController extends BaseApiController {
       }
 
       if (payload.images) {
-        const images = await Promise.all(
-          payload.images.map(async (img) => {
-            try {
-              const storeImg = await Image.create(
-                {
-                  file: await ResponsiveAttachment.fromFile(img),
-                },
-                { client: trx }
-              )
-              return storeImg
-            } catch (error) {
-              console.error('Error storing image:', error)
-              // Handle the error or decide whether to skip this image
-              return null
-            }
-          })
-        )
-
-        // Filter out any null values (images that failed to store)
-        const validImages = images.filter((img) => img !== null)
-
-        await service.related('images').saveMany(validImages as Image[])
+        for (const img of payload.images) {
+          await Image.create({ file: await ResponsiveAttachment.fromFile(img), serviceId: service.id })
+        }
       }
 
       // if (payload.video) {
@@ -225,15 +206,13 @@ export default class ServiceController extends BaseApiController {
           }
         }
 
-        for (const variantPayload of payload.variant) {
-          const { image, ...restPayload } = variantPayload
-          const variant = await ServiceVariant.create(restPayload, { client: trx })
+        for (const [index, variantPayload] of payload.variant.entries()) {
+          const variant = await ServiceVariant.create({ ...variantPayload, serviceId: service.id }, { client: trx })
 
-          if (image) {
-            variant.image = await ResponsiveAttachment.fromFile(image)
+          if (payload.variantImages?.[index]) {
+            variant.image = await ResponsiveAttachment.fromFile(payload.variantImages?.[index])
           }
           await variant.save()
-          await service.related('variants').save(variant)
         }
       }
 
@@ -267,35 +246,20 @@ export default class ServiceController extends BaseApiController {
       }
 
       if (payload.images) {
-        await service.load('images')
+        // for (const img of service.images) {
+        //   await img.delete()
 
-        await Promise.all(
-          service.images.map(async (s) => {
-            await s.delete()
-          })
-        )
+        // }
 
-        const images = await Promise.all(
-          payload.images.map(async (img) => {
-            try {
-              const storeImg = await Image.create(
-                {
-                  file: await ResponsiveAttachment.fromFile(img),
-                },
-                { client: trx }
-              )
-              return storeImg
-            } catch (error) {
-              console.error('Error storing image:', error)
-              // Handle the error or decide whether to skip this image
-              return null
-            }
-          })
-        )
-
-        // Filter out any null values (images that failed to store)
-        const validImages = images.filter((img) => img !== null)
-        await service.related('images').saveMany(validImages as Image[])
+        for (const img of payload.images) {
+          await Image.create(
+            {
+              file: await ResponsiveAttachment.fromFile(img),
+              serviceId: service.id
+            },
+            { client: trx }
+          )
+        }
       }
 
       // if (payload.video) {

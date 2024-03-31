@@ -137,11 +137,10 @@ export default class Service extends BaseModel {
     await service.load('variants')
 
     if (service.images) {
-      await Promise.all(
-        service.images.map(async (img) => {
-          await img.delete()
-        })
-      )
+      for (const img of service.images) {
+        await img.delete()
+
+      }
     }
 
     if (service.variants) {

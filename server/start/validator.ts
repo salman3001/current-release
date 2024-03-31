@@ -33,9 +33,8 @@ validator.rule(
 validator.rule('RequiredIfFieldHasValue', (value, [opt], options) => {
   const fieldName = opt?.fieldName
   const fieldValue = opt?.fieldValue
-  console.log(value)
 
-  if (options.root[fieldName] === fieldValue && value != null) {
+  if (options.tip[fieldName] === fieldValue && value != null) {
     return
   } else {
     options.errorReporter.report(
@@ -52,7 +51,7 @@ validator.rule('numberLessThanField', (value, [fieldName], options) => {
     return
   }
 
-  if (options.root[fieldName] > value) {
+  if (options.tip[fieldName] > value) {
     return
   } else {
     options.errorReporter.report(

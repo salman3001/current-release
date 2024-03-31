@@ -34,6 +34,7 @@ const apiRoutes = {
     reviews: (service_id: string | number) =>
       `/api/service/${service_id}/reviews`,
     create_review: (service_id: string) => `/api/service/${service_id}/reviews`,
+    deleteImage: (id: number) => `/api/service/delete-screenshot/${id}`
   },
   service_subcategories: {
     ...createBaseRoutes("/api/service-subcategory"),

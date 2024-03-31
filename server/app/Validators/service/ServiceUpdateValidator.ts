@@ -3,7 +3,7 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { DiscountType } from 'App/Helpers/enums'
 
 export default class ServiceUpdateValidator {
-  constructor(protected ctx: HttpContextContract) {}
+  constructor(protected ctx: HttpContextContract) { }
 
   /*
    * Define schema to validate the "shape", "type", "formatting" and "integrity" of data.
@@ -39,11 +39,20 @@ export default class ServiceUpdateValidator {
       extnames: ['jpg', 'JPG', 'jpeg', 'JPEG', 'png', 'PNG', 'webp', 'WEBP'],
       size: '5mb',
     }),
+    variantImages: schema.array.optional().members(
+      schema.file({
+        extnames: ['jpg', 'JPG', 'jpeg', 'JPEG', 'png', 'PNG', 'webp', 'WEBP'],
+        size: '5mb',
+      })
+    ),
     service: schema.object().members({
       name: schema.string({ trim: true }, [
         rules.unique({
           table: 'services',
           column: 'name',
+          whereNot: {
+            id: this.ctx.params?.id || this.ctx?.meta?.currentObjectId,
+          },
         }),
       ]),
       shortDesc: schema.string.optional(),
@@ -68,10 +77,6 @@ export default class ServiceUpdateValidator {
     ),
     variant: schema.array().members(
       schema.object().members({
-        image: schema.file.optional({
-          extnames: ['jpg', 'JPG', 'jpeg', 'JPEG', 'png', 'PNG', 'webp', 'WEBP'],
-          size: '5mb',
-        }),
         name: schema.string([rules.maxLength(100)]),
         price: schema.number(),
         discountType: schema.enum(Object.values(DiscountType)),

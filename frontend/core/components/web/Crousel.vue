@@ -11,6 +11,7 @@ const props = defineProps<{
   rounded?: boolean;
   duration?: number;
   reactOnMouse?: boolean
+  imageUrls: string[]
 }>();
 
 const atMouseOver = () => {
@@ -33,22 +34,7 @@ const atMouseLeave = () => {
         <q-icon :name="btnProps.icon" :color="active ? 'primary' : 'grey-6'"></q-icon>
       </q-btn>
     </template>
-    <q-carousel-slide :name="1" img-src="/images/sample-cover.jpg" class="cursor-pointer"
-      :class="rounded ? 'rounded-borders' : ''" @click="() => {
-    to && navigateTo(to);
-  }
-    " />
-    <q-carousel-slide :name="2" img-src="/images/login-art.jpg" class="cursor-pointer"
-      :class="rounded ? 'rounded-borders' : ''" @click="() => {
-    to && navigateTo(to);
-  }
-    " />
-    <q-carousel-slide :name="3" img-src="/images/sample-cover.jpg" class="cursor-pointer"
-      :class="rounded ? 'rounded-borders' : ''" @click="() => {
-    to && navigateTo(to);
-  }
-    " />
-    <q-carousel-slide :name="4" img-src="/images/login-art.jpg" class="cursor-pointer"
+    <q-carousel-slide v-for="url, i in imagesUrls" :key="i" :name="1" :img-src="url" class="cursor-pointer"
       :class="rounded ? 'rounded-borders' : ''" @click="() => {
     to && navigateTo(to);
   }

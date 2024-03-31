@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import BigNumber from "bignumber.js";
 
+const getImageUrl = useGetImageUrl()
+
 const props = defineProps<{
   variant: IServiceVariant;
   selectedId: number;
@@ -21,7 +23,7 @@ if (props.variant.discount_type === DiscountType.FLAT) {
   <div @click="$emit('variant-selection', variant)" class="row q-pa-xs q-col-gutter-x-sm cursor-pointer shadow-16"
     :class="selectedId == variant.id ? 'border-primary border-2' : 'border'"
     style="width: 250px; height: 100px; border-radius: 10px">
-    <q-img src="/images/service-category-placeholder.jpg" class="col-4" style="height: 100%">
+    <q-img :src="getImageUrl(variant.image?.breakpoints?.thumbnail?.url)" class="col-4" style="height: 100%">
     </q-img>
 
     <div class="col-8">
