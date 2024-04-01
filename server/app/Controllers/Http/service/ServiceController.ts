@@ -8,6 +8,7 @@ import Database from '@ioc:Adonis/Lucid/Database'
 import BaseApiController from '../BaseApiController'
 import slugify from 'slugify'
 import ServiceVariant from 'App/Models/service/ServiceVariant'
+import { ModelQueryBuilderContract } from '@ioc:Adonis/Lucid/Orm'
 
 export default class ServiceController extends BaseApiController {
   public async index({ request, response, bouncer }: HttpContextContract) {
@@ -23,9 +24,7 @@ export default class ServiceController extends BaseApiController {
         s.select(['id', 'name'])
       })
       .preload('images')
-      .preload('variants', (v) => {
-        v.select(['name'])
-      })
+      .preload('variants')
       .preload('images')
       .select([
         'id',
@@ -44,33 +43,7 @@ export default class ServiceController extends BaseApiController {
 
     this.applyFilters(serviceQuery, request.qs(), { searchFields: ['name'] })
 
-    serviceQuery.withCount('reviews', (r) => {
-      r.as('reviews_count')
-    })
-
-    serviceQuery.withAggregate('variants', (v) => {
-      v.min('price').as('starting_from')
-    })
-
-    if (request.qs()?.where_service_category_id) {
-      serviceQuery.whereHas('serviceCategory', (b) => {
-        b.where('id', request.qs()?.where_service_category_id)
-      })
-    }
-
-    if (request.qs()?.where_service_subcategory_id) {
-      serviceQuery.whereHas('serviceSubcategory', (b) => {
-        b.where('id', request.qs()?.where_service_subcategory_id)
-      })
-    }
-
-    if (request.qs()?.where_vendor_id) {
-      serviceQuery.where('vendor_user_id', request.qs()?.where_vendor_id)
-    }
-
-    if (request.qs()?.where_is_active) {
-      serviceQuery.where('is_active', request.qs()?.where_is_active)
-    }
+    this.extraFilters(serviceQuery, request)
 
     const services = await this.paginate(request, serviceQuery)
 
@@ -82,7 +55,53 @@ export default class ServiceController extends BaseApiController {
     })
   }
 
-  public async showBySlug({ request, response, bouncer, params }: HttpContextContract) {
+  public async myList({ request, response, bouncer, auth }: HttpContextContract) {
+    await bouncer.with('ServicePolicy').authorize('myList')
+
+    const serviceQuery = Service.query()
+      .where('vendor_user_id', auth.user!.id)
+      .preload('serviceCategory', (s) => {
+        s.select(['name'])
+      })
+      .preload('serviceSubcategory', (s) => {
+        s.select(['id', 'name'])
+      })
+      .preload('tags', (s) => {
+        s.select(['id', 'name'])
+      })
+      .preload('images')
+      .preload('variants')
+      .preload('images')
+      .select([
+        'id',
+        'name',
+        'slug',
+        'short_desc',
+        'is_active',
+        'geo_location',
+        'thumbnail',
+        'avg_rating',
+        'vendor_user_id',
+        'service_category_id',
+        'service_subcategory_id',
+        'created_at',
+      ])
+
+    this.applyFilters(serviceQuery, request.qs(), { searchFields: ['name'] })
+
+    this.extraFilters(serviceQuery, request)
+
+    const services = await this.paginate(request, serviceQuery)
+
+    return response.custom({
+      code: 200,
+      data: services,
+      success: true,
+      message: null,
+    })
+  }
+
+  public async showBySlug({ response, bouncer, params }: HttpContextContract) {
     await bouncer.with('ServicePolicy').authorize('view')
 
     const slug = params.slug
@@ -90,9 +109,15 @@ export default class ServiceController extends BaseApiController {
       .where('slug', slug)
       .preload('variants')
       .preload('vendorUser', (v) => {
+        v.preload('profile')
         v.withCount('reviews')
       })
       .preload('reviews', (r) => {
+        r.preload('user', u => {
+          u.select(['first_name', 'last_name']).preload('profile', p => {
+            p.select('avatar')
+          })
+        })
         r.limit(10)
       })
       .preload('faq')
@@ -306,6 +331,17 @@ export default class ServiceController extends BaseApiController {
       code: 200,
       data: image,
       success: true,
+    })
+  }
+
+
+  public extraFilters(serviceQuery: ModelQueryBuilderContract<any, Service>, request: HttpContextContract['request']) {
+    serviceQuery.withCount('reviews', (r) => {
+      r.as('reviews_count')
+    })
+
+    serviceQuery.withAggregate('variants', (v) => {
+      v.min('price').as('starting_from')
     })
   }
 

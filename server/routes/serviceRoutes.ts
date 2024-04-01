@@ -6,6 +6,7 @@ Route.group(() => {
   Route.get('service/export', 'service/ServiceController.export')
   Route.post('service/import', 'service/ServiceController.import')
   Route.get('service/by-slug/:slug', 'service/ServiceController.showBySlug')
+  Route.get('service/my-list', 'service/ServiceController.myList')
   Route.resource('service', 'service/ServiceController').apiOnly()
 
   // service variants

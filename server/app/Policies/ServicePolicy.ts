@@ -11,6 +11,15 @@ export default class ServicePolicy extends BasePolicy {
     return true
   }
 
+
+  public async myList(user: any) {
+    if (user instanceof VendorUser) {
+      return true
+    } else {
+      return false
+    }
+  }
+
   @action({ allowGuest: true })
   public async view(user: any) {
     return true

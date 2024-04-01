@@ -31,6 +31,7 @@ const apiRoutes = {
   services: {
     ...createBaseRoutes("/api/service"),
     view_by_slug: (slug: string | number) => `/api/service/by-slug/${slug}`,
+    my_list: '/api/service/my-list',
     reviews: (service_id: string | number) =>
       `/api/service/${service_id}/reviews`,
     create_review: (service_id: string) => `/api/service/${service_id}/reviews`,

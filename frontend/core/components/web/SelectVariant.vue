@@ -28,11 +28,12 @@ if (props.variant.discount_type === DiscountType.FLAT) {
 
     <div class="col-8">
       <div>
-        <q-badge color="negative" v-if="discount.gt(0) && variant.discount_type === DiscountType.FLAT">&#x20B9;{{
+        <q-badge class="q-px-md text-body2" color="negative"
+          v-if="discount.gt(0) && variant.discount_type === DiscountType.FLAT">&#x20B9;{{
       variant.discount_flat }} off</q-badge>
       </div>
       <div>
-        <q-badge color="negative" v-if="discount.gt(0) && variant.discount_type === DiscountType.PERCENATAGE
+        <q-badge class="q-px-md text-body2" color="negative" v-if="discount.gt(0) && variant.discount_type === DiscountType.PERCENATAGE
       ">{{ variant.discount_percentage }}% off</q-badge>
       </div>
       <div class="ellipsis-2-lines">

@@ -18,8 +18,8 @@ const modal = modalStore();
     </q-card-section>
     <q-card-section class="row justify-end">
       <div class="q-gutter-sm">
-        <q-btn color="secondary" @click="() => { modal.show = !modal.show; modal.meta?.onReject() }">Cancle</q-btn>
-        <q-btn color="primary" @click="() => { modal.show = !modal.show; modal.meta?.onAccept() }">Continue</q-btn>
+        <q-btn color="secondary" @click="() => { modal.meta?.onReject(); modal.show = !modal.show; }">Cancle</q-btn>
+        <q-btn color="primary" @click="() => { modal.meta?.onAccept(); modal.show = !modal.show; }">Continue</q-btn>
       </div>
     </q-card-section>
   </q-card>

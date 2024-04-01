@@ -225,7 +225,7 @@ const deleteSavedScreenshot = async (id: number, index: number) => {
           'Discount must be less that price'
         ),
       ]" />
-                <q-input type="number" outlined v-model="f.discountFlat" label="Discount percentage"
+                <q-input type="number" outlined v-model="f.discountPercentage" label="Discount percentage"
                   class="col-12 col-sm-6 col-md-3" :rules="[
         rules.minValue(0, 'Discount must be greater than 0%'),
         rules.maxValue(99.9, 'Discount must be greater than 99.9%'),

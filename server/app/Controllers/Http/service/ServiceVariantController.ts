@@ -1,13 +1,49 @@
 import { ResponsiveAttachment } from '@ioc:Adonis/Addons/ResponsiveAttachment'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import BaseController from '../BaseController'
 import Database from '@ioc:Adonis/Lucid/Database'
 import VariantCreateValidator from 'App/Validators/service/VariantCreateValidator'
 import ServiceVariant from 'App/Models/service/ServiceVariant'
+import BaseApiController from '../BaseApiController'
 
-export default class ServiceVariantController extends BaseController {
-  constructor() {
-    super(ServiceVariant, VariantCreateValidator, VariantCreateValidator, 'ServicePolicy')
+export default class ServiceVariantController extends BaseApiController {
+
+  public async index({ request, response, bouncer }: HttpContextContract) {
+    await bouncer.with('ServicePolicy').authorize('viewList')
+    const serviceVariantQuery = ServiceVariant.query()
+      .preload('service', (s) => {
+        s.select(['name'])
+      })
+
+    this.applyFilters(serviceVariantQuery, request.qs(), { searchFields: ['name'] })
+
+    const serviceVariant = await this.paginate(request, serviceVariantQuery)
+
+    return response.custom({
+      code: 200,
+      data: serviceVariant,
+      success: true,
+      message: null,
+    })
+  }
+
+  public async show({ request, response, bouncer, params }: HttpContextContract) {
+    await bouncer.with('ServicePolicy').authorize('view')
+
+    const id = +params.id
+    const serviceVariantQuery = ServiceVariant.query()
+      .where('id', id)
+      .preload('service', (s) => {
+        s.select(['name'])
+      })
+
+    const serviceVariant = await serviceVariantQuery.first()
+
+    return response.custom({
+      code: 200,
+      success: true,
+      message: null,
+      data: serviceVariant,
+    })
   }
 
   public async store({ request, response, bouncer, params }: HttpContextContract) {

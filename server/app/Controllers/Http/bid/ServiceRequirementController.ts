@@ -5,6 +5,7 @@ import Database from '@ioc:Adonis/Lucid/Database'
 
 import Bid from 'App/Models/bid/Bid'
 import BaseApiController from '../BaseApiController'
+import { ModelQueryBuilderContract } from '@ioc:Adonis/Lucid/Orm'
 
 export default class ServiceRequirementController extends BaseApiController {
   public async index({ response, bouncer, request }: HttpContextContract) {
@@ -12,23 +13,17 @@ export default class ServiceRequirementController extends BaseApiController {
 
     const serviceRequirementQuery = ServiceRequirement.query()
       .preload('user', (u) => {
-        u.select(['first_name', 'last_name'])
+        u.select(['first_name', 'last_name']).preload('profile', p => {
+          p.select('avatar')
+        })
       })
       .preload('serviceCategory', (c) => {
         c.select('name')
       })
 
     this.applyFilters(serviceRequirementQuery, request.qs(), { searchFields: ['name'] })
+    this.extraFilters(serviceRequirementQuery, request)
 
-    if (request.qs().where_accepted_bid_id) {
-      serviceRequirementQuery.where('accepted_bid_id', request.qs().where_accepted_bid_id)
-    }
-    if (request.qs().where_expires_at_lt) {
-      serviceRequirementQuery.where('expires_at', '<', request.qs().where_expires_at_lt)
-    }
-    if (request.qs().where_expires_at_gt) {
-      serviceRequirementQuery.where('expires_at', '>', request.qs().where_expires_at_gt)
-    }
 
     const serviceRequirements = await this.paginate(request, serviceRequirementQuery)
 
@@ -47,7 +42,7 @@ export default class ServiceRequirementController extends BaseApiController {
         s.select('name')
       })
       .preload('user', (u) => {
-        u.select(['first_name', 'last_name'])
+        u.preload('profile')
       })
       .withCount('recievedBids')
       .withAggregate('recievedBids', (b) => {
@@ -72,6 +67,11 @@ export default class ServiceRequirementController extends BaseApiController {
 
     const serviceRequirementQuery = ServiceRequirement.query()
       .where('user_id', user.id)
+      .preload('user', u => {
+        u.select(['first_name', 'last_name']).preload('profile', p => {
+          p.select('avatar')
+        })
+      })
       .preload('serviceCategory', (s) => {
         s.select(['name'])
       })
@@ -81,6 +81,7 @@ export default class ServiceRequirementController extends BaseApiController {
       })
 
     this.applyFilters(serviceRequirementQuery, request.qs() as any)
+    this.extraFilters(serviceRequirementQuery, request)
 
     const serviceRequirement = await this.paginate(request, serviceRequirementQuery)
 
@@ -100,7 +101,9 @@ export default class ServiceRequirementController extends BaseApiController {
     const bidQuery = Bid.query()
       .where('id', serviceRequirement.acceptedBidId || 0)
       .preload('vendorUser', (v) => {
-        v.select(['first_name', 'last_name', 'id', 'avg_rating', 'business_name'])
+        v.select(['first_name', 'last_name', 'id', 'avg_rating', 'business_name']).preload('profile', p => {
+          p.select('avatar')
+        })
       })
 
     const bid = await bidQuery.first()
@@ -196,6 +199,23 @@ export default class ServiceRequirementController extends BaseApiController {
       data: serviceRequirement,
       success: true,
     })
+  }
+
+  public extraFilters(serviceRequirementQuery: ModelQueryBuilderContract<any, ServiceRequirement>, request: HttpContextContract['request'], opt?: {}) {
+    if (request.qs().where_acepted) {
+      serviceRequirementQuery.whereNotNull('accepted_bid_id')
+    }
+
+    if (request.qs().where_active) {
+      serviceRequirementQuery.whereNull('accepted_bid_id')
+    }
+
+    if (request.qs().where_expires_at_lt) {
+      serviceRequirementQuery.where('expires_at', '<', request.qs().where_expires_at_lt)
+    }
+    if (request.qs().where_expires_at_gt) {
+      serviceRequirementQuery.where('expires_at', '>', request.qs().where_expires_at_gt)
+    }
   }
 
   // public async acceptBid({ bouncer, request, response, params }: HttpContextContract) {

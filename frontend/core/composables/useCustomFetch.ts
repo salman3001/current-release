@@ -1,4 +1,5 @@
 import { Notify } from "quasar";
+import type { FetchContext } from "ofetch";
 
 export default function (
   opt: {
@@ -36,6 +37,15 @@ export default function (
     }
   };
 
+  const onRequestError = (ctx: FetchContext<IResType<any>>) => {
+    Notify.create({
+      message: ctx.error?.message,
+      icon: "warning",
+      color: "negative",
+      position: "top-right",
+    });
+  }
+
   // const onRequest = (c: FetchContext<any, any>): void => {
   //   const queryString = qs.stringify(c.options.query);
   //   let newUrl: RequestInfo = "";
@@ -54,5 +64,6 @@ export default function (
       authorization,
     },
     onResponse: !process.server ? onResponse : undefined,
+    onRequestError: !process.server ? onRequestError : undefined
   });
 }

@@ -20,24 +20,7 @@ const { data, refresh: refreshRequirement } = await useAsyncData(
       customFetch<IResType<IBid>>(
         apiRoutes.service_requirements.show_accepted_bid(
           route.params.id as unknown as number
-        ),
-        {
-          query: {
-            preload: [
-              {
-                vendorUser: {
-                  select: [
-                    "first_name",
-                    "last_name",
-                    "id",
-                    "avg_rating",
-                    "business_name",
-                  ],
-                },
-              },
-            ],
-          } as AdditionalParams,
-        }
+        )
       ),
     ]);
 

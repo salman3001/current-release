@@ -177,7 +177,7 @@ const variantThumbnailUrl = computed(() => {
                 <div class="col-12 col-sm-6 col-md-3">
                   <p class="q-pl-sm">Discount Type</p>
                   <q-radio v-model="f.discountType" checked-icon="task_alt" unchecked-icon="panorama_fish_eye"
-                    val="flat" label="Flat" />
+                    val="flat" label="Flat" @update:model-value="f.discountPercentage = 0" />
                   <q-radio v-model="f.discountType" checked-icon="task_alt" unchecked-icon="panorama_fish_eye"
                     val="percentage" label="Percentage" />
                 </div>
@@ -189,7 +189,7 @@ const variantThumbnailUrl = computed(() => {
           'Discount must be less that price'
         ),
       ]" />
-                <q-input type="number" outlined v-model="f.discountFlat" label="Discount percentage"
+                <q-input type="number" outlined v-model="f.discountPercentage" label="Discount percentage"
                   class="col-12 col-sm-6 col-md-3" :rules="[
         rules.minValue(0, 'Discount must be greater than 0%'),
         rules.maxValue(99.9, 'Discount must be greater than 99.9%'),

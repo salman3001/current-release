@@ -1,6 +1,7 @@
 <script setup lang="ts">
 const bookingStore = useBookingStore();
 const modal = modalStore();
+const getImageUrl = useGetImageUrl()
 
 const emit = defineEmits<{
   (e: "success"): void;
@@ -11,7 +12,8 @@ const emit = defineEmits<{
   <div>
     <q-item>
       <q-item-section top thumbnail class="q-ml-none">
-        <img src="https://cdn.quasar.dev/img/mountains.jpg" />
+        <img :src="getImageUrl(bookingStore.summary?.service_variant?.image?.breakpoints?.thumbnail?.url)
+          " />
       </q-item-section>
 
       <q-item-section>
@@ -19,15 +21,14 @@ const emit = defineEmits<{
           bookingStore.summary?.service_variant.name
         }}</q-item-label>
         <q-item-label caption>{{
-          bookingStore.summary?.service_variant?.service.name
-        }}</q-item-label>
+            bookingStore.summary?.service_variant?.service.name
+          }}</q-item-label>
       </q-item-section>
 
       <div class="column justify-start items-end">
         <!-- <p class="q-ma-none">Price</p> -->
-        <span class="q-ma-none text-muted text-end text-bold"
-          >&#x20B9;{{ bookingStore.summary?.service_variant?.price }}</span
-        >
+        <span class="q-ma-none text-muted text-end text-bold">&#x20B9;{{ bookingStore.summary?.service_variant?.price
+          }}</span>
         <div class="q-mt-xs q-gutter-xs row items-center">
           Qty : {{ bookingStore.summary?.qty }}
         </div>
@@ -50,22 +51,17 @@ const emit = defineEmits<{
     </div>
   </div>
   <div class="row justify-end q-pt-lg text-bold text-h6 q-gutter-sm">
-    <q-btn
-      color="primary"
-      outline
-      @click="
-        modal.togel('webApplyCoupon', {
-          variantId: bookingStore.summary?.service_variant?.id,
-          onSuccess: () => {
-            bookingStore.getSummary(
-              bookingStore.summary?.service_variant?.id,
-              bookingStore.summary?.qty
-            );
-          },
-        })
-      "
-      >Apply Coupon</q-btn
-    >
+    <q-btn color="primary" outline @click="
+          modal.togel('webApplyCoupon', {
+            variantId: bookingStore.summary?.service_variant?.id,
+            onSuccess: () => {
+              bookingStore.getSummary(
+                bookingStore.summary?.service_variant?.id,
+                bookingStore.summary?.qty
+              );
+            },
+          })
+          ">Apply Coupon</q-btn>
     <q-btn color="primary" @click="emit('success')">Confirm and proceed</q-btn>
   </div>
 </template>

@@ -35,6 +35,7 @@ export default class VendorUsersController extends BaseApiController {
       .preload('reviews', (r) => {
         r.limit(10).orderBy('created_at')
       })
+      .preload('profile')
       .withCount('reviews')
       .firstOrFail()
     await bouncer.with('VendorUserPolicy').authorize('view', vendor)

@@ -21,35 +21,22 @@ defineProps<{
     </q-card-section>
     <q-card-section>
       <div class="">
-        {{ review.message }} Lorem ipsum dolor sit amet consectetur adipisicing
-        elit. Mollitia, quis. Lorem ipsum dolor sit amet consectetur adipisicing
-        elit. Quibusdam, similique? Lorem ipsum dolor sit, amet consectetur
-        adipisicing elit. Odit earum corporis magni consequuntur, nostrum iure.
+        {{ review.message }}
       </div>
     </q-card-section>
     <q-separator />
-    <q-card-section
-      class="row items-start q-gutter-sm"
-      style="max-width: max-content"
-    >
+    <q-card-section class="row items-start q-gutter-sm" style="max-width: max-content">
       <q-avatar>
-        <img
-          :src="
-            getImageUrl(
-              review?.user?.profile?.avatar?.url,
-              '/images/sample-dp.png'
-            )
-          "
-        />
+        <img :src="getImageUrl(
+          review?.user?.profile?.avatar?.url,
+          '/images/sample-dp.png'
+        )
+          " />
       </q-avatar>
       <div>
-        <span
-          >{{ review?.user?.first_name }} {{ review?.user?.last_name }}</span
-        >
+        <span>{{ review?.user?.first_name }} {{ review?.user?.last_name }}</span>
         <p class="text-muted">
-          <q-badge class="text-bold" color="primary" outline
-            >Verified purchase</q-badge
-          >
+          <q-badge class="text-bold" color="primary" outline>Verified purchase</q-badge>
         </p>
       </div>
     </q-card-section>

@@ -46,7 +46,7 @@ export default class ServiceUpdateValidator {
       })
     ),
     service: schema.object().members({
-      name: schema.string({ trim: true }, [
+      name: schema.string.optional({ trim: true }, [
         rules.unique({
           table: 'services',
           column: 'name',
@@ -75,7 +75,7 @@ export default class ServiceUpdateValidator {
         ans: schema.string(),
       })
     ),
-    variant: schema.array().members(
+    variant: schema.array.optional().members(
       schema.object().members({
         name: schema.string([rules.maxLength(100)]),
         price: schema.number(),

@@ -89,21 +89,22 @@ export default class BookingController extends BaseController {
     const total_without_discount = new BigNumber(serviceVariant.price).times(payload.qty)
     let vendor_discount = new BigNumber(0)
 
+
+
     if (serviceVariant.discountType === DiscountType.FLAT) {
-      vendor_discount.plus(serviceVariant.discountFlat)
+      vendor_discount = vendor_discount.plus(new BigNumber(serviceVariant.discountFlat).times(payload.qty))
     } else if (serviceVariant.discountPercentage) {
       const percentage = new BigNumber(serviceVariant.discountPercentage)
-      vendor_discount = vendor_discount.plus(percentage.dividedBy(100).times(serviceVariant.price))
+      vendor_discount = vendor_discount.plus(percentage.dividedBy(100).times(serviceVariant.price).times(payload.qty))
     }
-
     const total_after_discount = total_without_discount.minus(vendor_discount)
 
     const coupon_discount = payload.couponId
       ? await this.applyCoupon(
-          payload.couponId,
-          total_after_discount,
-          serviceVariant.service.vendorUser.id
-        )
+        payload.couponId,
+        total_after_discount,
+        serviceVariant.service.vendorUser.id
+      )
       : 0
 
     const grand_total = total_after_discount.minus(coupon_discount)
@@ -141,20 +142,20 @@ export default class BookingController extends BaseController {
     let vendor_discount = new BigNumber(0)
 
     if (serviceVariant.discountType === DiscountType.FLAT) {
-      vendor_discount.plus(serviceVariant.discountFlat)
+      vendor_discount = vendor_discount.plus(new BigNumber(serviceVariant.discountFlat).times(payload.qty))
     } else if (serviceVariant.discountPercentage) {
       const percentage = new BigNumber(serviceVariant.discountPercentage)
-      vendor_discount = vendor_discount.plus(percentage.dividedBy(100).times(serviceVariant.price))
+      vendor_discount = vendor_discount.plus(percentage.dividedBy(100).times(serviceVariant.price).times(payload.qty))
     }
 
     const total_after_discount = total_without_discount.minus(vendor_discount)
 
     const coupon_discount = payload.couponId
       ? await this.applyCoupon(
-          payload.couponId,
-          total_after_discount,
-          serviceVariant.service.vendorUser.id
-        )
+        payload.couponId,
+        total_after_discount,
+        serviceVariant.service.vendorUser.id
+      )
       : 0
 
     const grand_total = total_after_discount.minus(coupon_discount)

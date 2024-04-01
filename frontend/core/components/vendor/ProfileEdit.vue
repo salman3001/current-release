@@ -44,13 +44,9 @@ const updateProfile = async () => {
   <div class="q-gutter-y-md" v-if="mode == 'read'">
     <div class="column q-gutter-sm">
       <label for="">Profile Picture</label>
-      <q-img
-        :src="getImageUrl(user.profile?.avatar?.url, '/images/sample-dp.png')"
-        spinner-color="white"
-        style="height: 100px; max-width: 100px; border: 1px solid grey"
-        img-class="my-custom-image"
-        class="rounded-borders"
-      >
+      <q-img :src="getImageUrl(user.profile?.avatar?.url, '/images/sample-dp.png')" spinner-color="white"
+        style="height: 100px; max-width: 100px; border: 1px solid grey" img-class="my-custom-image"
+        class="rounded-borders">
       </q-img>
     </div>
 
@@ -65,9 +61,9 @@ const updateProfile = async () => {
         <div class="text-subtitle1 text-bold">Description</div>
         <div class="text-muted">
           {{
-            (user as IVendorUser).profile?.long_desc ||
-            "Please add your Business description"
-          }}
+    (user as IVendorUser).profile?.long_desc ||
+    "Please add your Business description"
+  }}
         </div>
       </div>
     </div>
@@ -78,42 +74,21 @@ const updateProfile = async () => {
   <q-form class="q-gutter-y-md" v-if="mode == 'write'" @submit="updateProfile">
     <div class="q-gutter-y-sm" style="width: max-content">
       <label for="">Profile Picture</label>
-      <FormsImageInput
-        height="100px"
-        width="100px"
-        name="image"
-        :url="getImageUrl(user.profile?.avatar?.url, '/images/sample-dp.png')"
-        @image="(v) => (form.avatar = v)"
-      />
+      <FormsImageInput height="100px" width="100px" name="image"
+        :url="getImageUrl(user.profile?.avatar?.url, '/images/sample-dp.png')" @image="(v) => (form.avatar = v)" />
     </div>
     <div class="column q-gutter-sm" style="max-width: 600px">
       <div>
         <div class="text-subtitle1 text-bold">Bio</div>
-        <q-input
-          type="textarea"
-          outlined
-          v-model="form.profile.shortDesc"
-          dense
-          placeholder="Bio"
-          :rules="[rules.required('Required')]"
-        />
+        <q-input type="textarea" outlined v-model="form.profile.shortDesc" dense placeholder="Bio" />
       </div>
       <div>
-        <div class="text-subtitle1 text-bold">Business Name</div>
-        <q-input
-          type="textarea"
-          outlined
-          v-model="form.profile.longDesc"
-          dense
-          placeholder="Description"
-          :rules="[rules.required('Required')]"
-        />
+        <div class="text-subtitle1 text-bold">Description</div>
+        <q-input type="textarea" outlined v-model="form.profile.longDesc" dense placeholder="Description" />
       </div>
     </div>
     <div class="q-gutter-sm">
-      <q-btn color="secondary" @click="mode = 'read'" :disabled="loading"
-        >Cancle</q-btn
-      >
+      <q-btn color="secondary" @click="mode = 'read'" :disabled="loading">Cancle</q-btn>
       <q-btn color="primary" type="submit" :disabled="loading">
         <LoadingIndicator v-if="loading" /> Update
       </q-btn>

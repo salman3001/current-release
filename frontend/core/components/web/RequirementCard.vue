@@ -18,7 +18,10 @@ defineProps<{
         <br />
         <ClientOnly>
           <div>
-            {{ date.formatDate(requirement.created_at, "DD/MM/YYYY hh:mmA") }}
+            Posted on: {{ date.formatDate(requirement.created_at, "DD/MM/YYYY hh:mmA") }}
+          </div>
+          <div>
+            Expired on: {{ date.formatDate(requirement.expires_at, "DD/MM/YYYY hh:mmA") }}
           </div>
 
           <div class="row" :class="$q.screen.xs ? 'justify-end' : 'justify-end'">

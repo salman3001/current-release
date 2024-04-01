@@ -10,11 +10,11 @@ const filter = ref(null);
 const query = computed(() =>
   filter.value === "active"
     ? {
-      where_accepted_bid_id: 0,
+      where_active: 1,
     }
     : filter.value === "accepted"
       ? {
-        where_accepted_bid_id: 1,
+        where_acepted: 1,
       }
       : filter.value === "expired"
         ? {

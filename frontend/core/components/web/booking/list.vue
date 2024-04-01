@@ -14,7 +14,7 @@ const {
     {
       query: {
         page: page.value,
-      } as AdditionalParams,
+      } as IQs
     }
   );
   return data.data;
@@ -58,7 +58,9 @@ const columns = [
       <div class="" v-if="pending">
         <SkeletonBase type="list" v-for="i in 2" />
       </div>
-      <q-table bordered v-else :rows="bookings!.data" :columns="columns" row-key="id" hide-pagination
+      <q-table :pagination="{
+        rowsPerPage: 100,
+      }" bordered v-else :rows="bookings!.data" :columns="columns" row-key="id" hide-pagination
         class="table-zebra full-hieght shadow-6 q-ma-sm">
         <template v-slot:body-cell-payment="props">
           <q-td :props="props">

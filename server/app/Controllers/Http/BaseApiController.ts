@@ -51,4 +51,8 @@ export default class BaseApiController {
 
     return modelQuery
   }
+
+  public extraFilters(modelQuery: ModelQueryBuilderContract<any, any>, request: HttpContextContract['request'], opt?: Record<any, any>) {
+
+  }
 }

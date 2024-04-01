@@ -50,6 +50,15 @@ export default function (opt?: {
     }
   };
 
+  const onRequestError = (ctx: FetchContext<IResType<any>>) => {
+    Notify.create({
+      message: ctx.error?.message,
+      icon: "warning",
+      color: "negative",
+      position: "top-right",
+    });
+  }
+
   return {
     fetch: $fetch.create({
       baseURL: config.public.baseApi,
@@ -58,6 +67,7 @@ export default function (opt?: {
       },
       onResponse: !process.server ? onResponse : undefined,
       onRequest: !process.server ? onRequest : undefined,
+      onRequestError: !process.server ? onRequestError : undefined
     }),
     loading: loading,
   };

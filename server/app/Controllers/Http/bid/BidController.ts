@@ -39,6 +39,7 @@ export default class BidController extends BaseController {
     const payload = await request.validate(BidValidator)
 
     const serviceRequirment = await ServiceRequirement.query()
+      .where('id', payload.serviceRequirementId)
       .whereHas('recievedBids', (r) => {
         r.whereHas('vendorUser', (v) => {
           v.where('id', auth.user!.id)

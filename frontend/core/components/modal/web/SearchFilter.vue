@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const modal = modalStore();
 const form = reactive({
-  sortBy: modal.meta?.sortBy || "created_at",
+  sortBy: modal.meta?.sortBy || "created_at:desc",
 });
 </script>
 
@@ -16,8 +16,8 @@ const form = reactive({
       <div>
         <h6>Sorty By</h6>
         <div class="q-gutter-sm">
-          <q-radio v-model="form.sortBy" val="created_at" label="Latest" />
-          <q-radio v-model="form.sortBy" val="avg_rating" label="Highest Rating" />
+          <q-radio v-model="form.sortBy" val="created_at:desc" label="Latest" />
+          <q-radio v-model="form.sortBy" val="avg_rating:desc" label="Highest Rating" />
           <q-radio v-model="form.sortBy" val="starting_from" label="Lowest Price" />
         </div>
       </div>
