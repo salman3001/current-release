@@ -1,14 +1,12 @@
 <script setup lang="ts">
-
 definePageMeta({
-    layout: 'empty',
-    middleware: ['is-guest']
-})
-
+  layout: "empty",
+  middleware: ["is-guest"],
+});
 </script>
 
 <template>
-    <div>
-        <NuxtPage />
-    </div>
+  <div>
+    <NuxtPage />
+  </div>
 </template>

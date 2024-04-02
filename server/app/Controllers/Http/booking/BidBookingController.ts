@@ -1,5 +1,4 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import BaseController from '../BaseController'
 import BidBookingCreateValidator from 'App/Validators/Booking/BidBookingCreateValidator'
 import VendorUser from 'App/Models/vendorUser/VendorUser'
 import ServiceRequirement from 'App/Models/bid/ServiceRequirement'
@@ -13,17 +12,16 @@ import Database from '@ioc:Adonis/Lucid/Database'
 import BaseApiController from '../BaseApiController'
 
 export default class BidBookingController extends BaseApiController {
-
   public async index({ request, response, bouncer }: HttpContextContract) {
     await bouncer.with('ServicePolicy').authorize('viewList')
     const bookingQuery = BidBooking.query()
       .preload('user', (u) => {
-        u.select(['id', 'first_name', "last_name"]).preload('profile', p => {
+        u.select(['id', 'first_name', 'last_name']).preload('profile', (p) => {
           p.select(['avatar'])
         })
       })
       .preload('vendorUser', (v) => {
-        v.select(['id', 'first_name', "last_name"]).preload('profile', p => {
+        v.select(['id', 'first_name', 'last_name']).preload('profile', (p) => {
           p.select(['avatar'])
         })
       })
@@ -49,12 +47,12 @@ export default class BidBookingController extends BaseApiController {
 
     const bidBookingQuery = BidBooking.query()
       .preload('user', (u) => {
-        u.select(['id', 'first_name', "last_name"]).preload('profile', p => {
+        u.select(['id', 'first_name', 'last_name']).preload('profile', (p) => {
           p.select(['avatar'])
         })
       })
       .preload('vendorUser', (v) => {
-        v.select(['id', 'first_name', "last_name"]).preload('profile', p => {
+        v.select(['id', 'first_name', 'last_name']).preload('profile', (p) => {
           p.select(['avatar'])
         })
       })
@@ -71,7 +69,6 @@ export default class BidBookingController extends BaseApiController {
     this.extraFilters(bidBookingQuery, request)
 
     const bidBookings = await this.paginate(request, bidBookingQuery)
-
 
     return response.custom({
       code: 200,

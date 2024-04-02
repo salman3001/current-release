@@ -12,17 +12,16 @@ import BookingCreateValidator from 'App/Validators/Booking/BookingCreateValidato
 import BaseApiController from '../BaseApiController'
 
 export default class BookingController extends BaseApiController {
-
   public async index({ request, response, bouncer }: HttpContextContract) {
     await bouncer.with('ServicePolicy').authorize('viewList')
     const bookingQuery = Booking.query()
       .preload('user', (u) => {
-        u.select(['id', 'first_name', "last_name"]).preload('profile', p => {
+        u.select(['id', 'first_name', 'last_name']).preload('profile', (p) => {
           p.select(['avatar'])
         })
       })
       .preload('vendorUser', (v) => {
-        v.select(['id', 'first_name', "last_name"]).preload('profile', p => {
+        v.select(['id', 'first_name', 'last_name']).preload('profile', (p) => {
           p.select(['avatar'])
         })
       })
@@ -49,7 +48,7 @@ export default class BookingController extends BaseApiController {
     const bookingQuery = Booking.query()
       .where('user_id', user.id)
       .preload('vendorUser', (v) => {
-        v.select(['id', 'first_name', "last_name"]).preload('profile', p => {
+        v.select(['id', 'first_name', 'last_name']).preload('profile', (p) => {
           p.select(['avatar'])
         })
       })
@@ -73,11 +72,10 @@ export default class BookingController extends BaseApiController {
 
     const user = auth.user!
 
-
     const bookingQuery = Booking.query()
       .where('vendor_user_id', user.id)
       .preload('user', (u) => {
-        u.select(['id', 'first_name', "last_name"]).preload('profile', p => {
+        u.select(['id', 'first_name', 'last_name']).preload('profile', (p) => {
           p.select(['avatar'])
         })
       })
@@ -118,22 +116,24 @@ export default class BookingController extends BaseApiController {
     const total_without_discount = new BigNumber(serviceVariant.price).times(payload.qty)
     let vendor_discount = new BigNumber(0)
 
-
-
     if (serviceVariant.discountType === DiscountType.FLAT) {
-      vendor_discount = vendor_discount.plus(new BigNumber(serviceVariant.discountFlat).times(payload.qty))
+      vendor_discount = vendor_discount.plus(
+        new BigNumber(serviceVariant.discountFlat).times(payload.qty)
+      )
     } else if (serviceVariant.discountPercentage) {
       const percentage = new BigNumber(serviceVariant.discountPercentage)
-      vendor_discount = vendor_discount.plus(percentage.dividedBy(100).times(serviceVariant.price).times(payload.qty))
+      vendor_discount = vendor_discount.plus(
+        percentage.dividedBy(100).times(serviceVariant.price).times(payload.qty)
+      )
     }
     const total_after_discount = total_without_discount.minus(vendor_discount)
 
     const coupon_discount = payload.couponId
       ? await this.applyCoupon(
-        payload.couponId,
-        total_after_discount,
-        serviceVariant.service.vendorUser.id
-      )
+          payload.couponId,
+          total_after_discount,
+          serviceVariant.service.vendorUser.id
+        )
       : 0
 
     const grand_total = total_after_discount.minus(coupon_discount)
@@ -171,20 +171,24 @@ export default class BookingController extends BaseApiController {
     let vendor_discount = new BigNumber(0)
 
     if (serviceVariant.discountType === DiscountType.FLAT) {
-      vendor_discount = vendor_discount.plus(new BigNumber(serviceVariant.discountFlat).times(payload.qty))
+      vendor_discount = vendor_discount.plus(
+        new BigNumber(serviceVariant.discountFlat).times(payload.qty)
+      )
     } else if (serviceVariant.discountPercentage) {
       const percentage = new BigNumber(serviceVariant.discountPercentage)
-      vendor_discount = vendor_discount.plus(percentage.dividedBy(100).times(serviceVariant.price).times(payload.qty))
+      vendor_discount = vendor_discount.plus(
+        percentage.dividedBy(100).times(serviceVariant.price).times(payload.qty)
+      )
     }
 
     const total_after_discount = total_without_discount.minus(vendor_discount)
 
     const coupon_discount = payload.couponId
       ? await this.applyCoupon(
-        payload.couponId,
-        total_after_discount,
-        serviceVariant.service.vendorUser.id
-      )
+          payload.couponId,
+          total_after_discount,
+          serviceVariant.service.vendorUser.id
+        )
       : 0
 
     const grand_total = total_after_discount.minus(coupon_discount)
