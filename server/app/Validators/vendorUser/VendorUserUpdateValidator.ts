@@ -26,8 +26,9 @@ export default class VendorUserUpdateValidator {
   public schema = schema.create({
     id: schema.number.optional(),
     firstName: schema.string.optional({ trim: true }),
-    lastName: schema.string({ trim: true }),
-    email: schema.string({ trim: true }, [
+    lastName: schema.string.optional({ trim: true }),
+    businessName: schema.string.optional(),
+    email: schema.string.optional({ trim: true }, [
       rules.email(),
       rules.normalizeEmail({ allLowercase: true }),
       rules.unique({ table: 'users', column: 'email', whereNot: { id: this.ctx.params.id } }),

@@ -20,28 +20,14 @@ function toggleLeftDrawer() {
 <template>
   <ScrollArea height="100vh" width="100%">
     <q-layout view="hHh LpR lFf">
-      <q-header
-        bordered
-        reveal
-        class="text-white"
-        :class="$q.dark.isActive ? 'bg-dark' : 'bg-white'"
-      >
+      <q-header bordered reveal class="text-white" :class="$q.dark.isActive ? 'bg-dark' : 'bg-white'">
         <q-toolbar class="q-py-sm q-py-sm-md">
-          <q-btn
-            dense
-            flat
-            round
-            icon="menu"
-            @click="toggleLeftDrawer"
-            class="text-primary lt-md"
-          />
+          <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" class="text-primary lt-md" />
           <div>
             <BrandLogo :to="routes.vendor.dashboard" size="170px"></BrandLogo>
           </div>
-          <div
-            class="row q-gutter-sm justify-end items-center"
-            :style="{ flexGrow: $q.screen.gt.xs ? 3 : 1, width: 'min-xontent' }"
-          >
+          <div class="row q-gutter-sm justify-end items-center"
+            :style="{ flexGrow: $q.screen.gt.xs ? 3 : 1, width: 'min-xontent' }">
             <div class="gt-sm col-0 col-sm-1"></div>
 
             <VendorNotificationMenu v-if="user" />
@@ -182,116 +168,72 @@ function toggleLeftDrawer() {
         </q-toolbar> -->
       </q-header>
 
-      <q-drawer
-        show-if-above
-        bordered
-        v-model="leftDrawerOpen"
-        side="left"
-        :width="250"
-      >
+      <q-drawer show-if-above bordered v-model="leftDrawerOpen" side="left" :width="250">
         <q-scroll-area class="fit" :horizontal-thumb-style="{ opacity: 0 }">
-          <q-list padding>
-            <NuxtLink
-              :to="routes.vendor.dashboard"
-              :class="
-                route.path === routes.vendor.dashboard
-                  ? 'text-primary'
-                  : 'text-muted'
-              "
-            >
-              <q-item clickable v-ripple>
-                <q-item-section avatar>
-                  <q-icon name="dashboard_customize" />
-                </q-item-section>
+          <q-list padding dense>
+            <q-item clickable v-ripple :to="routes.vendor.dashboard" :class="route.path === routes.vendor.dashboard
+        ? 'text-primary'
+        : 'text-muted'
+        ">
+              <q-item-section avatar>
+                <q-icon name="dashboard_customize" />
+              </q-item-section>
 
-                <q-item-section> Dashboard </q-item-section>
-              </q-item>
-            </NuxtLink>
-            <NuxtLink
-              :to="routes.vendor.services.list"
-              :class="
-                route.path === routes.vendor.services.list
-                  ? 'text-primary'
-                  : 'text-muted'
-              "
-            >
-              <q-item clickable v-ripple>
-                <q-item-section avatar>
-                  <q-icon name="cleaning_services" />
-                </q-item-section>
+              <q-item-section> Dashboard </q-item-section>
+            </q-item>
 
-                <q-item-section>My Services</q-item-section>
-              </q-item>
-            </NuxtLink>
-            <NuxtLink
-              :to="routes.vendor.service_requirements.list"
-              :class="
-                route.path === routes.vendor.service_requirements.list
-                  ? 'text-primary'
-                  : 'text-muted'
-              "
-            >
-              <q-item clickable v-ripple>
-                <q-item-section avatar>
-                  <q-icon name="list" />
-                </q-item-section>
+            <q-item clickable v-ripple :to="routes.vendor.services.list" :class="route.path === routes.vendor.services.list
+        ? 'text-primary'
+        : 'text-muted'
+        ">
+              <q-item-section avatar>
+                <q-icon name="cleaning_services" />
+              </q-item-section>
 
-                <q-item-section>Service Requirements</q-item-section>
-              </q-item>
-            </NuxtLink>
-            <NuxtLink
-              :to="routes.vendor.bookings.list"
-              :class="
-                route.path === routes.vendor.bookings.list
-                  ? 'text-primary'
-                  : 'text-muted'
-              "
-            >
-              <q-item clickable v-ripple>
-                <q-item-section avatar>
-                  <q-icon name="rss_feed" />
-                </q-item-section>
-                <q-item-section> Manage Bookings </q-item-section>
-              </q-item>
-            </NuxtLink>
+              <q-item-section>My Services</q-item-section>
+            </q-item>
+            <q-item clickable v-ripple :to="routes.vendor.service_requirements.list" :class="route.path === routes.vendor.service_requirements.list
+        ? 'text-primary'
+        : 'text-muted'
+        ">
+              <q-item-section avatar>
+                <q-icon name="list" />
+              </q-item-section>
 
-            <NuxtLink
-              :to="routes.vendor.chat"
-              :class="
-                route.path === routes.vendor.chat
-                  ? 'text-primary'
-                  : 'text-muted'
-              "
-            >
-              <q-item clickable v-ripple>
-                <q-item-section avatar>
-                  <q-icon name="mail" />
-                </q-item-section>
-                <q-item-section> Messages</q-item-section>
-              </q-item>
-            </NuxtLink>
-            <NuxtLink
-              :to="routes.vendor.account"
-              :class="
-                route.path === routes.vendor.account
-                  ? 'text-primary'
-                  : 'text-muted'
-              "
-            >
-              <q-item clickable v-ripple>
-                <q-item-section avatar>
-                  <q-icon name="account_circle" />
-                </q-item-section>
-                <q-item-section> Account</q-item-section>
-              </q-item>
-            </NuxtLink>
+              <q-item-section>Service Requirements</q-item-section>
+            </q-item>
+            <q-item clickable v-ripple :to="routes.vendor.bookings.list" :class="route.path === routes.vendor.bookings.list
+        ? 'text-primary'
+        : 'text-muted'
+        ">
+              <q-item-section avatar>
+                <q-icon name="rss_feed" />
+              </q-item-section>
+              <q-item-section> Manage Bookings </q-item-section>
+            </q-item>
+
+            <q-item clickable v-ripple :to="routes.vendor.chat" :class="route.path === routes.vendor.chat
+        ? 'text-primary'
+        : 'text-muted'
+        ">
+              <q-item-section avatar>
+                <q-icon name="mail" />
+              </q-item-section>
+              <q-item-section> Messages</q-item-section>
+            </q-item>
+            <q-item clickable v-ripple :to="routes.vendor.account" :class="route.path === routes.vendor.account
+        ? 'text-primary'
+        : 'text-muted'
+        ">
+              <q-item-section avatar>
+                <q-icon name="account_circle" />
+              </q-item-section>
+              <q-item-section> Account</q-item-section>
+            </q-item>
 
             <q-item clickable v-ripple @click="$q.dark.toggle()">
               <q-item-section avatar>
-                <q-icon
-                  name="light_mode"
-                  :color="$q.dark.isActive ? 'muted' : 'primary'"
-                />
+                <q-icon name="light_mode" :color="$q.dark.isActive ? 'muted' : 'primary'" />
               </q-item-section>
               <q-item-section> Dark Mode </q-item-section>
             </q-item>
@@ -300,17 +242,10 @@ function toggleLeftDrawer() {
       </q-drawer>
 
       <q-page-container class="justify-center row">
-        <div
-          style="max-width: 1920px; width: 100%; overflow: hidden"
-          class="q-px-sm q-px-sm-md q-px-md-lg q-px-lg-xl"
-        >
+        <div style="max-width: 1920px; width: 100%; overflow: hidden" class="q-px-sm q-px-sm-md q-px-md-lg q-px-lg-xl">
           <slot />
         </div>
-        <q-page-scroller
-          position="bottom-right"
-          :scroll-offset="150"
-          :offset="[18, 18]"
-        >
+        <q-page-scroller position="bottom-right" :scroll-offset="150" :offset="[18, 18]">
           <q-btn fab icon="keyboard_arrow_up" color="primary" />
         </q-page-scroller>
       </q-page-container>

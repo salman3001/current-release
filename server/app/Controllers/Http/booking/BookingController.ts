@@ -9,28 +9,56 @@ import Coupon from 'App/Models/orders/Coupon'
 import Booking from 'App/Models/bookings/Booking'
 import ServiceVariant from 'App/Models/service/ServiceVariant'
 import BookingCreateValidator from 'App/Validators/Booking/BookingCreateValidator'
+import BaseApiController from '../BaseApiController'
 
-export default class BookingController extends BaseController {
-  constructor() {
-    super(Booking, BookingCreateValidator, BookingCreateValidator, 'BookingPolicy')
+export default class BookingController extends BaseApiController {
+
+  public async index({ request, response, bouncer }: HttpContextContract) {
+    await bouncer.with('ServicePolicy').authorize('viewList')
+    const bookingQuery = Booking.query()
+      .preload('user', (u) => {
+        u.select(['id', 'first_name', "last_name"]).preload('profile', p => {
+          p.select(['avatar'])
+        })
+      })
+      .preload('vendorUser', (v) => {
+        v.select(['id', 'first_name', "last_name"]).preload('profile', p => {
+          p.select(['avatar'])
+        })
+      })
+
+    this.applyFilters(bookingQuery, request.qs(), { searchFields: ['name'] })
+
+    this.extraFilters(bookingQuery, request)
+
+    const bookings = await this.paginate(request, bookingQuery)
+
+    return response.custom({
+      code: 200,
+      data: bookings,
+      success: true,
+      message: null,
+    })
   }
 
   public async customerBookingList({ auth, response, bouncer, request }: HttpContextContract) {
     await bouncer.with('BookingPolicy').authorize('customerList')
 
     const user = auth.user!
-    let bookings: Booking[] = []
-    const bookingQuery = Booking.query().where('user_id', user.id)
-    this.indexfilterQuery(request.qs() as any, bookingQuery)
 
-    if (request.qs().page) {
-      bookings = await bookingQuery.paginate(
-        request.qs().page,
-        request.qs().rowsPerPage || this.perPage
-      )
-    } else {
-      bookings = await bookingQuery.exec()
-    }
+    const bookingQuery = Booking.query()
+      .where('user_id', user.id)
+      .preload('vendorUser', (v) => {
+        v.select(['id', 'first_name', "last_name"]).preload('profile', p => {
+          p.select(['avatar'])
+        })
+      })
+
+    this.applyFilters(bookingQuery, request.qs())
+
+    this.extraFilters(bookingQuery, request)
+
+    const bookings = await this.paginate(request, bookingQuery)
 
     return response.custom({
       code: 200,
@@ -45,19 +73,20 @@ export default class BookingController extends BaseController {
 
     const user = auth.user!
 
-    let bookings: Booking[] = []
 
-    const bookingQuery = Booking.query().where('vendor_user_id', user.id)
-    this.indexfilterQuery(request.qs() as any, bookingQuery)
+    const bookingQuery = Booking.query()
+      .where('vendor_user_id', user.id)
+      .preload('user', (u) => {
+        u.select(['id', 'first_name', "last_name"]).preload('profile', p => {
+          p.select(['avatar'])
+        })
+      })
 
-    if (request.qs().page) {
-      bookings = await bookingQuery.paginate(
-        request.qs().page,
-        request.qs().rowsPerPage || this.perPage
-      )
-    } else {
-      bookings = await bookingQuery.exec()
-    }
+    this.applyFilters(bookingQuery, request.qs())
+
+    this.extraFilters(bookingQuery, request)
+
+    const bookings = await this.paginate(request, bookingQuery)
 
     return response.custom({
       code: 200,

@@ -4,6 +4,9 @@ import { date } from "quasar";
 
 const customFetch = useCustomFetch();
 const page = ref(1);
+const getImageUrl = useGetImageUrl()
+const postFetch = usePostFetch()
+
 
 const {
   data: bookings,
@@ -28,6 +31,13 @@ const columns = [
     label: "Booking No.",
     align: "left",
     field: (row: IBooking) => row.id,
+  },
+  {
+    name: "customer",
+    required: true,
+    label: "Customer",
+    align: "left",
+    field: (row: IBidBooking) => row?.user?.first_name,
   },
   {
     name: "title",
@@ -59,88 +69,66 @@ const columns = [
       <div class="q-py-md" v-if="pending">
         <SkeletonBase type="list" v-for="i in 2" />
       </div>
-      <q-table
-        bordered
-        v-else
-        :rows="bookings!.data"
-        :columns="columns"
-        row-key="id"
-        hide-pagination
-        color="green"
-        class="table-zebra full-hieght shadow-6 q-ma-sm"
-      >
+      <q-table bordered v-else :rows="bookings!.data" :columns="columns" row-key="id" hide-pagination color="green"
+        class="table-zebra full-hieght shadow-6 q-ma-sm">
+        <template v-slot:body-cell-customer="props">
+          <q-td :props="props" class="flex gap-50 items-center" style="flex-wrap: nowrap;">
+            <q-avatar style="height: 35px;width: 35px;">
+              <img :src="getImageUrl((props.row as IBidBooking)?.user?.profile?.avatar?.breakpoints?.thumbnail?.url)" />
+            </q-avatar>
+            <span>{{ (props.row as IBidBooking)?.user?.first_name }} {{ (props.row as IBidBooking)?.user?.last_name
+              }}</span>
+            <span></span>
+          </q-td>
+        </template>
+
         <template v-slot:body-cell-payment="props">
           <q-td :props="props">
-            <q-badge
-              class="normalcase q-badge-positive"
-              v-if="props.row?.payment_detail?.paymentStatus === 'paid'"
-              ><q-icon name="done"></q-icon> &nbsp;{{
-                props.row?.payment_detail?.paymentStatus
-              }}</q-badge
-            >
-            <q-badge
-              class="normalcase q-badge-warning"
-              v-if="props.row?.payment_detail?.paymentStatus === 'pending'"
-              ><q-icon name="done"></q-icon> &nbsp;{{
-                props.row?.payment_detail?.paymentStatus
-              }}</q-badge
-            >
+            <q-badge class="normalcase q-badge-positive"
+              v-if="props.row?.payment_detail?.paymentStatus === 'paid'"><q-icon name="done"></q-icon> &nbsp;{{
+        props.row?.payment_detail?.paymentStatus
+      }}</q-badge>
+            <q-badge class="normalcase q-badge-warning"
+              v-if="props.row?.payment_detail?.paymentStatus === 'pending'"><q-icon name="done"></q-icon> &nbsp;{{
+        props.row?.payment_detail?.paymentStatus
+      }}</q-badge>
           </q-td>
         </template>
 
         <template v-slot:body-cell-status="props">
           <q-td :props="props">
-            <q-badge
-              class="normalcase q-badge-warning"
-              v-if="props.row.status === 'placed'"
-              ><q-icon name="done"></q-icon> &nbsp;{{
-                props.row.status
-              }}</q-badge
-            >
-            <q-badge
-              class="normalcase q-badge-info"
-              v-if="props.row.status === 'confirmed'"
-              ><q-icon name="done"></q-icon> &nbsp;{{
-                props.row.status
-              }}</q-badge
-            >
-            <q-badge
-              class="normalcase q-badge-positive"
-              v-if="props.row.status === 'completed'"
-              ><q-icon name="done"></q-icon> &nbsp;{{
-                props.row.status
-              }}</q-badge
-            >
-            <q-badge
-              class="normalcase q-badge-negative"
-              v-if="props.row.status === 'cancled'"
-              ><q-icon name="done"></q-icon> &nbsp;{{
-                props.row.status
-              }}</q-badge
-            >
+            <q-badge class="normalcase q-badge-warning" v-if="props.row.status === 'placed'"><q-icon
+                name="done"></q-icon> &nbsp;{{
+        props.row.status
+      }}</q-badge>
+            <q-badge class="normalcase q-badge-info" v-if="props.row.status === 'confirmed'"><q-icon
+                name="done"></q-icon> &nbsp;{{
+        props.row.status
+      }}</q-badge>
+            <q-badge class="normalcase q-badge-positive" v-if="props.row.status === 'completed'"><q-icon
+                name="done"></q-icon> &nbsp;{{
+        props.row.status
+      }}</q-badge>
+            <q-badge class="normalcase q-badge-negative" v-if="props.row.status === 'cancled'"><q-icon
+                name="done"></q-icon> &nbsp;{{
+        props.row.status
+      }}</q-badge>
           </q-td>
         </template>
 
         <template v-slot:body-cell-More="props">
           <q-td :props="props">
-            <NuxtLink
-              :to="routes.vendor.bookings.view_custom_booking(props.row.id)"
-            >
+            <NuxtLink :to="routes.vendor.bookings.view_custom_booking(props.row.id)">
               <q-btn size="sm" color="primary">Review</q-btn>
             </NuxtLink>
           </q-td>
         </template>
       </q-table>
-      <PaginateComponet
-        :page="page"
-        :meta="bookings?.meta"
-        @update:model-value="
-          (v) => {
-            page = v;
-            refresh();
-          }
-        "
-      />
+      <PaginateComponet :page="page" :meta="bookings?.meta" @update:model-value="(v) => {
+          page = v;
+          refresh();
+        }
+        " />
     </ScrollArea>
   </div>
 </template>

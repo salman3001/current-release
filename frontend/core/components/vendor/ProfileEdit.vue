@@ -8,8 +8,8 @@ const getImageUrl = useGetImageUrl();
 const initialForm = {
   avatar: null as any,
   profile: {
-    shortDesc: "",
-    longDesc: "",
+    shortDesc: (user.value as IVendorUser)?.profile?.short_desc || '',
+    longDesc: (user.value as IVendorUser)?.profile?.long_desc || '',
   },
 };
 

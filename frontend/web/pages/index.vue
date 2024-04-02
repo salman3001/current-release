@@ -1,4 +1,5 @@
 <script setup lang="ts">
+
 const customFetch = useCustomFetch();
 
 const page = ref(1);
@@ -7,6 +8,7 @@ const route = useRoute();
 const sortBy = ref(route.query?.sortBy || null);
 const modal = modalStore();
 const scrollPosition = ref(0);
+
 
 const isFilterEmpty = () => {
   if (
@@ -38,6 +40,7 @@ const { data, error } = await useAsyncData("web-home", async () => {
     categories: categories?.data || [],
   };
 });
+
 
 const {
   data: services,

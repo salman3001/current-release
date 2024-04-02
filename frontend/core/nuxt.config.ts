@@ -34,6 +34,6 @@ export default defineNuxtConfig({
   },
   devServer: {},
   imports: {
-    dirs: ["stores"],
+    dirs: ["stores", 'composables/**'],
   },
 });

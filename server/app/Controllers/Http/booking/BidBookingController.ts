@@ -10,10 +10,36 @@ import BidBooking from 'App/Models/bookings/BidBooking'
 import BigNumber from 'bignumber.js'
 import User from 'App/Models/user/User'
 import Database from '@ioc:Adonis/Lucid/Database'
+import BaseApiController from '../BaseApiController'
 
-export default class BidBookingController extends BaseController {
-  constructor() {
-    super(BidBooking, BidBookingCreateValidator, BidBookingCreateValidator, 'BidBookingPolicy')
+export default class BidBookingController extends BaseApiController {
+
+  public async index({ request, response, bouncer }: HttpContextContract) {
+    await bouncer.with('ServicePolicy').authorize('viewList')
+    const bookingQuery = BidBooking.query()
+      .preload('user', (u) => {
+        u.select(['id', 'first_name', "last_name"]).preload('profile', p => {
+          p.select(['avatar'])
+        })
+      })
+      .preload('vendorUser', (v) => {
+        v.select(['id', 'first_name', "last_name"]).preload('profile', p => {
+          p.select(['avatar'])
+        })
+      })
+
+    this.applyFilters(bookingQuery, request.qs(), { searchFields: ['name'] })
+
+    this.extraFilters(bookingQuery, request)
+
+    const bookings = await this.paginate(request, bookingQuery)
+
+    return response.custom({
+      code: 200,
+      data: bookings,
+      success: true,
+      message: null,
+    })
   }
 
   public async myList({ auth, response, bouncer, request }: HttpContextContract) {
@@ -21,9 +47,17 @@ export default class BidBookingController extends BaseController {
 
     const user = auth.user!
 
-    let bidBooking: BidBooking[] = []
-
     const bidBookingQuery = BidBooking.query()
+      .preload('user', (u) => {
+        u.select(['id', 'first_name', "last_name"]).preload('profile', p => {
+          p.select(['avatar'])
+        })
+      })
+      .preload('vendorUser', (v) => {
+        v.select(['id', 'first_name', "last_name"]).preload('profile', p => {
+          p.select(['avatar'])
+        })
+      })
 
     if (user instanceof VendorUser) {
       bidBookingQuery.where('vendor_user_id', user.id)
@@ -32,23 +66,18 @@ export default class BidBookingController extends BaseController {
     if (user instanceof User) {
       bidBookingQuery.where('user_id', user.id)
     }
+    this.applyFilters(bidBookingQuery, request.qs(), { searchFields: ['name'] })
 
-    this.indexfilterQuery(request.qs() as any, bidBookingQuery)
+    this.extraFilters(bidBookingQuery, request)
 
-    if (request.qs().page) {
-      bidBooking = await bidBookingQuery.paginate(
-        request.qs().page,
-        request.qs().rowsPerPage || this.perPage
-      )
-    } else {
-      bidBooking = await bidBookingQuery.exec()
-    }
+    const bidBookings = await this.paginate(request, bidBookingQuery)
+
 
     return response.custom({
       code: 200,
       success: true,
       message: null,
-      data: bidBooking,
+      data: bidBookings,
     })
   }
 
