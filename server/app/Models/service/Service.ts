@@ -76,11 +76,6 @@ export default class Service extends BaseModel {
       large: 'off',
       medium: 'off',
     },
-    breakpoints: {
-      small: 'off',
-      large: 'off',
-      medium: 'off',
-    },
   })
   public thumbnail: ResponsiveAttachmentContract
 
@@ -139,7 +134,6 @@ export default class Service extends BaseModel {
     if (service.images) {
       for (const img of service.images) {
         await img.delete()
-
       }
     }
 

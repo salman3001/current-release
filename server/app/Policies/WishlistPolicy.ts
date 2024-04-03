@@ -1,4 +1,5 @@
 import { BasePolicy } from '@ioc:Adonis/Addons/Bouncer'
+import AdminUser from 'App/Models/adminUser/AdminUser'
 import User from 'App/Models/user/User'
 
 export default class WishlistPolicy extends BasePolicy {
@@ -6,8 +7,8 @@ export default class WishlistPolicy extends BasePolicy {
     return false
   }
 
-  public async view(user: User) {
-    if (user && user instanceof User) {
+  public async view(user: User | AdminUser) {
+    if (user instanceof User || user instanceof AdminUser) {
       return true
     } else {
       return false

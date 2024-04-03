@@ -1,15 +1,15 @@
 // import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import BaseController from '../BaseController'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { CouponType, DiscountType, OrderStatus } from 'App/Helpers/enums'
 import Database, { TransactionClientContract } from '@ioc:Adonis/Lucid/Database'
-import { schema } from '@ioc:Adonis/Core/Validator'
+import { rules, schema } from '@ioc:Adonis/Core/Validator'
 import BigNumber from 'bignumber.js'
 import Coupon from 'App/Models/orders/Coupon'
 import Booking from 'App/Models/bookings/Booking'
 import ServiceVariant from 'App/Models/service/ServiceVariant'
 import BookingCreateValidator from 'App/Validators/Booking/BookingCreateValidator'
 import BaseApiController from '../BaseApiController'
+import { DateTime } from 'luxon'
 
 export default class BookingController extends BaseApiController {
   public async index({ request, response, bouncer }: HttpContextContract) {
@@ -91,6 +91,20 @@ export default class BookingController extends BaseApiController {
       success: true,
       message: null,
       data: bookings,
+    })
+  }
+
+  public async show({ response, bouncer, params }: HttpContextContract) {
+    const id = params.id
+    const booking = await Booking.query().where('id', id).firstOrFail()
+
+    await bouncer.with('BookingPolicy').authorize('view', booking)
+
+    return response.custom({
+      code: 200,
+      success: true,
+      message: null,
+      data: booking,
     })
   }
 
@@ -196,6 +210,14 @@ export default class BookingController extends BaseApiController {
     const booking = await Booking.create({
       vendorUserId: serviceVariant.service.vendorUser.id,
       userId: auth.user?.id,
+      status: OrderStatus.PLACED,
+      history: [
+        {
+          date_time: DateTime.now(),
+          event: 'Order Placed',
+          remarks: '',
+        },
+      ],
       paymentDetail: payload.paymentdetail,
       bookingDetail: {
         service_variant: {
@@ -229,6 +251,7 @@ export default class BookingController extends BaseApiController {
 
     const validationSchema = schema.create({
       status: schema.enum(Object.values(OrderStatus)),
+      remarks: schema.string.optional({ escape: true }, [rules.maxLength(255)]),
     })
 
     const payload = await request.validate({ schema: validationSchema })
@@ -236,6 +259,11 @@ export default class BookingController extends BaseApiController {
     await Database.transaction(async (trx) => {
       booking.useTransaction(trx)
       booking.merge({ status: payload.status })
+      booking.history.push({
+        date_time: DateTime.now(),
+        event: `Booking ${payload.status}`,
+        remarks: payload?.remarks || '',
+      })
       await booking.save()
     })
 

@@ -16,6 +16,14 @@ export default class Bid extends BaseModel {
   @column()
   public message: string
 
+  @column({ prepare: (v) => JSON.stringify(v) })
+  public negotiateHistory: {
+    date_time: DateTime
+    asked_price: string
+    message: string
+    accepted: boolean
+  }[]
+
   @column()
   public serviceRequirementId: number
 

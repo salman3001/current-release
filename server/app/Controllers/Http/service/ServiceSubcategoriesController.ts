@@ -1,37 +1,54 @@
 import { ResponsiveAttachment } from '@ioc:Adonis/Addons/ResponsiveAttachment'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import ServiceSubcategory from 'App/Models/service/ServiceSubcategory'
-import BaseController from '../BaseController'
 import { validator } from '@ioc:Adonis/Core/Validator'
 import SubcategoryCreateValidator from 'App/Validators/service/SubcategoryCreateValidator'
-import SubcategoryUpdateValidator from 'App/Validators/service/subcategoryUpdateValidator'
+import SubcategoryUpdateValidator from 'App/Validators/service/SubcategoryUpdateValidator'
 import slugify from 'slugify'
+import BaseApiController from '../BaseApiController'
 
-export default class ServiceSubcategoriesController extends BaseController {
-  constructor() {
-    super(
-      ServiceSubcategory,
-      SubcategoryCreateValidator,
-      SubcategoryUpdateValidator,
-      'ServiceCategoryPolicy'
-    )
+export default class ServiceSubcategoriesController extends BaseApiController {
+  public async index({ request, response, bouncer }: HttpContextContract) {
+    await bouncer.with('ServiceCategoryPolicy').authorize('viewList')
+    const serviceCategoryQuery = ServiceSubcategory.query()
+
+    this.applyFilters(serviceCategoryQuery, request.qs(), { searchFields: ['slug'] })
+
+    this.extraFilters(serviceCategoryQuery, request)
+
+    const categories = await this.paginate(request, serviceCategoryQuery)
+
+    return response.custom({
+      code: 200,
+      data: categories,
+      success: true,
+      message: null,
+    })
   }
 
-  public async showBySlug({ request, response, bouncer, params }: HttpContextContract) {
+  public async show({ response, bouncer, params }: HttpContextContract) {
     await bouncer.with('ServiceCategoryPolicy').authorize('view')
-
-    const slug = params.slug
-    const serviceCategoryQuery = ServiceSubcategory.query().where('slug', slug)
-
-    this.showfilterQuery(request.qs() as any, serviceCategoryQuery)
-
-    const category = await serviceCategoryQuery.first()
+    const id = params.id
+    const serviceCategory = await ServiceSubcategory.query().where('id', id).firstOrFail()
 
     return response.custom({
       code: 200,
       success: true,
       message: null,
-      data: category,
+      data: serviceCategory,
+    })
+  }
+
+  public async showBySlug({ response, bouncer, params }: HttpContextContract) {
+    await bouncer.with('ServiceCategoryPolicy').authorize('view')
+    const slug = params.slug
+    const serviceCategory = await ServiceSubcategory.query().where('slug', slug).firstOrFail()
+
+    return response.custom({
+      code: 200,
+      success: true,
+      message: null,
+      data: serviceCategory,
     })
   }
 
@@ -110,6 +127,21 @@ export default class ServiceSubcategoriesController extends BaseController {
       code: 201,
       data: category,
       success: true,
+    })
+  }
+
+  public async destroy({ params, response, bouncer }: HttpContextContract) {
+    const category = await ServiceSubcategory.findOrFail(+params.id)
+
+    await bouncer.with('ServiceCategoryPolicy').authorize('delete')
+
+    await category.delete()
+
+    return response.custom({
+      code: 200,
+      success: true,
+      message: 'Record Deleted',
+      data: category,
     })
   }
 

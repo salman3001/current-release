@@ -6,6 +6,11 @@ import Database from '@ioc:Adonis/Lucid/Database'
 import Bid from 'App/Models/bid/Bid'
 import BaseApiController from '../BaseApiController'
 import { ModelQueryBuilderContract } from '@ioc:Adonis/Lucid/Orm'
+import ServiceTag from 'App/Models/service/ServiceTag'
+import { ResponsiveAttachment } from '@ioc:Adonis/Addons/ResponsiveAttachment'
+import { rules, schema } from '@ioc:Adonis/Core/Validator'
+import { DateTime } from 'luxon'
+import BigNumber from 'bignumber.js'
 
 export default class ServiceRequirementController extends BaseApiController {
   public async index({ response, bouncer, request }: HttpContextContract) {
@@ -13,7 +18,7 @@ export default class ServiceRequirementController extends BaseApiController {
 
     const serviceRequirementQuery = ServiceRequirement.query()
       .preload('user', (u) => {
-        u.select(['first_name', 'last_name']).preload('profile', p => {
+        u.select(['first_name', 'last_name']).preload('profile', (p) => {
           p.select('avatar')
         })
       })
@@ -23,7 +28,6 @@ export default class ServiceRequirementController extends BaseApiController {
 
     this.applyFilters(serviceRequirementQuery, request.qs(), { searchFields: ['name'] })
     this.extraFilters(serviceRequirementQuery, request)
-
 
     const serviceRequirements = await this.paginate(request, serviceRequirementQuery)
 
@@ -67,8 +71,8 @@ export default class ServiceRequirementController extends BaseApiController {
 
     const serviceRequirementQuery = ServiceRequirement.query()
       .where('user_id', user.id)
-      .preload('user', u => {
-        u.select(['first_name', 'last_name']).preload('profile', p => {
+      .preload('user', (u) => {
+        u.select(['first_name', 'last_name']).preload('profile', (p) => {
           p.select('avatar')
         })
       })
@@ -93,7 +97,7 @@ export default class ServiceRequirementController extends BaseApiController {
     })
   }
 
-  public async showAcceptedBid({ bouncer, params, response, request }: HttpContextContract) {
+  public async showAcceptedBid({ bouncer, params, response }: HttpContextContract) {
     const serviceRequirement = await ServiceRequirement.findOrFail(+params.id)
 
     await bouncer.with('ServiceRequirementPolicy').authorize('view', serviceRequirement)
@@ -101,9 +105,12 @@ export default class ServiceRequirementController extends BaseApiController {
     const bidQuery = Bid.query()
       .where('id', serviceRequirement.acceptedBidId || 0)
       .preload('vendorUser', (v) => {
-        v.select(['first_name', 'last_name', 'id', 'avg_rating', 'business_name']).preload('profile', p => {
-          p.select('avatar')
-        })
+        v.select(['first_name', 'last_name', 'id', 'avg_rating', 'business_name']).preload(
+          'profile',
+          (p) => {
+            p.select('avatar')
+          }
+        )
       })
 
     const bid = await bidQuery.first()
@@ -121,34 +128,41 @@ export default class ServiceRequirementController extends BaseApiController {
 
     await bouncer.with('ServiceRequirementPolicy').authorize('view', serviceRequirement)
 
-    const bidQuery = Bid.query()
+    const serviceRequirementQuery = Bid.query()
       .where('service_requirement_id', serviceRequirement.id)
       .preload('vendorUser', (v) => {
         v.select('avg_rating')
       })
 
     if (request.qs()?.orderby_avg_rating) {
-      bidQuery.join('vendor_users', 'bids.vendor_user_id', 'vendor_users.id')
-      bidQuery.whereNot('bids.id', serviceRequirement?.acceptedBidId || 0)
-      bidQuery.select('bids.*')
-      bidQuery.orderBy('vendor_users.avg_rating', 'desc')
+      serviceRequirementQuery.join(
+        'vendor_users',
+        'serviceRequirements.vendor_user_id',
+        'vendor_users.id'
+      )
+      serviceRequirementQuery.whereNot(
+        'serviceRequirements.id',
+        serviceRequirement?.acceptedBidId || 0
+      )
+      serviceRequirementQuery.select('serviceRequirements.*')
+      serviceRequirementQuery.orderBy('vendor_users.avg_rating', 'desc')
     } else if (request.qs()?.orderby_lowest_price) {
-      bidQuery.whereNot('id', serviceRequirement?.acceptedBidId || 0)
-      bidQuery.orderBy('offered_price', 'asc')
-      bidQuery.select('*')
+      serviceRequirementQuery.whereNot('id', serviceRequirement?.acceptedBidId || 0)
+      serviceRequirementQuery.orderBy('offered_price', 'asc')
+      serviceRequirementQuery.select('*')
     } else {
-      bidQuery.whereNot('id', serviceRequirement?.acceptedBidId || 0)
-      bidQuery.orderBy('created_at', 'desc')
+      serviceRequirementQuery.whereNot('id', serviceRequirement?.acceptedBidId || 0)
+      serviceRequirementQuery.orderBy('created_at', 'desc')
     }
 
-    this.applyFilters(bidQuery, request.qs())
+    this.applyFilters(serviceRequirementQuery, request.qs())
 
-    const bids = await this.paginate(request, bidQuery)
+    const serviceRequirements = await this.paginate(request, serviceRequirementQuery)
 
     return response.custom({
       code: 200,
       message: null,
-      data: bids,
+      data: serviceRequirements,
       success: true,
     })
   }
@@ -156,7 +170,9 @@ export default class ServiceRequirementController extends BaseApiController {
   public async store({ auth, bouncer, request, response }: HttpContextContract) {
     await bouncer.with('ServiceRequirementPolicy').authorize('create')
 
-    const payload = await request.validate(ServiceRequirementCreateValidator)
+    const { keywords, images, ...payload } = await request.validate(
+      ServiceRequirementCreateValidator
+    )
 
     let serviceRequirement: ServiceRequirement | null = null
 
@@ -165,6 +181,22 @@ export default class ServiceRequirementController extends BaseApiController {
         { ...payload, userId: auth.user!.id },
         { client: trx }
       )
+
+      if (keywords) {
+        const tags = await ServiceTag.updateOrCreateMany(
+          'name',
+          keywords.map((k) => ({ name: k }))
+        )
+        await serviceRequirement.related('tags').saveMany(tags)
+      }
+
+      if (images) {
+        for (const i of images) {
+          await serviceRequirement
+            .related('images')
+            .create({ file: await ResponsiveAttachment.fromFile(i) })
+        }
+      }
     })
 
     if (serviceRequirement) {
@@ -201,13 +233,50 @@ export default class ServiceRequirementController extends BaseApiController {
     })
   }
 
-  public extraFilters(serviceRequirementQuery: ModelQueryBuilderContract<any, ServiceRequirement>, request: HttpContextContract['request'], opt?: {}) {
+  public async negotiate({ auth, bouncer, request, response, params }: HttpContextContract) {
+    const validationSchema = schema.create({
+      price: schema.number([rules.minNumber(0)]),
+      message: schema.string({ escape: true }, [rules.maxLength(255)]),
+    })
+
+    const serviceRequirement = await ServiceRequirement.findOrFail(+params.id)
+    const bid = await Bid.query()
+      .where('id', params.bidId)
+      .where('serviceRequirementId', serviceRequirement.id)
+      .firstOrFail()
+
+    await bouncer.with('ServiceRequirementPolicy').authorize('update', serviceRequirement)
+
+    const payload = await request.validate({ schema: validationSchema })
+
+    bid.negotiateHistory.push({
+      asked_price: new BigNumber(payload.price).toFixed(2),
+      date_time: DateTime.now(),
+      message: payload.message,
+      accepted: false,
+    })
+
+    await bid.save()
+
+    return response.custom({
+      code: 200,
+      data: null,
+      message: 'Negotiate created',
+      success: true,
+    })
+  }
+
+  public extraFilters(
+    serviceRequirementQuery: ModelQueryBuilderContract<any, ServiceRequirement>,
+    request: HttpContextContract['request'],
+    opt?: {}
+  ) {
     if (request.qs().where_acepted) {
-      serviceRequirementQuery.whereNotNull('accepted_bid_id')
+      serviceRequirementQuery.whereNotNull('accepted_serviceRequirement_id')
     }
 
     if (request.qs().where_active) {
-      serviceRequirementQuery.whereNull('accepted_bid_id')
+      serviceRequirementQuery.whereNull('accepted_serviceRequirement_id')
     }
 
     if (request.qs().where_expires_at_lt) {
@@ -218,13 +287,28 @@ export default class ServiceRequirementController extends BaseApiController {
     }
   }
 
+  public async destroy({ params, response, bouncer }: HttpContextContract) {
+    const serviceRequirement = await ServiceRequirement.findOrFail(+params.id)
+
+    await bouncer.with('ServiceRequirementPolicy').authorize('delete', serviceRequirement)
+
+    await serviceRequirement.delete()
+
+    return response.custom({
+      code: 200,
+      success: true,
+      message: 'Record Deleted',
+      data: serviceRequirement,
+    })
+  }
+
   // public async acceptBid({ bouncer, request, response, params }: HttpContextContract) {
   //   const serviceRequirement = await ServiceRequirement.findOrFail(+params.id)
 
   //   if (serviceRequirement.acceptedBidId) {
   //     return response.custom({
   //       code: 400,
-  //       message: 'You have already accepted a bid',
+  //       message: 'You have already accepted a serviceRequirement',
   //       data: null,
   //       success: false,
   //     })
@@ -232,14 +316,14 @@ export default class ServiceRequirementController extends BaseApiController {
   //   await bouncer.with('ServiceRequirementPolicy').authorize('update', serviceRequirement)
 
   //   const validationSchema = schema.create({
-  //     bidId: schema.number(),
+  //     serviceRequirementId: schema.number(),
   //   })
 
   //   const payload = await request.validate({ schema: validationSchema })
 
   //   await Database.transaction(async (trx) => {
   //     serviceRequirement.useTransaction(trx)
-  //     serviceRequirement.merge({ acceptedBidId: payload.bidId })
+  //     serviceRequirement.merge({ acceptedBidId: payload.serviceRequirementId })
   //     await serviceRequirement.save()
   //   })
 
@@ -247,7 +331,7 @@ export default class ServiceRequirementController extends BaseApiController {
 
   //   return response.custom({
   //     code: 200,
-  //     message: 'bid Accepted',
+  //     message: 'serviceRequirement Accepted',
   //     data: serviceRequirement,
   //     success: true,
   //   })
@@ -259,7 +343,7 @@ export default class ServiceRequirementController extends BaseApiController {
   //   if (!serviceRequirement.acceptedBidId) {
   //     return response.custom({
   //       code: 400,
-  //       message: 'You have not accepted any bid',
+  //       message: 'You have not accepted any serviceRequirement',
   //       data: null,
   //       success: false,
   //     })
@@ -277,7 +361,7 @@ export default class ServiceRequirementController extends BaseApiController {
 
   //   return response.custom({
   //     code: 200,
-  //     message: 'bid Rejected',
+  //     message: 'serviceRequirement Rejected',
   //     data: serviceRequirement,
   //     success: true,
   //   })

@@ -55,6 +55,43 @@ export default class ServiceController extends BaseApiController {
     })
   }
 
+  public async show({ response, bouncer, params }: HttpContextContract) {
+    await bouncer.with('ServicePolicy').authorize('view')
+
+    const id = params.id
+    const serviceQuery = Service.query()
+      .where('id', id)
+      .preload('variants')
+      .preload('vendorUser', (v) => {
+        v.preload('profile')
+        v.withCount('reviews')
+      })
+      .preload('reviews', (r) => {
+        r.preload('user', (u) => {
+          u.select(['first_name', 'last_name']).preload('profile', (p) => {
+            p.select('avatar')
+          })
+        })
+        r.limit(10)
+      })
+      .preload('faq')
+      .preload('seo')
+      .preload('tags')
+      .preload('images')
+      .withCount('reviews', (r) => {
+        r.as('reviews_count')
+      })
+
+    const service = await serviceQuery.first()
+
+    return response.custom({
+      code: 200,
+      success: true,
+      message: null,
+      data: service,
+    })
+  }
+
   public async myList({ request, response, bouncer, auth }: HttpContextContract) {
     await bouncer.with('ServicePolicy').authorize('myList')
 
@@ -113,8 +150,8 @@ export default class ServiceController extends BaseApiController {
         v.withCount('reviews')
       })
       .preload('reviews', (r) => {
-        r.preload('user', u => {
-          u.select(['first_name', 'last_name']).preload('profile', p => {
+        r.preload('user', (u) => {
+          u.select(['first_name', 'last_name']).preload('profile', (p) => {
             p.select('avatar')
           })
         })
@@ -334,8 +371,10 @@ export default class ServiceController extends BaseApiController {
     })
   }
 
-
-  public extraFilters(serviceQuery: ModelQueryBuilderContract<any, Service>, request: HttpContextContract['request']) {
+  public extraFilters(
+    serviceQuery: ModelQueryBuilderContract<any, Service>,
+    request: HttpContextContract['request']
+  ) {
     serviceQuery.withCount('reviews', (r) => {
       r.as('reviews_count')
     })

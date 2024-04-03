@@ -1,5 +1,4 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import BaseController from '../BaseController'
 import BidBookingCreateValidator from 'App/Validators/Booking/BidBookingCreateValidator'
 import VendorUser from 'App/Models/vendorUser/VendorUser'
 import ServiceRequirement from 'App/Models/bid/ServiceRequirement'
@@ -8,12 +7,10 @@ import Bid from 'App/Models/bid/Bid'
 import { OrderStatus } from 'App/Helpers/enums'
 import { schema } from '@ioc:Adonis/Core/Validator'
 import BidBooking from 'App/Models/bookings/BidBooking'
+import BidOrder from 'App/Models/orders/BidOrder'
+import BaseApiController from '../BaseApiController'
 
-export default class BidBookingsController extends BaseController {
-  constructor() {
-    super(BidBooking, BidBookingCreateValidator, BidBookingCreateValidator, 'BidBookingPolicy')
-  }
-
+export default class BidBookingsController extends BaseApiController {
   public async myList({ auth, response, bouncer, request }: HttpContextContract) {
     await bouncer.with('BidBookingPolicy').authorize('myList')
 
@@ -125,6 +122,21 @@ export default class BidBookingsController extends BaseController {
       message: 'Bid Order Status Updated',
       data: bidOrder,
       success: true,
+    })
+  }
+
+  public async destroy({ params, response, bouncer }: HttpContextContract) {
+    const bidOrder = await BidOrder.findOrFail(+params.id)
+
+    await bouncer.with('BookingPolicy').authorize('delete')
+
+    await bidOrder.delete()
+
+    return response.custom({
+      code: 200,
+      success: true,
+      message: 'Record Deleted',
+      data: bidOrder,
     })
   }
 }

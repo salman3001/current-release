@@ -1,11 +1,22 @@
 import { DateTime } from 'luxon'
-import { BaseModel, HasMany, HasOne, column, hasMany, hasOne } from '@ioc:Adonis/Lucid/Orm'
+import {
+  BaseModel,
+  HasMany,
+  HasOne,
+  ManyToMany,
+  column,
+  hasMany,
+  hasOne,
+  manyToMany,
+} from '@ioc:Adonis/Lucid/Orm'
 import Faq from '../Faq'
 import Seo from '../Seo'
 import {
   ResponsiveAttachmentContract,
   responsiveAttachment,
 } from '@ioc:Adonis/Addons/ResponsiveAttachment'
+import Service from './Service'
+import ServiceRequirement from '../bid/ServiceRequirement'
 
 export default class ServiceTag extends BaseModel {
   @column({ isPrimary: true })
@@ -38,6 +49,16 @@ export default class ServiceTag extends BaseModel {
     },
   })
   public thumbnail: ResponsiveAttachmentContract
+
+  @manyToMany(() => Service, {
+    pivotTable: 'service_tags_pivot',
+  })
+  public services: ManyToMany<typeof Service>
+
+  @manyToMany(() => ServiceRequirement, {
+    pivotTable: 'service_requirement_tags_pivot',
+  })
+  public serviceRequirements: ManyToMany<typeof ServiceRequirement>
 
   @hasMany(() => Faq)
   public faqs: HasMany<typeof Faq>

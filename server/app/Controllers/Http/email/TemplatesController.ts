@@ -2,12 +2,39 @@ import { ResponsiveAttachment } from '@ioc:Adonis/Addons/ResponsiveAttachment'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Template from 'App/Models/email/Template'
 import CreateTemplateValidator from 'App/Validators/news-letter/CreateTemplateValidator'
-import BaseController from '../BaseController'
 import { validator } from '@ioc:Adonis/Core/Validator'
+import BaseApiController from '../BaseApiController'
 
-export default class TemplatesController extends BaseController {
-  constructor() {
-    super(Template, CreateTemplateValidator, CreateTemplateValidator, 'TemplatePolicy')
+export default class TemplatesController extends BaseApiController {
+  public async index({ request, response, bouncer }: HttpContextContract) {
+    await bouncer.with('TemplatePolicy').authorize('viewList')
+    const templateQuery = Template.query()
+
+    this.applyFilters(templateQuery, request.qs(), { searchFields: ['name'] })
+
+    this.extraFilters(templateQuery, request)
+
+    const templates = await this.paginate(request, templateQuery)
+
+    return response.custom({
+      code: 200,
+      data: templates,
+      success: true,
+      message: null,
+    })
+  }
+
+  public async show({ response, bouncer, params }: HttpContextContract) {
+    await bouncer.with('TemplatePolicy').authorize('view')
+    const id = params.id
+    const template = await Template.query().where('id', id).firstOrFail()
+
+    return response.custom({
+      code: 200,
+      success: true,
+      message: null,
+      data: template,
+    })
   }
 
   public async store({ request, response, bouncer }: HttpContextContract) {
@@ -47,6 +74,21 @@ export default class TemplatesController extends BaseController {
       code: 201,
       data: template,
       success: true,
+    })
+  }
+
+  public async destroy({ params, response, bouncer }: HttpContextContract) {
+    const template = await Template.findOrFail(+params.id)
+
+    await bouncer.with('TemplatePolicy').authorize('delete')
+
+    await template.delete()
+
+    return response.custom({
+      code: 200,
+      success: true,
+      message: 'Record Deleted',
+      data: template,
     })
   }
 

@@ -1,11 +1,38 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import ContactMessage from 'App/Models/helpcenter/ContactMessage'
-import BaseController from '../BaseController'
 import { schema, rules } from '@ioc:Adonis/Core/Validator'
+import BaseApiController from '../BaseApiController'
 
-export default class ContactMessagesController extends BaseController {
-  constructor() {
-    super(ContactMessage, {}, {}, 'ContactMessagePolicy')
+export default class ContactMessagesController extends BaseApiController {
+  public async index({ request, response, bouncer }: HttpContextContract) {
+    await bouncer.with('ContactMessagePolicy').authorize('viewList')
+    const ContactMessageQuery = ContactMessage.query()
+
+    this.applyFilters(ContactMessageQuery, request.qs(), { searchFields: ['name'] })
+
+    this.extraFilters(ContactMessageQuery, request)
+
+    const contactmessages = await this.paginate(request, ContactMessageQuery)
+
+    return response.custom({
+      code: 200,
+      data: contactmessages,
+      success: true,
+      message: null,
+    })
+  }
+
+  public async show({ response, bouncer, params }: HttpContextContract) {
+    await bouncer.with('ContactMessagePolicy').authorize('view')
+    const id = params.id
+    const contactmessage = await ContactMessage.query().where('id', id).firstOrFail()
+
+    return response.custom({
+      code: 200,
+      success: true,
+      message: null,
+      data: contactmessage,
+    })
   }
 
   public async store({ request, response, bouncer }: HttpContextContract) {
@@ -42,6 +69,21 @@ export default class ContactMessagesController extends BaseController {
       code: 201,
       data: message,
       success: true,
+    })
+  }
+
+  public async destroy({ params, response, bouncer }: HttpContextContract) {
+    const contactmessage = await ContactMessage.findOrFail(+params.id)
+
+    await bouncer.with('ContactMessagePolicy').authorize('delete')
+
+    await contactmessage.delete()
+
+    return response.custom({
+      code: 200,
+      success: true,
+      message: 'Record Deleted',
+      data: contactmessage,
     })
   }
 

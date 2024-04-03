@@ -1,5 +1,4 @@
 // import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-
 import Order from 'App/Models/orders/Order'
 import BaseController from '../BaseController'
 import OrderCreateValidator from 'App/Validators/Booking/BookingCreateValidator'

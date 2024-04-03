@@ -1,27 +1,39 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import BaseController from '../BaseController'
 import Database from '@ioc:Adonis/Lucid/Database'
 import WishlistUpdateValidator from 'App/Validators/WishlistUpdateValidator'
 import Wishlist from 'App/Models/user/Wishlist'
+import BaseApiController from '../BaseApiController'
 
-export default class WishlistsController extends BaseController {
-  constructor() {
-    super(Wishlist, WishlistUpdateValidator, WishlistUpdateValidator, 'WishlistPolicy')
-  }
+export default class WishlistsController extends BaseApiController {
+  public async index({ request, response, bouncer }: HttpContextContract) {
+    await bouncer.with('WishlistPolicy').authorize('viewList')
+    const wishlistQuery = Wishlist.query()
 
-  public async show(ctx: HttpContextContract) {
-    await ctx.bouncer.with('WishlistPolicy').authorize('view')
-    const user = ctx.auth.user
+    this.applyFilters(wishlistQuery, request.qs(), { searchFields: ['slug'] })
 
-    const wishlistQuery = Wishlist.query().where('user_id', user!.id)
-    this.showfilterQuery(ctx.request.qs() as any, wishlistQuery)
+    this.extraFilters(wishlistQuery, request)
 
-    const wishlist = await wishlistQuery.first()
-    return ctx.response.custom({
+    const wishlist = await this.paginate(request, wishlistQuery)
+
+    return response.custom({
       code: 200,
       data: wishlist,
-      message: null,
       success: true,
+      message: null,
+    })
+  }
+
+  public async show({ response, bouncer, params }: HttpContextContract) {
+    const id = params.id
+    await bouncer.with('WishlistPolicy').authorize('view')
+
+    const wishlist = await Wishlist.query().where('id', id).firstOrFail()
+
+    return response.custom({
+      code: 200,
+      success: true,
+      message: null,
+      data: wishlist,
     })
   }
 
@@ -96,6 +108,21 @@ export default class WishlistsController extends BaseController {
       code: 200,
       data: wishlist,
       success: true,
+    })
+  }
+
+  public async destroy({ params, response, bouncer }: HttpContextContract) {
+    const wishList = await Wishlist.findOrFail(+params.id)
+
+    await bouncer.with('WishlistPolicy').authorize('delete')
+
+    await wishList.delete()
+
+    return response.custom({
+      code: 200,
+      success: true,
+      message: 'Record Deleted',
+      data: wishList,
     })
   }
 }

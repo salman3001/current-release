@@ -25,13 +25,21 @@ export default class ServiceRequirementCreateValidator {
    *    ```
    */
   public schema = schema.create({
+    images: schema.array.optional().members(
+      schema.file({
+        extnames: ['jpg', 'JPG', 'jpeg', 'JPEG', 'png', 'PNG', 'webp', 'WEBP'],
+        size: '5mb',
+      })
+    ),
     title: schema.string({ escape: true }, [rules.maxLength(50)]),
     desc: schema.string.optional({ escape: true }, [rules.maxLength(1500)]),
-    skillsRequired: schema.array.optional().members(schema.string()),
-    budgetType: schema.enum(Object.values(BudgetType)),
+    budgetUnit: schema.string({ escape: true }, [rules.maxLength(50)]),
     budget: schema.number([rules.minNumber(1)]),
+    keywords: schema.array
+      .optional()
+      .members(schema.string({ escape: true }, [rules.maxLength(50)])),
     expiresAt: schema.date({ format: 'dd/MM/yyyy HH:mm' }, [rules.after(1, 'day')]),
-    location: schema.string(),
+    location: schema.string({ escape: true }, [rules.maxLength(20)]),
     serviceCategoryId: schema.number(),
   })
 

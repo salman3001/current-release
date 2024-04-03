@@ -145,8 +145,10 @@ export default class VendorUsersController extends BaseApiController {
     }
     await bouncer.with('BussinessPolicy').authorize('update', profile)
 
-    profile.merge(payload.profile)
-    await profile.save()
+    if (payload.profile) {
+      profile.merge(payload.profile)
+      await profile.save()
+    }
 
     if (payload.address) {
       await profile.load('addresses')
@@ -289,6 +291,21 @@ export default class VendorUsersController extends BaseApiController {
       code: 200,
       data: user,
       success: true,
+    })
+  }
+
+  public async destroy({ params, response, bouncer }: HttpContextContract) {
+    const vendor = await VendorUser.findOrFail(+params.id)
+
+    await bouncer.with('VendorUserPolicy').authorize('delete')
+
+    await vendor.delete()
+
+    return response.custom({
+      code: 200,
+      success: true,
+      message: 'Record Deleted',
+      data: vendor,
     })
   }
 }

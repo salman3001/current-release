@@ -3,39 +3,32 @@ import Database from '@ioc:Adonis/Lucid/Database'
 import Notification from 'App/Models/Notification'
 import AdminUser from 'App/Models/adminUser/AdminUser'
 import User from 'App/Models/user/User'
-import BaseController, { IndexQs } from './BaseController'
-import { filterRecords } from 'App/Helpers/filters'
+import BaseApiController from './BaseApiController'
 
-export default class NotificationsController extends BaseController {
-  constructor() {
-    super(Notification, {}, {}, 'NotificationPolicy')
-  }
-  public async index({ request, response, auth }: HttpContextContract) {
+export default class NotificationsController extends BaseApiController {
+  public async index({ response, auth }: HttpContextContract) {
     const user = auth.user
-    let qs = request.qs() as IndexQs
+
     if (!user) {
       return response.unauthorized()
     }
-    let records: any[] = []
+
+    const notifcationQuery = Notification.query()
 
     if (user instanceof AdminUser) {
-      const newQs: IndexQs = {
-        ...qs,
-        sortBy: 'created_at',
-        filter: { admin_user_id: user.id.toString() },
-      }
-      records = await filterRecords(Notification, newQs)
+      notifcationQuery.where('admin_user_id', user.id)
     }
 
     if (user instanceof User) {
-      const newQs: IndexQs = { ...qs, filter: { user_id: user.id.toString() } }
-      records = await filterRecords(Notification, newQs)
+      notifcationQuery.where('user_id', user.id)
     }
+
+    const notification = notifcationQuery.exec()
 
     return response.custom({
       message: null,
       code: 200,
-      data: records,
+      data: notification,
       success: true,
     })
   }
@@ -63,10 +56,8 @@ export default class NotificationsController extends BaseController {
         if (!query) {
           count = 0
         } else {
-
           count = query.count
         }
-
       }
 
       if (user instanceof User) {
@@ -81,7 +72,6 @@ export default class NotificationsController extends BaseController {
         if (!query) {
           count = 0
         } else {
-
           count = query.count
         }
       }

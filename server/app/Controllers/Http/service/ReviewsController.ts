@@ -1,20 +1,41 @@
 // import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 import Review from 'App/Models/Review'
-import BaseController from '../BaseController'
 import CreateReviewValidator from 'App/Validators/CreateReviewValidator'
 import UpdateReviewValidator from 'App/Validators/UpdateReviewValidator'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import BaseApiController from '../BaseApiController'
 
-export default class ReviewsController extends BaseController {
-  constructor() {
-    super(Review, CreateReviewValidator, UpdateReviewValidator, 'ReviewPolicy')
+export default class ReviewsController extends BaseApiController {
+  public async index({ request, response, bouncer }: HttpContextContract) {
+    await bouncer.with('ReviewPolicy').authorize('viewList')
+    const reviewQuery = Review.query()
+
+    this.applyFilters(reviewQuery, request.qs(), { searchFields: ['slug'] })
+
+    this.extraFilters(reviewQuery, request)
+
+    const reviews = await this.paginate(request, reviewQuery)
+
+    return response.custom({
+      code: 200,
+      data: reviews,
+      success: true,
+      message: null,
+    })
   }
 
-  public getIndexQuery(ctx: HttpContextContract) {
-    const serviceId = ctx?.params.serviceId
+  public async show({ response, bouncer, params }: HttpContextContract) {
+    await bouncer.with('ReviewPolicy').authorize('view')
+    const id = params.id
+    const review = await Review.query().where('id', id).firstOrFail()
 
-    return Review.query().where('service_id', serviceId)
+    return response.custom({
+      code: 200,
+      success: true,
+      message: null,
+      data: review,
+    })
   }
 
   public async store({ request, response, bouncer, auth, params }: HttpContextContract) {
@@ -62,6 +83,21 @@ export default class ReviewsController extends BaseController {
       code: 201,
       data: review,
       success: true,
+    })
+  }
+
+  public async destroy({ params, response, bouncer }: HttpContextContract) {
+    const review = await Review.findOrFail(+params.id)
+
+    await bouncer.with('ReviewPolicy').authorize('delete', review)
+
+    await review.delete()
+
+    return response.custom({
+      code: 200,
+      success: true,
+      message: 'Record Deleted',
+      data: review,
     })
   }
 }

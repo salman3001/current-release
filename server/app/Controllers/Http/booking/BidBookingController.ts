@@ -78,6 +78,20 @@ export default class BidBookingController extends BaseApiController {
     })
   }
 
+  public async show({ response, bouncer, params }: HttpContextContract) {
+    const id = params.id
+    const booking = await BidBooking.query().where('id', id).firstOrFail()
+
+    await bouncer.with('BidBookingPolicy').authorize('view', booking)
+
+    return response.custom({
+      code: 200,
+      success: true,
+      message: null,
+      data: booking,
+    })
+  }
+
   public async store({ response, bouncer, request, auth }: HttpContextContract) {
     await bouncer.with('BidBookingPolicy').authorize('create')
 
@@ -150,6 +164,21 @@ export default class BidBookingController extends BaseApiController {
       message: 'Bid Order Status Updated',
       data: bidBooking,
       success: true,
+    })
+  }
+
+  public async destroy({ params, response, bouncer }: HttpContextContract) {
+    const bidBooking = await BidBooking.findOrFail(+params.id)
+
+    await bouncer.with('BidBookingPolicy').authorize('delete', bidBooking)
+
+    await bidBooking.delete()
+
+    return response.custom({
+      code: 200,
+      success: true,
+      message: 'Record Deleted',
+      data: bidBooking,
     })
   }
 }

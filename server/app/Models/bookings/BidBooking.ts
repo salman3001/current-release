@@ -26,6 +26,9 @@ export default class BidBooking extends BaseModel {
   @column({ prepare: (v) => JSON.stringify(v) })
   public paymentDetail: {}
 
+  @column({ prepare: (v) => JSON.stringify(v) })
+  public history: { date_time: DateTime; event: string; remarks: string }[]
+
   @column()
   public status: OrderStatus
 

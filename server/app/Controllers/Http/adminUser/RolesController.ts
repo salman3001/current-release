@@ -1,12 +1,40 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { schema, rules } from '@ioc:Adonis/Core/Validator'
-import BaseController from '../BaseController'
 import Role from 'App/Models/adminUser/Role'
 import { permissions } from 'App/Helpers/enums'
+import BaseApiController from '../BaseApiController'
 
-export default class RolesController extends BaseController {
-  constructor() {
-    super(Role, {}, {}, 'RolePolicy')
+export default class RolesController extends BaseApiController {
+  public async index({ request, response, bouncer }: HttpContextContract) {
+    await bouncer.with('RolePolicy').authorize('viewList')
+    const roleQuery = Role.query()
+
+    this.applyFilters(roleQuery, request.qs(), { searchFields: ['name'] })
+
+    this.extraFilters(roleQuery, request)
+
+    const roles = await this.paginate(request, roleQuery)
+
+    return response.custom({
+      code: 200,
+      data: roles,
+      success: true,
+      message: null,
+    })
+  }
+
+  public async show({ response, bouncer, params }: HttpContextContract) {
+    await bouncer.with('RolePolicy').authorize('view')
+
+    const id = params.id
+    const role = await Role.query().where('id', id).firstOrFail()
+
+    return response.custom({
+      code: 200,
+      success: true,
+      message: null,
+      data: role,
+    })
   }
 
   public async store({ request, response, bouncer }: HttpContextContract) {
@@ -68,6 +96,21 @@ export default class RolesController extends BaseController {
       code: 200,
       data: permissionsArray,
       success: true,
+    })
+  }
+
+  public async destroy({ params, response, bouncer }: HttpContextContract) {
+    const role = await Role.findOrFail(+params.id)
+
+    await bouncer.with('RolePolicy').authorize('delete')
+
+    await role.delete()
+
+    return response.custom({
+      code: 200,
+      success: true,
+      message: 'Record Deleted',
+      data: role,
     })
   }
 }

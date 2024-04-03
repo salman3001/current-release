@@ -4,15 +4,54 @@ import AdminUserValidator from 'App/Validators/adminUser/AdminUserValidator'
 import AdminUserUpdateValidator from 'App/Validators/adminUser/AdminUserUpdateValidator'
 import Role from 'App/Models/adminUser/Role'
 import { schema, rules } from '@ioc:Adonis/Core/Validator'
-import BaseController from '../BaseController'
 import { LucidRow } from '@ioc:Adonis/Lucid/Orm'
 import UserProfileUpdateValidator from 'App/Validators/UserProfileUpdateValidator'
 import { ResponsiveAttachment } from '@ioc:Adonis/Addons/ResponsiveAttachment'
 import UserProfile from 'App/Models/UserProfile'
+import BaseApiController from '../BaseApiController'
 
-export default class AdminUsersController extends BaseController {
-  constructor() {
-    super(AdminUser, {}, AdminUserUpdateValidator, 'AdminUserPolicy')
+export default class AdminUsersController extends BaseApiController {
+  public async index({ request, response, bouncer }: HttpContextContract) {
+    await bouncer.with('AdminUserPolicy').authorize('viewList')
+    const adminUserQuery = AdminUser.query()
+      .preload('role', (r) => {
+        r.select(['name', 'id'])
+      })
+      .preload('profile', (p) => {
+        p.select(['avatar', 'id'])
+      })
+
+    this.applyFilters(adminUserQuery, request.qs(), { searchFields: ['first_name', 'last_name'] })
+
+    this.extraFilters(adminUserQuery, request)
+
+    const adminUsers = await this.paginate(request, adminUserQuery)
+
+    return response.custom({
+      code: 200,
+      data: adminUsers,
+      success: true,
+      message: null,
+    })
+  }
+
+  public async show({ response, bouncer, params }: HttpContextContract) {
+    const id = params.id
+    const adminUser = await AdminUser.query()
+      .where('id', id)
+      .preload('role')
+      .preload('profile')
+      .preload('activities')
+      .firstOrFail()
+
+    await bouncer.with('AdminUserPolicy').authorize('view', adminUser)
+
+    return response.custom({
+      code: 200,
+      success: true,
+      message: null,
+      data: adminUser,
+    })
   }
 
   public async store({ request, response, bouncer }: HttpContextContract) {
@@ -226,6 +265,21 @@ export default class AdminUsersController extends BaseController {
       .exec()
 
     return records
+  }
+
+  public async destroy({ params, response, bouncer }: HttpContextContract) {
+    const user = await AdminUser.findOrFail(+params.id)
+
+    await bouncer.with('AdminUserPolicy').authorize('delete')
+
+    await user.delete()
+
+    return response.custom({
+      code: 200,
+      success: true,
+      message: 'Record Deleted',
+      data: user,
+    })
   }
 
   // public async storeExcelData(data: any, ctx: HttpContextContract): Promise<void> {

@@ -2,15 +2,48 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import UserCreateValidator from 'App/Validators/user/UserCreateValidator'
 import UserUpdateeValidator from 'App/Validators/user/UserUpdateValidator'
 import User from 'App/Models/user/User'
-import BaseController from '../BaseController'
 import { schema, rules, validator } from '@ioc:Adonis/Core/Validator'
 import UserProfileUpdateValidator from 'App/Validators/UserProfileUpdateValidator'
 import UserProfile from 'App/Models/UserProfile'
 import { ResponsiveAttachment } from '@ioc:Adonis/Addons/ResponsiveAttachment'
+import BaseApiController from '../BaseApiController'
 
-export default class UsersController extends BaseController {
-  constructor() {
-    super(User, UserCreateValidator, UserUpdateeValidator, 'userPolicy')
+export default class UsersController extends BaseApiController {
+  public async index({ request, response, bouncer }: HttpContextContract) {
+    await bouncer.with('userPolicy').authorize('viewList')
+    const userQuery = User.query().preload('profile', (p) => {
+      p.select(['avatar'])
+    })
+
+    this.applyFilters(userQuery, request.qs(), { searchFields: ['slug'] })
+
+    this.extraFilters(userQuery, request)
+
+    const users = await this.paginate(request, userQuery)
+
+    return response.custom({
+      code: 200,
+      data: users,
+      success: true,
+      message: null,
+    })
+  }
+
+  public async show({ response, bouncer, params }: HttpContextContract) {
+    const id = params.id
+    const user = await User.query()
+      .where('id', id)
+      .preload('profile')
+      .preload('wishlist')
+      .firstOrFail()
+    await bouncer.with('userPolicy').authorize('view', user)
+
+    return response.custom({
+      code: 200,
+      success: true,
+      message: null,
+      data: user,
+    })
   }
 
   public async store({ request, response, bouncer }: HttpContextContract) {
@@ -149,6 +182,21 @@ export default class UsersController extends BaseController {
       code: 200,
       data: user,
       success: true,
+    })
+  }
+
+  public async destroy({ params, response, bouncer }: HttpContextContract) {
+    const user = await User.findOrFail(+params.id)
+
+    await bouncer.with('userPolicy').authorize('delete')
+
+    await user.delete()
+
+    return response.custom({
+      code: 200,
+      success: true,
+      message: 'Record Deleted',
+      data: user,
     })
   }
 

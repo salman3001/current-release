@@ -1,4 +1,3 @@
-import BaseController from '../BaseController'
 import Conversation from 'App/Models/chat/Conversation'
 import ConversationValidator from 'App/Validators/chat/ConversationValidator'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
@@ -15,16 +14,6 @@ import { DateTime } from 'luxon'
 import BaseApiController from '../BaseApiController'
 
 export default class ConversationsController extends BaseApiController {
-  public getIndexQuery(ctx: HttpContextContract) {
-    const user = ctx.auth.user
-
-    return user
-      ? Conversation.query()
-          .where('participant_one_identifier', `${ctx.auth.user?.userType}-${ctx.auth.user?.id}`)
-          .orWhere('participant_two_identifier', `${ctx.auth.user?.userType}-${ctx.auth.user?.id}`)
-      : null
-  }
-
   public async index({ request, response, bouncer, auth }: HttpContextContract) {
     await bouncer.with('ServicePolicy').authorize('viewList')
     const conversationQuery = Conversation.query()
@@ -310,6 +299,21 @@ export default class ConversationsController extends BaseApiController {
       message: 'Marked As read',
       success: true,
       data: null,
+    })
+  }
+
+  public async destroy({ params, response, bouncer }: HttpContextContract) {
+    const conversation = await Conversation.findOrFail(+params.id)
+
+    await bouncer.with('ConversationPolicy').authorize('delete', conversation)
+
+    await conversation.delete()
+
+    return response.custom({
+      code: 200,
+      success: true,
+      message: 'Record Deleted',
+      data: conversation,
     })
   }
 }

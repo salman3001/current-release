@@ -2,13 +2,41 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Campaign from 'App/Models/email/Campaign'
 import Template from 'App/Models/email/Template'
 import CreateCampaignValidator from 'App/Validators/news-letter/CreateCampaignValidator'
-import BaseController from '../BaseController'
 import { validator } from '@ioc:Adonis/Core/Validator'
 import { DateTime } from 'luxon'
+import BaseApiController from '../BaseApiController'
 
-export default class CampaignsController extends BaseController {
-  constructor() {
-    super(Campaign, CreateCampaignValidator, CreateCampaignValidator, 'CampaignPolicy')
+export default class CampaignsController extends BaseApiController {
+  public async index({ request, response, bouncer }: HttpContextContract) {
+    await bouncer.with('CampaignPolicy').authorize('viewList')
+    const campaingQuery = Campaign.query()
+
+    this.applyFilters(campaingQuery, request.qs(), { searchFields: ['name'] })
+
+    this.extraFilters(campaingQuery, request)
+
+    const blogs = await this.paginate(request, campaingQuery)
+
+    return response.custom({
+      code: 200,
+      data: blogs,
+      success: true,
+      message: null,
+    })
+  }
+
+  public async show({ response, bouncer, params }: HttpContextContract) {
+    await bouncer.with('CampaignPolicy').authorize('view')
+
+    const id = params.id
+    const campaign = await Campaign.query().where('id', id).firstOrFail()
+
+    return response.custom({
+      code: 200,
+      success: true,
+      message: null,
+      data: campaign,
+    })
   }
 
   public async store({ request, response, bouncer }: HttpContextContract) {
@@ -76,6 +104,21 @@ export default class CampaignsController extends BaseController {
       code: 201,
       data: campaign,
       success: true,
+    })
+  }
+
+  public async destroy({ params, response, bouncer }: HttpContextContract) {
+    const campaign = await Campaign.findOrFail(+params.id)
+
+    await bouncer.with('CampaignPolicy').authorize('delete')
+
+    await campaign.delete()
+
+    return response.custom({
+      code: 200,
+      success: true,
+      message: 'Record Deleted',
+      data: campaign,
     })
   }
 

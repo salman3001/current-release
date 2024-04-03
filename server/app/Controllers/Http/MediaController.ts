@@ -1,18 +1,15 @@
 // import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 import Media from 'App/Models/Media'
-import BaseController from './BaseController'
+
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { MediaTypes } from 'App/Helpers/enums'
 import { schema } from '@ioc:Adonis/Core/Validator'
 import { ResponsiveAttachment } from '@ioc:Adonis/Addons/ResponsiveAttachment'
 import { Attachment } from '@ioc:Adonis/Addons/AttachmentLite'
+import BaseApiController from './BaseApiController'
 
-export default class MediaController extends BaseController {
-  constructor() {
-    super(Media, null, null, 'MediaPolicy')
-  }
-
+export default class MediaController extends BaseApiController {
   public async store({ request, response, bouncer }: HttpContextContract) {
     await bouncer.with('MediaPolicy').authorize('create')
     const payload = await this.validateRequest(request)

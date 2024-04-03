@@ -1,10 +1,37 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import BaseController from '../BaseController'
 import Interest from 'App/Models/email/Interest'
+import BaseApiController from '../BaseApiController'
 
-export default class InterestController extends BaseController {
-  constructor() {
-    super(Interest, {}, {}, 'IntrestPolicy')
+export default class InterestController extends BaseApiController {
+  public async index({ request, response, bouncer }: HttpContextContract) {
+    await bouncer.with('IntrestPolicy').authorize('viewList')
+    const interestQuery = Interest.query()
+
+    this.applyFilters(interestQuery, request.qs(), { searchFields: ['name'] })
+
+    this.extraFilters(interestQuery, request)
+
+    const interests = await this.paginate(request, interestQuery)
+
+    return response.custom({
+      code: 200,
+      data: interests,
+      success: true,
+      message: null,
+    })
+  }
+
+  public async show({ response, bouncer, params }: HttpContextContract) {
+    await bouncer.with('IntrestPolicy').authorize('view')
+    const id = params.id
+    const interest = await Interest.query().where('id', id).firstOrFail()
+
+    return response.custom({
+      code: 200,
+      success: true,
+      message: null,
+      data: interest,
+    })
   }
 
   public async store({ request, response, bouncer }: HttpContextContract) {
@@ -31,6 +58,21 @@ export default class InterestController extends BaseController {
       code: 201,
       data: interest,
       success: true,
+    })
+  }
+
+  public async destroy({ params, response, bouncer }: HttpContextContract) {
+    const interest = await Interest.findOrFail(+params.id)
+
+    await bouncer.with('IntrestPolicy').authorize('delete')
+
+    await interest.delete()
+
+    return response.custom({
+      code: 200,
+      success: true,
+      message: 'Record Deleted',
+      data: interest,
     })
   }
 }

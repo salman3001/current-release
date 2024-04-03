@@ -1,18 +1,40 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import HelpcenterContentValidator from 'App/Validators/helpcenter/HelpcenterContentValidator'
 import slugify from 'slugify'
-import BaseController from '../BaseController'
 import KnowledgeBaseContent from 'App/Models/helpcenter/KnowledgeBaseContent'
 import HelpcenterContentUpdateValidator from 'App/Validators/helpcenter/HelpcenterContentUpdateValidator'
+import BaseApiController from '../BaseApiController'
 
-export default class KnowledgeBaseContentsController extends BaseController {
-  constructor() {
-    super(
-      KnowledgeBaseContent,
-      HelpcenterContentValidator,
-      HelpcenterContentUpdateValidator,
-      'KnowledgebasePolicy'
-    )
+export default class KnowledgeBaseContentsController extends BaseApiController {
+  public async index({ request, response, bouncer }: HttpContextContract) {
+    await bouncer.with('KnowledgebasePolicy').authorize('viewList')
+    const KnowledgeBaseCatentQuery = KnowledgeBaseContent.query()
+
+    this.applyFilters(KnowledgeBaseCatentQuery, request.qs(), { searchFields: ['slug'] })
+
+    this.extraFilters(KnowledgeBaseCatentQuery, request)
+
+    const contents = await this.paginate(request, KnowledgeBaseCatentQuery)
+
+    return response.custom({
+      code: 200,
+      data: contents,
+      success: true,
+      message: null,
+    })
+  }
+
+  public async show({ response, bouncer, params }: HttpContextContract) {
+    await bouncer.with('KnowledgebasePolicy').authorize('view')
+    const id = params.id
+    const content = await KnowledgeBaseContent.query().where('id', id).firstOrFail()
+
+    return response.custom({
+      code: 200,
+      success: true,
+      message: null,
+      data: content,
+    })
   }
 
   public async store({ request, response, bouncer }: HttpContextContract) {
@@ -60,6 +82,21 @@ export default class KnowledgeBaseContentsController extends BaseController {
       code: 201,
       data: content,
       success: true,
+    })
+  }
+
+  public async destroy({ params, response, bouncer }: HttpContextContract) {
+    const content = await KnowledgeBaseContent.findOrFail(+params.id)
+
+    await bouncer.with('KnowledgebasePolicy').authorize('delete')
+
+    await content.delete()
+
+    return response.custom({
+      code: 200,
+      success: true,
+      message: 'Record Deleted',
+      data: content,
     })
   }
 }

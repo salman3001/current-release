@@ -10,12 +10,13 @@ import slugify from 'slugify'
 export default class ServiceTagsController extends BaseApiController {
   public async index({ request, response, bouncer }: HttpContextContract) {
     await bouncer.with('ServiceCategoryPolicy').authorize('viewList')
+    const tagQuery = ServiceTag.query()
 
-    const tagQuery = ServiceTag.query().select(['id', 'name'])
+    this.applyFilters(tagQuery, request.qs(), { searchFields: ['slug'] })
 
-    this.applyFilters(tagQuery, request.qs(), { searchFields: ['name'] })
+    this.extraFilters(tagQuery, request)
 
-    const tags = await tagQuery.exec()
+    const tags = await this.paginate(request, tagQuery)
 
     return response.custom({
       code: 200,
@@ -25,15 +26,23 @@ export default class ServiceTagsController extends BaseApiController {
     })
   }
 
-  public async showBySlug({ request, response, bouncer, params }: HttpContextContract) {
+  public async show({ response, bouncer, params }: HttpContextContract) {
     await bouncer.with('ServiceCategoryPolicy').authorize('view')
+    const id = params.id
+    const tag = await ServiceTag.query().where('id', id).firstOrFail()
 
+    return response.custom({
+      code: 200,
+      success: true,
+      message: null,
+      data: tag,
+    })
+  }
+
+  public async showBySlug({ response, bouncer, params }: HttpContextContract) {
+    await bouncer.with('ServiceCategoryPolicy').authorize('view')
     const slug = params.slug
-    const tagQuery = ServiceTag.query().where('slug', slug)
-
-    this.applyFilters(tagQuery, request.qs(), { searchFields: ['name'] })
-
-    const tag = await tagQuery.first()
+    const tag = await ServiceTag.query().where('slug', slug).firstOrFail()
 
     return response.custom({
       code: 200,
@@ -119,6 +128,21 @@ export default class ServiceTagsController extends BaseApiController {
       code: 201,
       data: tag,
       success: true,
+    })
+  }
+
+  public async destroy({ params, response, bouncer }: HttpContextContract) {
+    const tag = await ServiceTag.findOrFail(+params.id)
+
+    await bouncer.with('ServiceCategoryPolicy').authorize('delete')
+
+    await tag.delete()
+
+    return response.custom({
+      code: 200,
+      success: true,
+      message: 'Record Deleted',
+      data: tag,
     })
   }
 

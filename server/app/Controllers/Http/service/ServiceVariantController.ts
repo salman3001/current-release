@@ -4,15 +4,14 @@ import Database from '@ioc:Adonis/Lucid/Database'
 import VariantCreateValidator from 'App/Validators/service/VariantCreateValidator'
 import ServiceVariant from 'App/Models/service/ServiceVariant'
 import BaseApiController from '../BaseApiController'
+import Service from 'App/Models/service/Service'
 
 export default class ServiceVariantController extends BaseApiController {
-
   public async index({ request, response, bouncer }: HttpContextContract) {
     await bouncer.with('ServicePolicy').authorize('viewList')
-    const serviceVariantQuery = ServiceVariant.query()
-      .preload('service', (s) => {
-        s.select(['name'])
-      })
+    const serviceVariantQuery = ServiceVariant.query().preload('service', (s) => {
+      s.select(['name'])
+    })
 
     this.applyFilters(serviceVariantQuery, request.qs(), { searchFields: ['name'] })
 
@@ -26,7 +25,7 @@ export default class ServiceVariantController extends BaseApiController {
     })
   }
 
-  public async show({ request, response, bouncer, params }: HttpContextContract) {
+  public async show({ response, bouncer, params }: HttpContextContract) {
     await bouncer.with('ServicePolicy').authorize('view')
 
     const id = +params.id
@@ -104,6 +103,22 @@ export default class ServiceVariantController extends BaseApiController {
       code: 201,
       data: variant,
       success: true,
+    })
+  }
+
+  public async destroy({ params, response, bouncer }: HttpContextContract) {
+    const variant = await ServiceVariant.findOrFail(+params.id)
+    const service = await Service.findOrFail(variant.serviceId)
+
+    await bouncer.with('ServicePolicy').authorize('delete', service)
+
+    await variant.delete()
+
+    return response.custom({
+      code: 200,
+      success: true,
+      message: 'Record Deleted',
+      data: variant,
     })
   }
 }

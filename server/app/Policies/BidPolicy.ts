@@ -18,6 +18,15 @@ export default class BidPolicy extends BasePolicy {
       return false
     }
   }
+
+  public async negotiate(user: User) {
+    if (user instanceof User) {
+      return true
+    } else {
+      return false
+    }
+  }
+
   public async update(user: User, bid: Bid) {
     if (user instanceof VendorUser && bid.vendorUserId == user.id) {
       return true
@@ -25,6 +34,7 @@ export default class BidPolicy extends BasePolicy {
       return false
     }
   }
+
   public async delete(user: User, bid: Bid) {
     if (user instanceof VendorUser && bid.vendorUserId == user.id) {
       return true

@@ -22,6 +22,13 @@ export default class extends BaseSchema {
         .inTable('vendor_profiles')
         .onDelete('CASCADE')
 
+      table
+        .integer('service_requirement_id')
+        .unsigned()
+        .references('id')
+        .inTable('service_requirements')
+        .onDelete('CASCADE')
+
       table.integer('media_id').unsigned().references('id').inTable('media').onDelete('SET NULL')
     })
   }

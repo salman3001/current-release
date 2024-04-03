@@ -1,21 +1,43 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import SupportTicket from 'App/Models/helpcenter/SupportTicket'
-import BaseController from '../BaseController'
 import { TicketStatus } from 'App/Helpers/enums'
 import SupportTicketCreateValidator from 'App/Validators/helpcenter/SupportTicketCreateValidator'
 import ChatMessage from 'App/Models/helpcenter/ChatMessage'
 import AdminUser from 'App/Models/adminUser/AdminUser'
 import User from 'App/Models/user/User'
 import { schema } from '@ioc:Adonis/Core/Validator'
+import BaseApiController from '../BaseApiController'
 
-export default class SupportTicketsController extends BaseController {
-  constructor() {
-    super(
-      SupportTicket,
-      SupportTicketCreateValidator,
-      SupportTicketCreateValidator,
-      'SupportTicketPolicy'
-    )
+export default class SupportTicketsController extends BaseApiController {
+  public async index({ request, response, bouncer }: HttpContextContract) {
+    await bouncer.with('SupportTicketPolicy').authorize('viewList')
+    const SupportTicketQuery = SupportTicket.query()
+
+    this.applyFilters(SupportTicketQuery, request.qs(), { searchFields: ['slug'] })
+
+    this.extraFilters(SupportTicketQuery, request)
+
+    const tickets = await this.paginate(request, SupportTicketQuery)
+
+    return response.custom({
+      code: 200,
+      data: tickets,
+      success: true,
+      message: null,
+    })
+  }
+
+  public async show({ response, bouncer, params }: HttpContextContract) {
+    const id = params.id
+    const ticket = await SupportTicket.query().where('id', id).firstOrFail()
+    await bouncer.with('SupportTicketPolicy').authorize('view', ticket)
+
+    return response.custom({
+      code: 200,
+      success: true,
+      message: null,
+      data: ticket,
+    })
   }
 
   public async store({ request, response, bouncer }: HttpContextContract) {
@@ -103,6 +125,21 @@ export default class SupportTicketsController extends BaseController {
       code: 201,
       data: message,
       success: true,
+    })
+  }
+
+  public async destroy({ params, response, bouncer }: HttpContextContract) {
+    const ticket = await SupportTicket.findOrFail(+params.id)
+
+    await bouncer.with('KnowledgebasePolicy').authorize('delete')
+
+    await ticket.delete()
+
+    return response.custom({
+      code: 200,
+      success: true,
+      message: 'Record Deleted',
+      data: ticket,
     })
   }
 }
