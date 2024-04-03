@@ -1,44 +1,40 @@
 <script setup lang="ts">
 import { date } from "quasar";
 
-const customFetch = useCustomFetch();
-const page = ref(1);
 const filterModal = ref(false);
 const modal = modalStore();
 const filter = ref(null);
 
-const query = computed(() =>
-  filter.value === "active"
-    ? {
-      where_active: 1,
-    }
-    : filter.value === "accepted"
-      ? {
-        where_acepted: 1,
-      }
-      : filter.value === "expired"
-        ? {
-          where_expires_at_lt: date.formatDate(Date.now(), "YYYY/MM/DD hh:mm:ss")
-        }
-        : {}
-);
+
+const { list, query } = useServiceRequirementApi.myList({ orderBy: 'created_at:desc', page: 1 })
+
+watch(filter, (newFilterValue) => {
+  if (newFilterValue == 'active') {
+    query.where_active = 1
+    query.where_acepted = null
+    query.where_expires_at_lt = null
+  }
+
+  if (newFilterValue == 'accepted') {
+    query.where_active = null
+    query.where_acepted = 1
+    query.where_expires_at_lt = null
+  }
+
+  if (newFilterValue == 'expired') {
+    query.where_active = null
+    query.where_acepted = 1
+    query.where_expires_at_lt = date.formatDate(Date.now(), "YYYY/MM/DD hh:mm:ss")
+  }
+
+})
 
 const {
   data: serviceRequirements,
   pending,
   refresh,
 } = await useAsyncData(async () => {
-  const data = await customFetch<IPageRes<IServiceRequirement[]>>(
-    apiRoutes.service_requirements.my_list,
-    {
-      query: {
-        page: page.value,
-        orderBy: 'created_at:desc',
-        descending: "false",
-        ...query.value,
-      } as IQs,
-    }
-  );
+  const data = await list()
 
   return data.data;
 });
@@ -78,7 +74,8 @@ const {
           <div v-else v-for="requirement in serviceRequirements?.data">
             <WebRequirementCard :requirement="requirement" />
           </div>
-          <PaginateComponet :page="page" :meta="serviceRequirements?.meta" @update:model-value="refresh" />
+          <PaginateComponet :page="query.page" :meta="serviceRequirements?.meta"
+            @update:model-value="(v: number) => query.page = v" />
           <q-dialog v-model="filterModal">
             <q-card style="width: 100%">
               <q-toolbar color="primary">

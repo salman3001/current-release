@@ -1,6 +1,5 @@
 <script setup lang="ts">
 const route = useRoute();
-const customFetch = useCustomFetch();
 const modal = modalStore();
 const user = useCookie("user");
 const getImageUrl = useGetImageUrl();
@@ -8,31 +7,26 @@ const slide = ref();
 
 const selectedVariant = ref<IServiceVariant | null>(null);
 
+const { show } = useServiceApi.showBySlug()
 const {
   data: service,
   pending: servicePending,
   refresh: refreshService,
-} = await useAsyncData(("service-" + route.params.slug) as string, async () => {
-  const data = await customFetch<IResType<IService>>(
-    apiRoutes.services.view_by_slug(route.params.slug as string)
-  );
+} = await useAsyncData(async () => {
+  const data = await show(route.params.slug as string)
   return data.data;
 });
 
+const { list: serviceList } = useServiceApi.list({
+  page: 1,
+  perPage: 10,
+  field__service_category_id: service.value?.service_category_id
+})
 const {
   data: similarServices,
   refresh,
   pending: similarServicesPending,
-} = await useAsyncData(() =>
-  customFetch<IPageRes<IService[]>>(apiRoutes.services.list, {
-    query: {
-      page: 1,
-      perPage: 5,
-      ...(service.value?.service_category_id
-        ? { field__service_category_id: service.value?.service_category_id }
-        : {}),
-    },
-  })
+} = await useAsyncData(() => serviceList()
 );
 
 selectedVariant.value = service.value?.variants[0] || null;
