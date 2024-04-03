@@ -56,8 +56,8 @@ const apiRoutes = {
       `/api/bookings/get-coupons?serviceVariantId=${variantId}`,
   },
   service_requirements: {
-    ...createBaseRoutes("api/service-requirements"),
-    my_list: "api/service-requirements/my-list",
+    ...createBaseRoutes("/api/service-requirements"),
+    my_list: "/api/service-requirements/my-list",
     show_bids: (requirementId: number) =>
       `/api/service-requirements/${requirementId}/show-bids`,
     show_accepted_bid: (requirementId: number) =>

@@ -1,36 +1,30 @@
 <script setup lang="ts">
 const route = useRoute();
-const customFetch = useCustomFetch();
 const getImageUrl = useGetImageUrl();
-const page = ref(1);
 const user = useCookie("user");
 const modal = modalStore();
 
+
+const { show } = useVendorApi.show()
 const {
   data: vendor,
   refresh: refreshVendor,
   pending,
 } = await useAsyncData("vendor-profile-" + route.params.id, async () => {
-  const data = await customFetch<IResType<IVendorUser>>(
-    apiRoutes.vendor_user.view(route.params.id as any)
-  );
+  const data = await show(route.params.id as any)
   return data.data;
 });
 
+const { list: serviceList, query: serviceQuery } = useServiceApi.list({
+  page: 1,
+  field__vendor_user_id: vendor.value!.id,
+})
 const {
   data: services,
   refresh,
   pending: servicesPending,
 } = await useAsyncData(async () => {
-  const data = await customFetch<IPageRes<IService[]>>(
-    apiRoutes.services.list,
-    {
-      query: {
-        page: page.value,
-        field__vendor_user_id: vendor.value!.id,
-      },
-    }
-  );
+  const data = await serviceList()
   return data;
 });
 </script>
@@ -87,8 +81,8 @@ const {
       </div>
     </div>
     <div class="row col-12">
-      <PaginateComponet :page="page" :meta="services?.data.meta"
-        @update:model-value="(v: number) => { page = v; refresh() }" />
+      <PaginateComponet :page="serviceQuery.page" :meta="services?.data.meta"
+        @update:model-value="(v: number) => { serviceQuery.page = v; refresh() }" />
     </div>
     <div class="q-gutter-md">
       <div style="max-width: 700px">
