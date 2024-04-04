@@ -16,7 +16,7 @@ export default class ServiceSubcategoriesController extends BaseApiController {
 
     this.extraFilters(serviceCategoryQuery, request)
 
-    const categories = await this.paginate(request, serviceCategoryQuery)
+    const categories = await serviceCategoryQuery.exec()
 
     return response.custom({
       code: 200,

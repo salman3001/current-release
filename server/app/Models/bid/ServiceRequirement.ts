@@ -43,6 +43,9 @@ export default class ServiceRequirement extends BaseModel {
   public location: string
 
   @column()
+  public urgent: boolean
+
+  @column()
   public userId: number
 
   @column()

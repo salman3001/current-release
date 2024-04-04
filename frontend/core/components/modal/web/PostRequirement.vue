@@ -14,8 +14,7 @@ const form = ref({
   desc: "",
   keywords: [],
   urgent: false,
-  skillsRequired: ["sas"],
-  budgetType: "fixed",
+  budgetUnit: "",
   budget: "",
   expiresAt: date.formatDate(
     date.addToDate(Date.now(), { day: 3 }),
@@ -24,8 +23,8 @@ const form = ref({
   location: "-2.2,37.7",
   serviceCategoryId: "",
   images: null,
-  documents: null,
-  video: null,
+  // documents: null,
+  // video: null,
 });
 
 const { data: categories, pending: categoriesPending } = useAsyncData(
@@ -58,10 +57,10 @@ const creatRequirement = async () => {
 };
 
 const totalFilesSelected = computed(
-  () =>
-    (form.value.images?.length || 0) +
-    (form.value.documents?.length || 0) +
-    (form.value.video ? 1 : 0)
+  () => (form.value.images as unknown as [])?.length || 0
+  // +
+  // (form.value.documents?.length || 0) +
+  // (form.value.video ? 1 : 0)
 );
 </script>
 
@@ -104,26 +103,26 @@ const totalFilesSelected = computed(
             map-options
             v-model="form.serviceCategoryId"
           />
-          <q-select
+          <FormsSelectOrAdd
             label="Keywords"
             class="chip-primary"
-            outlined
-            use-input
-            use-chips
             multiple
-            hide-dropdown-con
-            new-value-mode="add-unique"
-            :rules="[rules.required('required')]"
+            outlined
             v-model="form.keywords"
+            :options="['salman', 'khan']"
           />
           <div>
             <label>Need In short Time?</label>
             <q-toggle val="fixed" v-model="form.urgent" />
           </div>
-          <div>
-            <q-radio val="fixed" label="Fixed" v-model="form.budgetType" />
-            <q-radio val="hourly" label="Hourly" v-model="form.budgetType" />
-          </div>
+          <FormsSelectOrAdd
+            label="Budget Unit"
+            class="chip-primary"
+            outlined
+            :rules="[rules.required('required')]"
+            v-model="form.budgetUnit"
+            :options="['Hourly', 'Fixed', 'Per Unit', 'Monthly']"
+          />
 
           <q-input
             type="number"

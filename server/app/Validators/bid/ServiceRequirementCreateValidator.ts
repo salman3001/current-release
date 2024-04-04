@@ -38,6 +38,7 @@ export default class ServiceRequirementCreateValidator {
     keywords: schema.array
       .optional()
       .members(schema.string({ escape: true }, [rules.maxLength(50)])),
+    urgent: schema.boolean.optional(),
     expiresAt: schema.date({ format: 'dd/MM/yyyy HH:mm' }, [rules.after(1, 'day')]),
     location: schema.string({ escape: true }, [rules.maxLength(20)]),
     serviceCategoryId: schema.number(),

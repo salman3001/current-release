@@ -16,7 +16,7 @@ export default class ServiceTagsController extends BaseApiController {
 
     this.extraFilters(tagQuery, request)
 
-    const tags = await this.paginate(request, tagQuery)
+    const tags = await tagQuery.exec()
 
     return response.custom({
       code: 200,

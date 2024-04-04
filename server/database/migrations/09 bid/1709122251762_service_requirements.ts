@@ -13,6 +13,7 @@ export default class extends BaseSchema {
       table.decimal('budget', 10, 2).notNullable()
       table.dateTime('expires_at')
       table.point('location')
+      table.boolean('urgent').notNullable().defaultTo(false)
       table
         .integer('user_id')
         .unsigned()

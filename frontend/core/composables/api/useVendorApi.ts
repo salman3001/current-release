@@ -1,19 +1,154 @@
 import { useBaseApi } from "./useBaseApi";
 
 interface InitialQuery {
-    page?: number;
-    field__is_active?: boolean;
-    orderBy?: string;
-    search?: string | null;
-    perPage: number | null
+  page?: number;
+  field__is_active?: boolean;
+  orderBy?: string;
+  search?: string | null;
+  perPage: number | null;
 }
-const createForm = {}
-const updateForm = {}
+const createForm = {};
+const updateForm = {};
+const updateProfileForm = {
+  avatar: null,
+  logo: null,
+  images: {
+    shortDesc: "",
+    longDesc: "",
+    isActive: "",
+  },
+  seo: {
+    metaTitle: "",
+    metaKeywords: "",
+    metaDesc: "",
+  },
+  social: {
+    website: "",
+    facebook: "",
+    twitter: "",
+    instagram: "",
+    pintrest: "",
+    linkedin: "",
+    vk: "",
+    whatsapp: "",
+    telegram: "",
+  },
 
-class UseVendorApi extends useBaseApi<IVendorUser, InitialQuery, typeof createForm, typeof updateForm>{
-    constructor() {
-        super('/api/vendor-users', createForm, updateForm)
-    }
+  faq: [
+    {
+      quest: "",
+      ans: "",
+    },
+  ],
+  address: [
+    {
+      address: "",
+      geoLocation: "",
+    },
+  ],
+};
+const createReviewForm = {
+  rating: "",
+  message: "",
+};
+
+class UseVendorApi extends useBaseApi<
+  IVendorUser,
+  InitialQuery,
+  typeof createForm,
+  typeof updateForm
+> {
+  constructor() {
+    super("/api/vendor-users", createForm, updateForm);
+  }
+
+  updateProfile() {
+    const { fetch, loading } = usePostFetch();
+    const form = reactive(updateProfileForm);
+
+    const update = async (
+      id: number,
+      cd?: {
+        onSuccess?: () => void;
+        onError?: () => void;
+      }
+    ) => {
+      loading.value = true;
+      try {
+        const res = await fetch<IResType<IVendorUser>>(
+          this.baseUrl + `/${id}`,
+          {
+            method: "put",
+            body: form,
+          }
+        );
+
+        if (res.success == true) {
+          cd?.onSuccess && cd?.onSuccess();
+        }
+      } catch (error) {
+        console.log(error);
+        cd?.onError && cd?.onError();
+      }
+
+      loading.value = false;
+    };
+
+    return {
+      update,
+      form,
+      loading,
+    };
+  }
+
+  reviews(vendorId: number) {
+    const customFetch = useCustomFetch();
+    const reviews = async (): Promise<IPageRes<IReview[]>> =>
+      customFetch(this.baseUrl + `/${vendorId}/reviews`);
+
+    return {
+      reviews,
+    };
+  }
+
+  cretaeReview() {
+    const { fetch, loading } = usePostFetch();
+    const form = reactive(createReviewForm);
+
+    const cretaeReview = async (
+      vendorId: number,
+      cd?: {
+        onSuccess?: () => void;
+        onError?: () => void;
+      }
+    ) => {
+      loading.value = true;
+      try {
+        const res = await fetch<IResType<IReview>>(
+          this.baseUrl + `/${vendorId}/reviews`,
+          {
+            method: "post",
+            body: form,
+          }
+        );
+
+        if (res.success == true) {
+          cd?.onSuccess && cd?.onSuccess();
+        }
+      } catch (error) {
+        console.log(error);
+        cd?.onError && cd?.onError();
+      }
+
+      loading.value = false;
+    };
+
+    return {
+      cretaeReview,
+      form,
+      loading,
+    };
+  }
 }
 
-export const useVendorApi = new UseVendorApi()
+export const useVendorApi = new UseVendorApi();

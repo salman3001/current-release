@@ -1,154 +1,150 @@
 interface baseQuery {
-    page?: number;
-    orderBy?: string;
-    search?: string | null;
-    perPage?: number | null
+  page?: number | null;
+  orderBy?: string | null;
+  search?: string | null;
+  perPage?: number | null;
 }
 
-export class useBaseApi<Model, initialQuery extends baseQuery, createForm extends object, updateform extends object>{
+export class useBaseApi<
+  Model,
+  initialQuery extends baseQuery,
+  createForm extends object,
+  updateform extends object
+> {
+  constructor(
+    public baseUrl: string,
+    public creatForm: createForm,
+    public updateForm: updateform
+  ) {}
 
-    constructor(public baseUrl: string, public creatForm: createForm, public updateForm: updateform) { }
+  list(initialQuery: initialQuery) {
+    const customFetch = useCustomFetch();
 
-    list(initialQuery: initialQuery) {
-        const customFetch = useCustomFetch();
+    const query = reactive<initialQuery>({
+      page: null,
+      orderBy: null,
+      search: null,
+      perPage: null,
+      ...initialQuery,
+    });
 
-        const query = reactive<initialQuery>({
-            page: null,
-            orderBy: null,
-            search: null,
-            perPage: null,
-            ...initialQuery
+    const list = async (): Promise<IPageRes<Model[]>> =>
+      customFetch(this.baseUrl, {
+        query: query,
+      });
+
+    return {
+      query,
+      list,
+    };
+  }
+
+  show() {
+    const customFetch = useCustomFetch();
+    const show = async (id: number): Promise<IResType<Model>> =>
+      customFetch(`${this.baseUrl}/${id}`);
+    return { show };
+  }
+
+  cretae() {
+    const { fetch, loading } = usePostFetch();
+    const form = reactive(this.creatForm);
+
+    const create = async (cd?: {
+      onSuccess?: () => void;
+      onError?: () => void;
+    }) => {
+      loading.value = true;
+      try {
+        const res = await fetch<IResType<Model>>(this.baseUrl, {
+          method: "post",
+          body: form,
         });
 
-        const list = async (): Promise<IPageRes<Model[]>> =>
-            customFetch(this.baseUrl, {
-                query: query,
-            });
+        if (res.success == true) {
+          cd?.onSuccess && cd?.onSuccess();
+        }
+      } catch (error) {
+        console.log(error);
+        cd?.onError && cd?.onError();
+      }
 
-        return {
-            query,
-            list,
-        };
-    }
+      loading.value = false;
+    };
 
-    show() {
-        const customFetch = useCustomFetch();
-        const show = async (id: number): Promise<IResType<Model>> =>
-            customFetch(`${this.baseUrl}/${id}`);
-        return { show };
-    }
+    return {
+      create,
+      form,
+      loading,
+    };
+  }
 
-    cretae() {
-        const { fetch, loading } = usePostFetch();
-        const form = reactive(this.creatForm)
+  update() {
+    const { fetch, loading } = usePostFetch();
+    const form = reactive(this.creatForm || {});
 
-        const create = async (
-            cd?: {
-                onSuccess?: () => void;
-                onError?: () => void;
-            }
-        ) => {
-            loading.value = true;
-            try {
-                const res = await fetch<IResType<IConversation>>(
-                    this.baseUrl,
-                    {
-                        method: "post",
-                        body: form,
-                    }
-                );
+    const update = async (
+      id: number,
+      cd?: {
+        onSuccess?: () => void;
+        onError?: () => void;
+      }
+    ) => {
+      loading.value = true;
+      try {
+        const res = await fetch<IResType<Model>>(this.baseUrl + `/${id}`, {
+          method: "put",
+          body: form,
+        });
 
-                if (res.success == true) {
-                    cd?.onSuccess && cd?.onSuccess();
-                }
-            } catch (error) {
-                console.log(error);
-                cd?.onError && cd?.onError();
-            }
+        if (res.success == true) {
+          cd?.onSuccess && cd?.onSuccess();
+        }
+      } catch (error) {
+        console.log(error);
+        cd?.onError && cd?.onError();
+      }
 
-            loading.value = false;
-        };
+      loading.value = false;
+    };
 
-        return {
-            create,
-            form,
-            loading,
-        };
-    }
+    return {
+      update,
+      form,
+      loading,
+    };
+  }
 
-    update() {
-        const { fetch, loading } = usePostFetch();
-        const form = reactive(this.creatForm || {})
+  destroy() {
+    const { fetch, loading } = usePostFetch();
 
-        const update = async (
-            id: number,
-            cd?: {
-                onSuccess?: () => void;
-                onError?: () => void;
-            }
-        ) => {
-            loading.value = true;
-            try {
-                const res = await fetch<IResType<IConversation>>(
-                    this.baseUrl + `/${id}`,
-                    {
-                        method: "put",
-                        body: form,
-                    }
-                );
+    const destroy = async (
+      id: number,
+      cd?: {
+        onSuccess?: () => void;
+        onError?: () => void;
+      }
+    ) => {
+      loading.value = true;
+      try {
+        const res = await fetch<IResType<Model>>(this.baseUrl + `/${id}`, {
+          method: "delete",
+        });
 
-                if (res.success == true) {
-                    cd?.onSuccess && cd?.onSuccess();
-                }
-            } catch (error) {
-                console.log(error);
-                cd?.onError && cd?.onError();
-            }
+        if (res.success == true) {
+          cd?.onSuccess && cd?.onSuccess();
+        }
+      } catch (error) {
+        console.log(error);
+        cd?.onError && cd?.onError();
+      }
 
-            loading.value = false;
-        };
+      loading.value = false;
+    };
 
-        return {
-            update,
-            form,
-            loading,
-        };
-    }
-
-    destroy() {
-        const { fetch, loading } = usePostFetch();
-
-        const destroy = async (
-            id: number,
-            cd?: {
-                onSuccess?: () => void;
-                onError?: () => void;
-            }
-        ) => {
-            loading.value = true;
-            try {
-                const res = await fetch<IResType<IConversation>>(
-                    this.baseUrl + `/${id}`,
-                    {
-                        method: "delete",
-                    }
-                );
-
-                if (res.success == true) {
-                    cd?.onSuccess && cd?.onSuccess();
-                }
-            } catch (error) {
-                console.log(error);
-                cd?.onError && cd?.onError();
-            }
-
-            loading.value = false;
-        };
-
-        return {
-            destroy,
-            loading,
-        };
-    }
+    return {
+      destroy,
+      loading,
+    };
+  }
 }
-

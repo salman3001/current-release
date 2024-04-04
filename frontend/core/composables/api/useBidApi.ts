@@ -2,24 +2,27 @@ import { useBaseApi } from "./useBaseApi";
 
 interface InitialQuery {
   page?: number;
+  field__is_active?: boolean;
   orderBy?: string;
   search?: string | null;
   perPage?: number | null;
+  where_expires_at_lt?: string | null;
+  where_active?: null | number;
+  where_acepted?: null | number;
 }
 
 const createForm = {};
-
 const updateForm = {};
 
-class UseServiceCategoryApi extends useBaseApi<
-  IServiceCategory,
+class UseBidApi extends useBaseApi<
+  IBid,
   InitialQuery,
   typeof createForm,
   typeof updateForm
 > {
   constructor() {
-    super("/api/service-category", createForm, updateForm);
+    super("/api/bids", createForm, updateForm);
   }
 }
 
-export const useServiceCategoyrApi = new UseServiceCategoryApi();
+export const useBidApi = new UseBidApi();

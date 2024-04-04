@@ -11,8 +11,7 @@ const form = ref({
   desc: "",
   keywords: [],
   urgent: false,
-  skillsRequired: ["sas"],
-  budgetType: "fixed",
+  budgetUnit: "",
   budget: "",
   expiresAt: date.formatDate(
     date.addToDate(Date.now(), { day: 3 }),
@@ -21,15 +20,15 @@ const form = ref({
   location: "-2.2,37.7",
   serviceCategoryId: "",
   images: null,
-  documents: null,
-  video: null,
+  // documents: null,
+  // video: null,
 });
 
 const totalFilesSelected = computed(
-  () =>
-    (form.value.images?.length || 0) +
-    (form.value.documents?.length || 0) +
-    (form.value.video ? 1 : 0)
+  () => (form.value.images as unknown as [])?.length || 0
+  //  +
+  // (form.value.documents?.length || 0) +
+  // (form.value.video ? 1 : 0)
 );
 
 const { data: categories, pending: categoriesPending } = useAsyncData(
@@ -77,7 +76,6 @@ const creatRequirement = async () => {
               label="Enter Your Title"
               class="col-12 col-sm-6 col-md-3"
               :rules="[rules.required('required')]"
-              lazy-rules="true"
             />
             <q-input
               type="textarea"
@@ -89,6 +87,7 @@ const creatRequirement = async () => {
             />
             <q-select
               label="Select Category"
+              v-if="categories"
               outlined
               :rules="[rules.required('required')]"
               :options="categories"
@@ -98,17 +97,14 @@ const creatRequirement = async () => {
               map-options
               v-model="form.serviceCategoryId"
             />
-            <q-select
+            <FormsSelectOrAdd
               label="Keywords"
               class="chip-primary"
               outlined
-              use-input
-              use-chips
-              multiple
-              hide-dropdown-con
-              new-value-mode="add-unique"
               :rules="[rules.required('required')]"
               v-model="form.keywords"
+              :options="['salman', 'khan']"
+              style="z-index: 10000"
             />
             <div>
               <label>Need In short Time?</label>

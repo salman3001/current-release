@@ -1,12 +1,51 @@
-export class useChatApi {
-  static creatConversation() {
-    const { fetch, loading } = usePostFetch();
+import { useBaseApi } from "./useBaseApi";
 
-    const createConversation = async (
-      data: {
-        userType: any;
-        userId: number;
-      },
+interface InitialQuery {
+  page?: number;
+  orderBy?: string;
+  search?: string | null;
+  perPage?: number | null;
+}
+
+const createForm = {
+  userType: "",
+  userId: "",
+};
+
+const messageForm = {
+  body: "",
+};
+const updateForm = {};
+
+class UseChatApi extends useBaseApi<
+  IConversation,
+  InitialQuery,
+  typeof createForm,
+  typeof updateForm
+> {
+  constructor() {
+    super("/api/chat/conversations/", createForm, updateForm);
+  }
+
+  messages() {
+    const customFetch = useCustomFetch();
+
+    const messages = async (
+      converstaionId: number
+    ): Promise<IPageRes<IMessage[]>> =>
+      customFetch(this.baseUrl + `/${converstaionId}/get-messages`);
+
+    return {
+      messages,
+    };
+  }
+
+  cretaeMessage() {
+    const { fetch, loading } = usePostFetch();
+    const form = reactive(messageForm);
+
+    const create = async (
+      converstaionId: number,
       cd?: {
         onSuccess?: () => void;
         onError?: () => void;
@@ -15,14 +54,10 @@ export class useChatApi {
       loading.value = true;
       try {
         const res = await fetch<IResType<IConversation>>(
-          "/api/chat/conversations/",
+          this.baseUrl + `/${converstaionId}/create-message`,
           {
             method: "post",
-            body: {
-              participant: {
-                ...data,
-              },
-            },
+            body: form,
           }
         );
 
@@ -38,8 +73,11 @@ export class useChatApi {
     };
 
     return {
-      createConversation,
+      create,
+      form,
       loading,
     };
   }
 }
+
+export const useChatApi = new UseChatApi();

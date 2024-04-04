@@ -11,15 +11,15 @@ const createForm = {};
 
 const updateForm = {};
 
-class UseServiceCategoryApi extends useBaseApi<
-  IServiceCategory,
+class UseServiceSubcategoryApi extends useBaseApi<
+  IServiceSubcategory,
   InitialQuery,
   typeof createForm,
   typeof updateForm
 > {
   constructor() {
-    super("/api/service-category", createForm, updateForm);
+    super("/api/service-subcategory", createForm, updateForm);
   }
 }
 
-export const useServiceCategoyrApi = new UseServiceCategoryApi();
+export const useServiceSubategoyrApi = new UseServiceSubcategoryApi();

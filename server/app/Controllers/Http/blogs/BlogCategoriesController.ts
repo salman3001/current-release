@@ -14,7 +14,7 @@ export default class BlogCategoriesController extends BaseApiController {
 
     this.extraFilters(blogQuery, request)
 
-    const categories = await this.paginate(request, blogQuery)
+    const categories = await blogQuery.exec()
 
     return response.custom({
       code: 200,
