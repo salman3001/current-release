@@ -7,6 +7,7 @@ interface baseQuery {
 
 export class useBaseApi<
   Model,
+  listRsp,
   initialQuery extends baseQuery,
   createForm extends object,
   updateform extends object
@@ -15,20 +16,14 @@ export class useBaseApi<
     public baseUrl: string,
     public creatForm: createForm,
     public updateForm: updateform
-  ) {}
+  ) { }
 
   list(initialQuery: initialQuery) {
     const customFetch = useCustomFetch();
 
-    const query = reactive<initialQuery>({
-      page: null,
-      orderBy: null,
-      search: null,
-      perPage: null,
-      ...initialQuery,
-    });
+    const query = reactive<initialQuery>(initialQuery);
 
-    const list = async (): Promise<IPageRes<Model[]>> =>
+    const list = async (): Promise<listRsp> =>
       customFetch(this.baseUrl, {
         query: query,
       });
@@ -55,10 +50,11 @@ export class useBaseApi<
       onError?: () => void;
     }) => {
       loading.value = true;
+      const formData = convertToFormData(form)
       try {
         const res = await fetch<IResType<Model>>(this.baseUrl, {
           method: "post",
-          body: form,
+          body: formData,
         });
 
         if (res.success == true) {
@@ -79,9 +75,9 @@ export class useBaseApi<
     };
   }
 
-  update() {
+  update(initialForm: updateform) {
     const { fetch, loading } = usePostFetch();
-    const form = reactive(this.creatForm || {});
+    const form = reactive(initialForm);
 
     const update = async (
       id: number,
@@ -91,10 +87,11 @@ export class useBaseApi<
       }
     ) => {
       loading.value = true;
+      const formData = convertToFormData(form)
       try {
         const res = await fetch<IResType<Model>>(this.baseUrl + `/${id}`, {
           method: "put",
-          body: form,
+          body: formData,
         });
 
         if (res.success == true) {

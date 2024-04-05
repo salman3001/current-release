@@ -13,6 +13,7 @@ const updateForm = {};
 
 class UseServiceCategoryApi extends useBaseApi<
   IServiceCategory,
+  IResType<IServiceCategory[]>,
   InitialQuery,
   typeof createForm,
   typeof updateForm
@@ -22,4 +23,4 @@ class UseServiceCategoryApi extends useBaseApi<
   }
 }
 
-export const useServiceCategoyrApi = new UseServiceCategoryApi();
+export const useServiceCategoryApi = new UseServiceCategoryApi();

@@ -1,22 +1,35 @@
 <script setup lang="ts">
-import VuePictureSwipe from "vue3-picture-swipe";
+import { useEasyLightbox } from 'vue-easy-lightbox'
 
-defineProps<{
-  items: {
-    src: string;
-    thumbnail: string;
-    w: number;
-    h: number;
-  };
-}>();
+const props = defineProps<{
+    images: string[],
+    imgMaxHeight?: string,
+    imgMaxWidth?: string
+}>()
+
+const {
+    // methods
+    show, onHide, changeIndex,
+    // refs
+    visibleRef, indexRef, imgsRef
+} = useEasyLightbox({
+    // src / src[]
+    imgs: props.images,
+    // initial index
+    initIndex: 0
+})
 </script>
 
 <template>
-  <vue-picture-swipe
-    :items="items"
-    :options="{
-      bgOpacity: 0.8,
-      arrowKeys: true,
-    }"
-  ></vue-picture-swipe>
+    <div>
+
+        <vue-easy-lightbox :visible="visibleRef" :imgs="imgsRef" :index="indexRef" @hide="onHide" />
+        <div class="row flex-wrap cursor-pointer q-gutter-md">
+            <q-img class="border" fit="contain" v-for="img, i in images" :src="img" :height="imgMaxHeight || '140px'"
+                :style="{ maxWidth: imgMaxWidth || ' 150px' }" @click="() => {
+            indexRef = i
+            show()
+        }" />
+        </div>
+    </div>
 </template>

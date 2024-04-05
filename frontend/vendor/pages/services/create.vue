@@ -1,52 +1,16 @@
 <script setup lang="ts">
 const step = ref(1);
-const form = ref({
-  thumbnail: null,
-  images: [],
-  video: null,
-  variantImages: [] as File[],
-  service: {
-    name: "",
-    slug: "",
-    serviceCategoryId: "",
-    serviceSubcategoryId: "",
-    locationSpecific: false,
-    shortDesc: "",
-    longDesc: "",
-    geoLocation: "23.5,67.3",
-    isActive: false,
-  },
-  tags: [],
-  seo: {
-    metaTitle: "",
-    metaKeywords: "",
-    metaDesc: "",
-  },
-  faq: [
-  ] as { quest: string, ans: string }[],
-  variant: [
-    {
-      name: "",
-      price: 0,
-      discountType: "flat",
-      discountFlat: 0,
-      discountPercentage: 0,
-      desc: "",
-    },
-  ],
-});
 
-const customFetch = useCustomFetch();
+const { form, create, loading } = useServiceApi.cretae()
+const { list: getcategoryList } = useServiceCategoryApi.list({})
+const { list: getSubcategoryList } = useServiceSubategoyrApi.list({})
+const { list: getTagsList } = useServiceTagApi.list({})
 
 const { data, pending: dataPending } = await useAsyncData(async () => {
   const [serviceCategories, serviceSubcategories, tags] = await Promise.all([
-    customFetch<IResType<IServiceCategory[]>>(
-      apiRoutes.service_categories.list
-    ),
-    customFetch<IResType<IServiceSubcategory[]>>(
-      apiRoutes.service_subcategories.list
-    ),
-    customFetch<IResType<IServiceTag[]>>(apiRoutes.service_tags.list),
+    getcategoryList(),
+    getSubcategoryList(),
+    getTagsList(),
   ]);
 
   return {
@@ -56,31 +20,24 @@ const { data, pending: dataPending } = await useAsyncData(async () => {
   };
 });
 
-const { loading, fetch: createService } = usePostFetch({
-  onSuccess: () => {
-    navigateTo(routes.vendor.services.list);
-  },
-});
-
-const submit = () => {
-  const formData = convertToFormData(form.value);
-
-  createService(apiRoutes.services.create, {
-    method: "post",
-    body: formData,
+const submit = async () => {
+  await create({
+    onSuccess() {
+      navigateTo(routes.vendor.services.list);
+    },
   });
 };
 
 const screenShotUrls = computed(() => {
-  return form.value.images.map((img: File) => URL.createObjectURL(img));
+  return form.images.map((img: File) => URL.createObjectURL(img));
 });
 
 const serviceThumbnailUrl = computed(() => {
-  return form.value.thumbnail ? URL.createObjectURL(form.value.thumbnail) : '/images/dummy-thumb.jpg';
+  return form.thumbnail ? URL.createObjectURL(form.thumbnail) : '/images/dummy-thumb.jpg';
 });
 
 const variantThumbnailUrl = computed(() => {
-  return form.value.variantImages.map((v: File) => URL.createObjectURL(v));
+  return form.variantImages.map((v: File) => URL.createObjectURL(v));
 });
 </script>
 
@@ -327,29 +284,6 @@ const variantThumbnailUrl = computed(() => {
       </q-step>
     </q-stepper>
 
-    <br />
-    <q-form @submit="submit" @validation-error="srollToView">
-      <br />
-
-      <br />
-
-      <br />
-
-      <br />
-
-      <br />
-
-      <div class="row justify-end q-gutter-md q-pt-xl">
-        <q-btn color="secondary" style="min-width: 8rem" @click="() => {
-        navigateTo(routes.vendor.services.list);
-      }
-        ">Cancle</q-btn>
-        <q-btn color="primary" v-if="loading">
-          <LoadingIndicator />
-        </q-btn>
-        <q-btn v-else color="primary" type="submit" style="min-width: 8rem">Save</q-btn>
-      </div>
-    </q-form>
   </div>
   <br />
   <br />

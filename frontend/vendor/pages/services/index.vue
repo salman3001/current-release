@@ -4,19 +4,18 @@ import { date, type QTableProps } from "quasar";
 const modal = modalStore();
 const { formatDate } = date;
 
-const customFetch = useCustomFetch();
 const route = useRoute();
 const getImageUrl = useGetImageUrl();
-const { loading: changingStatus, fetch: postFetch } = usePostFetch()
 
-const filter = reactive({
+const { query: filter, list: getServiceList } = useServiceApi.myList({
   page: (route.query.page as unknown as number) || 1,
   orderBy: (route.query.orderBy as string) || "created_at:desc",
   search: (route.query.search as string) || "",
-  field__is_active: "",
-  where_service_category_id: "",
-  where_service_subcategory_id: "",
-});
+  field__is_active: null,
+  field__service_category_id: null,
+  field__service_subcategory_id: null,
+  field__vendor_user_id: null,
+})
 
 const {
   data: services,
@@ -24,25 +23,18 @@ const {
   pending: servicesPending,
 } = await useAsyncData(
   async () => {
-    const data = await customFetch<IPageRes<IService[]>>(
-      apiRoutes.services.my_list,
-      {
-        query: filter,
-      }
-    );
+    const data = await getServiceList()
     return data.data;
-  },
-  { watch: [filter] }
+  }, { watch: [filter] }
 );
+
+const { list: cateroryList } = useServiceCategoryApi.list({})
+const { list: subcateroryList } = useServiceSubategoyrApi.list({})
 
 const { data, pending: dataPending } = await useAsyncData(async () => {
   const [serviceCategories, serviceSubcategories] = await Promise.all([
-    customFetch<IResType<IServiceCategory[]>>(
-      apiRoutes.service_categories.list
-    ),
-    customFetch<IResType<IServiceSubcategory[]>>(
-      apiRoutes.service_subcategories.list
-    ),
+    cateroryList(),
+    subcateroryList(),
   ]);
 
   return {
@@ -51,19 +43,18 @@ const { data, pending: dataPending } = await useAsyncData(async () => {
   };
 });
 
+const { form: serviceUpdateForm, loading, update } = useServiceApi.update({
+  service: {
+    isActive: false
+  }
+})
 const changeStatus = async (serviceId: number, status: boolean) => {
-  const res = await postFetch<IResType<any>>(apiRoutes.services.update((serviceId)), {
-    method: 'put',
-    body: {
-      service: {
-        isActive: status
-      }
+  serviceUpdateForm.service!.isActive = status
+  await update(serviceId, {
+    onSuccess: () => {
+      refresh()
     }
   })
-
-  if (res.success == true) {
-    refresh()
-  }
 }
 
 const colomns: QTableProps["columns"] = [
@@ -132,10 +123,10 @@ const colomns: QTableProps["columns"] = [
         <div class="row q-gutter-sm">
           <q-select v-if="data?.serviceCategories" outlined dense options-dense emit-value map-options
             option-label="name" option-value="id" :options="[{ name: 'All', id: '' }, ...data?.serviceCategories]"
-            v-model="filter.where_service_category_id" label="Category" class="col-auto" style="min-width: 8rem" />
+            v-model="filter.field__service_category_id" label="Category" class="col-auto" style="min-width: 8rem" />
           <q-select v-if="data?.serviceSubcategories" outlined dense options-dense emit-value map-options
             option-label="name" option-value="id" :options="[{ name: 'All', id: '' }, ...data?.serviceSubcategories]"
-            v-model="filter.where_service_subcategory_id" label="Subcategory" class="col-auto"
+            v-model="filter.field__service_subcategory_id" label="Subcategory" class="col-auto"
             style="min-width: 8rem" />
           <q-select outlined dense options-dense emit-value map-options v-model="filter.field__is_active" :options="[
           { label: 'All', value: '' },

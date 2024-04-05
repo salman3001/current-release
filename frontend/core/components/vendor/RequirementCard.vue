@@ -40,6 +40,9 @@ const getImageUrl = useGetImageUrl();
 
       <q-separator />
       <q-card-section>
+        <div v-if="requirement.urgent">
+          <q-badge class="q-pa-xs" outline color="negative">Urgent Requirment</q-badge>
+        </div>
         <p class="text-h6">
           {{ requirement.title }}
         </p>
@@ -47,7 +50,7 @@ const getImageUrl = useGetImageUrl();
 
           <span class="text-h6 text-bold">&#x20B9;{{ requirement.budget }}</span> &nbsp;&nbsp;<q-badge
             class="text-body2 text-black q-px-md q-badge-info">{{
-    requirement.budget_type
+    requirement.budget_unit
   }}</q-badge>
         </div>
         <p>

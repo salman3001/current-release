@@ -1,22 +1,16 @@
 <script setup lang="ts">
 import { date } from "quasar";
+import { useBookingApi } from "~/composables";
 
 const customFetch = useCustomFetch();
-const page = ref(1);
 
+const { query, customerBookings } = useBookingApi.customerBookings({ page: 1 })
 const {
   data: bookings,
   pending,
   refresh,
 } = useAsyncData("bookings", async () => {
-  const data = await customFetch<IPageRes<IBooking>>(
-    apiRoutes.bookings.for_customer,
-    {
-      query: {
-        page: page.value,
-      } as IQs
-    }
-  );
+  const data = await customerBookings()
   return data.data;
 });
 
@@ -104,8 +98,8 @@ const columns = [
           </q-td>
         </template>
       </q-table>
-      <PaginateComponet :page="page" :meta="bookings?.meta" @update:model-value="(v) => {
-          page = v;
+      <PaginateComponet :page="query.page || 1" :meta="bookings?.meta" @update:model-value="(v) => {
+          query.page = v;
           refresh();
         }
         " />

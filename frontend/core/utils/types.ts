@@ -63,3 +63,8 @@ type IQs = {
   perPage?: number,
 
 } & Record<any, any>
+
+
+type DeepPartial<T> = {
+  [P in keyof T]?: DeepPartial<T[P]>;
+};

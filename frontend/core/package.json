@@ -27,6 +27,7 @@
     "sass": "^1.70.0",
     "socket.io-client": "^4.7.4",
     "vue": "^3.4.15",
+    "vue-easy-lightbox": "^1.19.0",
     "vue-router": "^4.2.5",
     "vue3-picture-swipe": "^3.0.6"
   },

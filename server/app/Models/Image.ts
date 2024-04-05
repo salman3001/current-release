@@ -30,4 +30,7 @@ export default class Image extends BaseModel {
 
   @column()
   public vendorProfileId: number
+
+  @column()
+  public serviceRequirementId: number
 }

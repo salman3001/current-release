@@ -54,6 +54,7 @@ const createReviewForm = {
 
 class UseVendorApi extends useBaseApi<
   IVendorUser,
+  IPageRes<IVendorUser[]>,
   InitialQuery,
   typeof createForm,
   typeof updateForm

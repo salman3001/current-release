@@ -2,18 +2,17 @@
 
 
 const step = ref(1);
-const customFetch = useCustomFetch();
 const route = useRoute();
 const getImageUrl = useGetImageUrl()
 
+const { show: showService } = useServiceApi.showBySlug()
+
 const { data: service } = await useAsyncData(`services/${route.params.slug}`, async () => {
-  const data = await customFetch<IResType<IService>>(
-    apiRoutes.services.view_by_slug(route.params?.slug as unknown as number)
-  );
+  const data = await showService(route.params?.slug as string);
   return data.data;
 });
 
-const form = ref({
+const { form, loading, update } = useServiceApi.update({
   thumbnail: null,
   images: [] as File[],
   video: null,
@@ -21,11 +20,11 @@ const form = ref({
   service: {
     name: service.value?.name,
     slug: service.value?.slug,
-    serviceCategoryId: service.value?.service_category_id,
-    serviceSubcategoryId: service.value?.service_subcategory_id,
-    locationSpecific: service.value?.location_specific,
-    shortDesc: service.value?.short_desc,
-    longDesc: service.value?.long_desc,
+    serviceCategoryId: service.value?.service_category_id as unknown as string,
+    serviceSubcategoryId: service.value?.service_subcategory_id as unknown as string,
+    locationSpecific: service.value?.location_specific as unknown as string,
+    shortDesc: service.value?.short_desc as unknown as string,
+    longDesc: service.value?.long_desc as unknown as string,
     geoLocation: "23.5,67.3",
     isActive: service.value?.is_active
   },
@@ -35,16 +34,13 @@ const form = ref({
     metaKeywords: service.value?.seo?.meta_keywords,
     metaDesc: service.value?.seo?.meta_desc,
   },
-  faq: service.value?.faq.map(f => ({ quest: f.quest, ans: f.ans })) || [] as {
-    quest: '',
-    ans: '',
-  }[],
+  faq: service.value?.faq?.map(f => ({ quest: f.quest, ans: f.ans })) || [],
   variant: service.value?.variants?.map(v => ({
     name: v.name,
-    price: v.price,
+    price: v.price as number,
     discountType: v.discount_type,
-    discountFlat: v.discount_flat,
-    discountPercentage: v.discount_percentage,
+    discountFlat: v.discount_flat as number,
+    discountPercentage: v.discount_percentage as number,
     desc: v.desc,
   })) || [{
     name: "",
@@ -54,17 +50,16 @@ const form = ref({
     discountPercentage: 0,
     desc: "",
   }],
-});
+})
+const { list: getcategoryList } = useServiceCategoryApi.list({})
+const { list: getSubcategoryList } = useServiceSubategoyrApi.list({})
+const { list: getTagsList } = useServiceTagApi.list({})
 
 const { data, pending: dataPending } = await useAsyncData(async () => {
   const [serviceCategories, serviceSubcategories, tags] = await Promise.all([
-    customFetch<IResType<IServiceCategory[]>>(
-      apiRoutes.service_categories.list
-    ),
-    customFetch<IResType<IServiceSubcategory[]>>(
-      apiRoutes.service_subcategories.list
-    ),
-    customFetch<IResType<IServiceTag[]>>(apiRoutes.service_tags.list),
+    getcategoryList(),
+    getSubcategoryList(),
+    getTagsList(),
   ]);
 
   return {
@@ -74,36 +69,30 @@ const { data, pending: dataPending } = await useAsyncData(async () => {
   };
 });
 
-const { loading, fetch: createService } = usePostFetch({
-  onSuccess: () => {
-    navigateTo(routes.vendor.services.list)
-  }
-});
 
-const { loading: deletinImage, fetch: deleteImage } = usePostFetch();
+const { loading: deletingImage, fetch: deleteImage } = usePostFetch();
 
 
-const submit = () => {
-  const formData = convertToFormData(form.value);
-
-  createService(apiRoutes.services.update(service.value!.id), {
-    method: "put",
-    body: formData,
-  });
+const submit = async () => {
+  await update(service.value!.id, {
+    onSuccess() {
+      navigateTo(routes.vendor.services.list)
+    },
+  })
 };
 
 const screenshotOriginalUrls = ref(service.value?.images || []);
 
 const screenShotUrls = computed(() => {
-  return form.value.images.map((img: File) => URL.createObjectURL(img));
+  return form.images!.map((img: any) => URL.createObjectURL(img));
 });
 
 const serviceThumbnailUrl = computed(() => {
-  return form.value.thumbnail ? URL.createObjectURL(form.value.thumbnail) : '/images/dummy-thumb.jpg';
+  return form.thumbnail ? URL.createObjectURL(form.thumbnail) : '/images/dummy-thumb.jpg';
 });
 
 const variantThumbnailUrl = computed(() => {
-  return form.value.variantImages.map((v: File) => URL.createObjectURL(v));
+  return form.variantImages!.map((v: any) => URL.createObjectURL(v));
 });
 
 const deleteSavedScreenshot = async (id: number, index: number) => {
@@ -117,6 +106,8 @@ const deleteSavedScreenshot = async (id: number, index: number) => {
     }
   }
 }
+
+console.log(form.service)
 </script>
 
 <template>
@@ -136,11 +127,11 @@ const deleteSavedScreenshot = async (id: number, index: number) => {
           <h6>Service Information</h6>
           <br />
           <div class="row q-col-gutter-md">
-            <q-select v-if="data?.serviceCategories" outlined debounce="500" v-model="form.service.serviceCategoryId"
-              emit-value map-options option-value="id" option-label="name" label="Select Category"
-              class="col-12 col-sm-6 col-md-3" :options="data.serviceCategories" />
+            <q-select v-if="data?.serviceCategories" outlined debounce="500" v-model="form.seo!.metaDesc" emit-value
+              map-options option-value="id" option-label="name" label="Select Category" class="col-12 col-sm-6 col-md-3"
+              :options="data.serviceCategories" />
             <q-select v-if="data?.serviceSubcategories" outlined debounce="500"
-              v-model="form.service.serviceSubcategoryId" emit-value map-options option-value="id" option-label="name"
+              v-model="form.service!.serviceSubcategoryId" emit-value map-options option-value="id" option-label="name"
               label="Select Sub Category" class="col-12 col-sm-6 col-md-3" :options="data?.serviceSubcategories" />
             <q-select v-if="data?.tags" outlined debounce="500" v-model="form.tags" emit-value map-options
               option-value="id" option-label="name" label="Select Tags" class="col-12 col-sm-6 col-md-3" multiple
@@ -148,9 +139,9 @@ const deleteSavedScreenshot = async (id: number, index: number) => {
           </div>
           <br />
           <div class="row q-col-gutter-md">
-            <q-input outlined v-model="form.service.name" label="Service Name" class="col-12 col-sm-6 col-md-3"
+            <q-input outlined v-model="form.service!.name" label="Service Name" class="col-12 col-sm-6 col-md-3"
               :rules="[rules.required('Service name is required')]" />
-            <q-input outlined v-model="form.service.geoLocation" label="Location" class="col-12 col-sm-6 col-md-3"
+            <q-input outlined v-model="form.service!.geoLocation" label="Location" class="col-12 col-sm-6 col-md-3"
               :rules="[rules.required('location not valid')]" />
           </div>
           <StepperNav :step="step" @prev="step > 1 && ($refs.stepper as any).previous()" :last-step="6" />
@@ -163,8 +154,8 @@ const deleteSavedScreenshot = async (id: number, index: number) => {
             <h6>Description</h6>
             <br />
             <div class="row q-col-gutter-lg">
-              <q-input outlined v-model="form.service.shortDesc" label="Service Short Description" class="col-12" />
-              <q-input type="textarea" outlined v-model="form.service.longDesc" label="Service Short Description"
+              <q-input outlined v-model="form.service!.shortDesc" label="Service Short Description" class="col-12" />
+              <q-input type="textarea" outlined v-model="form.service!.longDesc" label="Service Short Description"
                 class="col-12" />
             </div>
           </div>
@@ -172,24 +163,24 @@ const deleteSavedScreenshot = async (id: number, index: number) => {
         </q-form>
       </q-step>
 
-      <q-step :name="3" :done="step > 3" title="Variants" icon="add_comment">
+      <q-step :name="3" :done="step > 3" title="Variant!s" icon="add_comment">
         <q-form @submit="($refs.stepper as any).next()">
           <div>
-            <h6>Add service variants (Minimum 01 is required)</h6>
+            <h6>Add service variant!s (Minimum 01 is required)</h6>
             <br />
             <div class="">
-              <q-card v-for="(f, i) in form.variant" :key="i"
+              <q-card v-for="(f, i) in form!.variant!!" :key="i"
                 class="row q-col-gutter-sm shadow-12 q-pa-md q-pb-xl border q-mb-xl">
                 <div class="col-12">
                   <div class="row justify-between">
-                    <p class="text-subtitle1 text-bold">Variant {{ i + 1 }}</p>
+                    <p class="text-subtitle1 text-bold">Variant! {{ i + 1 }}</p>
                     <template v-if="i > 0">
                       <q-btn icon="close" style="cursor: pointer" class="btn-grey" size="sm" round @click="() => {
-        (form.variant as any).splice(i, 1);
+        (form.variant! as any).splice(i, 1);
       }
         ">
                         <q-tooltip class="bg-primary">
-                          Remove variant ?
+                          Remove variant! ?
                         </q-tooltip>
                       </q-btn>
                     </template>
@@ -203,40 +194,41 @@ const deleteSavedScreenshot = async (id: number, index: number) => {
                     height="8rem" style="max-width: 10rem"
                     :url="getImageUrl(service?.variants[i].image?.breakpoints?.thumbnail?.url, variantThumbnailUrl[i])" />
                 </div>
-                <q-input outlined v-model="f.name" label="Name" class="col-12 col-sm-6 col-md-3"
+                <q-input outlined v-model="f!.name" label="Name" class="col-12 col-sm-6 col-md-3"
                   :rules="[rules.required('required')]">
                 </q-input>
-                <q-input type="number" outlined v-model="f.price" label="Price" class="col-12 col-sm-6 col-md-3" :rules="[
+                <q-input type="number" outlined v-model="f!.price" label="Price" class="col-12 col-sm-6 col-md-3"
+                  :rules="[
         rules.required('required'),
         rules.minValue(1, 'Price must be valid'),
       ]" />
                 <div class="col-12 col-sm-6 col-md-3">
                   <p class="q-pl-sm">Discount Type</p>
-                  <q-radio v-model="f.discountType" checked-icon="task_alt" unchecked-icon="panorama_fish_eye"
+                  <q-radio v-model="f!.discountType" checked-icon="task_alt" unchecked-icon="panorama_fish_eye"
                     val="flat" label="Flat" />
-                  <q-radio v-model="f.discountType" checked-icon="task_alt" unchecked-icon="panorama_fish_eye"
+                  <q-radio v-model="f!.discountType" checked-icon="task_alt" unchecked-icon="panorama_fish_eye"
                     val="percentage" label="Percentage" />
                 </div>
-                <q-input type="number" outlined v-model="f.discountFlat" label="Flat Discount"
-                  class="col-12 col-sm-6 col-md-3" v-if="f.discountType === 'flat'" :rules="[
+                <q-input type="number" outlined v-model="f!.discountFlat" label="Flat Discount"
+                  class="col-12 col-sm-6 col-md-3" v-if="f!.discountType === 'flat'" :rules="[
         rules.minValue(0, 'Discount must be greater than 0'),
         rules.maxValue(
-          Number(f.price),
+          Number(f!.price),
           'Discount must be less that price'
         ),
       ]" />
-                <q-input type="number" outlined v-model="f.discountPercentage" label="Discount percentage"
+                <q-input type="number" outlined v-model="f!.discountPercentage" label="Discount percentage"
                   class="col-12 col-sm-6 col-md-3" :rules="[
         rules.minValue(0, 'Discount must be greater than 0%'),
         rules.maxValue(99.9, 'Discount must be greater than 99.9%'),
-      ]" v-if="f.discountType === 'percentage'" />
-                <q-input type="textarea" outlined v-model="f.desc" label="Short Description" class="col-12" />
+      ]" v-if="f!.discountType === 'percentage'" />
+                <q-input type="textarea" outlined v-model="f!.desc" label="Short Description" class="col-12" />
               </q-card>
             </div>
 
             <div class="q-pt-md">
               <q-btn color="primary" style="min-width: 8rem" @click="() => {
-        form.variant.push({
+        form.variant!.push({
           name: '',
           price: 0,
           discountType: 'flat',
@@ -258,12 +250,12 @@ const deleteSavedScreenshot = async (id: number, index: number) => {
             <h6>FAQ</h6>
             <br />
             <div class="column q-gutter-sm">
-              <q-card v-for="(f, i) in form.faq" :key="i" style="max-width: 800px;">
+              <q-card v-for="(f, i) in form.faq!" :key="i" style="max-width: 800px;">
                 <q-card-section class="row justify-between items-center">
                   <p class="text-bold">Faq - {{ i + 1 }}</p>
 
                   <q-btn icon="close" size="sm" round class="btn-grey" style="cursor: pointer" @click="() => {
-        form.faq.splice(i, 1);
+        form.faq!.splice(i, 1);
       }
         ">
                     <q-tooltip class="bg-primary">
@@ -275,10 +267,10 @@ const deleteSavedScreenshot = async (id: number, index: number) => {
 
                 <q-card-section>
 
-                  <q-input outlined v-model="f.quest" :label="'Question'" class="col-12"
+                  <q-input outlined v-model="f!.quest" :label="'Question'" class="col-12"
                     :rules="[rules.required('required')]">
                   </q-input>
-                  <q-input type="textarea" outlined v-model="f.ans" :label="'Answer'" class="col-12"
+                  <q-input type="textarea" outlined v-model="f!.ans" :label="'Answer'" class="col-12"
                     :rules="[rules.required('required')]" />
                   <br />
                 </q-card-section>
@@ -288,7 +280,7 @@ const deleteSavedScreenshot = async (id: number, index: number) => {
 
             <div class="q-pt-md">
               <q-btn color="primary" icon="add" label="Add Faq" style="min-width: 8rem" @click="() => {
-        form.faq.push({
+        form.faq!.push({
           quest: '',
           ans: '',
         });
@@ -332,7 +324,7 @@ const deleteSavedScreenshot = async (id: number, index: number) => {
                   </div>
                 </div>
                 <FormsMultiImageInput :urls="screenShotUrls" @delete="(index: number) => {
-        form.images.splice(index, 1)
+        form.images!.splice(index, 1)
       }">
                   <div class="column items-center q-pb-sm" style="border:1px solid #e6e4d9;border-radius: 1rem;">
                     <label for="multiple-image">
@@ -367,30 +359,18 @@ const deleteSavedScreenshot = async (id: number, index: number) => {
             <p class="text-subtitle1">META Information</p>
             <br />
             <div class="row q-col-gutter-xl">
-              <q-input outlined v-model="form.seo.metaTitle" label="Meta Title" class="col-12 col-sm-6" />
-              <q-input outlined v-model="form.seo.metaKeywords" label="Meta Keywords" class="col-12 col-sm-6" />
-              <q-input type="textarea" outlined v-model="form.seo.metaDesc" label="Meta Description" class="col-12" />
+              <q-input outlined v-model="form.seo!.metaTitle" label="Meta Title" class="col-12 col-sm-6" />
+              <q-input outlined v-model="form.seo!.metaKeywords" label="Meta Keywords" class="col-12 col-sm-6" />
+              <q-input type="textarea" outlined v-model="form.seo!.metaDesc" label="Meta Description" class="col-12" />
             </div>
           </div>
           <br>
-          <q-toggle v-model="form.service.isActive" label="Publish?" size="xl" />
+          <q-toggle v-model="form.service!.isActive" label="Publish?" size="xl" />
           <StepperNav :step="step" @prev="step > 1 && ($refs.stepper as any).previous()" :last-step="6" />
         </q-form>
       </q-step>
     </q-stepper>
-
-    <br />
     <q-form @submit="submit" @validation-error="srollToView">
-      <br />
-
-      <br />
-
-      <br />
-
-      <br />
-
-      <br />
-
       <div class="row justify-end q-gutter-md q-pt-xl">
         <q-btn color="secondary" style="min-width: 8rem" @click="() => {
         navigateTo(routes.vendor.services.list);

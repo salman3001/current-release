@@ -9,6 +9,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: "review", bid: IBid): void;
+  (e: "negotiate", bid: IBid): void;
   (e: "create-chat"): void
 }>();
 
@@ -71,6 +72,7 @@ const getImageUrl = useGetImageUrl();
       </div>
     </q-card-section>
     <q-card-action class="row q-px-sm justify-end">
+      <q-btn color="primary" @click="emit('negotiate', bid)">Negotiate</q-btn>
       <q-btn color="primary" @click="emit('review', bid)">Review</q-btn>
     </q-card-action>
     <br />

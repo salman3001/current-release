@@ -13,6 +13,7 @@ const updateForm = {};
 
 class UseServiceTagApi extends useBaseApi<
   IServiceTag,
+  IResType<IServiceTag[]>,
   InitialQuery,
   typeof createForm,
   typeof updateForm

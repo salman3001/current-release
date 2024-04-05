@@ -11,11 +11,16 @@ interface InitialQuery {
   where_acepted?: null | number;
 }
 
-const createForm = {};
+const createForm = {
+  serviceRequirementId: "",
+  offeredPrice: "",
+  message: "",
+};
 const updateForm = {};
 
 class UseBidApi extends useBaseApi<
   IBid,
+  IPageRes<IBid[]>,
   InitialQuery,
   typeof createForm,
   typeof updateForm

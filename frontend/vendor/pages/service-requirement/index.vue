@@ -1,27 +1,24 @@
 <script setup lang="ts">
 import { date } from 'quasar';
 
-const customFetch = useCustomFetch();
 const page = ref(1);
 const filterModal = ref(false);
 const filter = ref(null);
+
+
+const { list, query } = useServiceRequirementApi.list({
+  page: page.value,
+  orderBy: "created_at:desc",
+  field__accepted_bid_id: null,
+  where_expires_at_gt: date.formatDate(Date.now(), "YYYY/MM/DD hh:mm:ss")
+})
 
 const {
   data: serviceRequirements,
   pending,
   refresh,
 } = await useAsyncData(async () => {
-  const data = await customFetch<IPageRes<IServiceRequirement[]>>(
-    apiRoutes.service_requirements.list,
-    {
-      query: {
-        page: page.value,
-        orderBy: "created_at:desc",
-        field__accepted_bid_id: "",
-        where_expires_at_gt: date.formatDate(Date.now(), "YYYY/MM/DD hh:mm:ss"),
-      } as IQs,
-    }
-  );
+  const data = await list()
 
   return data.data;
 });

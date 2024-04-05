@@ -22,18 +22,16 @@ const getImageUrl = useGetImageUrl();
                 <div>
                     <q-badge v-if="accepted" outline class="q-badge-positive q-py-sm q-px-md justify-center">
                         Accepted</q-badge>
+                    <q-badge v-else outline class="q-badge-warning q-py-sm q-px-md justify-center">
+                        Under Progress</q-badge>
                 </div>
             </div>
             <br />
             <div class="q-gutter-sm">
-                <q-badge class="q-badge-primary justify-center" style="width: 120px">
-                    <span class="text-bold text-body1">&#x20B9;{{
+                Price Offered <span class="text-bold text-subtitle1">&#x20B9;{{
         new BigNumber(bid?.offered_price || 0).toFixed(2)
-                        }}</span>
-                    / Qty</q-badge>
-                <q-badge class="q-badge-primary justify-center" style="width: 120px">
-                    <span class="text-bold text-body1">3</span>
-                    Hrs</q-badge>
+                    }}</span>
+
             </div>
             <br />
             <div>

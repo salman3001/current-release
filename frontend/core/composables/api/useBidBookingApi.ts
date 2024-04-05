@@ -13,12 +13,13 @@ const updateForm = {};
 
 class UseBidBookingApi extends useBaseApi<
   IBidBooking,
+  IPageRes<IBidBooking[]>,
   InitialQuery,
   typeof createForm,
   typeof updateForm
 > {
   constructor() {
-    super("/api/bookings", createForm, updateForm);
+    super("/api/bid-bookings", createForm, updateForm);
   }
 
   mylist(initialQry: InitialQuery) {

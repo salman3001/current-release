@@ -51,6 +51,7 @@ interface Image {
   file: ImageType;
   service_id: number,
   vendor_profile_id: number,
+  service_requiremet_id: number,
   media_id: number
 }
 
@@ -366,6 +367,7 @@ type IBidBooking = {
     };
   };
   payment_detail: {};
+  history: { date_time: string; event: string; remarks: string }[]
   status: string;
   vendor_user: IVendorUser;
   user: IUser;
@@ -408,8 +410,8 @@ type IServiceRequirement = {
   id: number;
   title: string;
   desc: string;
-  skills_required: string[];
-  budget_type: "hourly" | "fixed";
+  urgent: boolean;
+  budget_unit: string;
   budget: string | number;
   expires_at: string;
   location: string;
@@ -420,12 +422,20 @@ type IServiceRequirement = {
   serviceCategory: IServiceCategory;
   recievedBids: IBid;
   meta: Record<any, any>;
+  images: Image[]
+  tags: IServiceTag[]
 } & TimeStamps;
 
 type IBid = {
   id: number;
   offered_price: number | string;
   message: string;
+  negotiate_history: {
+    date_time: string
+    asked_price: string
+    message: string
+    accepted: boolean
+  }[];
   service_requirement_id: number;
   vendor_user_id: number;
   vendorUser: IVendorUser;

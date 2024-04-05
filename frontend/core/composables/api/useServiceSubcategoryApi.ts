@@ -13,6 +13,7 @@ const updateForm = {};
 
 class UseServiceSubcategoryApi extends useBaseApi<
   IServiceSubcategory,
+  IResType<IServiceSubcategory[]>,
   InitialQuery,
   typeof createForm,
   typeof updateForm

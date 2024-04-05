@@ -2,72 +2,32 @@
 import { date } from "quasar";
 
 const route = useRoute();
-const customFetch = useCustomFetch();
 const placeBidModal = ref(false);
 const getImageUrl = useGetImageUrl();
 
-const { data: requirement, refresh: refreshRequirement } = await useAsyncData(
-  ("service-requirement" + route.params.id) as string,
-  async () => {
-    const data = await customFetch<IResType<IServiceRequirement>>(
-      apiRoutes.service_requirements.view(route.params.id as unknown as number)
-    );
+const { show } = useServiceRequirementApi.show()
 
-    return data.data;
-  }
+const { data: requirement, refresh: refreshRequirement } = await useAsyncData(async () => {
+  const data = await show(route.params.id as unknown as number)
+  return data.data;
+}
 );
 
-const createChat = async () => {
-  try {
-    const res = await customFetch<IResType<IConversation>>(
-      apiRoutes.chat.conversations.create,
-      {
-        method: "post",
-        body: {
-          participant: {
-            userType: requirement.value?.user?.userType,
-            userId: requirement.value?.user?.id,
-          },
-        },
-      }
-    );
+const { showVendorPlacedbid } = useServiceRequirementApi.showVendorPlacedbid()
 
-    if (res.success == true) {
-      navigateTo({
-        path: routes.vendor.chat,
-        query: {
-          newConversationId: res?.data?.id,
-        },
-      });
-    }
-  } catch (error) {
-    console.log(error);
-  }
-};
+const { data: placedBid, refresh: refreshPlacedBid, pending } = await useAsyncData(async () => {
+  const data = await showVendorPlacedbid(route.params.id as unknown as number)
+  return data.data;
+}
+);
 
-const placeBidForm = reactive({
-  serviceRequirementId: requirement.value!.id,
-  offeredPrice: "",
-  message: "",
-});
+const { create: createChat, form, loading: creatingChat } = useChatApi.cretae()
+
+const { create: createBid, form: placeBidForm, loading } = useBidApi.cretae()
+
 
 const creatingBid = ref(false);
-const createBid = async () => {
-  creatingBid.value = true;
-  try {
-    const res = await customFetch<IResType<any>>(apiRoutes.bids.create, {
-      method: "post",
-      body: placeBidForm,
-    });
 
-    if (res.success == true) {
-      placeBidModal.value = false
-    }
-  } catch (error) {
-    console.log(error);
-  }
-  creatingBid.value = false;
-};
 </script>
 
 <template>
@@ -76,9 +36,15 @@ const createBid = async () => {
     <br />
     <q-card bordered class="q-gutter-y-none full-width shadow-16">
       <q-toolbar class="justify-between">
-        <div>
-          <q-icon name="location_on" size="30px" color="muted"></q-icon>
-          Jarkhand, India
+        <div class="column q-gutter-y-sm">
+          <br>
+          <div v-if="requirement?.urgent">
+            <q-badge class="q-px-sm text-subtitle1" color="negative">Urgent Requirment</q-badge>
+          </div>
+          <div>
+            <q-icon name="location_on" size="30px" color="muted"></q-icon>
+            Jarkhand, India
+          </div>
         </div>
 
         <div>
@@ -86,11 +52,11 @@ const createBid = async () => {
           <ClientOnly>
             <div>
               {{
-                date.formatDate(
-                  requirement?.created_at as unknown as string,
-                  "DD/MM/YYYY hh:mmA"
-                )
-              }}
+            date.formatDate(
+              requirement?.created_at as unknown as string,
+              "DD/MM/YYYY hh:mmA"
+            )
+          }}
             </div>
           </ClientOnly>
         </div>
@@ -99,10 +65,10 @@ const createBid = async () => {
         <div class="row gap-50">
           <q-avatar size="72px">
             <img :src="getImageUrl(
-                  requirement?.user?.profile?.avatar?.url,
-                  '/images/sample-dp.png'
-                )
-                " />
+              requirement?.user?.profile?.avatar?.url,
+              '/images/sample-dp.png'
+            )
+            " />
           </q-avatar>
           <div class="column justify-center">
             <p class="text-bold text-subtitle1">
@@ -119,15 +85,15 @@ const createBid = async () => {
 
           <span class="text-h6 text-bold">&#x20B9;{{ requirement?.budget }}</span>&nbsp;&nbsp;<q-badge
             class="text-body2 text-black q-px-md q-badge-info">{{
-                requirement?.budget_type
-              }}</q-badge>
+            requirement?.budget_unit
+          }}</q-badge>
         </div>
         <p>
           Category:
           <NuxtLink :to="$config.public.webBaseUrl +
-                routes.home +
-                `?tab=${requirement?.serviceCategory.id}`
-                " :external="true" target="_blank" class="underline">{{ requirement?.serviceCategory?.name }}
+            routes.home +
+            `?tab=${requirement?.serviceCategory.id}`
+            " :external="true" target="_blank" class="underline">{{ requirement?.serviceCategory?.name }}
           </NuxtLink>
         </p>
       </q-card-section>
@@ -138,11 +104,15 @@ const createBid = async () => {
         </p>
       </q-card-section>
 
+      <q-card-section v-if="requirement?.images">
+        <h6>Images</h6>
+        <br>
+        <LightBox :images="requirement.images.map(i => getImageUrl(i?.file?.url))" />
+      </q-card-section>
+
       <q-card-section class="row items-center justify-between q-gutter-y-md">
         <div class="row q-gutter-sm">
-          <p>#Keywords</p>
-          <p>#Keywords</p>
-          <p>#Keywords</p>
+          <p v-for="tag, i in requirement?.tags" :key="i" class="normalcase">#{{ tag.name }}</p>
         </div>
         <div class="row items-center q-gutter-sm" v-if="route.path == routes.vendor.service_requirements.list">
           <NuxtLink :to="routes.vendor.service_requirements.view(requirement?.id || 0)">
@@ -154,11 +124,25 @@ const createBid = async () => {
     <br />
     <br />
     <div class="" style="max-width: 95vw">
-      <div>
+      <div v-if="!pending && !placedBid">
         <NuxtLink :to="routes.vendor.service_requirements.view(requirement!.id)">
           <q-btn color="primary" @click="placeBidModal = true">
             Place a Bid</q-btn>
         </NuxtLink>
+      </div>
+      <div v-else>
+        <h6 class="text-bold">Bid Placed</h6>
+        <br>
+        <VendorPlacedBidCard :bid="placedBid" :accepted="requirement?.accepted_bid_id == placedBid?.id" />
+      </div>
+      <br />
+      <div>
+        <h6 class="text-bold">Negotiate history</h6>
+        <br>
+        <div>
+          <TimeLine
+            :entries="placedBid?.negotiate_history?.map(h => ({ title: date.formatDate(h?.date_time, 'DD/MM/YYYY hh:mmA'), subTitle: h.asked_price, texts: h.message }))" />
+        </div>
       </div>
       <br />
       <br />
@@ -171,9 +155,17 @@ const createBid = async () => {
           <q-btn flat dense icon="close" v-close-popup />
         </q-toolbar>
         <q-card-section>
-          <q-form class="q-gutter-y-sm" @submit="createBid">
+          <q-form class="q-gutter-y-sm" @submit="() => {
+            placeBidForm.serviceRequirementId = route?.params?.id as string
+            createBid({
+              onSuccess() {
+                placeBidModal.value = false
+                refreshPlacedBid()
+              },
+            })
+          }">
             <q-input outlined type="number" v-model="placeBidForm.offeredPrice" label="Offer a price"
-              class="col-12 col-sm-6 col-md-3" :rules="[rules.required('required')]" lazy-rules="true" />
+              class="col-12 col-sm-6 col-md-3" :rules="[rules.required('required')]" />
             <q-input type="textarea" outlined v-model="placeBidForm.message" label="Message"
               class="col-12 col-sm-6 col-md-3" :rules="[rules.required('required')]" />
             <div class="row q-gutter-sm justify-end q-pt-lg">

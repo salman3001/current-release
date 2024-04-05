@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const customFetch = useCustomFetch();
+
 
 const route = useRoute();
 const modal = modalStore();
@@ -23,7 +23,7 @@ const resetFilters = () => {
 
 const isFilterApplied = ref(isFilterEmpty() ? false : true);
 
-const { getCategoryList } = useServiceCategoyrApi.list();
+const { list: getCategoryList } = useServiceCategoryApi.list({});
 const { data } = await useAsyncData(async () => {
   const categories = await getCategoryList();
   return {

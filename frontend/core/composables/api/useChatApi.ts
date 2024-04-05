@@ -19,6 +19,7 @@ const updateForm = {};
 
 class UseChatApi extends useBaseApi<
   IConversation,
+  IPageRes<IConversation[]>,
   InitialQuery,
   typeof createForm,
   typeof updateForm

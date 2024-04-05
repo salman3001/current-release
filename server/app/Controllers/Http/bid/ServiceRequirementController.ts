@@ -11,6 +11,8 @@ import { ResponsiveAttachment } from '@ioc:Adonis/Addons/ResponsiveAttachment'
 import { rules, schema } from '@ioc:Adonis/Core/Validator'
 import { DateTime } from 'luxon'
 import BigNumber from 'bignumber.js'
+import slugify from 'slugify'
+import VendorUser from 'App/Models/vendorUser/VendorUser'
 
 export default class ServiceRequirementController extends BaseApiController {
   public async index({ response, bouncer, request }: HttpContextContract) {
@@ -24,6 +26,9 @@ export default class ServiceRequirementController extends BaseApiController {
       })
       .preload('serviceCategory', (c) => {
         c.select('name')
+      })
+      .preload('tags', t => {
+        t.select(['name'])
       })
 
     this.applyFilters(serviceRequirementQuery, request.qs(), { searchFields: ['name'] })
@@ -51,6 +56,10 @@ export default class ServiceRequirementController extends BaseApiController {
       .withCount('recievedBids')
       .withAggregate('recievedBids', (b) => {
         b.avg('offered_price').as('avgBidPrice')
+      })
+      .preload('images')
+      .preload('tags', t => {
+        t.select(['name'])
       })
       .firstOrFail()
 
@@ -83,6 +92,9 @@ export default class ServiceRequirementController extends BaseApiController {
       .withAggregate('recievedBids', (b) => {
         b.avg('offered_price').as('avgBidPrice')
       })
+      .preload('tags', t => {
+        t.select(['name'])
+      })
 
     this.applyFilters(serviceRequirementQuery, request.qs() as any)
     this.extraFilters(serviceRequirementQuery, request)
@@ -104,6 +116,45 @@ export default class ServiceRequirementController extends BaseApiController {
 
     const bidQuery = Bid.query()
       .where('id', serviceRequirement.acceptedBidId || 0)
+      .preload('vendorUser', (v) => {
+        v.select(['first_name', 'last_name', 'id', 'avg_rating', 'business_name']).preload(
+          'profile',
+          (p) => {
+            p.select('avatar')
+          }
+        )
+      })
+
+    const bid = await bidQuery.first()
+
+    return response.custom({
+      code: 200,
+      message: null,
+      data: bid,
+      success: true,
+    })
+  }
+
+  public async showVendorPlacedbid({ bouncer, params, response, auth }: HttpContextContract) {
+    const isVendor = auth.user instanceof VendorUser
+    if (!isVendor) {
+      return response.custom({
+        code: 401,
+        message: 'Unautorized! Only vendor can request for applied bid',
+        data: null,
+        success: false,
+      })
+    }
+
+    const serviceRequirement = await ServiceRequirement.findOrFail(+params.id)
+
+    await bouncer.with('ServiceRequirementPolicy').authorize('view', serviceRequirement)
+
+    const bidQuery = Bid.query()
+      .where('service_requirement_id', serviceRequirement.id || 0)
+      .whereHas('vendorUser', v => {
+        v.where('id', auth.user!.id)
+      })
       .preload('vendorUser', (v) => {
         v.select(['first_name', 'last_name', 'id', 'avg_rating', 'business_name']).preload(
           'profile',
@@ -183,9 +234,9 @@ export default class ServiceRequirementController extends BaseApiController {
       )
 
       if (keywords) {
-        const tags = await ServiceTag.updateOrCreateMany(
+        const tags = await ServiceTag.fetchOrCreateMany(
           'name',
-          keywords.map((k) => ({ name: k }))
+          keywords.map((k) => ({ name: k, slug: slugify(k) }))
         )
         await serviceRequirement.related('tags').saveMany(tags)
       }
@@ -235,19 +286,22 @@ export default class ServiceRequirementController extends BaseApiController {
 
   public async negotiate({ auth, bouncer, request, response, params }: HttpContextContract) {
     const validationSchema = schema.create({
+      bidId: schema.number(),
       price: schema.number([rules.minNumber(0)]),
       message: schema.string({ escape: true }, [rules.maxLength(255)]),
     })
 
+    const payload = await request.validate({ schema: validationSchema })
+
     const serviceRequirement = await ServiceRequirement.findOrFail(+params.id)
+
     const bid = await Bid.query()
-      .where('id', params.bidId)
+      .where('id', payload.bidId)
       .where('serviceRequirementId', serviceRequirement.id)
       .firstOrFail()
 
     await bouncer.with('ServiceRequirementPolicy').authorize('update', serviceRequirement)
 
-    const payload = await request.validate({ schema: validationSchema })
 
     bid.negotiateHistory.push({
       asked_price: new BigNumber(payload.price).toFixed(2),

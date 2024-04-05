@@ -1,23 +1,16 @@
 <script setup lang="ts">
 import qs from "qs";
 import { date } from "quasar";
+import { useBidBookingApi } from "~/composables/api/useBidBookingApi";
 
-const customFetch = useCustomFetch();
-const page = ref(1);
 
+const { query, mylist } = useBidBookingApi.mylist({ page: 1 })
 const {
   data: bookings,
   pending,
   refresh,
 } = useAsyncData("bookings", async () => {
-  const data = await customFetch<IPageRes<IBooking>>(
-    apiRoutes.bid_booking.my_list,
-    {
-      query: {
-        page: page.value,
-      } as IQs,
-    }
-  );
+  const data = await mylist()
   return data.data;
 });
 
@@ -105,8 +98,8 @@ const columns = [
           </q-td>
         </template>
       </q-table>
-      <PaginateComponet :page="page" :meta="bookings?.meta" @update:model-value="(v) => {
-          page = v;
+      <PaginateComponet :page="query.page || 1" :meta="bookings?.meta" @update:model-value="(v) => {
+          query.page = v;
           refresh();
         }
         " />

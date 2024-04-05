@@ -13,6 +13,7 @@ const updateForm = {};
 
 class UseBookingApi extends useBaseApi<
   IBooking,
+  IPageRes<IBooking[]>,
   InitialQuery,
   typeof createForm,
   typeof updateForm
