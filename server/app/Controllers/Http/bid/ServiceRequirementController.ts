@@ -27,7 +27,7 @@ export default class ServiceRequirementController extends BaseApiController {
       .preload('serviceCategory', (c) => {
         c.select('name')
       })
-      .preload('tags', t => {
+      .preload('tags', (t) => {
         t.select(['name'])
       })
 
@@ -58,7 +58,7 @@ export default class ServiceRequirementController extends BaseApiController {
         b.avg('offered_price').as('avgBidPrice')
       })
       .preload('images')
-      .preload('tags', t => {
+      .preload('tags', (t) => {
         t.select(['name'])
       })
       .firstOrFail()
@@ -92,7 +92,7 @@ export default class ServiceRequirementController extends BaseApiController {
       .withAggregate('recievedBids', (b) => {
         b.avg('offered_price').as('avgBidPrice')
       })
-      .preload('tags', t => {
+      .preload('tags', (t) => {
         t.select(['name'])
       })
 
@@ -152,7 +152,7 @@ export default class ServiceRequirementController extends BaseApiController {
 
     const bidQuery = Bid.query()
       .where('service_requirement_id', serviceRequirement.id || 0)
-      .whereHas('vendorUser', v => {
+      .whereHas('vendorUser', (v) => {
         v.where('id', auth.user!.id)
       })
       .preload('vendorUser', (v) => {
@@ -179,41 +179,34 @@ export default class ServiceRequirementController extends BaseApiController {
 
     await bouncer.with('ServiceRequirementPolicy').authorize('view', serviceRequirement)
 
-    const serviceRequirementQuery = Bid.query()
+    const bidQuery = Bid.query()
       .where('service_requirement_id', serviceRequirement.id)
       .preload('vendorUser', (v) => {
         v.select('avg_rating')
       })
 
     if (request.qs()?.orderby_avg_rating) {
-      serviceRequirementQuery.join(
-        'vendor_users',
-        'serviceRequirements.vendor_user_id',
-        'vendor_users.id'
-      )
-      serviceRequirementQuery.whereNot(
-        'serviceRequirements.id',
-        serviceRequirement?.acceptedBidId || 0
-      )
-      serviceRequirementQuery.select('serviceRequirements.*')
-      serviceRequirementQuery.orderBy('vendor_users.avg_rating', 'desc')
+      bidQuery.join('vendor_users', 'bids.vendor_user_id', 'vendor_users.id')
+      bidQuery.whereNot('bids.id', serviceRequirement?.acceptedBidId || 0)
+      bidQuery.select('bids.*')
+      bidQuery.orderBy('vendor_users.avg_rating', 'desc')
     } else if (request.qs()?.orderby_lowest_price) {
-      serviceRequirementQuery.whereNot('id', serviceRequirement?.acceptedBidId || 0)
-      serviceRequirementQuery.orderBy('offered_price', 'asc')
-      serviceRequirementQuery.select('*')
+      bidQuery.whereNot('id', serviceRequirement?.acceptedBidId || 0)
+      bidQuery.orderBy('offered_price', 'asc')
+      bidQuery.select('*')
     } else {
-      serviceRequirementQuery.whereNot('id', serviceRequirement?.acceptedBidId || 0)
-      serviceRequirementQuery.orderBy('created_at', 'desc')
+      bidQuery.whereNot('id', serviceRequirement?.acceptedBidId || 0)
+      bidQuery.orderBy('created_at', 'desc')
     }
 
-    this.applyFilters(serviceRequirementQuery, request.qs())
+    this.applyFilters(bidQuery, request.qs())
 
-    const serviceRequirements = await this.paginate(request, serviceRequirementQuery)
+    const bids = await this.paginate(request, bidQuery)
 
     return response.custom({
       code: 200,
       message: null,
-      data: serviceRequirements,
+      data: bids,
       success: true,
     })
   }
@@ -302,7 +295,6 @@ export default class ServiceRequirementController extends BaseApiController {
 
     await bouncer.with('ServiceRequirementPolicy').authorize('update', serviceRequirement)
 
-
     bid.negotiateHistory.push({
       asked_price: new BigNumber(payload.price).toFixed(2),
       date_time: DateTime.now(),
@@ -326,11 +318,11 @@ export default class ServiceRequirementController extends BaseApiController {
     opt?: {}
   ) {
     if (request.qs().where_acepted) {
-      serviceRequirementQuery.whereNotNull('accepted_serviceRequirement_id')
+      serviceRequirementQuery.whereNotNull('accepted_bid_id')
     }
 
     if (request.qs().where_active) {
-      serviceRequirementQuery.whereNull('accepted_serviceRequirement_id')
+      serviceRequirementQuery.whereNull('accepted_bid_id')
     }
 
     if (request.qs().where_expires_at_lt) {

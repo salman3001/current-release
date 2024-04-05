@@ -7,8 +7,15 @@ Route.group(() => {
     'service-requirements/:id/accepted-bid',
     'bid/ServiceRequirementController.showAcceptedBid'
   )
-  Route.post('service-requirements/:id/negotiate-price', 'bid/ServiceRequirementController.negotiate')
-  Route.get('service-requirements/:id/show-vendor-placed-bid', 'bid/ServiceRequirementController.showVendorPlacedbid')
+  Route.post(
+    'service-requirements/:id/negotiate-price',
+    'bid/ServiceRequirementController.negotiate'
+  )
+  Route.get(
+    'service-requirements/:id/show-vendor-placed-bid',
+    'bid/ServiceRequirementController.showVendorPlacedbid'
+  )
   Route.resource('service-requirements', 'bid/ServiceRequirementController').apiOnly()
+  Route.put('bids/:id/accept-negotiate', 'bid/BidController.acceptNegotiation')
   Route.resource('bids', 'bid/BidController').apiOnly()
 }).prefix('api')

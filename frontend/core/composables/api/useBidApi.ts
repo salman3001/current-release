@@ -18,6 +18,10 @@ const createForm = {
 };
 const updateForm = {};
 
+const acceptNegotiateForm = {
+  newPrice: "" as number | string,
+};
+
 class UseBidApi extends useBaseApi<
   IBid,
   IPageRes<IBid[]>,
@@ -27,6 +31,46 @@ class UseBidApi extends useBaseApi<
 > {
   constructor() {
     super("/api/bids", createForm, updateForm);
+  }
+
+  acceptNegotiate(initialForm: typeof acceptNegotiateForm) {
+    const { fetch, loading } = usePostFetch();
+    const form = reactive(initialForm);
+
+    const acceptNegotiate = async (
+      id: number,
+      cd?: {
+        onSuccess?: () => void;
+        onError?: () => void;
+      }
+    ) => {
+      loading.value = true;
+      const formData = convertToFormData(form);
+      try {
+        const res = await fetch<IResType<any>>(
+          this.baseUrl + `/${id}/accept-negotiate`,
+          {
+            method: "put",
+            body: formData,
+          }
+        );
+
+        if (res.success == true) {
+          cd?.onSuccess && cd?.onSuccess();
+        }
+      } catch (error) {
+        console.log(error);
+        cd?.onError && cd?.onError();
+      }
+
+      loading.value = false;
+    };
+
+    return {
+      acceptNegotiate,
+      form,
+      loading,
+    };
   }
 }
 
