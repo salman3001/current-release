@@ -3,6 +3,8 @@ export default {
     dashboard: "/",
     chat: "/chat",
     account: "/account",
+    settings: "/account/settings",
+    security: "/account/security",
     services: {
       list: "/services",
       view: (id: number) => `/services/${id}`,
@@ -14,8 +16,9 @@ export default {
       view: (id: number) => `/service-requirement/${id}`,
     },
     bookings: {
-      list: "/manage-bookings",
+      list: "/manage-bookings/bookings",
       view: (id: number) => `/manage-bookings/booking-${id}`,
+      list_custom_bookings: "/manage-bookings/custom-bookings",
       view_custom_booking: (id: number) =>
         `/manage-bookings/custom-booking-${id}`,
     },

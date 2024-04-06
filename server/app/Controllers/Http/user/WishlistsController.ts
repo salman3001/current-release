@@ -3,6 +3,7 @@ import Database from '@ioc:Adonis/Lucid/Database'
 import WishlistUpdateValidator from 'App/Validators/WishlistUpdateValidator'
 import Wishlist from 'App/Models/user/Wishlist'
 import BaseApiController from '../BaseApiController'
+import { schema } from '@ioc:Adonis/Core/Validator'
 
 export default class WishlistsController extends BaseApiController {
   public async index({ request, response, bouncer }: HttpContextContract) {
@@ -13,7 +14,7 @@ export default class WishlistsController extends BaseApiController {
 
     this.extraFilters(wishlistQuery, request)
 
-    const wishlist = await this.paginate(request, wishlistQuery)
+    const wishlist = await wishlistQuery.exec()
 
     return response.custom({
       code: 200,
@@ -23,16 +24,75 @@ export default class WishlistsController extends BaseApiController {
     })
   }
 
-  public async show({ response, bouncer, params }: HttpContextContract) {
-    const id = params.id
+  public async show({ response, bouncer, auth }: HttpContextContract) {
     await bouncer.with('WishlistPolicy').authorize('view')
 
-    const wishlist = await Wishlist.query().where('id', id).firstOrFail()
+    const wishlist = await Wishlist.query().where('user_id', auth.user?.id!).preload('items', i => {
+      i.select('id')
+    }).firstOrFail()
 
     return response.custom({
       code: 200,
       success: true,
       message: null,
+      data: wishlist,
+    })
+  }
+
+  public async showDetailList({ response, bouncer, auth }: HttpContextContract) {
+    await bouncer.with('WishlistPolicy').authorize('view')
+
+    const wishlist = await Wishlist.query().where('user_id', auth.user?.id!).preload('items', i => {
+      i.preload('variants')
+        .preload('vendorUser', (v) => {
+          v.preload('profile')
+          v.withCount('reviews')
+        })
+        .preload('reviews', (r) => {
+          r.preload('user', (u) => {
+            u.select(['first_name', 'last_name']).preload('profile', (p) => {
+              p.select('avatar')
+            })
+          })
+          r.limit(10)
+        })
+        .preload('faq')
+        .preload('seo')
+        .preload('tags')
+        .preload('images')
+        .withCount('reviews', (r) => {
+          r.as('reviews_count')
+        })
+    }).firstOrFail()
+
+    return response.custom({
+      code: 200,
+      success: true,
+      message: null,
+      data: wishlist,
+    })
+  }
+
+  public async add({ response, request, bouncer, auth }: HttpContextContract) {
+    await bouncer.with('WishlistPolicy').authorize('update')
+
+    const wishlist = await Wishlist.query().where('user_id', auth.user?.id!).firstOrFail()
+
+    const vallidationSchema = schema.create({
+      serviceId: schema.number()
+    })
+
+    const payload = await request.validate({
+      schema: vallidationSchema
+    })
+
+    await wishlist.related('items').attach([payload.serviceId])
+    await wishlist.save()
+
+    return response.custom({
+      code: 200,
+      success: true,
+      message: 'Item Added to Wishlist',
       data: wishlist,
     })
   }
@@ -83,7 +143,7 @@ export default class WishlistsController extends BaseApiController {
     await wishlist!.load('items')
 
     return response.custom({
-      message: 'Wishlist item deleted',
+      message: 'Item Removed from Wishlist',
       code: 201,
       data: wishlist,
       success: true,
@@ -108,21 +168,6 @@ export default class WishlistsController extends BaseApiController {
       code: 200,
       data: wishlist,
       success: true,
-    })
-  }
-
-  public async destroy({ params, response, bouncer }: HttpContextContract) {
-    const wishList = await Wishlist.findOrFail(+params.id)
-
-    await bouncer.with('WishlistPolicy').authorize('delete')
-
-    await wishList.delete()
-
-    return response.custom({
-      code: 200,
-      success: true,
-      message: 'Record Deleted',
-      data: wishList,
     })
   }
 }

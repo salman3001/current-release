@@ -1,22 +1,20 @@
 <script setup lang="ts">
 import { date } from "quasar";
+import { useBookingApi } from "~/composables";
 
-const customFetch = useCustomFetch();
-const page = ref(1);
+const selectedBooking = ref<IBooking | null>(null)
+const statusModal = ref(false)
+
+const { query, vendorBookings } = useBookingApi.vendorBookings({
+  page: 1
+})
 
 const {
   data: bookings,
   pending,
   refresh,
 } = useAsyncData("bookings", async () => {
-  const data = await customFetch<IPageRes<IBooking>>(
-    apiRoutes.bookings.for_vendnor,
-    {
-      query: {
-        page: page.value,
-      } as IQs,
-    }
-  );
+  const data = await vendorBookings()
   return data.data;
 });
 
@@ -62,35 +60,42 @@ const columns = [
         class="table-zebra full-hieght shadow-6 q-ma-sm">
         <template v-slot:body-cell-payment="props">
           <q-td :props="props">
-            <q-badge class="normalcase q-badge-positive"
-              v-if="props.row?.payment_detail?.paymentStatus === 'paid'"><q-icon name="done"></q-icon> &nbsp;{{
+            <q-badge class="normalcase q-pa-sm q-badge-positive"
+              v-if="props.row?.payment_detail?.paymentStatus === 'paid'">&nbsp;{{
         props.row?.payment_detail?.paymentStatus
       }}</q-badge>
-            <q-badge class="normalcase q-badge-warning"
-              v-if="props.row?.payment_detail?.paymentStatus === 'pending'"><q-icon name="done"></q-icon> &nbsp;{{
+            <q-badge class="normalcase q-pa-sm q-badge-warning"
+              v-if="props.row?.payment_detail?.paymentStatus === 'pending'">&nbsp;{{
         props.row?.payment_detail?.paymentStatus
       }}</q-badge>
           </q-td>
         </template>
 
         <template v-slot:body-cell-status="props">
+
           <q-td :props="props">
-            <q-badge class="normalcase q-badge-warning" v-if="props.row.status === 'placed'"><q-icon
-                name="done"></q-icon> &nbsp;{{
+            <div class="cursor-pointer" @click="() => {
+        selectedBooking = props.row
+        statusModal = true
+      }">
+              <q-badge class="normalcase q-pa-sm q-badge-warning" v-if="props.row.status === 'placed'">
+                &nbsp;{{
         props.row.status
       }}</q-badge>
-            <q-badge class="normalcase q-badge-info" v-if="props.row.status === 'confirmed'"><q-icon
-                name="done"></q-icon> &nbsp;{{
+              <q-badge class="normalcase q-pa-sm q-badge-info" v-if="props.row.status === 'confirmed'">
+                &nbsp;{{
         props.row.status
       }}</q-badge>
-            <q-badge class="normalcase q-badge-positive" v-if="props.row.status === 'completed'"><q-icon
-                name="done"></q-icon> &nbsp;{{
+              <q-badge class="normalcase q-pa-sm q-badge-positive" v-if="props.row.status === 'delivered'">
+                &nbsp;{{
         props.row.status
       }}</q-badge>
-            <q-badge class="normalcase q-badge-negative" v-if="props.row.status === 'cancled'"><q-icon
-                name="done"></q-icon> &nbsp;{{
+              <q-badge class="normalcase q-pa-sm q-badge-negative" v-if="props.row.status === 'rejected'">
+                &nbsp;{{
         props.row.status
       }}</q-badge>
+
+            </div>
           </q-td>
         </template>
 
@@ -102,11 +107,16 @@ const columns = [
           </q-td>
         </template>
       </q-table>
-      <PaginateComponet :page="page" :meta="bookings?.meta" @update:model-value="(v) => {
-          page = v;
-          refresh();
-        }
+      <PaginateComponet :page="query.page as number" :meta="bookings?.meta" @update:model-value="(v) => {
+        query.page = v;
+        refresh();
+      }
         " />
     </ScrollArea>
   </div>
+  <Modal2VendorBookingStatus v-model="statusModal" title="Update Booking Status" :bookingtype="'normal'"
+    :selected-booking="selectedBooking!" @success="()=>{
+    refresh()
+    statusModal=false
+  }" />
 </template>

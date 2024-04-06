@@ -144,10 +144,10 @@ export default class BookingController extends BaseApiController {
 
     const coupon_discount = payload.couponId
       ? await this.applyCoupon(
-          payload.couponId,
-          total_after_discount,
-          serviceVariant.service.vendorUser.id
-        )
+        payload.couponId,
+        total_after_discount,
+        serviceVariant.service.vendorUser.id
+      )
       : 0
 
     const grand_total = total_after_discount.minus(coupon_discount)
@@ -199,10 +199,10 @@ export default class BookingController extends BaseApiController {
 
     const coupon_discount = payload.couponId
       ? await this.applyCoupon(
-          payload.couponId,
-          total_after_discount,
-          serviceVariant.service.vendorUser.id
-        )
+        payload.couponId,
+        total_after_discount,
+        serviceVariant.service.vendorUser.id
+      )
       : 0
 
     const grand_total = total_after_discount.minus(coupon_discount)

@@ -5,7 +5,8 @@ import { date } from "quasar";
 const customFetch = useCustomFetch();
 const page = ref(1);
 const getImageUrl = useGetImageUrl()
-const postFetch = usePostFetch()
+const statusModal = ref(false)
+const selectedBooking = ref<IBooking | null>(null)
 
 
 const {
@@ -84,12 +85,12 @@ const columns = [
 
         <template v-slot:body-cell-payment="props">
           <q-td :props="props">
-            <q-badge class="normalcase q-badge-positive"
-              v-if="props.row?.payment_detail?.paymentStatus === 'paid'"><q-icon name="done"></q-icon> &nbsp;{{
+            <q-badge class="normalcase q-badge-positive q-pa-sm"
+              v-if="props.row?.payment_detail?.paymentStatus === 'paid'"> &nbsp;{{
         props.row?.payment_detail?.paymentStatus
       }}</q-badge>
-            <q-badge class="normalcase q-badge-warning"
-              v-if="props.row?.payment_detail?.paymentStatus === 'pending'"><q-icon name="done"></q-icon> &nbsp;{{
+            <q-badge class="normalcase q-badge-warning q-pa-sm"
+              v-if="props.row?.payment_detail?.paymentStatus === 'pending'"> &nbsp;{{
         props.row?.payment_detail?.paymentStatus
       }}</q-badge>
           </q-td>
@@ -97,22 +98,27 @@ const columns = [
 
         <template v-slot:body-cell-status="props">
           <q-td :props="props">
-            <q-badge class="normalcase q-badge-warning" v-if="props.row.status === 'placed'"><q-icon
-                name="done"></q-icon> &nbsp;{{
+            <div class="cursor-pointer" @click="() => {
+        selectedBooking = props.row
+        statusModal = true
+      }">
+              <q-badge class="normalcase q-badge-warning q-pa-sm" v-if="props.row.status === 'placed'">
+                &nbsp;{{
         props.row.status
       }}</q-badge>
-            <q-badge class="normalcase q-badge-info" v-if="props.row.status === 'confirmed'"><q-icon
-                name="done"></q-icon> &nbsp;{{
+              <q-badge class="normalcase q-badge-info q-pa-sm" v-if="props.row.status === 'confirmed'">
+                &nbsp;{{
         props.row.status
       }}</q-badge>
-            <q-badge class="normalcase q-badge-positive" v-if="props.row.status === 'completed'"><q-icon
-                name="done"></q-icon> &nbsp;{{
+              <q-badge class="normalcase q-badge-positive q-pa-sm" v-if="props.row.status === 'delivered'">
+                &nbsp;{{
         props.row.status
       }}</q-badge>
-            <q-badge class="normalcase q-badge-negative" v-if="props.row.status === 'cancled'"><q-icon
-                name="done"></q-icon> &nbsp;{{
+              <q-badge class="normalcase q-badge-negative q-pa-sm" v-if="props.row.status === 'rejected'">
+                &nbsp;{{
         props.row.status
       }}</q-badge>
+            </div>
           </q-td>
         </template>
 
@@ -125,10 +131,15 @@ const columns = [
         </template>
       </q-table>
       <PaginateComponet :page="page" :meta="bookings?.meta" @update:model-value="(v) => {
-          page = v;
-          refresh();
-        }
+        page = v;
+        refresh();
+      }
         " />
     </ScrollArea>
+    <Modal2VendorBookingStatus v-model="statusModal" title="Update Booking Status" :bookingtype="'custom'"
+      :selected-booking="selectedBooking!" @success="()=>{
+    refresh()
+    statusModal=false
+  }" />
   </div>
 </template>

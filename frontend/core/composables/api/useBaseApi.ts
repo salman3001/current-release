@@ -16,7 +16,7 @@ export class useBaseApi<
     public baseUrl: string,
     public creatForm: createForm,
     public updateForm: updateform
-  ) {}
+  ) { }
 
   list(initialQuery: initialQuery) {
     const customFetch = useCustomFetch();
@@ -52,8 +52,6 @@ export class useBaseApi<
       loading.value = true;
       const formData = convertToFormData(form);
       try {
-        console.log("here");
-
         const res = await fetch<IResType<Model>>(this.baseUrl, {
           method: "post",
           body: formData,
@@ -62,6 +60,8 @@ export class useBaseApi<
         if (res.success == true) {
           cd?.onSuccess && cd?.onSuccess();
         }
+
+        return res
       } catch (error) {
         console.log(error);
         cd?.onError && cd?.onError();
@@ -99,6 +99,9 @@ export class useBaseApi<
         if (res.success == true) {
           cd?.onSuccess && cd?.onSuccess();
         }
+
+        return res
+
       } catch (error) {
         console.log(error);
         cd?.onError && cd?.onError();
@@ -133,6 +136,8 @@ export class useBaseApi<
         if (res.success == true) {
           cd?.onSuccess && cd?.onSuccess();
         }
+
+        return res
       } catch (error) {
         console.log(error);
         cd?.onError && cd?.onError();

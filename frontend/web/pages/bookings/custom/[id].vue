@@ -3,7 +3,6 @@ import { date } from "quasar";
 
 const customFetch = useCustomFetch();
 const route = useRoute();
-const getImageUrl = useGetImageUrl();
 
 const { data: booking, pending } = useAsyncData(
   "booking" + route.params.id,
@@ -14,6 +13,7 @@ const { data: booking, pending } = useAsyncData(
     return data.data;
   }
 );
+
 </script>
 
 <template>
@@ -68,8 +68,7 @@ const { data: booking, pending } = useAsyncData(
     '/images/sample-cover.jpg'
   )
     " /> -->
-    <br />
-    <br />
+
     <q-card class="shadow-12">
       <q-card-section>
         <h6 class="text-subtitle1 text-bold">Booking Detail</h6>
@@ -156,6 +155,17 @@ const { data: booking, pending } = useAsyncData(
       <q-card-section class="text-muted"> </q-card-section>
     </q-card>
     <br />
+    <br />
+    <q-card class="shadow-12">
+      <q-card-section>
+        <h6 class="text-subtitle1 text-bold">Status History</h6>
+        <br />
+        <div class="">
+          <BookingHistory :booking="booking" />
+        </div>
+      </q-card-section>
+      <q-card-section class="text-muted"> </q-card-section>
+    </q-card>
     <br />
     <br />
   </div>

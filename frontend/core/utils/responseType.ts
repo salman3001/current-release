@@ -340,6 +340,7 @@ type IBooking = {
     grand_total: string;
   };
   payment_detail: {};
+  history: { date_time: string; event: string; remarks: string }[]
   status: string;
   vendor_user: IVendorUser;
   user: IUser;

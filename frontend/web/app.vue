@@ -1,15 +1,14 @@
-<script setup>
-// const token = useCookie("token");
-// const config = useRuntimeConfig();
+<script setup lang="ts">
+import wishlistStore from '../core/stores/wishlistStore';
 
-// const authorization = `Bearer ${toRaw(token.value)}`;
+const user = useCookie("user");
+const wishlist = wishlistStore()
 
-// createFetch({
-//   baseURL: config.public.baseApi,
-//   headers: {
-//     authorization,
-//   },
-// });
+onMounted(() => {
+  if (user) {
+    wishlist.fetchWishlist()
+  }
+})
 </script>
 
 <template>

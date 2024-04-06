@@ -1,55 +1,36 @@
-<script setup lang="ts">
-import { ref } from "vue";
-
-const query = useRoute().query;
-
-const tab = ref(query?.tab || "Profile");
-</script>
-
 <template>
   <br />
-  <div>
-    <q-tabs dense v-model="tab" active-color="white" indicator-color="secondary" active-bg-color="secondary"
-      align="left">
-      <q-tab name="Profile" label="Profile" />
-      <q-tab name="Bookings" label="Bookings" />
-      <q-tab name="Custom Bookings" label="Custom Bookings" />
-      <q-tab name="Settings" label="Settings" />
-      <q-tab name="Security" label="Security" />
-    </q-tabs>
-
+  <NavTabs :links="[{
+    label: 'Profile',
+    url: routes.account
+  }, {
+    label: 'Bookings',
+    url: routes.bookings
+  }, {
+    label: 'Custom Bookings',
+    url: routes.custom_bookings
+  }
+    , {
+    label: 'Wishlist',
+    url: routes.wishlist
+  }, {
+    label: 'Settings',
+    url: routes.settings
+  }, {
+    label: 'Security',
+    url: routes.security
+  }]">
+    <br />
+    <div class="column gap-50">
+      <h6 class="text-bold q-pb-none">Account Information</h6>
+      <WebAccountEdit />
+    </div>
+    <br />
     <q-separator />
-
-    <q-tab-panels v-model="tab" animated class="bg-nutral">
-      <q-tab-panel name="Profile" class="q-gutter-y-md">
-        <div class="column gap-50">
-          <h6 class="text-bold q-pb-none">Account Information</h6>
-          <WebAccountEdit />
-        </div>
-        <q-separator />
-        <div class="column gap-50">
-          <h6 class="text-bold q-pb-none">Profile Information</h6>
-          <WebProfileEdit />
-        </div>
-      </q-tab-panel>
-
-      <q-tab-panel name="Bookings">
-        <div class="text-h6">Booking History</div>
-        <br />
-        <WebBookingList />
-      </q-tab-panel>
-
-      <q-tab-panel name="Custom Bookings">
-        <div class="text-h6">Custom Bookings</div>
-        <br />
-        <WebCustomBookingList />
-      </q-tab-panel>
-
-      <q-tab-panel name="Settings"> setting </q-tab-panel>
-
-      <q-tab-panel name="Security">
-        <WebSecurityEdit />
-      </q-tab-panel>
-    </q-tab-panels>
-  </div>
+    <br />
+    <div class="column gap-50">
+      <h6 class="text-bold q-pb-none">Profile Information</h6>
+      <WebProfileEdit />
+    </div>
+  </NavTabs>
 </template>

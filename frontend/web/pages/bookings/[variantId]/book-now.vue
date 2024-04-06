@@ -106,7 +106,7 @@ const { data: variant } = await useAsyncData(
           <NuxtLink :to="routes.home">
             <q-btn color="primary">Go Home</q-btn>
           </NuxtLink>
-          <NuxtLink :to="routes.account + '?tab=Bookings'">
+          <NuxtLink :to="routes.bookings">
             <q-btn color="primary">My Orders</q-btn>
           </NuxtLink>
         </div>

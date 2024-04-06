@@ -69,31 +69,21 @@ const refreshData = async () => {
   await refreshBids();
 };
 
+const { form: creatChatForm, create } = useChatApi.cretae()
 const createChat = async () => {
-  try {
-    const res = await customFetch<IResType<IConversation>>(
-      apiRoutes.chat.conversations.create,
-      {
-        method: "post",
-        body: {
-          participant: {
-            userType: data.value?.acceptedBid?.vendorUser?.userType,
-            userId: data.value?.acceptedBid?.vendorUser?.id,
-          },
-        },
-      }
-    );
+  creatChatForm.participant.userId = data.value?.acceptedBid?.vendorUser?.id as unknown as string
+  creatChatForm.participant.userType = data.value?.acceptedBid?.vendorUser?.userType as unknown as string
 
-    if (res.success == true) {
-      navigateTo({
-        path: routes.chats,
-        query: {
-          newConversationId: res?.data?.id,
-        },
-      });
-    }
-  } catch (error) {
-    console.log(error);
+  const res = await create()
+  console.log(res);
+
+  if (res?.success == true) {
+    navigateTo({
+      path: routes.chats,
+      query: {
+        newConversationId: res?.data?.id,
+      },
+    });
   }
 };
 
@@ -122,21 +112,13 @@ const {
           <p>You haven't accepted any bid yet. Please accept a bid</p>
           <br />
         </div>
-        <WebProposalCard
-          v-else
-          :accepted="true"
-          :bid="data?.acceptedBid"
-          @create-chat="createChat()"
-          :any-bid-accepted="data.acceptedBid ? true : false"
-          :requirement-id="data.serviceRequirement.id"
-          @bid-rejected="refreshData"
-          @review="
-            (v) => {
-              selectedBid = v;
-              bidDetailModal = true;
-            }
-          "
-        />
+        <WebProposalCard v-else :accepted="true" :bid="data?.acceptedBid" @create-chat="createChat()"
+          :any-bid-accepted="data.acceptedBid ? true : false" :requirement-id="data.serviceRequirement.id"
+          @bid-rejected="refreshData" @review="(v) => {
+      selectedBid = v;
+      bidDetailModal = true;
+    }
+      " />
       </div>
       <br />
       <br />
@@ -146,23 +128,12 @@ const {
             <h6 class="text-bold">Bids Recieved</h6>
           </div>
           <div class="row items-center q-gutter-sm">
-            <q-badge
-              class="q-badge-primary text-subtitle1"
-              v-if="bidQuery.orderby_avg_rating == '1'"
-              >Sorting by Top Rating</q-badge
-            >
-            <q-badge
-              class="q-badge-primary text-subtitle1"
-              v-if="bidQuery.orderby_lowest_price == '1'"
-              >Sorting by Lowest Price</q-badge
-            >
+            <q-badge class="q-badge-primary text-subtitle1" v-if="bidQuery.orderby_avg_rating == '1'">Sorting by Top
+              Rating</q-badge>
+            <q-badge class="q-badge-primary text-subtitle1" v-if="bidQuery.orderby_lowest_price == '1'">Sorting by
+              Lowest Price</q-badge>
 
-            <q-btn-dropdown
-              outline
-              icon="filter_alt"
-              color="primary"
-              label="Filter"
-            >
+            <q-btn-dropdown outline icon="filter_alt" color="primary" label="Filter">
               <q-list style="" dense>
                 <q-item clickable v-ripple @click="sortByVendorRating">
                   <q-item-section> Highest Rating </q-item-section>
@@ -182,39 +153,25 @@ const {
             <SkeletonBase type="list" v-for="i in 3" :key="i"></SkeletonBase>
           </div>
           <div v-else class="row gap-100">
-            <WebProposalCard
-              v-for="bid in recivedBids?.data"
-              :accepted="false"
-              :bid="bid"
-              :any-bid-accepted="data?.acceptedBid ? true : false"
-              @bid-accpted="refreshData"
-              @review="
-                (v) => {
-                  selectedBid = v;
-                  bidDetailModal = true;
-                }
-              "
-            />
+            <WebProposalCard v-for="bid in recivedBids?.data" :accepted="false" :bid="bid"
+              :any-bid-accepted="data?.acceptedBid ? true : false" @bid-accpted="refreshData" @review="(v) => {
+      selectedBid = v;
+      bidDetailModal = true;
+    }
+      " />
           </div>
-          <PaginateComponet
-            :page="bidQuery.page"
-            :meta="recivedBids?.meta"
-            @update:model-value="
-              (v) => {
-                bidQuery.page = v;
-                refreshBids();
-              }
-            "
-          />
+          <PaginateComponet :page="bidQuery.page" :meta="recivedBids?.meta" @update:model-value="(v) => {
+      bidQuery.page = v;
+      refreshBids();
+    }
+      " />
         </div>
       </div>
     </div>
     <q-dialog v-model="bidDetailModal">
       <q-card style="width: 100%">
         <q-toolbar color="primary">
-          <q-toolbar-title
-            ><span class="text-weight-bold">Bid Detail</span></q-toolbar-title
-          >
+          <q-toolbar-title><span class="text-weight-bold">Bid Detail</span></q-toolbar-title>
           <q-btn flat dense icon="close" v-close-popup />
         </q-toolbar>
 
@@ -222,72 +179,48 @@ const {
           <div class="row q-gutter-y-md wrap justify-between">
             <div class="row gap-50">
               <q-avatar size="72px">
-                <img
-                  :src="
-                    getImageUrl(
-                      selectedBid?.vendorUser?.profile?.avatar?.url,
-                      '/images/sample-dp.png'
-                    )
-                  "
-                />
+                <img :src="getImageUrl(
+      selectedBid?.vendorUser?.profile?.avatar?.url,
+      '/images/sample-dp.png'
+    )
+      " />
               </q-avatar>
               <div>
-                <p
-                  v-if="data?.acceptedBid?.id === selectedBid?.id"
-                  class="text-bold text-subtitle1"
-                >
+                <p v-if="data?.acceptedBid?.id === selectedBid?.id" class="text-bold text-subtitle1">
                   {{ selectedBid?.vendorUser.first_name }}
                   {{ selectedBid?.vendorUser.last_name }}
-                  <q-btn
-                    size="xs"
-                    color="secondary"
-                    v-if="data?.acceptedBid?.id === selectedBid?.id"
-                    @click="createChat"
-                    >chat</q-btn
-                  >
+                  <q-btn size="xs" color="secondary" v-if="data?.acceptedBid?.id === selectedBid?.id"
+                    @click="createChat">chat</q-btn>
                 </p>
                 <p v-else class="text-bold text-subtitle1">Anonymous</p>
                 <div>
                   <NuxtLink :to="routes.home" class="underline">{{
-                    selectedBid?.vendorUser?.business_name
-                  }}</NuxtLink>
+      selectedBid?.vendorUser?.business_name
+    }}</NuxtLink>
                 </div>
 
                 <div>
-                  <RatingComponent
-                    :rating="selectedBid?.vendorUser?.avg_rating || 0"
-                    size="1.25rem"
-                  />
+                  <RatingComponent :rating="selectedBid?.vendorUser?.avg_rating || 0" size="1.25rem" />
                 </div>
               </div>
             </div>
             <div>
               <p class="text-muted" style="width: max-content">
                 {{
-                  date.formatDate(selectedBid?.created_at, "DD/MM/YYYY hh:mmA")
-                }}
+      date.formatDate(selectedBid?.created_at, "DD/MM/YYYY hh:mmA")
+    }}
               </p>
-              <q-badge
-                v-if="data?.acceptedBid?.id === selectedBid?.id"
-                outline
-                class="q-badge-positive q-py-sm q-px-md justify-center"
-              >
-                Accepted</q-badge
-              >
+              <q-badge v-if="data?.acceptedBid?.id === selectedBid?.id" outline
+                class="q-badge-positive q-py-sm q-px-md justify-center">
+                Accepted</q-badge>
             </div>
           </div>
           <br />
           <div class="q-gutter-sm">
-            <q-badge
-              class="q-badge-primary justify-center"
-              style="width: 120px"
-            >
-              <span class="text-bold text-body1"
-                >&#x20B9;{{
-                  new BigNumber(selectedBid?.offered_price || 0).toFixed(2)
-                }}</span
-              ></q-badge
-            >
+            Price Offered
+            <span class="text-bold text-body1">&#x20B9;{{
+      new BigNumber(selectedBid?.offered_price || 0).toFixed(2)
+    }}</span>
           </div>
           <br />
           <div>
@@ -295,15 +228,14 @@ const {
               {{ selectedBid?.message }}
             </p>
           </div>
-          <div>
+          <br>
+          <div v-if="selectedBid?.negotiate_history.length">
+            <h6 class="text-bold"> Negotiation History</h6>
             <TimeLine>
-              <template
-                v-for="(h, i) in selectedBid?.negotiate_history"
-                :key="i"
-              >
+              <template v-for="(h, i) in selectedBid?.negotiate_history" :key="i">
                 <q-timeline-entry>
                   <template v-slot:title>
-                    you have offered
+                    You offered
                     <span class="text-bold">&#x20B9;{{ h.asked_price }}</span>
                   </template>
 
@@ -319,40 +251,25 @@ const {
                     <q-badge class="q-badge-warning q-pa-sm">Pending</q-badge>
                   </div>
                   <div v-else>
-                    <q-badge class="q-badge-positive q-pa-sm"
-                      >Negotiated</q-badge
-                    >
+                    <q-badge class="q-badge-positive q-pa-sm">Negotiated</q-badge>
                   </div>
                 </q-timeline-entry>
               </template>
             </TimeLine>
           </div>
         </q-card-section>
-        <q-card-acetion
-          class="row q-gutter-sm justify-end q-pa-lg"
-          v-if="selectedBid"
-        >
-          <q-btn
-            type=""
-            color="primary"
-            @click.prevent="negotiateModal = true"
-            v-if="
-              selectedBid?.negotiate_history?.length < 1 ||
-              selectedBid?.negotiate_history[
-                selectedBid?.negotiate_history?.length - 1
-              ]?.accepted
-            "
-            >Negotiate</q-btn
-          >
-          <NuxtLink
-            :to="{
-          path: routes.book_custom_Service(data!?.serviceRequirement.id),
-          query: {
-            acceptedBidId: selectedBid.id,
-          },
-        }"
-            v-if="!data?.serviceRequirement.accepted_bid_id"
-          >
+        <q-card-acetion class="row q-gutter-sm justify-end q-pa-lg" v-if="selectedBid && !data?.acceptedBid">
+          <q-btn type="" color="primary" @click.prevent="negotiateModal = true" v-if="!selectedBid?.negotiate_history?.length ||
+      selectedBid?.negotiate_history[
+        selectedBid?.negotiate_history?.length - 1
+      ]?.accepted
+      ">Negotiate</q-btn>
+          <NuxtLink :to="{
+      path: routes.book_custom_Service(data!?.serviceRequirement.id),
+      query: {
+        acceptedBidId: selectedBid.id,
+      },
+    }" v-if="!data?.serviceRequirement.accepted_bid_id">
             <q-btn color="primary" type="submit">Accept and Book</q-btn>
           </NuxtLink>
         </q-card-acetion>
@@ -361,44 +278,27 @@ const {
     <q-dialog v-model="negotiateModal">
       <q-card style="width: 100%">
         <q-toolbar color="primary">
-          <q-toolbar-title
-            ><span class="text-weight-bold"
-              >Request Price Negotiation</span
-            ></q-toolbar-title
-          >
+          <q-toolbar-title><span class="text-weight-bold">Request Price Negotiation</span></q-toolbar-title>
           <q-btn flat dense icon="close" v-close-popup />
         </q-toolbar>
 
         <q-card-section class="column q-pa-lg">
-          <q-input
-            outlined
-            type="number"
-            v-model="negotiateForm.price"
-            label="Request a price"
-            :rules="[rules.required('required')]"
-          />
-          <q-input
-            outlined
-            type="textarea"
-            v-model="negotiateForm.message"
-            label="message"
-            :rules="[rules.required('required')]"
-          />
+          <q-input outlined type="number" v-model="negotiateForm.price" label="Request a price"
+            :rules="[rules.required('required')]" />
+          <q-input outlined type="textarea" v-model="negotiateForm.message" label="message"
+            :rules="[rules.required('required')]" />
         </q-card-section>
         <q-card-acetion class="row justify-end q-pa-lg">
-          <q-btn
-            color="primary"
-            @click="()=>{
-              negotiateForm.bidId=selectedBid?.id as unknown as string
-              negotiate(data!.serviceRequirement!.id,{
-              onSuccess:()=>{
-                refreshBids()
-                negotiateModal=false
-                bidDetailModal=false
-              }
-            })}"
-            >Submit Request</q-btn
-          >
+          <q-btn color="primary" @click="() => {
+      negotiateForm.bidId = selectedBid?.id as unknown as string
+      negotiate(data!.serviceRequirement!.id, {
+        onSuccess: () => {
+          refreshBids()
+          negotiateModal = false
+          bidDetailModal = false
+        }
+      })
+    }">Submit Request</q-btn>
         </q-card-acetion>
       </q-card>
     </q-dialog>

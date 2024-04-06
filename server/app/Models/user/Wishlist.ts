@@ -1,6 +1,5 @@
-import { DateTime } from 'luxon'
 import { BaseModel, ManyToMany, column, manyToMany } from '@ioc:Adonis/Lucid/Orm'
-import ServiceVariant from '../service/ServiceVariant'
+import Service from '../service/Service'
 
 export default class Wishlist extends BaseModel {
   @column({ isPrimary: true })
@@ -9,9 +8,9 @@ export default class Wishlist extends BaseModel {
   @column()
   public userId: number
 
-  @manyToMany(() => ServiceVariant, {
+  @manyToMany(() => Service, {
     pivotTable: 'wishlist_items',
   })
-  public items: ManyToMany<typeof ServiceVariant>
+  public items: ManyToMany<typeof Service>
 
 }

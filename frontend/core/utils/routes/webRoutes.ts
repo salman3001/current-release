@@ -4,6 +4,11 @@ export default {
   book_custom_Service: (requirementId: number) =>
     `/bookings/custom/${requirementId}/book-now`,
   account: "/account",
+  bookings: '/account/bookings',
+  custom_bookings: '/account/custom-bookings',
+  settings: '/account/settings',
+  security: '/account/security',
+  wishlist: '/account/wishlist',
   view_booking: (id: number) => `/bookings/${id}`,
   view_custom_booking: (id: number) => `/bookings/custom/${id}`,
   view_business: (id: number) => `/vendor-profiles/vendor-profile-${id}`,

@@ -3,7 +3,6 @@ import { date } from "quasar";
 
 const customFetch = useCustomFetch();
 const route = useRoute();
-const getImageUrl = useGetImageUrl();
 
 const { data: booking, pending } = useAsyncData(
   "booking" + route.params.id,
@@ -27,26 +26,14 @@ const { data: booking, pending } = useAsyncData(
       <div>
         <h1 class="text-h6 text-bold q-sm">Booking ID: {{ booking?.id }}</h1>
         <div>
-          <q-badge
-            class="normalcase q-badge-warning q-py-sm q-px-md"
-            v-if="booking?.status === 'placed'"
-            ><q-icon name="done"></q-icon> &nbsp;{{ booking?.status }}</q-badge
-          >
-          <q-badge
-            class="normalcase q-badge-info q-py-sm q-px-md"
-            v-if="booking?.status === 'confirmed'"
-            ><q-icon name="done"></q-icon> &nbsp;{{ booking?.status }}</q-badge
-          >
-          <q-badge
-            class="normalcase q-badge-positive q-py-sm q-px-md"
-            v-if="booking?.status === 'completed'"
-            ><q-icon name="done"></q-icon> &nbsp;{{ booking?.status }}</q-badge
-          >
-          <q-badge
-            class="normalcase q-badge-negative q-py-sm q-px-md"
-            v-if="booking?.status === 'cancled'"
-            ><q-icon name="done"></q-icon> &nbsp;{{ booking?.status }}</q-badge
-          >
+          <q-badge class="normalcase q-badge-warning q-py-sm q-px-md" v-if="booking?.status === 'placed'"><q-icon
+              name="done"></q-icon> &nbsp;{{ booking?.status }}</q-badge>
+          <q-badge class="normalcase q-badge-info q-py-sm q-px-md" v-if="booking?.status === 'confirmed'"><q-icon
+              name="done"></q-icon> &nbsp;{{ booking?.status }}</q-badge>
+          <q-badge class="normalcase q-badge-positive q-py-sm q-px-md" v-if="booking?.status === 'completed'"><q-icon
+              name="done"></q-icon> &nbsp;{{ booking?.status }}</q-badge>
+          <q-badge class="normalcase q-badge-negative q-py-sm q-px-md" v-if="booking?.status === 'cancled'"><q-icon
+              name="done"></q-icon> &nbsp;{{ booking?.status }}</q-badge>
         </div>
       </div>
       <div>
@@ -85,46 +72,31 @@ const { data: booking, pending } = useAsyncData(
         <h6 class="text-subtitle1 text-bold">Booking Detail</h6>
         <br />
         <div class="" :class="$q.screen.gt.sm ? 'row' : 'column'">
-          <div
-            style="flex-wrap: nowrap"
-            :class="$q.screen.gt.sm ? 'col' : 'row justify-between'"
-          >
+          <div style="flex-wrap: nowrap" :class="$q.screen.gt.sm ? 'col' : 'row justify-between'">
             <div class="q-pl-sm q-py-sm">Booking date</div>
             <div class="q-pl-sm q-py-sm">
               {{ date.formatDate(booking?.created_at, "DD/MM/YYYY hh:mmA") }}
             </div>
           </div>
-          <div
-            style="flex-wrap: nowrap"
-            :class="$q.screen.gt.sm ? 'col' : 'row justify-between'"
-          >
+          <div style="flex-wrap: nowrap" :class="$q.screen.gt.sm ? 'col' : 'row justify-between'">
             <div class="q-pl-sm q-py-sm">Service Requirement</div>
             <div class="q-pl-sm q-py-sm">
               {{ booking?.booking_detail.serviceRequirement.title }}
             </div>
           </div>
-          <div
-            style="flex-wrap: nowrap"
-            :class="$q.screen.gt.sm ? 'col' : 'row justify-between'"
-          >
+          <div style="flex-wrap: nowrap" :class="$q.screen.gt.sm ? 'col' : 'row justify-between'">
             <div class="q-pl-sm q-py-sm">Price</div>
             <div class="q-pl-sm q-py-sm">
               &#x20B9;{{ booking?.booking_detail.acceptedBid.offeredPrice }}
             </div>
           </div>
-          <div
-            style="flex-wrap: nowrap"
-            :class="$q.screen.gt.sm ? 'col' : 'row justify-between'"
-          >
+          <div style="flex-wrap: nowrap" :class="$q.screen.gt.sm ? 'col' : 'row justify-between'">
             <div class="q-pl-sm q-py-sm">Qty</div>
             <div class="q-pl-sm q-py-sm">
               {{ booking?.qty }}
             </div>
           </div>
-          <div
-            style="flex-wrap: nowrap"
-            :class="$q.screen.gt.sm ? 'col' : 'row justify-between'"
-          >
+          <div style="flex-wrap: nowrap" :class="$q.screen.gt.sm ? 'col' : 'row justify-between'">
             <div class="q-pl-sm q-py-sm">Grand Total</div>
             <div class="q-pl-sm q-py-sm">
               {{ booking?.price }}
@@ -141,34 +113,23 @@ const { data: booking, pending } = useAsyncData(
         <h6 class="text-subtitle1 text-bold">Payment Detail</h6>
         <br />
         <div class="" :class="$q.screen.gt.sm ? 'row' : 'column'">
-          <div
-            style="flex-wrap: nowrap"
-            :class="$q.screen.gt.sm ? 'col' : 'row justify-between'"
-          >
+          <div style="flex-wrap: nowrap" :class="$q.screen.gt.sm ? 'col' : 'row justify-between'">
             <div class="q-pl-sm q-py-sm">Payment Mode</div>
             <div class="q-pl-sm q-py-sm">Card</div>
           </div>
-          <div
-            style="flex-wrap: nowrap"
-            :class="$q.screen.gt.sm ? 'col' : 'row justify-between'"
-          >
+          <div style="flex-wrap: nowrap" :class="$q.screen.gt.sm ? 'col' : 'row justify-between'">
             <div class="q-pl-sm q-py-sm">Payment Status</div>
             <div class="q-pl-sm q-py-sm">
-              <q-badge class="normalcase q-badge-positive q-py-sm q-px-md"
-                ><q-icon name="done"></q-icon> &nbsp;Paid</q-badge
-              >
+              <q-badge class="normalcase q-badge-positive q-py-sm q-px-md"><q-icon name="done"></q-icon>
+                &nbsp;Paid</q-badge>
             </div>
           </div>
-          <div
-            style="flex-wrap: nowrap"
-            :class="$q.screen.gt.sm ? 'col' : 'row justify-between'"
-          >
+          <div style="flex-wrap: nowrap" :class="$q.screen.gt.sm ? 'col' : 'row justify-between'">
             <div class="q-pl-sm q-py-sm">Options</div>
             <div class="q-pl-sm q-py-sm">
-              <q-badge class="normalcase q-badge-primary q-py-sm q-px-md"
-                ><q-icon name="download"></q-icon> &nbsp;Download
-                Reciept</q-badge
-              >
+              <q-badge class="normalcase q-badge-primary q-py-sm q-px-md"><q-icon name="download"></q-icon>
+                &nbsp;Download
+                Reciept</q-badge>
             </div>
           </div>
         </div>
@@ -177,6 +138,16 @@ const { data: booking, pending } = useAsyncData(
     </q-card>
     <br />
     <br />
+    <q-card class="shadow-12">
+      <q-card-section>
+        <h6 class="text-subtitle1 text-bold">Status History</h6>
+        <br />
+        <div class="">
+          <BookingHistory :booking="booking" />
+        </div>
+      </q-card-section>
+      <q-card-section class="text-muted"> </q-card-section>
+    </q-card>
     <br />
   </div>
 </template>

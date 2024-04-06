@@ -10,6 +10,7 @@ import BigNumber from 'bignumber.js'
 import User from 'App/Models/user/User'
 import Database from '@ioc:Adonis/Lucid/Database'
 import BaseApiController from '../BaseApiController'
+import { DateTime } from 'luxon'
 
 export default class BidBookingController extends BaseApiController {
   public async index({ request, response, bouncer }: HttpContextContract) {
@@ -114,12 +115,19 @@ export default class BidBookingController extends BaseApiController {
           userId: auth.user?.id,
           vendorUserId: bid.vendorUserId,
           paymentDetail: payload.paymentdetail,
+          history: [
+            {
+              date_time: DateTime.now(),
+              event: 'Order Placed',
+              remarks: ''
+            }
+          ],
           bookingDetail: {
             serviceRequirement: {
               id: serviceRequirement.id,
               title: serviceRequirement.title,
               desc: serviceRequirement.desc,
-              budgetType: serviceRequirement.budgetType,
+              budgetUnit: serviceRequirement.budgetUnit,
               budget: serviceRequirement.budget,
             },
             acceptedBid: {
@@ -151,11 +159,17 @@ export default class BidBookingController extends BaseApiController {
 
     const validationSchema = schema.create({
       status: schema.enum(Object.values(OrderStatus)),
+      remarks: schema.string.optional()
     })
 
     const payload = await request.validate({ schema: validationSchema })
 
     bidBooking.merge({ status: payload.status })
+    bidBooking.history.push({
+      date_time: DateTime.now(),
+      event: `Booking ${payload.status}`,
+      remarks: payload?.remarks || '',
+    })
 
     await bidBooking.save()
 

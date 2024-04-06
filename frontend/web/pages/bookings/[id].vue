@@ -1,8 +1,6 @@
 <script setup lang="ts">
-import { ref } from "vue";
 import { date } from "quasar";
 
-const tab = ref("Booking Detail");
 const customFetch = useCustomFetch();
 const route = useRoute();
 const getImageUrl = useGetImageUrl();
@@ -66,8 +64,7 @@ const { data: booking, pending } = useAsyncData(
     <br />
 
     <q-img width="150px" height="150px" class="rounded-borders shadow-12 border" :src="getImageUrl(
-    booking?.booking_detail?.service_variant?.image?.url,
-    '/images/sample-cover.jpg'
+    booking?.booking_detail?.service_variant?.image?.url
   )
     " />
     <br />
@@ -171,9 +168,19 @@ const { data: booking, pending } = useAsyncData(
           </div>
         </div>
       </q-card-section>
-      <q-card-section class="text-muted"> </q-card-section>
     </q-card>
     <br />
+    <br />
+    <q-card class="shadow-12">
+      <q-card-section>
+        <h6 class="text-subtitle1 text-bold">Status History</h6>
+        <br />
+        <div class="">
+          <BookingHistory :booking="booking" />
+        </div>
+      </q-card-section>
+      <q-card-section class="text-muted"> </q-card-section>
+    </q-card>
     <br />
     <br />
   </div>

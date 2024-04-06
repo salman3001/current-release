@@ -16,7 +16,9 @@ Route.group(() => {
   // Route.delete('my-cart/:itemId', 'user/CartsController.deleteItem')
   // Route.delete('my-cart', 'user/CartsController.clear')
 
-  Route.get('my-wishlist', 'user/WishlistsController.show')
+  Route.get('my-wishlist/detailed', 'user/WishlistsController.showDetailList')
+  Route.get('my-wishlist/:nullId', 'user/WishlistsController.show')
+  Route.post('my-wishlist/add-item', 'user/WishlistsController.add')
   Route.put('update-my-wishlist', 'user/WishlistsController.update')
   Route.delete('my-wishlist/:itemId', 'user/WishlistsController.deleteItem')
   Route.delete('my-wishlist', 'user/WishlistsController.clear')

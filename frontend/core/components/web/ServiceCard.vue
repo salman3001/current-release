@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import BigNumber from 'bignumber.js';
 
-const color = ref("grey-4");
 
 const getImageUrl = useGetImageUrl();
-
 const props = defineProps<{ service: IService }>();
+
+const wishlist = wishlistStore()
+const color = ref("grey-4");
 
 const minPriceVariant = props.service.variants.reduce((prev, current) => prev.price < current.price ? prev : current)
 
@@ -18,6 +19,16 @@ if (minPriceVariant.discount_type === DiscountType.FLAT) {
     .div(100)
     .times(minPriceVariant.price);
 }
+
+const isWishlisted = computed(() => {
+  const matchedItem = wishlist.wishlistItems.filter(i => i.id == props.service.id)
+  if (matchedItem.length > 0) {
+    return true
+  } else {
+    false
+  }
+
+})
 
 </script>
 
@@ -66,8 +77,13 @@ if (minPriceVariant.discount_type === DiscountType.FLAT) {
       </div>
     </q-card-section>
     <div class="absolute-top-right">
-      <q-icon name="favorite" outline :color="color" @mouseenter="color = 'pink'" @mouseleave="color = 'grey-4'"
-        class="cursor-pointer" size="30px" style="top: 25px; right: 25px; opacity: 0.8"></q-icon>
+      <q-btn icon="favorite" szie round color="pink" class="cursor-pointer" size="md"
+        style="top: 25px; right: 25px; opacity: 0.8" v-if="isWishlisted"
+        @click="wishlist.removeWishlistItem(service.id)">
+        <q-tooltip class="bg-primary">Remove</q-tooltip></q-btn>
+      <q-btn icon="favorite" v-else szie round :color="color" @mouseenter="color = 'pink'"
+        @mouseleave="color = 'grey-4'" class="cursor-pointer" size="md" style="top: 25px; right: 25px; opacity: 0.8"
+        @click="wishlist.addWishlistItem(service.id)"> <q-tooltip class="bg-primary">Add</q-tooltip></q-btn>
     </div>
     <div class="absolute-top-left" style="top: 5px;left: 5px;">
       <div>

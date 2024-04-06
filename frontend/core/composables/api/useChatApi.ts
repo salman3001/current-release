@@ -8,8 +8,10 @@ interface InitialQuery {
 }
 
 const createForm = {
-  userType: "",
-  userId: "",
+  participant: {
+    userType: "",
+    userId: "",
+  }
 };
 
 const messageForm = {
@@ -65,6 +67,8 @@ class UseChatApi extends useBaseApi<
         if (res.success == true) {
           cd?.onSuccess && cd?.onSuccess();
         }
+
+        return res
       } catch (error) {
         console.log(error);
         cd?.onError && cd?.onError();

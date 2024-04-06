@@ -10,7 +10,7 @@ Route.group(() => {
   Route.resource('bookings', 'booking/BookingController').only(['index', 'store', 'show'])
 
   Route.get('bid-bookings/my-list', 'booking/BidBookingController.myList')
-  Route.post('bid-bookings/:id/update-status', 'booking/BidBookingController.updateStatus')
+  Route.put('bid-bookings/:id/update-status', 'booking/BidBookingController.updateStatus')
   Route.resource('bid-bookings', 'booking/BidBookingController').only(['index', 'store', 'show'])
 
   // coupons
