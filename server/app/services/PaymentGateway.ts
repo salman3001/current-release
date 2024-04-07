@@ -1,5 +1,5 @@
 import Razorpay from 'razorpay'
-import env from 'env'
+import Env from '@ioc:Adonis/Core/Env'
 // import Booking from 'App/Models/bookings/Booking'
 // import BidBooking from 'App/Models/bookings/BidBooking'
 // import { PaymentStatus } from 'App/Helpers/enums'
@@ -19,8 +19,8 @@ class PaymentGateway {
 
     this.booted = true
     this.razor = new Razorpay({
-      key_id: env.RAZOR_KEY_ID,
-      key_secret: env.RAZOR_KEY_SECRETE,
+      key_id: Env.get('RAZOR_KEY_ID'),
+      key_secret: Env.get('RAZOR_KEY_SECRETE'),
     })
   }
 
