@@ -8,7 +8,7 @@ export default class extends BaseSchema {
       table.increments('id').primary()
       table.string('meta_title')
       table.string('meta_keywords')
-      table.string('meta_desc')
+      table.string('meta_desc', 512)
       table
         .integer('service_id')
         .unsigned()

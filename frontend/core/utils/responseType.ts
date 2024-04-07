@@ -20,7 +20,7 @@ interface IPageRes<T>
   extends IResType<{
     data: T;
     meta: PageMeta;
-  }> { }
+  }> {}
 
 interface ImageType {
   name: string;
@@ -49,10 +49,10 @@ interface ImageType {
 interface Image {
   id: number;
   file: ImageType;
-  service_id: number,
-  vendor_profile_id: number,
-  service_requiremet_id: number,
-  media_id: number
+  service_id: number;
+  vendor_profile_id: number;
+  service_requiremet_id: number;
+  media_id: number;
 }
 
 interface TimeStamps {
@@ -340,7 +340,7 @@ type IBooking = {
     grand_total: string;
   };
   payment_detail: {};
-  history: { date_time: string; event: string; remarks: string }[]
+  history: { date_time: string; event: string; remarks: string }[];
   status: string;
   vendor_user: IVendorUser;
   user: IUser;
@@ -368,7 +368,7 @@ type IBidBooking = {
     };
   };
   payment_detail: {};
-  history: { date_time: string; event: string; remarks: string }[]
+  history: { date_time: string; event: string; remarks: string }[];
   status: string;
   vendor_user: IVendorUser;
   user: IUser;
@@ -423,8 +423,8 @@ type IServiceRequirement = {
   serviceCategory: IServiceCategory;
   recievedBids: IBid;
   meta: Record<any, any>;
-  images: Image[]
-  tags: IServiceTag[]
+  images: Image[];
+  tags: IServiceTag[];
 } & TimeStamps;
 
 type IBid = {
@@ -432,10 +432,10 @@ type IBid = {
   offered_price: number | string;
   message: string;
   negotiate_history: {
-    date_time: string
-    asked_price: string
-    message: string
-    accepted: boolean
+    date_time: string;
+    asked_price: string;
+    message: string;
+    accepted: boolean;
   }[];
   service_requirement_id: number;
   vendor_user_id: number;
@@ -448,6 +448,7 @@ type ICoupon = {
   coupon_type: string;
   created_at: string;
   desc: string;
+  is_active: boolean;
   discount_flat: string;
   discount_percentage: string;
   discount_type: string;
@@ -459,6 +460,7 @@ type ICoupon = {
   updated_at: string;
   valid_from: string;
   vendor_user_id: number;
+  services: IService[];
 };
 
 type IConversation = {

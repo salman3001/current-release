@@ -26,9 +26,10 @@ export default class UpdateSubscriberValidator {
   public schema = schema.create({
     subscriber: schema.object().members({
       id: schema.number.optional(),
-      firstName: schema.string({ trim: true }),
-      lastName: schema.string({ trim: true }),
+      firstName: schema.string({ trim: true }, [rules.maxLength(255)]),
+      lastName: schema.string({ trim: true }, [rules.maxLength(255)]),
       email: schema.string({ trim: true }, [
+        rules.maxLength(255),
         rules.email(),
         rules.normalizeEmail({ allLowercase: true }),
         rules.unique({
@@ -39,7 +40,7 @@ export default class UpdateSubscriberValidator {
           },
         }),
       ]),
-      phone: schema.string.optional({ trim: true }, [rules.minLength(8)]),
+      phone: schema.string.optional({ trim: true }, [rules.minLength(8), rules.maxLength(50)]),
       status: schema.boolean(),
       dob: schema.date.optional({
         format: 'dd/MM/yyyy',

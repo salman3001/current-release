@@ -7,7 +7,7 @@ export default class extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id').primary()
       table.string('title').unique().notNullable()
-      table.string('slug').unique().notNullable()
+      table.string('slug', 300).unique().notNullable()
       table.boolean('is_published').defaultTo(0)
       table.json('thumbnail')
       table
@@ -32,7 +32,7 @@ export default class extends BaseSchema {
       table.text('long_desc')
       table.string('meta_title')
       table.string('meta_keywords')
-      table.string('meta_desc')
+      table.string('meta_desc', 512)
 
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL

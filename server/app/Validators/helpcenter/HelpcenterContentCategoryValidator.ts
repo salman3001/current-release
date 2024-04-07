@@ -26,12 +26,14 @@ export default class HelpcenterContentCategoryValidator {
   public schema = schema.create({
     id: schema.number.optional(),
     name: schema.string({ trim: true }, [
+      rules.maxLength(255),
       rules.unique({
         table: 'knowledge_base_categories',
         column: 'name',
       }),
     ]),
     slug: schema.string.optional({ trim: true }, [
+      rules.maxLength(300),
       rules.regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
       rules.unique({
         table: 'knowledge_base_categories',
@@ -40,9 +42,9 @@ export default class HelpcenterContentCategoryValidator {
     ]),
     languageId: schema.number.optional(),
     order: schema.number.optional(),
-    metaTitle: schema.string.optional(),
-    metaKeywords: schema.string.optional(),
-    metaDesc: schema.string.optional(),
+    metaTitle: schema.string.optional([rules.maxLength(255)]),
+    metaKeywords: schema.string.optional([rules.maxLength(255)]),
+    metaDesc: schema.string.optional([rules.maxLength(512)]),
     isActive: schema.boolean.optional(),
   })
 

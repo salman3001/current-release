@@ -6,7 +6,7 @@ export default class extends BaseSchema {
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id').primary()
-      table.string('address')
+      table.string('address', 500)
       table.point('geo_location')
       table
         .integer('vendor_profile_id', 10)

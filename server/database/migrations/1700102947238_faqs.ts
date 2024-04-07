@@ -6,8 +6,8 @@ export default class extends BaseSchema {
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id').primary()
-      table.string('quest')
-      table.string('ans', 1000)
+      table.string('quest', 512)
+      table.string('ans', 1500)
       table.integer('order').defaultTo(1).notNullable()
       table
         .integer('service_subcategory_id')

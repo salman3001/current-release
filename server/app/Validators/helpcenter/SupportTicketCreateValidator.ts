@@ -1,4 +1,4 @@
-import { schema, CustomMessages } from '@ioc:Adonis/Core/Validator'
+import { schema, CustomMessages, rules } from '@ioc:Adonis/Core/Validator'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { TicketStatus } from 'App/Helpers/enums'
 
@@ -26,10 +26,10 @@ export default class SupportTicketCreateValidator {
    */
   public schema = schema.create({
     id: schema.number.optional(),
-    subject: schema.string(),
+    subject: schema.string([rules.maxLength(255)]),
     status: schema.enum(Object.values(TicketStatus)),
     userId: schema.number(),
-    message: schema.string(),
+    message: schema.string([rules.maxLength(512)]),
   })
 
   /**

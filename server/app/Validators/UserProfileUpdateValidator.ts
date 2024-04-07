@@ -1,8 +1,8 @@
-import { schema, CustomMessages } from '@ioc:Adonis/Core/Validator'
+import { schema, CustomMessages, rules } from '@ioc:Adonis/Core/Validator'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 export default class UserProfileUpdateValidator {
-  constructor(protected ctx: HttpContextContract) { }
+  constructor(protected ctx: HttpContextContract) {}
 
   /*
    * Define schema to validate the "shape", "type", "formatting" and "integrity" of data.
@@ -32,25 +32,25 @@ export default class UserProfileUpdateValidator {
     address: schema.array.optional().members(
       schema.object().members({
         address: schema.string({ trim: true }),
-        geoLocation: schema.string()
+        geoLocation: schema.string(),
       })
     ),
     social: schema.object.optional().members({
-      website: schema.string.optional({ trim: true }),
-      facebook: schema.string.optional({ trim: true }),
-      twitter: schema.string.optional({ trim: true }),
-      instagram: schema.string.optional({ trim: true }),
-      pintrest: schema.string.optional({ trim: true }),
-      linkedin: schema.string.optional({ trim: true }),
-      vk: schema.string.optional({ trim: true }),
-      whatsapp: schema.string.optional({ trim: true }),
-      telegram: schema.string.optional({ trim: true }),
+      website: schema.string.optional({ trim: true }, [rules.maxLength(255)]),
+      facebook: schema.string.optional({ trim: true }, [rules.maxLength(255)]),
+      twitter: schema.string.optional({ trim: true }, [rules.maxLength(255)]),
+      instagram: schema.string.optional({ trim: true }, [rules.maxLength(255)]),
+      pintrest: schema.string.optional({ trim: true }, [rules.maxLength(255)]),
+      linkedin: schema.string.optional({ trim: true }, [rules.maxLength(255)]),
+      vk: schema.string.optional({ trim: true }, [rules.maxLength(255)]),
+      whatsapp: schema.string.optional({ trim: true }, [rules.maxLength(255)]),
+      telegram: schema.string.optional({ trim: true }, [rules.maxLength(255)]),
     }),
     languages: schema.array.optional().members(schema.number()),
     skills: schema.array.optional().members(
       schema.object().members({
-        name: schema.string({ trim: true }),
-        desc: schema.string.optional({ trim: true }),
+        name: schema.string({ trim: true }, [rules.maxLength(50)]),
+        desc: schema.string.optional({ trim: true }, [rules.maxLength(255)]),
       })
     ),
     NotificationSettings: schema.object.optional().members({

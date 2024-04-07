@@ -7,7 +7,7 @@ export default class extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id').primary()
       table.string('name').unique().notNullable()
-      table.string('slug').unique().notNullable()
+      table.string('slug', 300).unique().notNullable()
       table.bigInteger('order').defaultTo(1).notNullable()
       table.boolean('status').defaultTo(false)
       table
@@ -19,7 +19,7 @@ export default class extends BaseSchema {
 
       table.string('meta_title')
       table.string('meta_keywords')
-      table.string('meta_desc')
+      table.string('meta_desc', 512)
     })
   }
 

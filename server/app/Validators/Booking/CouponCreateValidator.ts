@@ -27,6 +27,7 @@ export default class CouponCreateValidator {
   public schema = schema.create({
     name: schema.string({ escape: true }, [rules.maxLength(50)]),
     desc: schema.string({ escape: true }, [rules.maxLength(256)]),
+    isActive: schema.boolean.optional(),
     discountType: schema.enum(Object.values(DiscountType)),
     discountFlat: schema.number.optional([rules.minNumber(0)]),
     discountPercentage: schema.number.optional([rules.maxNumber(99), rules.minNumber(0)]),
@@ -35,6 +36,7 @@ export default class CouponCreateValidator {
     // serviceIds: schema.array().members(schema.number()),
     validFrom: schema.date({ format: 'dd/MM/yyyy HH:mm' }, [rules.after(1, 'minute')]),
     expiredAt: schema.date({ format: 'dd/MM/yyyy HH:mm' }, [rules.afterField('validFrom')]),
+    serviceIds: schema.array.optional().members(schema.number()),
   })
 
   /**

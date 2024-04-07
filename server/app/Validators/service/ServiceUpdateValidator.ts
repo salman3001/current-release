@@ -3,7 +3,7 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { DiscountType } from 'App/Helpers/enums'
 
 export default class ServiceUpdateValidator {
-  constructor(protected ctx: HttpContextContract) { }
+  constructor(protected ctx: HttpContextContract) {}
 
   /*
    * Define schema to validate the "shape", "type", "formatting" and "integrity" of data.
@@ -47,6 +47,7 @@ export default class ServiceUpdateValidator {
     ),
     service: schema.object().members({
       name: schema.string.optional({ trim: true }, [
+        rules.maxLength(255),
         rules.unique({
           table: 'services',
           column: 'name',
@@ -55,7 +56,7 @@ export default class ServiceUpdateValidator {
           },
         }),
       ]),
-      shortDesc: schema.string.optional(),
+      shortDesc: schema.string.optional([rules.maxLength(1024)]),
       longDesc: schema.string.optional(),
       isActive: schema.boolean.optional(),
       locationSpecific: schema.boolean.optional(),
@@ -65,14 +66,14 @@ export default class ServiceUpdateValidator {
     }),
     tags: schema.array.optional().members(schema.number()),
     seo: schema.object.optional().members({
-      metaTitle: schema.string.optional(),
-      metaKeywords: schema.string.optional(),
-      metaDesc: schema.string.optional(),
+      metaTitle: schema.string.optional([rules.maxLength(255)]),
+      metaKeywords: schema.string.optional([rules.maxLength(255)]),
+      metaDesc: schema.string.optional([rules.maxLength(512)]),
     }),
     faq: schema.array.optional().members(
       schema.object().members({
-        quest: schema.string(),
-        ans: schema.string(),
+        quest: schema.string([rules.maxLength(512)]),
+        ans: schema.string([rules.maxLength(1500)]),
       })
     ),
     variant: schema.array.optional().members(
@@ -85,7 +86,7 @@ export default class ServiceUpdateValidator {
           rules.minNumber(0),
         ]),
         discountPercentage: schema.number.optional([rules.maxNumber(99), rules.minNumber(0)]),
-        desc: schema.string.optional(),
+        desc: schema.string.optional([rules.maxLength(512)]),
       })
     ),
   })

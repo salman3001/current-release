@@ -5,6 +5,12 @@ export default {
     account: "/account",
     settings: "/account/settings",
     security: "/account/security",
+    coupons: {
+      list: "/discount-coupons",
+      create: "/discount-coupons/create",
+      edit: (id: number) => `/discount-coupons/edit-coupon-${id}`,
+      view: (id: number) => `/discount-coupons/view-coupon-${id}`,
+    },
     services: {
       list: "/services",
       view: (id: number) => `/services/${id}`,

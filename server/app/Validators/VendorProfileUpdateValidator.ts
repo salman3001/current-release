@@ -2,7 +2,7 @@ import { schema, CustomMessages, rules } from '@ioc:Adonis/Core/Validator'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 export default class VendorProfileUpdateValidator {
-  constructor(protected ctx: HttpContextContract) { }
+  constructor(protected ctx: HttpContextContract) {}
 
   /*
    * Define schema to validate the "shape", "type", "formatting" and "integrity" of data.
@@ -39,37 +39,37 @@ export default class VendorProfileUpdateValidator {
       })
     ),
     profile: schema.object.optional().members({
-      shortDesc: schema.string.optional(),
+      shortDesc: schema.string.optional([rules.maxLength(500)]),
       longDesc: schema.string.optional(),
       isActive: schema.boolean.optional(),
     }),
     seo: schema.object.optional().members({
-      metaTitle: schema.string.optional(),
-      metaKeywords: schema.string.optional(),
-      metaDesc: schema.string.optional(),
+      metaTitle: schema.string.optional([rules.maxLength(255)]),
+      metaKeywords: schema.string.optional([rules.maxLength(255)]),
+      metaDesc: schema.string.optional([rules.maxLength(1000)]),
     }),
     social: schema.object.optional().members({
-      website: schema.string.optional({ trim: true }),
-      facebook: schema.string.optional({ trim: true }),
-      twitter: schema.string.optional({ trim: true }),
-      instagram: schema.string.optional({ trim: true }),
-      pintrest: schema.string.optional({ trim: true }),
-      linkedin: schema.string.optional({ trim: true }),
-      vk: schema.string.optional({ trim: true }),
-      whatsapp: schema.string.optional({ trim: true }),
-      telegram: schema.string.optional({ trim: true }),
+      website: schema.string.optional({ trim: true }, [rules.maxLength(255)]),
+      facebook: schema.string.optional({ trim: true }, [rules.maxLength(255)]),
+      twitter: schema.string.optional({ trim: true }, [rules.maxLength(255)]),
+      instagram: schema.string.optional({ trim: true }, [rules.maxLength(255)]),
+      pintrest: schema.string.optional({ trim: true }, [rules.maxLength(255)]),
+      linkedin: schema.string.optional({ trim: true }, [rules.maxLength(255)]),
+      vk: schema.string.optional({ trim: true }, [rules.maxLength(255)]),
+      whatsapp: schema.string.optional({ trim: true }, [rules.maxLength(255)]),
+      telegram: schema.string.optional({ trim: true }, [rules.maxLength(255)]),
     }),
 
     faq: schema.array.optional().members(
       schema.object().members({
-        quest: schema.string(),
-        ans: schema.string(),
+        quest: schema.string([rules.maxLength(500)]),
+        ans: schema.string([rules.maxLength(1500)]),
       })
     ),
     address: schema.array.optional().members(
       schema.object().members({
-        address: schema.string({ trim: true }),
-        geoLocation: schema.string(),
+        address: schema.string({ trim: true }, [rules.maxLength(500)]),
+        geoLocation: schema.string([rules.maxLength(20)]),
       })
     ),
   })

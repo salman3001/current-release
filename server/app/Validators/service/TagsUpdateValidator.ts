@@ -31,12 +31,14 @@ export default class TagsUpdateValidator {
     category: schema.object.optional().members({
       id: schema.number.optional(),
       name: schema.string({ trim: true }, [
+        rules.maxLength(255),
         rules.unique({
           table: 'service_tags',
           column: 'name',
         }),
       ]),
       slug: schema.string({ trim: true }, [
+        rules.maxLength(300),
         rules.slug(),
         rules.unique({
           table: 'service_tags',
@@ -44,19 +46,19 @@ export default class TagsUpdateValidator {
           whereNot: { id: this.ctx.params.id },
         }),
       ]),
-      shortDesc: schema.string.optional(),
+      shortDesc: schema.string.optional([rules.maxLength(1024)]),
       longDesc: schema.string.optional(),
       status: schema.boolean.optional(),
     }),
     seo: schema.object.optional().members({
-      metaTitle: schema.string.optional(),
-      metaKeywords: schema.string.optional(),
-      metaDesc: schema.string.optional(),
+      metaTitle: schema.string.optional([rules.maxLength(255)]),
+      metaKeywords: schema.string.optional([rules.maxLength(255)]),
+      metaDesc: schema.string.optional([rules.maxLength(512)]),
     }),
     faq: schema.array.optional().members(
       schema.object().members({
-        quest: schema.string(),
-        ans: schema.string(),
+        quest: schema.string([rules.maxLength(512)]),
+        ans: schema.string([rules.maxLength(1500)]),
       })
     ),
   })

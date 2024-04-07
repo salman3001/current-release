@@ -25,10 +25,11 @@ export default class VendorUserCreateValidator {
    *    ```
    */
   public schema = schema.create({
-    firstName: schema.string({ trim: true }),
-    lastName: schema.string({ trim: true }),
+    firstName: schema.string({ trim: true }, [rules.maxLength(50)]),
+    lastName: schema.string({ trim: true }, [rules.maxLength(50)]),
     userType: schema.enum(Object.values(userTypes)),
     businessName: schema.string({ escape: true }, [
+      rules.maxLength(100),
       rules.unique({
         table: 'businesses',
         column: 'name',
@@ -36,13 +37,14 @@ export default class VendorUserCreateValidator {
     ]),
 
     email: schema.string({ trim: true }, [
+      rules.maxLength(255),
       rules.email(),
       rules.normalizeEmail({ allLowercase: true }),
       rules.unique({ table: 'vendor_users', column: 'email' }),
     ]),
-    password: schema.string({ trim: true }),
+    password: schema.string({ trim: true }, [rules.maxLength(50)]),
     passwordConfirmation: schema.string({ trim: true }, [rules.confirmed('password')]),
-    phone: schema.string.optional(),
+    phone: schema.string.optional([rules.maxLength(15)]),
     isActive: schema.boolean.optional(),
   })
 

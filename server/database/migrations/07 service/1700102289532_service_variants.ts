@@ -12,7 +12,7 @@ export default class extends BaseSchema {
       table.enu('discount_type', Object.values(DiscountType)).defaultTo(0)
       table.decimal('discount_flat', 10, 2).defaultTo(0)
       table.decimal('discount_percentage', 4, 2).defaultTo(0)
-      table.string('desc')
+      table.string('desc', 512)
       table.bigInteger('order').defaultTo(1).notNullable()
       table.json('image')
       table

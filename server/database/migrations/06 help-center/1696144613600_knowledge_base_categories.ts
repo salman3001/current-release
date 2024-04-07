@@ -13,7 +13,7 @@ export default class extends BaseSchema {
         .inTable('languages')
         .onDelete('SET NULL')
       table.string('name').unique().notNullable()
-      table.string('slug').unique().notNullable()
+      table.string('slug', 300).unique().notNullable()
       table.integer('order').unsigned().unique()
       table.boolean('is_active').defaultTo(false)
       table.string('meta_title')

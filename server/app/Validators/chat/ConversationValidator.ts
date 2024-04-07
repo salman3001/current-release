@@ -1,4 +1,4 @@
-import { schema, CustomMessages } from '@ioc:Adonis/Core/Validator'
+import { schema, CustomMessages, rules } from '@ioc:Adonis/Core/Validator'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { userTypes } from 'App/Helpers/enums'
 
@@ -25,7 +25,7 @@ export default class ConversationValidator {
    *    ```
    */
   public schema = schema.create({
-    name: schema.string.optional(),
+    name: schema.string.optional([rules.maxLength(255)]),
     participant: schema.object().members({
       userType: schema.enum(Object.values(userTypes)),
       userId: schema.number(),

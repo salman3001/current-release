@@ -22,6 +22,9 @@ export default class Coupon extends BaseModel {
   public desc: string
 
   @column()
+  public isActive: boolean
+
+  @column()
   public couponType: CouponType
 
   @column()

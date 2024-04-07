@@ -27,12 +27,14 @@ export default class BlogValidator {
     id: schema.number.optional(),
 
     title: schema.string([
+      rules.maxLength(255),
       rules.unique({
         table: 'blogs',
         column: 'title',
       }),
     ]),
     slug: schema.string.optional({ trim: true }, [
+      rules.maxLength(300),
       rules.regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
       rules.unique({
         table: 'blogs',
@@ -46,11 +48,11 @@ export default class BlogValidator {
       extnames: ['jpg', 'JPG', 'jpeg', 'JPEG', 'png', 'PNG', 'webp', 'WEBP'],
       size: '5mb',
     }),
-    shortDesc: schema.string.optional(),
+    shortDesc: schema.string.optional([rules.maxLength(512)]),
     longDesc: schema.string.optional(),
-    metaTitle: schema.string.optional(),
-    metaKeywords: schema.string.optional(),
-    metaDesc: schema.string.optional(),
+    metaTitle: schema.string.optional([rules.maxLength(255)]),
+    metaKeywords: schema.string.optional([rules.maxLength(255)]),
+    metaDesc: schema.string.optional([rules.maxLength(512)]),
   })
 
   /**

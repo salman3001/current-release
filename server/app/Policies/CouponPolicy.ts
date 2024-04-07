@@ -8,15 +8,12 @@ import VendorUser from 'App/Models/vendorUser/VendorUser'
 
 export default class CouponPolicy extends BasePolicy {
   public async viewList(user: User | VendorUser | AdminUser) {
-    if (isAdmin(user) && (await hasPermission(user as AdminUser, permissions.MANAGE_COUPONS))) {
+    if (user instanceof VendorUser) {
       return true
-    } else {
-      return false
-    }
-  }
-
-  public async vendorList(user: User) {
-    if (user && user instanceof VendorUser) {
+    } else if (
+      isAdmin(user) &&
+      (await hasPermission(user as AdminUser, permissions.MANAGE_COUPONS))
+    ) {
       return true
     } else {
       return false

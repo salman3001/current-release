@@ -26,14 +26,16 @@ export default class CreateCampaignValidator {
   public schema = schema.create({
     campaign: schema.object().members({
       id: schema.number.optional(),
-      name: schema.string(),
-      subject: schema.string(),
-      fromName: schema.string(),
+      name: schema.string([rules.maxLength(255)]),
+      subject: schema.string([rules.maxLength(255)]),
+      fromName: schema.string([rules.maxLength(255)]),
       fromEmail: schema.string({ trim: true }, [
+        rules.maxLength(255),
         rules.email(),
         rules.normalizeEmail({ allLowercase: true }),
       ]),
       replyTo: schema.string({ trim: true }, [
+        rules.maxLength(255),
         rules.email(),
         rules.normalizeEmail({ allLowercase: true }),
       ]),

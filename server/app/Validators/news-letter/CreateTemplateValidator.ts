@@ -1,4 +1,4 @@
-import { schema, CustomMessages } from '@ioc:Adonis/Core/Validator'
+import { schema, CustomMessages, rules } from '@ioc:Adonis/Core/Validator'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 export default class CreateTemplateValidator {
@@ -30,8 +30,8 @@ export default class CreateTemplateValidator {
     }),
     template: schema.object().members({
       id: schema.number.optional(),
-      name: schema.string({ trim: true }),
-      desc: schema.string.optional(),
+      name: schema.string({ trim: true }, [rules.maxLength(255)]),
+      desc: schema.string.optional([rules.maxLength(512)]),
       content: schema.string.optional(),
       campaignId: schema.number.optional(),
     }),

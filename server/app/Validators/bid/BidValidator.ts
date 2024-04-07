@@ -26,7 +26,7 @@ export default class BidValidator {
   public schema = schema.create({
     serviceRequirementId: schema.number(),
     offeredPrice: schema.number([rules.minNumber(1)]),
-    message: schema.string.optional(),
+    message: schema.string.optional([rules.maxLength(1500)]),
   })
 
   /**

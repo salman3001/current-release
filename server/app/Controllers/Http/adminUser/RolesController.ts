@@ -42,6 +42,7 @@ export default class RolesController extends BaseApiController {
 
     const payloadSchema = schema.create({
       name: schema.string({ trim: true }, [
+        rules.maxLength(50),
         rules.unique({
           table: 'roles',
           column: 'name',
