@@ -47,7 +47,7 @@ export enum MediaTypes {
 export enum OrderStatus {
   PLACED = 'placed',
   CONFIRMED = 'confirmed',
-  REJECTED = 'rejected',
+  CANCELED = 'canceled',
   DELIVERED = 'delivered',
 }
 
@@ -70,4 +70,15 @@ export enum DiscountType {
 export enum BudgetType {
   HOURLY = 'hourly',
   FIXED = 'fixed',
+}
+
+export enum PaymentStatus {
+  PENDING = 'pending',
+  PARTIAL_PAiD = 'partial paid',
+  PAID = 'paid',
+}
+
+export enum PaymentMode {
+  ONLINE = 'online',
+  COD = 'cod',
 }

@@ -34,4 +34,6 @@ export default Env.rules({
   SES_ACCESS_KEY: Env.schema.string(),
   SES_ACCESS_SECRET: Env.schema.string(),
   SES_REGION: Env.schema.string(),
+  RAZOR_KEY_ID: Env.schema.string(),
+  RAZOR_KEY_SECRETE: Env.schema.string(),
 })
